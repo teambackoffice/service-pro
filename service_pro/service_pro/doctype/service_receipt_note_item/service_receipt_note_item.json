@@ -7,8 +7,7 @@
  "field_order": [
   "materials",
   "qty",
-  "description",
-  "warehouse"
+  "description"
  ],
  "fields": [
   {
@@ -31,19 +30,11 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Description"
-  },
-  {
-   "fieldname": "warehouse",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Warehouse",
-   "options": "Warehouse",
-   "reqd": 1
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2020-07-17 18:18:59.631633",
+ "modified": "2020-07-20 13:27:54.944558",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Receipt Note Item",

@@ -9,7 +9,13 @@ from erpnext.stock.utils import get_stock_balance
 
 class ServiceReceiptNote(Document):
 	def on_submit(self):
+		warehouses = frappe.db.sql(""" SELECT * FROM `tabWarehouse` """, as_dict=1)
+
+
 		for i in self.materials:
+			remaining_stocks = 0
+			for warehouse in warehouses:
+				remaining_stocks += get_stock_balance(i.materials, warehouse.name)
 			item = frappe.get_doc("Item", i.materials)
 			doc = {
 				"doctype": "Inspection",
@@ -19,8 +25,7 @@ class ServiceReceiptNote(Document):
 				"qty": i.qty,
 				"rate": item.standard_rate,
 				"amount": item.standard_rate * i.qty,
-				"warehouse": i.warehouse,
-				"available_qty": get_stock_balance(i.materials, i.warehouse),
+				"available_qty": remaining_stocks,
 				"service_receipt_note": self.name
 			}
 

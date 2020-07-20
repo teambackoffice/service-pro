@@ -21,11 +21,9 @@
   "section_break_13",
   "item_code",
   "rate",
-  "amount",
   "column_break_17",
-  "warehouse",
-  "available_qty",
   "qty",
+  "amount",
   "sizes_section",
   "piston_rod_size",
   "column_break_23",
@@ -238,17 +236,6 @@
   {
    "fieldname": "column_break_17",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "warehouse",
-   "fieldtype": "Link",
-   "label": "Warehouse",
-   "options": "Warehouse"
-  },
-  {
-   "fieldname": "available_qty",
-   "fieldtype": "Float",
-   "label": "Available Qty"
   },
   {
    "fieldname": "qty",
@@ -960,7 +947,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-17 18:36:56.642947",
+ "modified": "2020-07-20 13:47:10.253407",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inspection",

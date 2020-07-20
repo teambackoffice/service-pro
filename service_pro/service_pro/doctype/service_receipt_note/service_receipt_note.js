@@ -14,15 +14,21 @@ frappe.ui.form.on('Service Receipt Note', {
             }).then(records => {
                 if(records.length > 0){
                     frm.add_custom_button(__("Submit Inspection/s"), () => {
-                       frm.call({
-                            doc: frm.doc,
-                            method: 'submit_inspections',
-                            freeze: true,
-                            freeze_message: "Submitting Inspections...",
-                            callback: () => {
-                                cur_frm.refresh()
-                            }
-                        })
+                        frappe.confirm('Are you sure you want to submit Inspections?',
+                            () => {
+                                 frm.call({
+                                    doc: frm.doc,
+                                    method: 'submit_inspections',
+                                    freeze: true,
+                                    freeze_message: "Submitting Inspections...",
+                                    callback: () => {
+                                        cur_frm.refresh()
+                                    }
+                                })
+                            }, () => {
+                                // action to perform if No is selected
+                            })
+
                     });
                 }
             })

@@ -1,0 +1,86 @@
+{
+ "actions": [],
+ "creation": "2020-07-17 17:12:10.401023",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "rod_dia_section",
+  "rod_dia",
+  "r_length_section",
+  "r_length",
+  "tube_size_section",
+  "tube_size",
+  "t_length_section",
+  "t_length"
+ ],
+ "fields": [
+  {
+   "collapsible": 1,
+   "fieldname": "rod_dia_section",
+   "fieldtype": "Section Break",
+   "label": "ROD DIA"
+  },
+  {
+   "fieldname": "rod_dia",
+   "fieldtype": "Table",
+   "options": "ROD DIA"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "r_length_section",
+   "fieldtype": "Section Break",
+   "label": "R LENGTH"
+  },
+  {
+   "fieldname": "r_length",
+   "fieldtype": "Table",
+   "options": "R LENGTH"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "tube_size_section",
+   "fieldtype": "Section Break",
+   "label": "TUBE SIZE"
+  },
+  {
+   "fieldname": "tube_size",
+   "fieldtype": "Table",
+   "options": "TUBE SIZE"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "t_length_section",
+   "fieldtype": "Section Break",
+   "label": "T LENGTH"
+  },
+  {
+   "fieldname": "t_length",
+   "fieldtype": "Table",
+   "options": "T LENGTH"
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2020-07-17 17:31:01.272190",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Cylinder Dimensions",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

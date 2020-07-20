@@ -1,0 +1,225 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2020-07-15 17:52:59.901625",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "posting_date",
+  "receipt_note",
+  "customer",
+  "customer_name",
+  "contact_person",
+  "column_break_7",
+  "customer_reference",
+  "date_of_receipt",
+  "estimated_date",
+  "delivered_date",
+  "cylinder_dimensions_section",
+  "rod_dia",
+  "r_length",
+  "column_break_15",
+  "tube_size",
+  "t_length",
+  "finished_good",
+  "item_code",
+  "warehouse",
+  "rate",
+  "column_break_22",
+  "available_qty",
+  "qty",
+  "amount",
+  "scoop_of_works_section",
+  "table_27",
+  "raw_material_section",
+  "table_29",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "HT-\nWS-\nCE-"
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "receipt_note",
+   "fieldtype": "Link",
+   "label": "Receipt Note",
+   "options": "Service Receipt Note"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "contact_person",
+   "fieldtype": "Link",
+   "label": "Contact Person",
+   "options": "Contact"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer_reference",
+   "fieldtype": "Data",
+   "label": "Customer Reference"
+  },
+  {
+   "fieldname": "date_of_receipt",
+   "fieldtype": "Date",
+   "label": "Date of Receipt"
+  },
+  {
+   "fieldname": "estimated_date",
+   "fieldtype": "Date",
+   "label": "Estimated Date"
+  },
+  {
+   "fieldname": "delivered_date",
+   "fieldtype": "Date",
+   "label": "Delivered Date"
+  },
+  {
+   "fieldname": "cylinder_dimensions_section",
+   "fieldtype": "Section Break",
+   "label": "Cylinder Dimensions"
+  },
+  {
+   "fieldname": "rod_dia",
+   "fieldtype": "Select",
+   "label": "ROD DIA"
+  },
+  {
+   "fieldname": "r_length",
+   "fieldtype": "Select",
+   "label": "R LENGTH"
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tube_size",
+   "fieldtype": "Select",
+   "label": "TUBE SIZE"
+  },
+  {
+   "fieldname": "t_length",
+   "fieldtype": "Select",
+   "label": "T LENGTH"
+  },
+  {
+   "fieldname": "finished_good",
+   "fieldtype": "Data",
+   "label": "Finished Good"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item"
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "label": "Rate"
+  },
+  {
+   "fieldname": "column_break_22",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "available_qty",
+   "fieldtype": "Float",
+   "label": "Available QTY"
+  },
+  {
+   "fieldname": "qty",
+   "fieldtype": "Float",
+   "label": "Qty"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount"
+  },
+  {
+   "fieldname": "scoop_of_works_section",
+   "fieldtype": "Section Break",
+   "label": "Scoop of Works"
+  },
+  {
+   "fieldname": "table_27",
+   "fieldtype": "Table",
+   "options": "Scoop of Work"
+  },
+  {
+   "fieldname": "raw_material_section",
+   "fieldtype": "Section Break",
+   "label": "Raw Material"
+  },
+  {
+   "fieldname": "table_29",
+   "fieldtype": "Table",
+   "options": "Raw Material"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Estimation",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2020-07-17 17:32:54.981678",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Estimation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

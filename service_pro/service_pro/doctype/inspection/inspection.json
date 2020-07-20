@@ -1,0 +1,986 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2020-07-14 14:47:52.266563",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "section_break_2",
+  "customer",
+  "customer_name",
+  "description",
+  "issue_number",
+  "issue_date",
+  "column_break_8",
+  "posting_date",
+  "cso_number",
+  "customer_reference",
+  "service_receipt_note",
+  "section_break_13",
+  "item_code",
+  "rate",
+  "amount",
+  "column_break_17",
+  "warehouse",
+  "available_qty",
+  "qty",
+  "sizes_section",
+  "piston_rod_size",
+  "column_break_23",
+  "tube_size",
+  "section_break_24",
+  "cylinder_item",
+  "column_break_001",
+  "size",
+  "status1",
+  "column_break_27",
+  "material",
+  "remarks",
+  "other_componentd_section",
+  "inspection_other_components",
+  "checklist_section",
+  "checklist_table",
+  "spares_seal_kit_quantity",
+  "section_break_36",
+  "attach_1",
+  "image_1",
+  "column_break_38",
+  "attach_2",
+  "image_2",
+  "section_break_42",
+  "strippping_from_hydraulic_cylinder_barrel_section",
+  "attach_3",
+  "image_3",
+  "attach_5",
+  "image_5",
+  "column_break_48",
+  "attach_4",
+  "image_4",
+  "attach_6",
+  "image_6",
+  "assessment_of_seal_kit_section",
+  "attach_7",
+  "image_7",
+  "column_break_56",
+  "attach_8",
+  "image_8",
+  "assessment_of_rod_section",
+  "attach_9",
+  "image_9",
+  "attach_11",
+  "image_11",
+  "attach_13",
+  "image_13",
+  "column_break_60",
+  "attach_10",
+  "image_10",
+  "attach_12",
+  "image_12",
+  "assessment_of_tube_section",
+  "attach_14",
+  "image_14",
+  "attach_16",
+  "image_16",
+  "attach_18",
+  "image_18",
+  "column_break_78",
+  "attach_15",
+  "image_15",
+  "attach_17",
+  "image_17",
+  "assessment_of_gland_section",
+  "attach_19",
+  "image_19",
+  "attach_21",
+  "image_21",
+  "column_break_88",
+  "attach_20",
+  "image_20",
+  "attach_22",
+  "image_22",
+  "assessment_of_sleeve_section",
+  "attach_23",
+  "image_23",
+  "column_break_96",
+  "attach_24",
+  "image_24",
+  "assessment_of_piston_section",
+  "attach_25",
+  "image_25",
+  "attach_27",
+  "image_27",
+  "column_break_104",
+  "attach_26",
+  "image_26",
+  "attach_28",
+  "image_28",
+  "assessment_of_clevis_section",
+  "attach_29",
+  "image_29",
+  "column_break_112",
+  "attach_30",
+  "image_30",
+  "assessment_of_counter_balance_valve_section",
+  "attach_31",
+  "image_31",
+  "column_break_118",
+  "attach_32",
+  "image_32",
+  "assessment_of_maniforl_block_section",
+  "attach_33",
+  "image_33",
+  "column_break_124",
+  "attach_34",
+  "image_34",
+  "assessment_of_piston_rod_thread_section",
+  "attach_35",
+  "image_35",
+  "section_break_130",
+  "attach_36",
+  "image_36",
+  "assessment_of_clevis_bush_section",
+  "attach_37",
+  "image_37",
+  "column_break_136",
+  "attach_38",
+  "image_38",
+  "assessment_of_o_ring_grove_on_piston_rod_section",
+  "attach_39",
+  "image_39",
+  "column_break_142",
+  "attach_40",
+  "image_40",
+  "section_break_145",
+  "terms_and_condition",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "HT-\nWS-\nCE-"
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "label": "Description"
+  },
+  {
+   "fieldname": "issue_number",
+   "fieldtype": "Data",
+   "label": "Issue Number"
+  },
+  {
+   "fieldname": "issue_date",
+   "fieldtype": "Date",
+   "label": "Issue Date"
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "cso_number",
+   "fieldtype": "Data",
+   "label": "CSO Number"
+  },
+  {
+   "fieldname": "customer_reference",
+   "fieldtype": "Data",
+   "label": "Customer Reference"
+  },
+  {
+   "fieldname": "section_break_13",
+   "fieldtype": "Section Break",
+   "label": "Item"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "label": "Rate"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount"
+  },
+  {
+   "fieldname": "column_break_17",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "available_qty",
+   "fieldtype": "Float",
+   "label": "Available Qty"
+  },
+  {
+   "fieldname": "qty",
+   "fieldtype": "Float",
+   "label": "Qty"
+  },
+  {
+   "fieldname": "sizes_section",
+   "fieldtype": "Section Break",
+   "label": "Sizes"
+  },
+  {
+   "fieldname": "piston_rod_size",
+   "fieldtype": "Select",
+   "label": "Piston Rod Size",
+   "options": "\nGood\nBend\nPitting\nPolishing\nChroming\nRod Change"
+  },
+  {
+   "fieldname": "tube_size",
+   "fieldtype": "Select",
+   "label": "Tube Size",
+   "options": "\nGood\nBend\nScorring\nHoning\nRod Change"
+  },
+  {
+   "fieldname": "section_break_24",
+   "fieldtype": "Section Break",
+   "label": "Cylinder Item"
+  },
+  {
+   "fieldname": "cylinder_item",
+   "fieldtype": "Link",
+   "label": "Cylinder Item",
+   "options": "Cylinder Item"
+  },
+  {
+   "fieldname": "size",
+   "fieldtype": "Link",
+   "label": "Size",
+   "options": "Size"
+  },
+  {
+   "fieldname": "status1",
+   "fieldtype": "Section Break",
+   "label": "Status",
+   "options": "\nGood\nDamaged"
+  },
+  {
+   "fieldname": "column_break_27",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "material",
+   "fieldtype": "Link",
+   "label": "Material",
+   "options": "Material"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "other_componentd_section",
+   "fieldtype": "Section Break",
+   "label": "Other Component"
+  },
+  {
+   "fieldname": "inspection_other_components",
+   "fieldtype": "Table",
+   "label": "Inspection Other Components",
+   "options": "Inspection Other Components"
+  },
+  {
+   "fieldname": "checklist_section",
+   "fieldtype": "Section Break",
+   "label": "Checklist"
+  },
+  {
+   "fieldname": "checklist_table",
+   "fieldtype": "Table",
+   "label": "Checklist Table",
+   "options": "Inspection Checklist"
+  },
+  {
+   "fieldname": "spares_seal_kit_quantity",
+   "fieldtype": "Float",
+   "label": "Spares Seal Kit Quantity"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_36",
+   "fieldtype": "Section Break",
+   "label": "ARRIVED / OFFLOADED CYLINDER"
+  },
+  {
+   "fieldname": "attach_1",
+   "fieldtype": "Attach",
+   "label": "Attach 1"
+  },
+  {
+   "fieldname": "image_1",
+   "fieldtype": "Image",
+   "label": "Image 1",
+   "options": "attach_1"
+  },
+  {
+   "fieldname": "column_break_38",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attach_2",
+   "fieldtype": "Attach",
+   "label": "Attach 2"
+  },
+  {
+   "fieldname": "image_2",
+   "fieldtype": "Image",
+   "label": "Image 2",
+   "options": "attach_2"
+  },
+  {
+   "fieldname": "section_break_42",
+   "fieldtype": "Section Break"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "strippping_from_hydraulic_cylinder_barrel_section",
+   "fieldtype": "Section Break",
+   "label": "STRIPPPING FROM HYDRAULIC CYLINDER BARREL"
+  },
+  {
+   "fieldname": "attach_3",
+   "fieldtype": "Attach",
+   "label": "Attach 3"
+  },
+  {
+   "fieldname": "image_3",
+   "fieldtype": "Image",
+   "label": "Image 3",
+   "options": "attach_3"
+  },
+  {
+   "fieldname": "attach_5",
+   "fieldtype": "Attach",
+   "label": "Attach 5"
+  },
+  {
+   "fieldname": "image_5",
+   "fieldtype": "Image",
+   "label": "Image 5",
+   "options": "attach_5"
+  },
+  {
+   "fieldname": "column_break_48",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attach_4",
+   "fieldtype": "Attach",
+   "label": "Attach 4"
+  },
+  {
+   "fieldname": "image_4",
+   "fieldtype": "Image",
+   "label": "Image 4",
+   "options": "attach_4"
+  },
+  {
+   "fieldname": "attach_6",
+   "fieldtype": "Attach",
+   "label": "Attach 6"
+  },
+  {
+   "fieldname": "image_6",
+   "fieldtype": "Image",
+   "label": "Image 6",
+   "options": "attach_6"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "assessment_of_seal_kit_section",
+   "fieldtype": "Section Break",
+   "label": "ASSESSMENT OF SEAL KIT"
+  },
+  {
+   "fieldname": "attach_7",
+   "fieldtype": "Attach",
+   "label": "Attach 7"
+  },
+  {
+   "fieldname": "image_7",
+   "fieldtype": "Image",
+   "label": "Image 7",
+   "options": "attach_7"
+  },
+  {
+   "fieldname": "column_break_56",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attach_8",
+   "fieldtype": "Attach",
+   "label": "Attach 8"
+  },
+  {
+   "fieldname": "image_8",
+   "fieldtype": "Image",
+   "label": "Image 8",
+   "options": "attach_8"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "assessment_of_rod_section",
+   "fieldtype": "Section Break",
+   "label": "ASSESSMENT OF ROD"
+  },
+  {
+   "fieldname": "attach_9",
+   "fieldtype": "Attach",
+   "label": "Attach 9"
+  },
+  {
+   "fieldname": "image_9",
+   "fieldtype": "Image",
+   "label": "Image 9",
+   "options": "attach_9"
+  },
+  {
+   "fieldname": "attach_11",
+   "fieldtype": "Attach",
+   "label": "Attach 11"
+  },
+  {
+   "fieldname": "image_11",
+   "fieldtype": "Image",
+   "label": "Image 11",
+   "options": "attach_11"
+  },
+  {
+   "fieldname": "attach_13",
+   "fieldtype": "Attach",
+   "label": "Attach 13"
+  },
+  {
+   "fieldname": "image_13",
+   "fieldtype": "Image",
+   "label": "Image 13",
+   "options": "attach_13"
+  },
+  {
+   "fieldname": "column_break_60",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attach_10",
+   "fieldtype": "Attach",
+   "label": "Attach 10"
+  },
+  {
+   "fieldname": "image_10",
+   "fieldtype": "Image",
+   "label": "Image 10",
+   "options": "attach_10"
+  },
+  {
+   "fieldname": "attach_12",
+   "fieldtype": "Attach",
+   "label": "Attach 12"
+  },
+  {
+   "fieldname": "image_12",
+   "fieldtype": "Image",
+   "label": "Image 12",
+   "options": "attach_12"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "assessment_of_tube_section",
+   "fieldtype": "Section Break",
+   "label": "ASSESSMENT OF TUBE"
+  },
+  {
+   "fieldname": "attach_14",
+   "fieldtype": "Attach",
+   "label": "Attach 14"
+  },
+  {
+   "fieldname": "image_14",
+   "fieldtype": "Image",
+   "label": "Image 14",
+   "options": "attach_14"
+  },
+  {
+   "fieldname": "attach_16",
+   "fieldtype": "Attach",
+   "label": "Attach 16"
+  },
+  {
+   "fieldname": "image_16",
+   "fieldtype": "Image",
+   "label": "Image 16",
+   "options": "attach_16"
+  },
+  {
+   "fieldname": "attach_18",
+   "fieldtype": "Attach",
+   "label": "Attach 18"
+  },
+  {
+   "fieldname": "image_18",
+   "fieldtype": "Image",
+   "label": "Image 18",
+   "options": "attach_18"
+  },
+  {
+   "fieldname": "column_break_78",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attach_15",
+   "fieldtype": "Attach",
+   "label": "Attach 15"
+  },
+  {
+   "fieldname": "image_15",
+   "fieldtype": "Image",
+   "label": "Image 15",
+   "options": "attach_15"
+  },
+  {
+   "fieldname": "attach_17",
+   "fieldtype": "Attach",
+   "label": "Attach 17"
+  },
+  {
+   "fieldname": "image_17",
+   "fieldtype": "Image",
+   "label": "Image 17",
+   "options": "attach_17"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "assessment_of_gland_section",
+   "fieldtype": "Section Break",
+   "label": "ASSESSMENT OF GLAND"
+  },
+  {
+   "fieldname": "attach_19",
+   "fieldtype": "Attach",
+   "label": "Attach 19"
+  },
+  {
+   "fieldname": "image_19",
+   "fieldtype": "Image",
+   "label": "Image 19",
+   "options": "attach_19"
+  },
+  {
+   "fieldname": "attach_21",
+   "fieldtype": "Attach",
+   "label": "Attach 21"
+  },
+  {
+   "fieldname": "image_21",
+   "fieldtype": "Image",
+   "label": "Image 21",
+   "options": "attach_21"
+  },
+  {
+   "fieldname": "column_break_88",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attach_20",
+   "fieldtype": "Attach",
+   "label": "Attach 20"
+  },
+  {
+   "fieldname": "image_20",
+   "fieldtype": "Image",
+   "label": "Image 20",
+   "options": "attach_20"
+  },
+  {
+   "fieldname": "attach_22",
+   "fieldtype": "Attach",
+   "label": "Attach 22"
+  },
+  {
+   "fieldname": "image_22",
+   "fieldtype": "Image",
+   "label": "Image 22",
+   "options": "attach_22"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "assessment_of_sleeve_section",
+   "fieldtype": "Section Break",
+   "label": "ASSESSMENT OF SLEEVE"
+  },
+  {
+   "fieldname": "attach_23",
+   "fieldtype": "Attach",
+   "label": "Attach 23"
+  },
+  {
+   "fieldname": "image_23",
+   "fieldtype": "Image",
+   "label": "Image 23",
+   "options": "attach_23"
+  },
+  {
+   "fieldname": "column_break_96",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attach_24",
+   "fieldtype": "Attach",
+   "label": "Attach 24"
+  },
+  {
+   "fieldname": "image_24",
+   "fieldtype": "Image",
+   "label": "Image 24",
+   "options": "attach_24"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "assessment_of_piston_section",
+   "fieldtype": "Section Break",
+   "label": "ASSESSMENT OF PISTON"
+  },
+  {
+   "fieldname": "attach_25",
+   "fieldtype": "Attach",
+   "label": "Attach 25"
+  },
+  {
+   "fieldname": "image_25",
+   "fieldtype": "Image",
+   "label": "Image 25",
+   "options": "attach_25"
+  },
+  {
+   "fieldname": "attach_27",
+   "fieldtype": "Attach",
+   "label": "Attach 27"
+  },
+  {
+   "fieldname": "image_27",
+   "fieldtype": "Image",
+   "label": "Image 27",
+   "options": "attach_27"
+  },
+  {
+   "fieldname": "column_break_104",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attach_26",
+   "fieldtype": "Attach",
+   "label": "Attach 26"
+  },
+  {
+   "fieldname": "image_26",
+   "fieldtype": "Image",
+   "label": "Image 26",
+   "options": "attach_26"
+  },
+  {
+   "fieldname": "attach_28",
+   "fieldtype": "Attach",
+   "label": "Attach 28"
+  },
+  {
+   "fieldname": "image_28",
+   "fieldtype": "Image",
+   "label": "Image 28",
+   "options": "attach_28"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "assessment_of_clevis_section",
+   "fieldtype": "Section Break",
+   "label": "ASSESSMENT OF CLEVIS"
+  },
+  {
+   "fieldname": "attach_29",
+   "fieldtype": "Attach",
+   "label": "Attach 29"
+  },
+  {
+   "fieldname": "image_29",
+   "fieldtype": "Image",
+   "label": "Image 29",
+   "options": "attach_29"
+  },
+  {
+   "fieldname": "column_break_112",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attach_30",
+   "fieldtype": "Attach",
+   "label": "Attach 30"
+  },
+  {
+   "fieldname": "image_30",
+   "fieldtype": "Image",
+   "label": "Image 30",
+   "options": "attach_30"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "assessment_of_counter_balance_valve_section",
+   "fieldtype": "Section Break",
+   "label": "ASSESSMENT OF COUNTER BALANCE VALVE"
+  },
+  {
+   "fieldname": "attach_31",
+   "fieldtype": "Attach",
+   "label": "Attach 31"
+  },
+  {
+   "fieldname": "image_31",
+   "fieldtype": "Image",
+   "label": "Image 31",
+   "options": "attach_31"
+  },
+  {
+   "fieldname": "column_break_118",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attach_32",
+   "fieldtype": "Attach",
+   "label": "Attach 32"
+  },
+  {
+   "fieldname": "image_32",
+   "fieldtype": "Image",
+   "label": "Image 32",
+   "options": "attach_32"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "assessment_of_maniforl_block_section",
+   "fieldtype": "Section Break",
+   "label": "ASSESSMENT OF MANIFORL BLOCK"
+  },
+  {
+   "fieldname": "attach_33",
+   "fieldtype": "Attach",
+   "label": "Attach 33"
+  },
+  {
+   "fieldname": "image_33",
+   "fieldtype": "Image",
+   "label": "Image 33",
+   "options": "attach_33"
+  },
+  {
+   "fieldname": "column_break_124",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attach_34",
+   "fieldtype": "Attach",
+   "label": "Attach 34"
+  },
+  {
+   "fieldname": "image_34",
+   "fieldtype": "Image",
+   "label": "Image 34",
+   "options": "attach_34"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "assessment_of_piston_rod_thread_section",
+   "fieldtype": "Section Break",
+   "label": "ASSESSMENT OF PISTON ROD THREAD"
+  },
+  {
+   "fieldname": "attach_35",
+   "fieldtype": "Attach",
+   "label": "Attach 35"
+  },
+  {
+   "fieldname": "image_35",
+   "fieldtype": "Image",
+   "label": "Image 35",
+   "options": "attach_35"
+  },
+  {
+   "fieldname": "section_break_130",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attach_36",
+   "fieldtype": "Attach",
+   "label": "Attach 36"
+  },
+  {
+   "fieldname": "image_36",
+   "fieldtype": "Image",
+   "label": "Image 36",
+   "options": "attach_36"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "assessment_of_clevis_bush_section",
+   "fieldtype": "Section Break",
+   "label": "ASSESSMENT OF CLEVIS BUSH"
+  },
+  {
+   "fieldname": "attach_37",
+   "fieldtype": "Attach",
+   "label": "Attach 37"
+  },
+  {
+   "fieldname": "image_37",
+   "fieldtype": "Image",
+   "label": "Image 37",
+   "options": "attach_37"
+  },
+  {
+   "fieldname": "column_break_136",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attach_38",
+   "fieldtype": "Attach",
+   "label": "Attach 38"
+  },
+  {
+   "fieldname": "image_38",
+   "fieldtype": "Image",
+   "label": "Image 38",
+   "options": "attach_38"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "assessment_of_o_ring_grove_on_piston_rod_section",
+   "fieldtype": "Section Break",
+   "label": "ASSESSMENT OF O RING GROVE ON PISTON ROD"
+  },
+  {
+   "fieldname": "attach_39",
+   "fieldtype": "Attach",
+   "label": "Attach 39"
+  },
+  {
+   "fieldname": "image_39",
+   "fieldtype": "Image",
+   "label": "Image 39",
+   "options": "attach_39"
+  },
+  {
+   "fieldname": "column_break_142",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attach_40",
+   "fieldtype": "Attach",
+   "label": "Attach 40"
+  },
+  {
+   "fieldname": "image_40",
+   "fieldtype": "Image",
+   "label": "Image 40",
+   "options": "attach_40"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_145",
+   "fieldtype": "Section Break",
+   "label": "Terms and Condition"
+  },
+  {
+   "fieldname": "terms_and_condition",
+   "fieldtype": "Link",
+   "label": "Terms and Condition",
+   "options": "Terms and Conditions"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Inspection",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_23",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_001",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "service_receipt_note",
+   "fieldtype": "Link",
+   "label": "Service Receipt Note",
+   "options": "Service Receipt Note",
+   "read_only": 1
+  }
+ ],
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2020-07-17 18:36:56.642947",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Inspection",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

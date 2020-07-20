@@ -1,0 +1,52 @@
+{
+ "actions": [],
+ "creation": "2020-07-17 17:19:49.593320",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "work_name",
+  "estimated_date",
+  "cost",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "work_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Work Name",
+   "options": "Work"
+  },
+  {
+   "fieldname": "estimated_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Estimated Date"
+  },
+  {
+   "fieldname": "cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Cost"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Remarks"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2020-07-17 17:30:40.764231",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Scoop of Work",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

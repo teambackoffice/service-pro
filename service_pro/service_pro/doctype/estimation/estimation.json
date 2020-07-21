@@ -25,10 +25,8 @@
   "t_length",
   "finished_good",
   "item_code",
-  "warehouse",
   "rate",
   "column_break_22",
-  "available_qty",
   "qty",
   "amount",
   "scoop_of_works_section",
@@ -45,6 +43,7 @@
    "options": "HT-\nWS-\nCE-"
   },
   {
+   "default": "Today",
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "label": "Posting Date"
@@ -83,16 +82,19 @@
    "label": "Customer Reference"
   },
   {
+   "default": "Today",
    "fieldname": "date_of_receipt",
    "fieldtype": "Date",
    "label": "Date of Receipt"
   },
   {
+   "default": "Today",
    "fieldname": "estimated_date",
    "fieldtype": "Date",
    "label": "Estimated Date"
   },
   {
+   "default": "Today",
    "fieldname": "delivered_date",
    "fieldtype": "Date",
    "label": "Delivered Date"
@@ -128,7 +130,7 @@
   },
   {
    "fieldname": "finished_good",
-   "fieldtype": "Data",
+   "fieldtype": "Section Break",
    "label": "Finished Good"
   },
   {
@@ -138,12 +140,6 @@
    "options": "Item"
   },
   {
-   "fieldname": "warehouse",
-   "fieldtype": "Link",
-   "label": "Warehouse",
-   "options": "Warehouse"
-  },
-  {
    "fieldname": "rate",
    "fieldtype": "Currency",
    "label": "Rate"
@@ -151,11 +147,6 @@
   {
    "fieldname": "column_break_22",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "available_qty",
-   "fieldtype": "Float",
-   "label": "Available QTY"
   },
   {
    "fieldname": "qty",
@@ -199,7 +190,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-17 17:32:54.981678",
+ "modified": "2020-07-21 01:57:58.557269",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

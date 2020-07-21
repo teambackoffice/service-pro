@@ -3,7 +3,6 @@
 
 frappe.ui.form.on('Service Receipt Note', {
 	refresh: function(frm) {
-
         if(cur_frm.doc.docstatus){
             frappe.db.get_list('Inspection', {
                 fields: ["*"],
@@ -13,25 +12,114 @@ frappe.ui.form.on('Service Receipt Note', {
                 }
             }).then(records => {
                 if(records.length > 0){
-                    frm.add_custom_button(__("Submit Inspection/s"), () => {
-                        frappe.confirm('Are you sure you want to submit Inspections?',
-                            () => {
-                                 frm.call({
-                                    doc: frm.doc,
-                                    method: 'submit_inspections',
-                                    freeze: true,
-                                    freeze_message: "Submitting Inspections...",
-                                    callback: () => {
-                                        cur_frm.refresh()
-                                    }
-                                })
-                            }, () => {
-                                // action to perform if No is selected
-                            })
 
-                    });
+                    frm.add_custom_button(__("Submit Inspection/s"), () => {
+                        submit_inspections(frm, cur_frm)
+                    }, __("Submit"))
                 }
             })
+
+             frappe.db.get_list('Estimation', {
+                fields: ["*"],
+                filters: {
+                    receipt_note: cur_frm.docname,
+                    docstatus: 0
+                }
+            }).then(records => {
+                if(records.length > 0){
+
+                    frm.add_custom_button(__("Submit Estimation/s"), () => {
+                        submit_estimations(frm, cur_frm)
+
+                    }, __("Submit"))
+                }
+            })
+                 frappe.db.get_list('Quotation', {
+                    fields: ["*"],
+                    filters: {
+                        service_receipt: cur_frm.docname,
+                        docstatus: 0
+                    }
+                }).then(records => {
+                    if(records.length === 0){
+                        frappe.db.get_list('Estimation', {
+                            fields: ["*"],
+                            filters: {
+                                receipt_note: cur_frm.docname,
+                                docstatus: 0
+                            }
+                        }).then(records1 => {
+                            if(records1.length === 0){
+                               frappe.db.get_list('Inspection', {
+                                    fields: ["*"],
+                                    filters: {
+                                        service_receipt_note: cur_frm.docname,
+                                        docstatus: 0
+                                    }
+                                }).then(records2 => {
+                                    if(records2.length === 0){
+                                       frm.add_custom_button(__("Quotation"), () => {
+                                            create_quotation(frm, cur_frm)
+
+                                        }, __("Create"))
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+
+
         }
 	}
 });
+
+function submit_inspections(frm, cur_frm) {
+    frappe.confirm('Are you sure you want to submit Inspection/s?',
+        () => {
+             frm.call({
+                doc: frm.doc,
+                method: 'submit_inspections',
+                freeze: true,
+                freeze_message: "Submitting Inspection/s...",
+                callback: () => {
+                    cur_frm.refresh()
+                }
+            })
+        }, () => {
+            // action to perform if No is selected
+    })
+}
+
+function submit_estimations(frm, cur_frm) {
+    frappe.confirm('Are you sure you want to submit Estimation/s?',
+        () => {
+             frm.call({
+                doc: frm.doc,
+                method: 'submit_estimations',
+                freeze: true,
+                freeze_message: "Submitting Estimation/s...",
+                callback: () => {
+                    cur_frm.refresh()
+                }
+            })
+        }, () => {
+            // action to perform if No is selected
+        })
+}
+
+function create_quotation(frm, cur_frm) {
+    // frm.call({
+    //     doc: frm.doc,
+    //     method: 'create_quotation',
+    //     freeze: true,
+    //     freeze_message: "Creating Quotation...",
+    //     callback: () => {
+    //         cur_frm.refresh()
+    //     }
+    // })
+    frappe.model.open_mapped_doc({
+        method: "service_pro.service_pro.doctype.service_receipt_note.service_receipt_note.make_quotation",
+        frm: me.frm
+    })
+}

@@ -1,0 +1,62 @@
+{
+ "actions": [],
+ "creation": "2020-07-20 16:59:08.982495",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "cylinder_item",
+  "size",
+  "condition",
+  "material",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "cylinder_item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Cylinder Item",
+   "options": "Cylinder Item"
+  },
+  {
+   "fieldname": "size",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Size",
+   "options": "Size"
+  },
+  {
+   "fieldname": "condition",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Condition",
+   "options": "Condition"
+  },
+  {
+   "fieldname": "material",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Material",
+   "options": "Material"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Remarks"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2020-07-20 17:00:09.135230",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Parts Inspection",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

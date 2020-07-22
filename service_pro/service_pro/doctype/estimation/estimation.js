@@ -13,5 +13,30 @@ frappe.ui.form.on('Estimation', {
                 frm.set_df_property('t_length', 'options', r.message[3])
             }
         })
-	}
+	},
+    // refresh: function () {
+	 //    frappe.db.get_list('Production', {
+    //             fields: ["*"],
+    //             filters: {
+    //                 receipt_note: cur_frm.docname,
+    //                 docstatus: 0
+    //             }
+    //         }).then(records => {
+    //             if(records.length > 0){
+    //
+    //                 frm.add_custom_button(__("Submit Estimation/s"), () => {
+    //                     submit_estimations(frm, cur_frm)
+    //
+    //                 }, __("Submit"))
+    //             }
+    //         })
+    //
+    // }
 });
+ // function create_quotation(frm, cur_frm) {
+ //
+ //            frappe.model.open_mapped_doc({
+ //                method: "service_pro.service_pro.doctype.estimation.estimation.make_production",
+ //                frm: me.frm
+ //            })
+ //        }

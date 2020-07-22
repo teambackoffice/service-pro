@@ -44,112 +44,152 @@
   "section_break_36",
   "attach_1",
   "image_1",
+  "remarks_1",
   "column_break_38",
   "attach_2",
   "image_2",
+  "remarks_2",
   "section_break_42",
   "strippping_from_hydraulic_cylinder_barrel_section",
   "attach_3",
   "image_3",
+  "remarks_3",
   "attach_5",
   "image_5",
+  "remarks_5",
   "column_break_48",
   "attach_4",
   "image_4",
+  "remarks_4",
   "attach_6",
   "image_6",
+  "remarks_6",
   "assessment_of_seal_kit_section",
   "attach_7",
   "image_7",
+  "remarks_7",
   "column_break_56",
   "attach_8",
   "image_8",
+  "remarks_8",
   "assessment_of_rod_section",
   "attach_9",
   "image_9",
+  "remarks_9",
   "attach_11",
   "image_11",
+  "remarks_11",
   "attach_13",
   "image_13",
+  "remarks_13",
   "column_break_60",
   "attach_10",
   "image_10",
+  "remarks_10",
   "attach_12",
   "image_12",
+  "remarks_12",
   "assessment_of_tube_section",
   "attach_14",
   "image_14",
+  "remarks_14",
   "attach_16",
   "image_16",
+  "remarks_16",
   "attach_18",
   "image_18",
+  "remarks_18",
   "column_break_78",
   "attach_15",
   "image_15",
+  "remarks_15",
   "attach_17",
   "image_17",
+  "remarks_17",
   "assessment_of_gland_section",
   "attach_19",
   "image_19",
+  "remarks_19",
   "attach_21",
   "image_21",
+  "remarks_21",
   "column_break_88",
   "attach_20",
   "image_20",
+  "remarks_20",
   "attach_22",
   "image_22",
+  "remarks_22",
   "assessment_of_sleeve_section",
   "attach_23",
   "image_23",
+  "remarks_23",
   "column_break_96",
   "attach_24",
   "image_24",
+  "remarks_24",
   "assessment_of_piston_section",
   "attach_25",
   "image_25",
+  "remarks_25",
   "attach_27",
   "image_27",
+  "remarks_27",
   "column_break_104",
   "attach_26",
   "image_26",
+  "remarks_26",
   "attach_28",
   "image_28",
+  "remarks_28",
   "assessment_of_clevis_section",
   "attach_29",
   "image_29",
+  "remarks_29",
   "column_break_112",
   "attach_30",
   "image_30",
+  "remarks_30",
   "assessment_of_counter_balance_valve_section",
   "attach_31",
   "image_31",
+  "remarks_31",
   "column_break_118",
   "attach_32",
   "image_32",
+  "remarks_32",
   "assessment_of_maniforl_block_section",
   "attach_33",
   "image_33",
+  "remarks_33",
   "column_break_124",
   "attach_34",
   "image_34",
+  "remarks_34",
   "assessment_of_piston_rod_thread_section",
   "attach_35",
   "image_35",
+  "remarks_35",
   "section_break_130",
   "attach_36",
   "image_36",
+  "remarks_36",
   "assessment_of_clevis_bush_section",
   "attach_37",
   "image_37",
+  "remarks_37",
   "column_break_136",
   "attach_38",
   "image_38",
+  "remarks_38",
   "assessment_of_o_ring_grove_on_piston_rod_section",
   "attach_39",
   "image_39",
+  "remarks_39",
   "column_break_142",
   "attach_40",
   "image_40",
+  "remarks_40",
   "section_break_145",
   "terms_and_condition",
   "amended_from"
@@ -249,13 +289,15 @@
   },
   {
    "fieldname": "piston_rod_size",
-   "fieldtype": "Data",
-   "label": "Piston Rod Size"
+   "fieldtype": "Link",
+   "label": "Piston Rod Size",
+   "options": "Size"
   },
   {
    "fieldname": "tube_size",
-   "fieldtype": "Data",
-   "label": "Tube Size"
+   "fieldtype": "Link",
+   "label": "Tube Size",
+   "options": "Size"
   },
   {
    "fieldname": "section_break_24",
@@ -942,11 +984,211 @@
    "fieldname": "parts_inspection",
    "fieldtype": "Table",
    "options": "Parts Inspection"
+  },
+  {
+   "fieldname": "remarks_40",
+   "fieldtype": "Text",
+   "label": "Remarks 40"
+  },
+  {
+   "fieldname": "remarks_39",
+   "fieldtype": "Text",
+   "label": "Remarks 39"
+  },
+  {
+   "fieldname": "remarks_1",
+   "fieldtype": "Text",
+   "label": "Remarks 1"
+  },
+  {
+   "fieldname": "remarks_2",
+   "fieldtype": "Text",
+   "label": "Remarks 2"
+  },
+  {
+   "fieldname": "remarks_3",
+   "fieldtype": "Text",
+   "label": "Remarks 3"
+  },
+  {
+   "fieldname": "remarks_5",
+   "fieldtype": "Text",
+   "label": "Remarks 5"
+  },
+  {
+   "fieldname": "remarks_4",
+   "fieldtype": "Text",
+   "label": "Remarks 4"
+  },
+  {
+   "fieldname": "remarks_6",
+   "fieldtype": "Text",
+   "label": "Remarks 6"
+  },
+  {
+   "fieldname": "remarks_7",
+   "fieldtype": "Text",
+   "label": "Remarks 7"
+  },
+  {
+   "fieldname": "remarks_8",
+   "fieldtype": "Text",
+   "label": "Remarks 8"
+  },
+  {
+   "fieldname": "remarks_9",
+   "fieldtype": "Text",
+   "label": "Remarks 9"
+  },
+  {
+   "fieldname": "remarks_11",
+   "fieldtype": "Text",
+   "label": "Remarks 11"
+  },
+  {
+   "fieldname": "remarks_13",
+   "fieldtype": "Text",
+   "label": "Remarks 13"
+  },
+  {
+   "fieldname": "remarks_10",
+   "fieldtype": "Text",
+   "label": "Remarks 10"
+  },
+  {
+   "fieldname": "remarks_12",
+   "fieldtype": "Text",
+   "label": "Remarks 12"
+  },
+  {
+   "fieldname": "remarks_14",
+   "fieldtype": "Text",
+   "label": "Remarks 14"
+  },
+  {
+   "fieldname": "remarks_16",
+   "fieldtype": "Text",
+   "label": "Remarks 16"
+  },
+  {
+   "fieldname": "remarks_18",
+   "fieldtype": "Text",
+   "label": "Remarks 18"
+  },
+  {
+   "fieldname": "remarks_15",
+   "fieldtype": "Text",
+   "label": "Remarks 15"
+  },
+  {
+   "fieldname": "remarks_17",
+   "fieldtype": "Text",
+   "label": "Remarks 17"
+  },
+  {
+   "fieldname": "remarks_19",
+   "fieldtype": "Text",
+   "label": "Remarks 19"
+  },
+  {
+   "fieldname": "remarks_21",
+   "fieldtype": "Text",
+   "label": "Remarks 21"
+  },
+  {
+   "fieldname": "remarks_20",
+   "fieldtype": "Text",
+   "label": "Remarks 20"
+  },
+  {
+   "fieldname": "remarks_22",
+   "fieldtype": "Text",
+   "label": "Remarks 22"
+  },
+  {
+   "fieldname": "remarks_23",
+   "fieldtype": "Text",
+   "label": "Remarks 23"
+  },
+  {
+   "fieldname": "remarks_24",
+   "fieldtype": "Text",
+   "label": "Remarks 24"
+  },
+  {
+   "fieldname": "remarks_25",
+   "fieldtype": "Text",
+   "label": "Remarks 25"
+  },
+  {
+   "fieldname": "remarks_27",
+   "fieldtype": "Text",
+   "label": "Remarks 27"
+  },
+  {
+   "fieldname": "remarks_26",
+   "fieldtype": "Text",
+   "label": "Remarks 26"
+  },
+  {
+   "fieldname": "remarks_28",
+   "fieldtype": "Text",
+   "label": "Remarks 28"
+  },
+  {
+   "fieldname": "remarks_29",
+   "fieldtype": "Text",
+   "label": "Remarks 29"
+  },
+  {
+   "fieldname": "remarks_30",
+   "fieldtype": "Text",
+   "label": "Remarks 30"
+  },
+  {
+   "fieldname": "remarks_31",
+   "fieldtype": "Text",
+   "label": "Remarks 31"
+  },
+  {
+   "fieldname": "remarks_32",
+   "fieldtype": "Text",
+   "label": "Remarks 32"
+  },
+  {
+   "fieldname": "remarks_33",
+   "fieldtype": "Text",
+   "label": "Remarks 33"
+  },
+  {
+   "fieldname": "remarks_34",
+   "fieldtype": "Text",
+   "label": "Remarks 34"
+  },
+  {
+   "fieldname": "remarks_35",
+   "fieldtype": "Text",
+   "label": "Remarks 35"
+  },
+  {
+   "fieldname": "remarks_36",
+   "fieldtype": "Text",
+   "label": "Remarks 36"
+  },
+  {
+   "fieldname": "remarks_37",
+   "fieldtype": "Text",
+   "label": "Remarks 37"
+  },
+  {
+   "fieldname": "remarks_38",
+   "fieldtype": "Text",
+   "label": "Remarks 38"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-20 17:00:55.630035",
+ "modified": "2020-07-22 17:35:44.998299",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inspection",

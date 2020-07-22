@@ -145,10 +145,12 @@ fixtures = [
                 "name",
                 "in",
                 [
-                    "Quotation-service_receipt"
+                    "Quotation-service_receipt",
+                    "Sales Invoice-production"
                 ]
             ]
         ]
     }
 ]
+
 

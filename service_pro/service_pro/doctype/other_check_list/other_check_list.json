@@ -1,0 +1,55 @@
+{
+ "actions": [],
+ "autoname": "field:check_list",
+ "creation": "2020-07-22 11:34:38.994835",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "check_list"
+ ],
+ "fields": [
+  {
+   "fieldname": "check_list",
+   "fieldtype": "Data",
+   "label": "Check List",
+   "unique": 1
+  }
+ ],
+ "links": [],
+ "modified": "2020-07-22 11:36:04.256409",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Other Check List",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "All",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

@@ -11,22 +11,22 @@
  "fields": [
   {
    "fieldname": "task",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Task",
-   "read_only": 1
+   "options": "Other Check List"
   },
   {
-   "default": "0",
    "fieldname": "done",
-   "fieldtype": "Check",
+   "fieldtype": "Select",
    "in_list_view": 1,
-   "label": "Done"
+   "label": "Done",
+   "options": "\nYes\nNo"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2020-07-17 17:31:37.239545",
+ "modified": "2020-07-22 11:34:54.615697",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inspection Checklist",

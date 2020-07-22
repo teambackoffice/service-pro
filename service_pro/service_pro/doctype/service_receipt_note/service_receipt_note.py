@@ -23,7 +23,9 @@ class ServiceReceiptNote(Document):
 				"service_receipt_note": self.name
 			}
 
-			frappe.get_doc(doc).insert()
+			insert_doc = frappe.get_doc(doc).insert()
+			frappe.db.sql(""" UPDATE `tabService Receipt Note Item` SET against_inspection=%s where name=%s""", (insert_doc.name, i.name))
+			frappe.db.commit()
 	def submit_inspections(self):
 		inspections = frappe.db.sql(""" SELECT * FROM `tabInspection` WHERE service_receipt_note=%s""",self.name, as_dict=1)
 		for inspection in inspections:
@@ -122,3 +124,15 @@ def make_quotation(source_name, target_doc=None, skip_item_mapping=False):
 	target_doc = get_mapped_doc("Service Receipt Note", source_name, mapper, target_doc)
 
 	return target_doc
+
+
+""" run ni again myms SELECT 
+ 		I.id, 
+ 		I.description, 
+ 		SUM(DD.quantity),
+ 		SUM(IR.quantity)
+ FROM items AS I 
+ INNER JOIN users AS U ON U.office =  'DDOPH-Montevista'
+ INNER JOIN delivery_details AS DD ON DD.user_id = U.id and DD.items_id = I.id
+ INNER JOIN item_release AS IR ON IR.item_id = I.id and IR.delivery_id = DD.id
+  GROUP BY I.id LIMIT 0,25"""

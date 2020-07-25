@@ -7,8 +7,7 @@
  "field_order": [
   "materials",
   "qty",
-  "description",
-  "against_inspection"
+  "description"
  ],
  "fields": [
   {
@@ -31,18 +30,11 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Description"
-  },
-  {
-   "fieldname": "against_inspection",
-   "fieldtype": "Link",
-   "label": "Against Inspection",
-   "options": "Inspection",
-   "read_only": 1
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2020-07-22 11:38:52.920551",
+ "modified": "2020-07-25 15:30:13.136121",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Receipt Note Item",

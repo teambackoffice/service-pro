@@ -30,9 +30,9 @@
   "qty",
   "amount",
   "scoop_of_works_section",
-  "table_27",
+  "scoop_of_work",
   "raw_material_section",
-  "table_29",
+  "raw_material",
   "amended_from"
  ],
  "fields": [
@@ -164,19 +164,9 @@
    "label": "Scoop of Works"
   },
   {
-   "fieldname": "table_27",
-   "fieldtype": "Table",
-   "options": "Scoop of Work"
-  },
-  {
    "fieldname": "raw_material_section",
    "fieldtype": "Section Break",
    "label": "Raw Material"
-  },
-  {
-   "fieldname": "table_29",
-   "fieldtype": "Table",
-   "options": "Raw Material"
   },
   {
    "fieldname": "amended_from",
@@ -186,11 +176,21 @@
    "options": "Estimation",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "scoop_of_work",
+   "fieldtype": "Table",
+   "options": "Scoop of Work"
+  },
+  {
+   "fieldname": "raw_material",
+   "fieldtype": "Table",
+   "options": "Raw Material"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-21 01:57:58.557269",
+ "modified": "2020-07-25 06:51:43.412870",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

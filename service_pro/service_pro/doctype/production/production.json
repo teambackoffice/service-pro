@@ -5,6 +5,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "status",
   "customer",
   "customer_name",
   "address",
@@ -22,21 +23,29 @@
   "item_code",
   "qty",
   "rate",
+  "cost_center",
   "column_break_17",
   "warehouse",
   "umo",
   "amount",
+  "income_account",
   "section_break_21",
   "scoop_of_work",
   "section_break_24",
-  "raw_material"
+  "raw_material",
+  "section_break_26",
+  "advance_payment",
+  "advance",
+  "amended_from"
  ],
  "fields": [
   {
    "fieldname": "customer",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Customer",
-   "options": "Customer"
+   "options": "Customer",
+   "reqd": 1
   },
   {
    "fieldname": "customer_name",
@@ -55,6 +64,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "default": "Today",
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "label": "Posting Date"
@@ -90,6 +100,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "default": "Today",
    "fieldname": "delivery_date",
    "fieldtype": "Date",
    "label": "Delivery Date"
@@ -122,16 +133,19 @@
    "fieldtype": "Column Break"
   },
   {
+   "default": "0",
    "fieldname": "qty",
    "fieldtype": "Float",
    "label": "Qty"
   },
   {
+   "default": "0",
    "fieldname": "rate",
    "fieldtype": "Currency",
    "label": "Rate"
   },
   {
+   "default": "0",
    "fieldname": "amount",
    "fieldtype": "Currency",
    "label": "Amount"
@@ -162,10 +176,55 @@
   {
    "fieldname": "section_break_24",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_26",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "advance_payment",
+   "fieldtype": "Table",
+   "label": "Advance Payment",
+   "options": "Advance Payment"
+  },
+  {
+   "fieldname": "advance",
+   "fieldtype": "Button",
+   "label": "Advance"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Production",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "default": "In Progress",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Status",
+   "options": "In Progress\nCompleted"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "income_account",
+   "fieldtype": "Link",
+   "label": "Income Account",
+   "options": "Account"
   }
  ],
+ "is_submittable": 1,
  "links": [],
- "modified": "2020-07-22 02:38:15.113259",
+ "modified": "2020-07-25 13:05:14.985476",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",
@@ -184,7 +243,6 @@
    "write": 1
   }
  ],
- "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "track_changes": 1

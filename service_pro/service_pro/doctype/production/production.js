@@ -1,15 +1,23 @@
 // Copyright (c) 2020, jan and contributors
 // For license information, please see license.txt
-
+cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
+    var d = locals[cdt][cdn]
+    d.warehouse = cur_frm.doc.raw_material_warehouse
+    cur_frm.refresh_field("raw_material")
+}
 frappe.ui.form.on('Production', {
+
+    validate: function (frm) {
+        frm.set_df_property('type', 'read_only', 1);
+    },
 	refresh: function() {
 	    cur_frm.set_query('income_account', () => {
-        return {
-            filters: {
-                is_group: 0,
+            return {
+                filters: {
+                    is_group: 0,
+                }
             }
-        }
-    })
+        })
 	},
     customer: function() {
 	    if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
@@ -39,6 +47,12 @@ frappe.ui.form.on('Production', {
             cur_frm.refresh_field("amount")
             set_property_finished_item_fields(frm,cur_frm)
 
+        }
+	},
+    on_submit: function(frm) {
+        for(var x=0;x < cur_frm.doc.scoop_of_work.length;x += 1){
+            cur_frm.doc.scoop_of_work[x].status = "In Progress"
+            cur_frm.refresh_field("scoop_of_work")
         }
 	},
 

@@ -9,6 +9,7 @@
   "naming_series",
   "posting_date",
   "receipt_note",
+  "inspection",
   "customer",
   "customer_name",
   "contact_person",
@@ -186,11 +187,17 @@
    "fieldname": "raw_material",
    "fieldtype": "Table",
    "options": "Raw Material"
+  },
+  {
+   "fieldname": "inspection",
+   "fieldtype": "Link",
+   "label": "Inspection",
+   "options": "Inspection"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-25 06:51:43.412870",
+ "modified": "2020-07-25 15:06:35.413735",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

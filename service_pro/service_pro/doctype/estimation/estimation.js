@@ -3,6 +3,14 @@
 
 frappe.ui.form.on('Estimation', {
 	onload: function(frm) {
+	    var df = frappe.meta.get_docfield("Scoop of Work", "status", cur_frm.doc.name);
+	    if (cur_frm.doc.doctype === "Estimation"){
+	        df.in_grid_view = 0
+            df.hidden = 1
+        } else if (cur_frm.doc.doctype === "Production") {
+	        df.in_grid_view = 1
+	        df.hiddne = 0
+        }
         frappe.call({
             method: "service_pro.service_pro.doctype.estimation.estimation.get_dimensions",
             args:{},
@@ -14,6 +22,7 @@ frappe.ui.form.on('Estimation', {
             }
         })
 	},
+
     // refresh: function () {
 	 //    frappe.db.get_list('Production', {
     //             fields: ["*"],

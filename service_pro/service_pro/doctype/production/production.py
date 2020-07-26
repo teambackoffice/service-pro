@@ -7,6 +7,13 @@ import frappe
 from frappe.model.document import Document
 
 class Production(Document):
+	def validate(self):
+		if self.type == "Assemble":
+			self.series = "SK-"
+		elif self.type == "Disassemble":
+			self.series = "SK-D-"
+		elif self.type == "Service":
+			self.series = "HA-"
 	def on_submit(self):
 		if self.type != "Service":
 			doc_se = {
@@ -34,7 +41,7 @@ class Production(Document):
 		for item in self.raw_material:
 			items.append({
 				'item_code': item.item_code,
-				's_warehouse': self.raw_material_warehouse,
+				's_warehouse': item.warehouse,
 				'qty': item.qty,
 				'uom': "Nos",
 				'basic_rate': item.rate,

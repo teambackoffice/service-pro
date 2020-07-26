@@ -1,10 +1,12 @@
 {
  "actions": [],
+ "autoname": "format:{series}{YYYY}-{#####}",
  "creation": "2020-07-22 02:33:01.390600",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "series",
   "status",
   "customer",
   "customer_name",
@@ -73,7 +75,8 @@
    "fieldname": "type",
    "fieldtype": "Select",
    "label": "Type",
-   "options": "\nAssemble\nDisassemble\nService"
+   "options": "\nAssemble\nDisassemble\nService",
+   "reqd": 1
   },
   {
    "fieldname": "section_break_7",
@@ -93,7 +96,8 @@
    "fieldname": "raw_material_warehouse",
    "fieldtype": "Link",
    "label": "Raw Material Warehouse",
-   "options": "Warehouse"
+   "options": "Warehouse",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_11",
@@ -213,18 +217,27 @@
    "fieldname": "cost_center",
    "fieldtype": "Link",
    "label": "Cost Center",
-   "options": "Cost Center"
+   "options": "Cost Center",
+   "reqd": 1
   },
   {
    "fieldname": "income_account",
    "fieldtype": "Link",
    "label": "Income Account",
-   "options": "Account"
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Series",
+   "options": "SK-\nSK-D-\nHA-"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-25 13:05:14.985476",
+ "modified": "2020-07-26 09:28:08.134183",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

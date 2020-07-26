@@ -208,8 +208,10 @@
   {
    "fieldname": "customer",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Customer",
-   "options": "Customer"
+   "options": "Customer",
+   "reqd": 1
   },
   {
    "fieldname": "customer_name",
@@ -240,7 +242,9 @@
    "default": "Today",
    "fieldname": "posting_date",
    "fieldtype": "Date",
-   "label": "Posting Date"
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "reqd": 1
   },
   {
    "fieldname": "cso_number",
@@ -264,20 +268,24 @@
    "options": "Item"
   },
   {
+   "default": "0",
    "fieldname": "rate",
    "fieldtype": "Currency",
    "label": "Rate"
   },
   {
+   "default": "0",
    "fieldname": "amount",
    "fieldtype": "Currency",
-   "label": "Amount"
+   "label": "Amount",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_17",
    "fieldtype": "Column Break"
   },
   {
+   "default": "1",
    "fieldname": "qty",
    "fieldtype": "Float",
    "label": "Qty"
@@ -1188,7 +1196,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-22 17:35:44.998299",
+ "modified": "2020-07-26 04:20:06.151022",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inspection",
@@ -1209,7 +1217,6 @@
    "write": 1
   }
  ],
- "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "track_changes": 1

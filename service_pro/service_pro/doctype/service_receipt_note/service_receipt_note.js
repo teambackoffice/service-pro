@@ -2,7 +2,19 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Service Receipt Note', {
+
 	refresh: function(frm) {
+
+	    frm.set_query("contact_person", function(){
+            if(frm.doc.customer) {
+                return {
+                    filters: {
+                        link_doctype: "Customer",
+                        link_name: frm.doc.customer
+                    }
+                };
+           }
+        });
         if(cur_frm.doc.docstatus){
             frappe.db.get_list('Inspection', {
                 fields: ["*"],
@@ -71,7 +83,44 @@ frappe.ui.form.on('Service Receipt Note', {
 
 
         }
-	}
+	},
+    customer: function () {
+	    if(cur_frm.doc.customer){
+	         frappe.db.get_doc("Customer", cur_frm.doc.customer)
+            .then(doc => {
+                cur_frm.doc.customer_name = doc.customer_name
+                cur_frm.refresh_field("customer_name")
+            })
+        }
+
+    },
+    contact_person: function () {
+	    if(cur_frm.doc.contact_person){
+	         frappe.db.get_doc("Contact", cur_frm.doc.contact_person)
+                .then(doc => {
+                    console.log(doc)
+                    for(var x=0;x<doc.phone_nos.length;x+=1){
+                        if(doc.phone_nos[x].is_primary_phone){
+                            cur_frm.doc.contact_number = doc.phone_nos[x].phone
+                            cur_frm.refresh_field("contact_number")
+                        }
+                    }
+                })
+        }
+
+    },
+    sales_man: function () {
+	    if(cur_frm.doc.sales_man){
+	         frappe.db.get_doc("Employee", cur_frm.doc.sales_man)
+                .then(doc => {
+
+                        cur_frm.doc.sales_man_name = doc.employee_name
+                        cur_frm.refresh_field("sales_man_name")
+
+                })
+        }
+
+    }
 });
 
 function submit_inspections(frm, cur_frm) {

@@ -9,7 +9,6 @@ from erpnext.stock.utils import get_stock_balance
 from frappe.model.mapper import get_mapped_doc
 class ServiceReceiptNote(Document):
 	def on_submit(self):
-
 		for i in self.materials:
 			item = frappe.get_doc("Item", i.materials)
 			doc = {
@@ -118,21 +117,10 @@ def make_quotation(source_name, target_doc=None, skip_item_mapping=False):
 		"field_map": {
 			"materials": "item_code",
 			"qty": "qty",
-		}
+		},
+
 	}
 
 	target_doc = get_mapped_doc("Service Receipt Note", source_name, mapper, target_doc)
 
 	return target_doc
-
-
-""" run ni again myms SELECT 
- 		I.id, 
- 		I.description, 
- 		SUM(DD.quantity),
- 		SUM(IR.quantity)
- FROM items AS I 
- INNER JOIN users AS U ON U.office =  'DDOPH-Montevista'
- INNER JOIN delivery_details AS DD ON DD.user_id = U.id and DD.items_id = I.id
- INNER JOIN item_release AS IR ON IR.item_id = I.id and IR.delivery_id = DD.id
-  GROUP BY I.id LIMIT 0,25"""

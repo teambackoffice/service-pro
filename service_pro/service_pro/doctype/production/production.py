@@ -35,7 +35,41 @@ class Production(Document):
 			"packed_items": self.get_si_packed_items()
 		}
 		frappe.get_doc(doc_si).insert(ignore_permissions=1)
+	def generate_jv(self):
+		doc_jv = {
+			"doctype": "Journal Entry",
+			"voucher_type": "Journal Entry",
+			"posting_date": self.posting_date,
+			"accounts": self.jv_accounts()
+		}
 
+		frappe.get_doc(doc_jv).insert(ignore_permissions=1)
+
+	def jv_accounts(self):
+		accounts = []
+		amount = 0
+		for item in self.advance_payment:
+			amount += item.amount
+			accounts.append({
+				'account': item.expense_account,
+				'debit_in_account_currency': item.amount,
+				'credit_in_account_currency': 0,
+				'party_type': "Customer",
+				'party':self.customer,
+				'is_advance': "Yes",
+			})
+		debit_account = frappe.db.sql(""" SELECT * FROM `tabAccount` WHERE name like %s """, "%Debtors%",as_dict=1  )
+		if len(debit_account) > 0:
+
+			accounts.append({
+				'account': debit_account[0].name,
+				'debit_in_account_currency': 0,
+				'credit_in_account_currency': amount,
+				'party_type': "Customer",
+				'party': self.customer,
+			})
+		print(accounts)
+		return accounts
 	def get_se_items(self):
 		items = []
 

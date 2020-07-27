@@ -89,6 +89,7 @@ doctype_js = {
 doc_events = {
 	"Sales Invoice": {
 		"on_submit": "service_pro.doc_events.sales_invoice.on_submit_si",
+		"on_cancel": "service_pro.doc_events.sales_invoice.on_cancel_si",
 	}
 }
 

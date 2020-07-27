@@ -82,11 +82,10 @@ frappe.ui.form.on('Production', {
         }
 
         var status = frappe.meta.get_docfield("Scoop of Work", "status", cur_frm.doc.name);
-        if(cur_frm.doc.status === "Completed"){
-            status.read_only = 1
-        } else {
-            status.read_only = 0
-        }
+        status.read_only = (cur_frm.doc.status === "Completed")
+        frm.set_df_property('rate', 'read_only', cur_frm.doc.status === "Completed");
+        frm.set_df_property('qty', 'read_only', cur_frm.doc.status === "Completed");
+
     },
     validate: function (frm) {
         frm.set_df_property('type', 'read_only', 1);
@@ -193,7 +192,6 @@ frappe.ui.form.on('Production', {
             cur_frm.refresh_field("qty")
             cur_frm.refresh_field("rate")
             cur_frm.refresh_field("amount")
-            set_property_finished_item_fields(frm,cur_frm)
 
         }
 	},
@@ -236,14 +234,7 @@ function get_items_from_estimation(frm,cur_frm) {
         cur_frm.refresh_field("rate")
         cur_frm.refresh_field("amount")
 
-        set_property_finished_item_fields(frm,cur_frm)
     })
-}
-function set_property_finished_item_fields(frm, cur_frm) {
-  frm.set_df_property('item_code', 'read_only', cur_frm.doc.item_code !== undefined);
-  frm.set_df_property('qty', 'read_only', cur_frm.doc.qty > 0);
-  frm.set_df_property('rate', 'read_only', cur_frm.doc.rate > 0);
-
 }
 function set_scoop_of_work(doc, frm) {
     cur_frm.clear_table("scoop_of_work")
@@ -343,5 +334,15 @@ cur_frm.cscript.rate = function (frm,cdt, cdn) {
     cur_frm.doc.amount = cur_frm.doc.qty * cur_frm.doc.rate
         cur_frm.refresh_field("amount")
 
+}
+
+cur_frm.cscript.advance = function (frm,cdt, cdn) {
+    cur_frm.call({
+        doc: cur_frm.doc,
+        method: 'generate_jv',
+        freeze: true,
+        freeze_message: "Generating Journal Entry ...",
+        callback: () => {}
+    })
 }
 

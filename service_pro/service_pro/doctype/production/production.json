@@ -14,14 +14,9 @@
   "address_name",
   "column_break_4",
   "posting_date",
+  "delivery_date",
   "type",
   "estimation",
-  "section_break_7",
-  "finished_good_warehouse",
-  "column_break_9",
-  "raw_material_warehouse",
-  "column_break_11",
-  "delivery_date",
   "finished_item_section",
   "item_code_prod",
   "qty",
@@ -80,31 +75,6 @@
    "label": "Type",
    "options": "\nAssemble\nDisassemble\nService",
    "reqd": 1
-  },
-  {
-   "fieldname": "section_break_7",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "finished_good_warehouse",
-   "fieldtype": "Link",
-   "label": "Finished Good Warehouse",
-   "options": "Warehouse"
-  },
-  {
-   "fieldname": "column_break_9",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "raw_material_warehouse",
-   "fieldtype": "Link",
-   "label": "Raw Material Warehouse",
-   "options": "Warehouse",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_11",
-   "fieldtype": "Column Break"
   },
   {
    "default": "Today",
@@ -257,7 +227,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-27 05:40:51.918156",
+ "modified": "2020-07-27 10:48:39.830115",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

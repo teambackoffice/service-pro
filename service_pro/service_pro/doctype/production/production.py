@@ -25,7 +25,7 @@ class Production(Document):
 			}
 			frappe.get_doc(doc_se).insert(ignore_permissions=1).submit()
 
-
+	def generate_si(self):
 		doc_si = {
 			"doctype": "Sales Invoice",
 			"customer": self.customer,
@@ -101,6 +101,23 @@ def get_rate(item_code, warehouse):
 		print(get_stock_balance(item_code, warehouse))
 
 	return item_price[0].price_list_rate if len(item_price) > 0 else 0, get_stock_balance(item_code,warehouse) if warehouse else 0
+
+@frappe.whitelist()
+def get_address(customer):
+	address = frappe.db.sql(""" 
+ 						SELECT
+ 						 	A.name,
+ 							A.address_line1, 
+							A.city, 
+							A.county ,
+							A.state,
+							A.country,
+							A.pincode
+						FROM `tabAddress` AS A 
+ 						INNER JOIN `tabDynamic Link` AS DL 
+ 						ON DL.link_doctype=%s and DL.link_name=%s and DL.parent = A.name
+ 						WHERE A.is_primary_address=1  """,("Customer", customer), as_dict=1)
+	return address[0] if len(address) > 0 else {}
 # SELECT
 #  		I.id,
 #  		I.description,

@@ -57,8 +57,10 @@ cur_frm.cscript.item_code = function (frm,cdt, cdn) {
                 d.amount_raw_material = r.message[0] * d.qty_raw_material
                 d.available_qty = r.message[1]
                 cur_frm.refresh_field("raw_material")
+                compute_raw_material_total(cur_frm)
             }
         })
+
     }
 
 }
@@ -84,4 +86,61 @@ cur_frm.cscript.rate_raw_material = function (frm,cdt, cdn) {
         cur_frm.refresh_field("raw_material")
     }
 
+}
+function compute_scoop_of_work_total(cur_frm) {
+    var total = 0
+    for(var x=0;x<cur_frm.doc.scoop_of_work.length;x += 1){
+        total += cur_frm.doc.scoop_of_work[x].cost
+    }
+    cur_frm.doc.scoop_of_work_total = total
+    cur_frm.refresh_field("scoop_of_work_total")
+}
+function compute_raw_material_total(cur_frm) {
+    var total = 0
+    for(var x=0;x<cur_frm.doc.raw_material.length;x += 1){
+        total += cur_frm.doc.raw_material[x].amount_raw_material
+    }
+    cur_frm.doc.raw_material_total = total
+    cur_frm.refresh_field("raw_material_total")
+}
+cur_frm.cscript.cost = function (frm,cdt,cdn) {
+    compute_scoop_of_work_total(cur_frm)
+}
+cur_frm.cscript.scoop_of_work_remove = function (frm,cdt,cdn) {
+    compute_scoop_of_work_total(cur_frm)
+}
+
+cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
+    var d = locals[cdt][cdn]
+    if(d.qty_raw_material && d.qty_raw_material <= d.available_qty){
+        d.amount_raw_material = d.rate_raw_material * d.qty_raw_material
+        cur_frm.refresh_field("raw_material")
+    } else {
+        var qty = d.qty_raw_material
+        d.qty_raw_material = d.available_qty
+        d.amount_raw_material = d.rate_raw_material * d.available_qty
+        cur_frm.refresh_field("raw_material")
+        frappe.throw("Not enough stock. Can't change to " + qty.toString())
+
+    }
+    compute_raw_material_total(cur_frm)
+}
+cur_frm.cscript.rate_raw_material = function (frm,cdt,cdn) {
+   var d = locals[cdt][cdn]
+    if(d.rate_raw_material){
+        d.amount_raw_material = d.rate_raw_material * d.qty_raw_material
+        cur_frm.refresh_field("raw_material")
+    }
+    compute_raw_material_total(cur_frm)
+}
+cur_frm.cscript.raw_material_remove = function (frm,cdt,cdn) {
+    compute_raw_material_total(cur_frm)
+}
+cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
+    var d = locals[cdt][cdn]
+    frappe.db.get_single_value('Production Settings', 'raw_material_warehouse')
+        .then(warehouse => {
+            d.warehouse = warehouse
+            cur_frm.refresh_field("raw_material")
+        })
 }

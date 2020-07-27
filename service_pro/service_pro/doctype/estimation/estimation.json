@@ -32,8 +32,10 @@
   "amount",
   "scoop_of_works_section",
   "scoop_of_work",
+  "scoop_of_work_total",
   "raw_material_section",
   "raw_material",
+  "raw_material_total",
   "amended_from"
  ],
  "fields": [
@@ -193,11 +195,23 @@
    "fieldtype": "Link",
    "label": "Inspection",
    "options": "Inspection"
+  },
+  {
+   "default": "0",
+   "fieldname": "scoop_of_work_total",
+   "fieldtype": "Currency",
+   "label": "Total"
+  },
+  {
+   "default": "0",
+   "fieldname": "raw_material_total",
+   "fieldtype": "Currency",
+   "label": "Total"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-25 15:06:35.413735",
+ "modified": "2020-07-27 10:16:05.655290",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

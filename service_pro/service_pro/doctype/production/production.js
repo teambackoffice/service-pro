@@ -25,14 +25,16 @@ cur_frm.cscript.rate_raw_material = function (frm,cdt,cdn) {
 }
 cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
     var d = locals[cdt][cdn]
-    d.warehouse = cur_frm.doc.raw_material_warehouse
-    cur_frm.refresh_field("raw_material")
-}
-cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
-    compute_raw_material_total(cur_frm)
-}
-cur_frm.cscript.rate_raw_material = function (frm,cdt,cdn) {
-    compute_raw_material_total(cur_frm)
+   frappe.db.get_single_value('Production Settings', 'raw_material_warehouse')
+        .then(warehouse => {
+            d.warehouse = warehouse
+            cur_frm.refresh_field("raw_material")
+        })
+    frappe.db.get_single_value('Production Settings', 'raw_material_cost_center')
+        .then(cost_center => {
+            d.cost_center = cost_center
+            cur_frm.refresh_field("raw_material")
+        })
 }
 cur_frm.cscript.raw_material_remove = function (frm,cdt,cdn) {
     compute_raw_material_total(cur_frm)
@@ -57,22 +59,38 @@ function compute_raw_material_total(cur_frm) {
         total += cur_frm.doc.raw_material[x].amount_raw_material
     }
     cur_frm.doc.raw_material_total = total
-    cur_frm.refresh_field("scoop_of_work_total")
+    cur_frm.refresh_field("raw_material_total")
 }
 frappe.ui.form.on('Production', {
     onload: function () {
+        if(cur_frm.is_new()){
+             frappe.db.get_single_value('Production Settings', 'finish_good_warehouse')
+            .then(warehouse => {
+                cur_frm.doc.warehouse = warehouse
+                cur_frm.refresh_field("warehouse")
+            })
+            frappe.db.get_single_value('Production Settings', 'finish_good_cost_center')
+            .then(cost_center => {
+                cur_frm.doc.cost_center = cost_center
+                cur_frm.refresh_field("cost_center")
+            })
+            frappe.db.get_single_value('Production Settings', 'income_account')
+            .then(income_account => {
+                cur_frm.doc.income_account = income_account
+                cur_frm.refresh_field("income_account")
+            })
+        }
+
         var status = frappe.meta.get_docfield("Scoop of Work", "status", cur_frm.doc.name);
-console.log(cur_frm.doc.status)
         if(cur_frm.doc.status === "Completed"){
-            console.log("NAA MAAAN")
             status.read_only = 1
         } else {
-            console.log("DIRI LUGAR")
             status.read_only = 0
         }
     },
     validate: function (frm) {
         frm.set_df_property('type', 'read_only', 1);
+
     },
 	refresh: function() {
 	    cur_frm.set_query('income_account', () => {
@@ -82,6 +100,25 @@ console.log(cur_frm.doc.status)
                 }
             }
         })
+        var generate_button = true
+
+        for(var x=0;x<cur_frm.doc.scoop_of_work.length;x += 1){
+            if(cur_frm.doc.scoop_of_work[x].status === "In Progress"){
+                generate_button = false
+            }
+        }
+
+        if(generate_button && cur_frm.doc.status === "In Progress"){
+            cur_frm.add_custom_button(__("Generate Sales Invoice"), () => {
+                 cur_frm.call({
+                    doc: cur_frm.doc,
+                    method: 'generate_si',
+                    freeze: true,
+                    freeze_message: "Generating Sales Invoice ...",
+                    callback: () => {}
+                })
+            });
+        }
 	},
     customer: function() {
 	    if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
@@ -94,6 +131,27 @@ console.log(cur_frm.doc.status)
                 console.log("NAA MAN")
                 cur_frm.doc.customer_name = doc.customer_name
                 cur_frm.refresh_field("customer_name")
+            })
+
+            frappe.call({
+                method: "service_pro.service_pro.doctype.production.production.get_address",
+                args:{
+                    customer: cur_frm.doc.customer
+                },
+                callback: function (r) {
+                    if(r.message){
+                        cur_frm.doc.address = r.message.name
+                        cur_frm.doc.address_name = r.message.address_line1 + "\n" +
+                            r.message.city + "\n" +
+                            r.message.county + "\n" +
+                            r.message.country + "\n" +
+                            r.message.state + "\n" +
+                            r.message.pincode
+                        cur_frm.refresh_field("address")
+                        cur_frm.refresh_field("address_name")
+                    }
+
+                }
             })
         }
 	},
@@ -139,17 +197,16 @@ console.log(cur_frm.doc.status)
 
         }
 	},
-    on_submit: function(frm) {
-        for(var x=0;x < cur_frm.doc.scoop_of_work.length;x += 1){
-            cur_frm.doc.scoop_of_work[x].status = "In Progress"
-            cur_frm.refresh_field("scoop_of_work")
-        }
-	},
     address: function(frm) {
          frappe.db.get_doc("Address", cur_frm.doc.address)
             .then(doc => {
-                cur_frm.doc.address_name = doc.address_line1 + "\n" + doc.city + "\n" + doc.country + "\n" + doc.state + "\n" + doc.pincode
-                cur_frm.refresh_field("address_name")
+                cur_frm.doc.address_name =  cur_frm.doc.address_name = r.message.address_line1 + "\n" +
+                            r.message.city + "\n" +
+                            r.message.county + "\n" +
+                            r.message.country + "\n" +
+                            r.message.state + "\n" +
+                            r.message.pincode
+             cur_frm.refresh_field("address_name")
             })
 	},
 
@@ -287,3 +344,4 @@ cur_frm.cscript.rate = function (frm,cdt, cdn) {
         cur_frm.refresh_field("amount")
 
 }
+

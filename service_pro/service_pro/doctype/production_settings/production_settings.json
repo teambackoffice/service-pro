@@ -1,0 +1,81 @@
+{
+ "actions": [],
+ "creation": "2020-07-27 10:42:37.894084",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "finished_good_defaults_section",
+  "finish_good_warehouse",
+  "income_account",
+  "finish_good_cost_center",
+  "raw_material_defaults_section",
+  "raw_material_warehouse",
+  "raw_material_cost_center"
+ ],
+ "fields": [
+  {
+   "fieldname": "finished_good_defaults_section",
+   "fieldtype": "Section Break",
+   "label": "Finished Good Defaults"
+  },
+  {
+   "fieldname": "finish_good_warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "income_account",
+   "fieldtype": "Link",
+   "label": "Income Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "finish_good_cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "raw_material_defaults_section",
+   "fieldtype": "Section Break",
+   "label": "Raw Material Defaults"
+  },
+  {
+   "fieldname": "raw_material_warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "raw_material_cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2020-07-27 10:54:46.893880",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Production Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

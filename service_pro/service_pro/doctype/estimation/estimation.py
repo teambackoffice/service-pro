@@ -5,6 +5,7 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
+from erpnext.stock.utils import get_stock_balance
 
 class Estimation(Document):
 	pass
@@ -28,3 +29,11 @@ def get_dimensions():
 		t_length.append(t.dimension)
 
 	return rod_dia, r_length, tube_size, t_length
+
+@frappe.whitelist()
+def get_rate(item_code, warehouse):
+	item_price = frappe.db.sql(""" SELECT * FROM `tabItem Price` WHERE item_code=%s and selling=1 ORDER BY valid_from DESC LIMIT 1""", item_code,as_dict=1)
+	if warehouse:
+		print(get_stock_balance(item_code,warehouse))
+
+	return item_price[0].price_list_rate if len(item_price) > 0 else 0,get_stock_balance(item_code,warehouse) if warehouse else 0

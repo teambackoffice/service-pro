@@ -11,6 +11,7 @@
   "customer",
   "customer_name",
   "address",
+  "address_name",
   "column_break_4",
   "posting_date",
   "type",
@@ -22,7 +23,7 @@
   "column_break_11",
   "delivery_date",
   "finished_item_section",
-  "item_code",
+  "item_code_prod",
   "qty",
   "rate",
   "cost_center",
@@ -33,8 +34,10 @@
   "income_account",
   "section_break_21",
   "scoop_of_work",
+  "scoop_of_work_total",
   "section_break_24",
   "raw_material",
+  "raw_material_total",
   "section_break_26",
   "advance_payment",
   "advance",
@@ -115,12 +118,6 @@
    "label": "Finished Item"
   },
   {
-   "fieldname": "item_code",
-   "fieldtype": "Link",
-   "label": "Item Code",
-   "options": "Item"
-  },
-  {
    "fieldname": "warehouse",
    "fieldtype": "Link",
    "label": "Warehouse",
@@ -137,7 +134,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "0",
+   "default": "1",
    "fieldname": "qty",
    "fieldtype": "Float",
    "label": "Qty"
@@ -152,7 +149,8 @@
    "default": "0",
    "fieldname": "amount",
    "fieldtype": "Currency",
-   "label": "Amount"
+   "label": "Amount",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_21",
@@ -230,14 +228,36 @@
   {
    "fieldname": "series",
    "fieldtype": "Select",
-   "hidden": 1,
-   "label": "Series",
-   "options": "SK-\nSK-D-\nHA-"
+   "label": "Series"
+  },
+  {
+   "default": "0",
+   "fieldname": "raw_material_total",
+   "fieldtype": "Currency",
+   "label": "Total"
+  },
+  {
+   "default": "0",
+   "fieldname": "scoop_of_work_total",
+   "fieldtype": "Currency",
+   "label": "Total"
+  },
+  {
+   "fieldname": "address_name",
+   "fieldtype": "Small Text",
+   "label": "Address Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "item_code_prod",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-26 09:28:08.134183",
+ "modified": "2020-07-27 05:40:51.918156",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

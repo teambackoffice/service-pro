@@ -86,11 +86,11 @@ doctype_js = {
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"Quotation": {
-# 		"onload": "service_pro.doc_events.quotation.onload_quotation",
-# 	}
-# }
+doc_events = {
+	"Sales Invoice": {
+		"on_submit": "service_pro.doc_events.sales_invoice.on_submit_si",
+	}
+}
 
 # Scheduled Tasks
 # ---------------

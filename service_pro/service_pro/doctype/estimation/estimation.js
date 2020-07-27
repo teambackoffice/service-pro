@@ -22,30 +22,66 @@ frappe.ui.form.on('Estimation', {
             }
         })
 	},
-
-    // refresh: function () {
-	 //    frappe.db.get_list('Production', {
-    //             fields: ["*"],
-    //             filters: {
-    //                 receipt_note: cur_frm.docname,
-    //                 docstatus: 0
-    //             }
-    //         }).then(records => {
-    //             if(records.length > 0){
-    //
-    //                 frm.add_custom_button(__("Submit Estimation/s"), () => {
-    //                     submit_estimations(frm, cur_frm)
-    //
-    //                 }, __("Submit"))
-    //             }
-    //         })
-    //
-    // }
 });
- // function create_quotation(frm, cur_frm) {
- //
- //            frappe.model.open_mapped_doc({
- //                method: "service_pro.service_pro.doctype.estimation.estimation.make_production",
- //                frm: me.frm
- //            })
- //        }
+
+cur_frm.cscript.warehouse = function (frm,cdt, cdn) {
+    var d = locals[cdt][cdn]
+    if(d.item_code && d.warehouse){
+        frappe.call({
+            method: "service_pro.service_pro.doctype.estimation.estimation.get_rate",
+            args: {
+                item_code: d.item_code,
+                warehouse: d.warehouse ? d.warehouse : ""
+            },
+            callback: function (r) {
+                d.rate_raw_material = r.message[0]
+                d.amount_raw_material = r.message[0] * d.qty_raw_material
+                d.available_qty = r.message[1]
+                cur_frm.refresh_field("raw_material")
+            }
+        })
+    }
+
+}
+cur_frm.cscript.item_code = function (frm,cdt, cdn) {
+    var d = locals[cdt][cdn]
+    if(d.item_code){
+        frappe.call({
+            method: "service_pro.service_pro.doctype.estimation.estimation.get_rate",
+            args: {
+                item_code: d.item_code,
+                warehouse: d.warehouse ? d.warehouse : ""
+            },
+            callback: function (r) {
+                d.rate_raw_material = r.message[0]
+                d.amount_raw_material = r.message[0] * d.qty_raw_material
+                d.available_qty = r.message[1]
+                cur_frm.refresh_field("raw_material")
+            }
+        })
+    }
+
+}
+cur_frm.cscript.qty_raw_material = function (frm,cdt, cdn) {
+    var d = locals[cdt][cdn]
+    if(d.qty_raw_material && d.qty_raw_material <= d.available_qty){
+        d.amount_raw_material = d.rate_raw_material * d.qty_raw_material
+        cur_frm.refresh_field("raw_material")
+    } else {
+        var qty = d.qty_raw_material
+        d.qty_raw_material = d.available_qty
+        d.amount_raw_material = d.rate_raw_material * d.available_qty
+        cur_frm.refresh_field("raw_material")
+        frappe.throw("Not enough stock. Can't change to " + qty.toString())
+
+    }
+
+}
+cur_frm.cscript.rate_raw_material = function (frm,cdt, cdn) {
+    var d = locals[cdt][cdn]
+    if(d.rate_raw_material){
+        d.amount_raw_material = d.rate_raw_material * d.qty_raw_material
+        cur_frm.refresh_field("raw_material")
+    }
+
+}

@@ -9,9 +9,9 @@
   "warehouse",
   "available_qty",
   "column_break_4",
-  "qty",
-  "rate",
-  "amount",
+  "qty_raw_material",
+  "rate_raw_material",
+  "amount_raw_material",
   "cost_center"
  ],
  "fields": [
@@ -30,6 +30,7 @@
    "options": "Warehouse"
   },
   {
+   "default": "0",
    "fieldname": "available_qty",
    "fieldtype": "Float",
    "in_list_view": 1,
@@ -40,33 +41,37 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "qty",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "default": "1",
+   "fieldname": "qty_raw_material",
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Qty"
   },
   {
-   "fieldname": "rate",
+   "default": "0",
+   "fieldname": "rate_raw_material",
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Rate"
   },
   {
-   "fieldname": "amount",
+   "default": "0",
+   "fieldname": "amount_raw_material",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Amount"
-  },
-  {
-   "fieldname": "cost_center",
-   "fieldtype": "Link",
-   "label": "Cost Center",
-   "options": "Cost Center"
+   "label": "Amount",
+   "read_only": 1
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2020-07-25 14:02:15.987352",
+ "modified": "2020-07-27 03:46:06.747717",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Raw Material",

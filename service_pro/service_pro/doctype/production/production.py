@@ -20,7 +20,6 @@ class Production(Document):
 			doc_se = {
 				"doctype": "Stock Entry",
 				"stock_entry_type": "Manufacture" if self.type == "Assemble" else "Repack",
-				"from_warehouse": self.raw_material_warehouse,
 				"items": self.get_se_items(),
 			}
 			frappe.get_doc(doc_se).insert(ignore_permissions=1).submit()
@@ -40,11 +39,13 @@ class Production(Document):
 			"doctype": "Journal Entry",
 			"voucher_type": "Journal Entry",
 			"posting_date": self.posting_date,
-			"accounts": self.jv_accounts()
+			"accounts": self.jv_accounts(),
+			"production": self.name
 		}
 
-		frappe.get_doc(doc_jv).insert(ignore_permissions=1)
-
+		jv = frappe.get_doc(doc_jv)
+		jv.insert(ignore_permissions=1)
+		jv.submit()
 	def jv_accounts(self):
 		accounts = []
 		amount = 0
@@ -54,19 +55,16 @@ class Production(Document):
 				'account': item.expense_account,
 				'debit_in_account_currency': item.amount,
 				'credit_in_account_currency': 0,
-				'party_type': "Customer",
-				'party':self.customer,
-				'is_advance': "Yes",
 			})
 		debit_account = frappe.db.sql(""" SELECT * FROM `tabAccount` WHERE name like %s """, "%Debtors%",as_dict=1  )
 		if len(debit_account) > 0:
-
 			accounts.append({
 				'account': debit_account[0].name,
 				'debit_in_account_currency': 0,
 				'credit_in_account_currency': amount,
 				'party_type': "Customer",
 				'party': self.customer,
+				'is_advance': "Yes",
 			})
 		print(accounts)
 		return accounts
@@ -152,6 +150,11 @@ def get_address(customer):
  						ON DL.link_doctype=%s and DL.link_name=%s and DL.parent = A.name
  						WHERE A.is_primary_address=1  """,("Customer", customer), as_dict=1)
 	return address[0] if len(address) > 0 else {}
+
+@frappe.whitelist()
+def get_jv(production):
+	jv = frappe.db.sql(""" SELECT * FROM `tabJournal Entry` WHERE production=%s """, production, as_dict=1)
+	return jv[0].name if len(jv) > 0 else ""
 # SELECT
 #  		I.id,
 #  		I.description,

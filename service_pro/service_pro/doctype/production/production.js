@@ -61,6 +61,7 @@ function compute_raw_material_total(cur_frm) {
     cur_frm.doc.raw_material_total = total
     cur_frm.refresh_field("raw_material_total")
 }
+
 frappe.ui.form.on('Production', {
     onload: function () {
         if(cur_frm.is_new()){
@@ -83,22 +84,41 @@ frappe.ui.form.on('Production', {
 
         var status = frappe.meta.get_docfield("Scoop of Work", "status", cur_frm.doc.name);
         status.read_only = (cur_frm.doc.status === "Completed")
-        frm.set_df_property('rate', 'read_only', cur_frm.doc.status === "Completed");
-        frm.set_df_property('qty', 'read_only', cur_frm.doc.status === "Completed");
+        cur_frm.set_df_property('rate', 'read_only', cur_frm.doc.status === "Completed");
+        cur_frm.set_df_property('qty', 'read_only', cur_frm.doc.status === "Completed");
+        cur_frm.set_df_property('advance_payment', 'read_only', cur_frm.doc.status === "Completed");
 
     },
     validate: function (frm) {
+
         frm.set_df_property('type', 'read_only', 1);
 
     },
 	refresh: function() {
+        frappe.call({
+            method: "service_pro.service_pro.doctype.production.production.get_jv",
+            args: {
+                production: cur_frm.doc.name
+            },
+            callback: function (r) {
+                console.log(r.message)
+                if(r.message){
+                      cur_frm.set_df_property('journal_entry', 'hidden', 0);
+                    cur_frm.set_df_property('advance', 'hidden', 1);
+                } else {
+                    cur_frm.set_df_property('journal_entry', 'hidden', 1);
+                    cur_frm.set_df_property('advance', 'hidden', 0);
+                }
+            }
+        })
 	    cur_frm.set_query('income_account', () => {
             return {
                 filters: {
                     is_group: 0,
                 }
             }
-        })
+        });
+
         var generate_button = true
 
         for(var x=0;x<cur_frm.doc.scoop_of_work.length;x += 1){
@@ -302,6 +322,7 @@ cur_frm.cscript.item_code = function (frm,cdt, cdn) {
                 d.amount_raw_material = r.message[0] * d.qty_raw_material
                 d.available_qty = r.message[1]
                 cur_frm.refresh_field("raw_material")
+                compute_raw_material_total(cur_frm)
             }
         })
     }
@@ -342,7 +363,23 @@ cur_frm.cscript.advance = function (frm,cdt, cdn) {
         method: 'generate_jv',
         freeze: true,
         freeze_message: "Generating Journal Entry ...",
-        callback: () => {}
+        callback: () => {
+            cur_frm.refresh()
+        }
     })
 }
 
+cur_frm.cscript.journal_entry = function (frm,cdt, cdn) {
+    frappe.call({
+            method: "service_pro.service_pro.doctype.production.production.get_jv",
+            args: {
+                production: cur_frm.doc.name
+            },
+            callback: function (r) {
+                console.log(r.message)
+                if(r.message){
+                     frappe.set_route("Form", "Journal Entry", r.message);
+                }
+            }
+        })
+}

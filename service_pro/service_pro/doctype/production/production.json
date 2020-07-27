@@ -35,6 +35,7 @@
   "raw_material_total",
   "section_break_26",
   "advance_payment",
+  "journal_entry",
   "advance",
   "amended_from"
  ],
@@ -150,16 +151,19 @@
    "fieldtype": "Section Break"
   },
   {
+   "depends_on": "eval: doc.docstatus == 1",
    "fieldname": "section_break_26",
    "fieldtype": "Section Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "advance_payment",
    "fieldtype": "Table",
    "label": "Advance Payment",
    "options": "Advance Payment"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "advance",
    "fieldtype": "Button",
    "label": "Advance"
@@ -198,7 +202,8 @@
   {
    "fieldname": "series",
    "fieldtype": "Select",
-   "label": "Series"
+   "label": "Series",
+   "reqd": 1
   },
   {
    "default": "0",
@@ -223,17 +228,25 @@
    "fieldtype": "Link",
    "label": "Item Code",
    "options": "Item"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "journal_entry",
+   "fieldtype": "Button",
+   "label": "Journal Entry",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-27 10:48:39.830115",
+ "modified": "2020-07-28 02:17:29.897600",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",
  "owner": "Administrator",
  "permissions": [
   {
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -243,6 +256,7 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],

@@ -155,6 +155,7 @@ def get_address(customer):
 def get_jv(production):
 	jv = frappe.db.sql(""" SELECT * FROM `tabJournal Entry` WHERE production=%s """, production, as_dict=1)
 	return jv[0].name if len(jv) > 0 else ""
+
 # SELECT
 #  		I.id,
 #  		I.description,

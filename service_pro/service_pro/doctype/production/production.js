@@ -63,8 +63,13 @@ function compute_raw_material_total(cur_frm) {
 }
 
 frappe.ui.form.on('Production', {
-    onload: function () {
+    onload: function (frm) {
+
         if(cur_frm.is_new()){
+            if(cur_frm.doc.estimation){
+                cur_frm.doc.type = "Service"
+                cur_frm.refresh_field("type")
+            }
              frappe.db.get_single_value('Production Settings', 'finish_good_warehouse')
             .then(warehouse => {
                 cur_frm.doc.warehouse = warehouse
@@ -97,12 +102,12 @@ frappe.ui.form.on('Production', {
 	refresh: function() {
 
         cur_frm.set_query('expense_account',"advance_payment", () => {
-        return {
-            filters: [
-					["account_type", "in", ["Bank","Cash"]]
-				]
-        }
-    })
+            return {
+                filters: [
+                        ["account_type", "in", ["Bank","Cash"]]
+                    ]
+            }
+        })
 
         frappe.call({
             method: "service_pro.service_pro.doctype.production.production.get_jv",
@@ -266,7 +271,12 @@ function get_items_from_estimation(frm,cur_frm) {
         cur_frm.refresh_field("qty")
         cur_frm.refresh_field("rate")
         cur_frm.refresh_field("amount")
+        frappe.db.get_doc('Item', doc.item_code)
+            .then(doc => {
+                cur_frm.doc.umo = doc.stock_uom
+                cur_frm.refresh_field("umo")
 
+            })
     })
 }
 function set_scoop_of_work(doc, frm) {

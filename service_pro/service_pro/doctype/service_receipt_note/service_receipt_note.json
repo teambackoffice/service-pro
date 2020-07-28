@@ -14,8 +14,9 @@
   "contact_person",
   "contact_number",
   "column_break_8",
-  "customer_ref",
   "estimated_date",
+  "customer_contact_number",
+  "customer_ref",
   "sales_man",
   "sales_man_name",
   "section_break_12",
@@ -111,11 +112,16 @@
    "fieldtype": "Data",
    "label": "Sales Man Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "customer_contact_number",
+   "fieldtype": "Data",
+   "label": "Customer Contact Number"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-26 09:15:09.013288",
+ "modified": "2020-07-28 11:12:02.562604",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Receipt Note",

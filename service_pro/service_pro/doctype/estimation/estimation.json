@@ -157,7 +157,8 @@
    "default": "0",
    "fieldname": "qty",
    "fieldtype": "Float",
-   "label": "Qty"
+   "label": "Qty",
+   "read_only": 1
   },
   {
    "default": "0",
@@ -218,7 +219,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-28 10:27:06.238065",
+ "modified": "2020-07-28 10:39:44.567371",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

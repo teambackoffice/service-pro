@@ -95,6 +95,15 @@ frappe.ui.form.on('Production', {
 
     },
 	refresh: function() {
+
+        cur_frm.set_query('expense_account',"advance_payment", () => {
+        return {
+            filters: [
+					["account_type", "in", ["Bank","Cash"]]
+				]
+        }
+    })
+
         frappe.call({
             method: "service_pro.service_pro.doctype.production.production.get_jv",
             args: {
@@ -103,9 +112,13 @@ frappe.ui.form.on('Production', {
             callback: function (r) {
                 console.log(r.message)
                 if(r.message){
+                            cur_frm.set_df_property('advance_payment', 'read_only', 1);
+
                       cur_frm.set_df_property('journal_entry', 'hidden', 0);
                     cur_frm.set_df_property('advance', 'hidden', 1);
                 } else {
+                                                cur_frm.set_df_property('advance_payment', 'read_only', 0);
+
                     cur_frm.set_df_property('journal_entry', 'hidden', 1);
                     cur_frm.set_df_property('advance', 'hidden', 0);
                 }
@@ -249,7 +262,7 @@ function get_items_from_estimation(frm,cur_frm) {
         cur_frm.doc.qty = doc.qty
         cur_frm.doc.rate = doc.rate
         cur_frm.doc.amount = doc.qty * doc.rate
-        cur_frm.refresh_field("item_code")
+        cur_frm.refresh_field("item_code_prod")
         cur_frm.refresh_field("qty")
         cur_frm.refresh_field("rate")
         cur_frm.refresh_field("amount")
@@ -353,7 +366,7 @@ cur_frm.cscript.qty = function (frm,cdt, cdn) {
 }
 cur_frm.cscript.rate = function (frm,cdt, cdn) {
     cur_frm.doc.amount = cur_frm.doc.qty * cur_frm.doc.rate
-        cur_frm.refresh_field("amount")
+    cur_frm.refresh_field("amount")
 
 }
 

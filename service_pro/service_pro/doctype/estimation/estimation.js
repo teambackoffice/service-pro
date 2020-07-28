@@ -94,6 +94,7 @@ function compute_scoop_of_work_total(cur_frm) {
     }
     cur_frm.doc.scoop_of_work_total = total
     cur_frm.refresh_field("scoop_of_work_total")
+    set_rate_and_amount(cur_frm)
 }
 function compute_raw_material_total(cur_frm) {
     var total = 0
@@ -102,6 +103,7 @@ function compute_raw_material_total(cur_frm) {
     }
     cur_frm.doc.raw_material_total = total
     cur_frm.refresh_field("raw_material_total")
+    set_rate_and_amount(cur_frm)
 }
 cur_frm.cscript.cost = function (frm,cdt,cdn) {
     compute_scoop_of_work_total(cur_frm)
@@ -143,4 +145,11 @@ cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
             d.warehouse = warehouse
             cur_frm.refresh_field("raw_material")
         })
+}
+
+function set_rate_and_amount(cur_frm) {
+    cur_frm.doc.rate = cur_frm.doc.raw_material_total + cur_frm.doc.scoop_of_work_total
+    cur_frm.doc.amount = (cur_frm.doc.raw_material_total + cur_frm.doc.scoop_of_work_total) * cur_frm.doc.qty
+    cur_frm.refresh_field("amount")
+    cur_frm.refresh_field("rate")
 }

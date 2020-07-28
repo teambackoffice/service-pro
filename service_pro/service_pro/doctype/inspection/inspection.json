@@ -20,10 +20,8 @@
   "service_receipt_note",
   "section_break_13",
   "item_code",
-  "rate",
   "column_break_17",
   "qty",
-  "amount",
   "sizes_section",
   "piston_rod_size",
   "piston_size_road_condition",
@@ -266,19 +264,6 @@
    "fieldtype": "Link",
    "label": "Item Code",
    "options": "Item"
-  },
-  {
-   "default": "0",
-   "fieldname": "rate",
-   "fieldtype": "Currency",
-   "label": "Rate"
-  },
-  {
-   "default": "0",
-   "fieldname": "amount",
-   "fieldtype": "Currency",
-   "label": "Amount",
-   "read_only": 1
   },
   {
    "fieldname": "column_break_17",
@@ -1196,7 +1181,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-26 04:20:06.151022",
+ "modified": "2020-07-28 10:34:04.502842",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inspection",

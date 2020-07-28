@@ -209,13 +209,15 @@
    "default": "0",
    "fieldname": "raw_material_total",
    "fieldtype": "Currency",
-   "label": "Total"
+   "label": "Total",
+   "read_only": 1
   },
   {
    "default": "0",
    "fieldname": "scoop_of_work_total",
    "fieldtype": "Currency",
-   "label": "Total"
+   "label": "Total",
+   "read_only": 1
   },
   {
    "fieldname": "address_name",
@@ -239,7 +241,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-28 02:17:29.897600",
+ "modified": "2020-07-28 10:20:34.036135",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

@@ -47,6 +47,7 @@
    "options": "Cost Center"
   },
   {
+   "allow_on_submit": 1,
    "default": "1",
    "fieldname": "qty_raw_material",
    "fieldtype": "Float",
@@ -54,6 +55,7 @@
    "label": "Qty"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "rate_raw_material",
    "fieldtype": "Currency",
@@ -61,6 +63,7 @@
    "label": "Rate"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "amount_raw_material",
    "fieldtype": "Currency",
@@ -71,7 +74,7 @@
  ],
  "istable": 1,
  "links": [],
- "modified": "2020-07-27 03:46:06.747717",
+ "modified": "2020-07-29 15:22:40.305003",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Raw Material",

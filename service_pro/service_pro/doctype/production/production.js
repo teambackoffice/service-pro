@@ -45,6 +45,15 @@ cur_frm.cscript.cost = function (frm,cdt,cdn) {
 cur_frm.cscript.scoop_of_work_remove = function (frm,cdt,cdn) {
     compute_scoop_of_work_total(cur_frm)
 }
+function compute_additional_cost(cur_frm) {
+    var total = 0
+    for(var x=0;x<cur_frm.doc.additional_cost.length;x += 1){
+        total += cur_frm.doc.additional_cost[x].additional_cost_amount
+    }
+    cur_frm.doc.additional_cost_total = total
+    cur_frm.refresh_field("additional_cost_total")
+     set_rate_and_amount(cur_frm)
+}
 function compute_scoop_of_work_total(cur_frm) {
     var total = 0
     for(var x=0;x<cur_frm.doc.scoop_of_work.length;x += 1){
@@ -52,6 +61,7 @@ function compute_scoop_of_work_total(cur_frm) {
     }
     cur_frm.doc.scoop_of_work_total = total
     cur_frm.refresh_field("scoop_of_work_total")
+     set_rate_and_amount(cur_frm)
 }
 function compute_raw_material_total(cur_frm) {
     var total = 0
@@ -60,6 +70,7 @@ function compute_raw_material_total(cur_frm) {
     }
     cur_frm.doc.raw_material_total = total
     cur_frm.refresh_field("raw_material_total")
+     set_rate_and_amount(cur_frm)
 }
 
 frappe.ui.form.on('Production', {
@@ -88,9 +99,23 @@ frappe.ui.form.on('Production', {
         }
 
         var status = frappe.meta.get_docfield("Scoop of Work", "status", cur_frm.doc.name);
+        var qty = frappe.meta.get_docfield("Raw Material", "qty_raw_material", cur_frm.doc.name);
+        var rate = frappe.meta.get_docfield("Raw Material", "rate_raw_material", cur_frm.doc.name);
+        frappe.call({
+            method: "service_pro.service_pro.doctype.production.production.get_se",
+            args:{
+                name: cur_frm.doc.name
+            },
+            callback: function (r) {
+                if(r.message){
+                    qty.read_only = 1
+                    rate.read_only = 1
+                }
+
+            }
+        })
         status.read_only = (cur_frm.doc.status === "Completed")
-        cur_frm.set_df_property('rate', 'read_only', cur_frm.doc.status === "Completed");
-        cur_frm.set_df_property('qty', 'read_only', cur_frm.doc.status === "Completed");
+
         cur_frm.set_df_property('advance_payment', 'read_only', cur_frm.doc.status === "Completed");
 
     },
@@ -108,6 +133,13 @@ frappe.ui.form.on('Production', {
                     ]
             }
         })
+        cur_frm.set_query('expense_ledger',"additional_cost", () => {
+            return {
+                filters: [
+                        ["account_type", "in", ["Expense Account"]]
+                    ]
+            }
+        })
 
         frappe.call({
             method: "service_pro.service_pro.doctype.production.production.get_jv",
@@ -122,8 +154,7 @@ frappe.ui.form.on('Production', {
                       cur_frm.set_df_property('journal_entry', 'hidden', 0);
                     cur_frm.set_df_property('advance', 'hidden', 1);
                 } else {
-                                                cur_frm.set_df_property('advance_payment', 'read_only', 0);
-
+                    cur_frm.set_df_property('advance_payment', 'read_only', 0);
                     cur_frm.set_df_property('journal_entry', 'hidden', 1);
                     cur_frm.set_df_property('advance', 'hidden', 0);
                 }
@@ -144,18 +175,80 @@ frappe.ui.form.on('Production', {
                 generate_button = false
             }
         }
+        frappe.call({
+                method: "service_pro.service_pro.doctype.production.production.get_se",
+                args:{
+                    name: cur_frm.doc.name
+                },
+                callback: function (r) {
+                    if(!r.message && generate_button && cur_frm.doc.status === "In Progress" && cur_frm.doc.type !== "Service"){
+                         cur_frm.add_custom_button(__("Stock Entry"), () => {
+                             cur_frm.call({
+                                doc: cur_frm.doc,
+                                method: 'generate_se',
+                                freeze: true,
+                                freeze_message: "Generating Stock Entry...",
+                                 async: false,
+                                callback: (r) => {
+                                    cur_frm.reload_doc()
+                             }
+                            })
+                        }, "Generate");
+                    } else if(r.message && generate_button && cur_frm.doc.status === "In Progress"){
+                        frappe.call({
+                            method: "service_pro.service_pro.doctype.production.production.get_dn_or_si",
+                            args: {
+                                name: cur_frm.doc.name,
+                                                                doctype: "Sales Invoice"
+                            },
+                            callback: function (r) {
+                                if (!r.message) {
+                                    cur_frm.add_custom_button(__("Sales Invoice"), () => {
+                                        cur_frm.call({
+                                            doc: cur_frm.doc,
+                                            method: 'generate_si',
+                                            freeze: true,
+                                            freeze_message: "Generating Sales Invoice ...",
+                                            callback: (r) => {
+                                                                                    cur_frm.reload_doc()
 
-        if(generate_button && cur_frm.doc.status === "In Progress"){
-            cur_frm.add_custom_button(__("Generate Sales Invoice"), () => {
-                 cur_frm.call({
-                    doc: cur_frm.doc,
-                    method: 'generate_si',
-                    freeze: true,
-                    freeze_message: "Generating Sales Invoice ...",
-                    callback: () => {}
-                })
-            });
-        }
+                                                frappe.set_route("Form", "Sales Invoice", r.message);
+                                            }
+                                        })
+                                    },"Generate");
+                                }
+                            }
+                        })
+                        frappe.call({
+                            method: "service_pro.service_pro.doctype.production.production.get_dn_or_si",
+                            args: {
+                                name: cur_frm.doc.name,
+                                doctype: "Delivery Note"
+                            },
+                            callback: function (r) {
+                                if (!r.message) {
+                                    cur_frm.add_custom_button(__("Delivery Note"), () => {
+                                        cur_frm.call({
+                                            doc: cur_frm.doc,
+                                            method: 'generate_dn',
+                                            freeze: true,
+                                            freeze_message: "Generating Delivery Note ...",
+                                            callback: (r) => {
+                                                                                    cur_frm.reload_doc()
+
+                                                frappe.set_route("Form", "Delivery Note", r.message);
+                                            }
+                                        })
+                                    },"Generate");
+                                }
+
+                            }
+                        })
+
+                    }
+
+                }
+            })
 	},
     customer: function() {
 	    if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
@@ -223,7 +316,7 @@ frappe.ui.form.on('Production', {
 
         } else {
             cur_frm.doc.item_code_prod = undefined
-            cur_frm.doc.qty = 0
+            cur_frm.doc.qty = 1
             cur_frm.doc.rate = 0
             cur_frm.doc.amount = 0
             cur_frm.refresh_field("item_code")
@@ -316,10 +409,13 @@ cur_frm.cscript.warehouse = function (frm,cdt, cdn) {
     var d = locals[cdt][cdn]
     if(d.item_code && d.warehouse){
         frappe.call({
-            method: "service_pro.service_pro.doctype.estimation.estimation.get_rate",
+            method: "service_pro.service_pro.doctype.production.production.get_rate",
             args: {
                 item_code: d.item_code,
-                warehouse: d.warehouse ? d.warehouse : ""
+                warehouse: d.warehouse ? d.warehouse : "",
+                based_on: cur_frm.doc.rate_of_materials_based_on,
+                price_list: cur_frm.doc.price_list
+
             },
             callback: function (r) {
                 d.rate_raw_material = r.message[0]
@@ -335,10 +431,13 @@ cur_frm.cscript.item_code = function (frm,cdt, cdn) {
     var d = locals[cdt][cdn]
     if(d.item_code){
         frappe.call({
-            method: "service_pro.service_pro.doctype.estimation.estimation.get_rate",
+            method: "service_pro.service_pro.doctype.production.production.get_rate",
             args: {
                 item_code: d.item_code,
-                warehouse: d.warehouse ? d.warehouse : ""
+                warehouse: d.warehouse ? d.warehouse : "",
+                based_on: cur_frm.doc.rate_of_materials_based_on,
+                                price_list: cur_frm.doc.price_list
+
             },
             callback: function (r) {
                 d.rate_raw_material = r.message[0]
@@ -352,19 +451,15 @@ cur_frm.cscript.item_code = function (frm,cdt, cdn) {
 
 }
 cur_frm.cscript.item_code_prod = function (frm,cdt, cdn) {
-    var d = locals[cdt][cdn]
     if(cur_frm.doc.item_code_prod){
         frappe.call({
-            method: "service_pro.service_pro.doctype.estimation.estimation.get_rate",
+            method: "service_pro.service_pro.doctype.production.production.get_uom",
             args: {
-                item_code: d.item_code_prod,
-                warehouse: d.warehouse ? d.warehouse : ""
+                item_code: cur_frm.doc.item_code_prod
             },
             callback: function (r) {
-                cur_frm.doc.rate = r.message[0]
-                cur_frm.doc.amount = r.message[0] * cur_frm.doc.qty
-                cur_frm.refresh_field("rate")
-                cur_frm.refresh_field("amount")
+                cur_frm.doc.umo = r.message
+                cur_frm.refresh_field("umo")
             }
         })
     }
@@ -405,4 +500,14 @@ cur_frm.cscript.journal_entry = function (frm,cdt, cdn) {
                 }
             }
         })
+}
+cur_frm.cscript.additional_cost_amount = function (frm,cdt, cdn) {
+    compute_additional_cost(cur_frm)
+}
+
+function set_rate_and_amount(cur_frm) {
+    cur_frm.doc.rate = cur_frm.doc.raw_material_total + cur_frm.doc.scoop_of_work_total + cur_frm.doc.additional_cost_total
+    cur_frm.doc.amount = (cur_frm.doc.raw_material_total + cur_frm.doc.scoop_of_work_total + cur_frm.doc.additional_cost_total) * cur_frm.doc.qty
+    cur_frm.refresh_field("amount")
+    cur_frm.refresh_field("rate")
 }

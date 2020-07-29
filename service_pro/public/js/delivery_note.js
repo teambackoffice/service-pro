@@ -1,4 +1,3 @@
-
 cur_frm.cscript.customer = function(frm){
     filter_link_field(cur_frm)
 
@@ -38,12 +37,12 @@ cur_frm.cscript.reference = function (frm,cdt,cdn) {
                             rate: doc.rate,
                             amount: doc.amount,
                             item_name: doc1.item_name,
-                            income_account: doc.income_account,
                             description: doc1.description,
                         });
 
                     cur_frm.refresh_field('items');
                 })
+
             })
     }
 }

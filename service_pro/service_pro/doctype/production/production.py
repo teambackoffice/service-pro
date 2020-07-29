@@ -4,9 +4,10 @@
 
 from __future__ import unicode_literals
 import frappe
+import json
 from erpnext.stock.utils import get_stock_balance
 from frappe.model.document import Document
-
+import ast
 class Production(Document):
 	def validate(self):
 		if self.type == "Assemble":
@@ -15,14 +16,49 @@ class Production(Document):
 			self.series = "SK-D-"
 		elif self.type == "Service":
 			self.series = "HA-"
-	def on_submit(self):
+
+	def generate_se(self):
 		if self.type != "Service":
 			doc_se = {
 				"doctype": "Stock Entry",
 				"stock_entry_type": "Manufacture" if self.type == "Assemble" else "Repack",
 				"items": self.get_se_items(),
+				"production": self.name,
+				"total_additional_costs": self.additional_cost_total
 			}
+
 			frappe.get_doc(doc_se).insert(ignore_permissions=1).submit()
+			if self.type == "Disassemble":
+				self.generate_finish_good_se()
+
+		return ""
+	def generate_finish_good_se(self):
+		doc_se1 = {
+			"doctype": "Stock Entry",
+			"stock_entry_type": "Manufacture",
+			"production": self.name,
+			"total_additional_costs": self.additional_cost_total,
+			"items": [{
+				'item_code': self.item_code_prod,
+				't_warehouse': self.warehouse,
+				'qty': self.qty,
+				'uom': self.umo,
+				'basic_rate': self.rate,
+				'cost_center': self.cost_center
+			}],
+		}
+		frappe.get_doc(doc_se1).insert(ignore_permissions=1).submit()
+
+	def generate_dn(self):
+		doc_dn = {
+			"doctype": "Delivery Note",
+			"customer": self.customer,
+			"items": self.get_si_items(),
+			"production": self.get_production_items(),
+		}
+		dn = frappe.get_doc(doc_dn)
+		dn.insert(ignore_permissions=1)
+		return dn.name
 
 	def generate_si(self):
 		doc_si = {
@@ -31,9 +67,10 @@ class Production(Document):
 			"update_stock": 1,
 			"items": self.get_si_items(),
 			"production": self.get_production_items(),
-			"packed_items": self.get_si_packed_items()
 		}
-		frappe.get_doc(doc_si).insert(ignore_permissions=1)
+		si = frappe.get_doc(doc_si)
+		si.insert(ignore_permissions=1)
+		return si.name
 	def generate_jv(self):
 		doc_jv = {
 			"doctype": "Journal Entry",
@@ -80,6 +117,14 @@ class Production(Document):
 				'basic_rate': item.rate_raw_material,
 				'cost_center': item.cost_center
 			})
+		items.append({
+			'item_code': self.item_code_prod,
+			't_warehouse': self.warehouse,
+			'qty': self.qty,
+			'uom': self.umo,
+			'basic_rate': self.rate,
+			'cost_center': self.cost_center
+		})
 		return items
 	def get_si_items(self):
 		return [
@@ -106,33 +151,41 @@ class Production(Document):
 					}
 				]
 
-	def get_si_packed_items(self):
-		items = []
-
-		for item in self.raw_material:
-			items.append({
-				'parent_item': self.item_code_prod,
-				'item_code': item.item_code,
-				'warehouse': item.warehouse,
-				'qty': item.qty_raw_material,
-			})
-
-		return items
-
-
 	def get_item_value(self, field):
 		items = frappe.db.sql(""" SELECT * FROM `tabItem` WHERE name=%s """, self.item_code_prod, as_dict=1)
 		return items[0][field]
 
 @frappe.whitelist()
-def get_rate(item_code, warehouse):
-	item_price = frappe.db.sql(
-		""" SELECT * FROM `tabItem Price` WHERE item_code=%s and selling=1 ORDER BY valid_from DESC LIMIT 1""",
-		item_code, as_dict=1)
-	if warehouse:
-		print(get_stock_balance(item_code, warehouse))
+def get_rate(item_code, warehouse, based_on,price_list):
+	print("diri baaa")
+	balance = get_stock_balance(item_code,warehouse) if warehouse else 0
 
-	return item_price[0].price_list_rate if len(item_price) > 0 else 0, get_stock_balance(item_code,warehouse) if warehouse else 0
+	condition = ""
+	if price_list == "Standard Buying":
+		condition += " and buying = 1 "
+	elif price_list == "Standard Selling":
+		condition += " and selling = 1 "
+	query = """ SELECT * FROM `tabItem Price` WHERE item_code=%s {0} ORDER BY valid_from DESC LIMIT 1""".format(condition)
+
+	item_price = frappe.db.sql(query,item_code, as_dict=1)
+	rate = item_price[0].price_list_rate if len(item_price) > 0 else 0
+	print(based_on)
+	if based_on == "Valuation Rate":
+		print("WALA DIR")
+		item_price = frappe.db.sql(
+			""" SELECT * FROM `tabItem` WHERE item_code=%s""",
+			item_code, as_dict=1)
+		rate = item_price[0].valuation_rate if len(item_price) > 0 else 0
+
+	return rate, balance
+
+@frappe.whitelist()
+def get_uom(item_code):
+	item = frappe.db.sql(
+		""" SELECT * FROM `tabItem` WHERE name=%s""",
+		item_code, as_dict=1)
+
+	return item[0].stock_uom
 
 @frappe.whitelist()
 def get_address(customer):
@@ -156,14 +209,12 @@ def get_jv(production):
 	jv = frappe.db.sql(""" SELECT * FROM `tabJournal Entry` WHERE production=%s """, production, as_dict=1)
 	return jv[0].name if len(jv) > 0 else ""
 
-# SELECT
-#  		I.id,
-#  		I.description,
-#  		SUM(DD.quantity) as received_qty,
-#  		SUM(IR.quantity) as released_qty,
-# 	SUM(DD.quantity) - SUM(IR.quantity) as balance
-#  FROM items AS I
-#  INNER JOIN users AS U ON U.office =  'DDOPH-Montevista'
-#  INNER JOIN delivery_details AS DD ON DD.user_id = U.id and DD.items_id = I.id
-#  INNER JOIN item_release AS IR ON IR.delivery_id = DD.deliveries_id and IR.items_id = I.id
-#  GROUP BY I.id LIMIT 0,25
+@frappe.whitelist()
+def get_se(name):
+	se = frappe.db.sql(""" SELECT * FROM `tabStock Entry` WHERE production=%s """, name, as_dict=1)
+	return len(se) > 0
+
+@frappe.whitelist()
+def get_dn_or_si(name,doctype):
+	dn_or_si = frappe.db.sql(""" SELECT * FROM `tabSales Invoice Production` WHERE reference=%s and parenttype=%s """, (name,doctype), as_dict=1)
+	return len(dn_or_si) > 0

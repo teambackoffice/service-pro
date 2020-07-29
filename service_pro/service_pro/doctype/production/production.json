@@ -31,12 +31,17 @@
   "scoop_of_work",
   "scoop_of_work_total",
   "section_break_24",
+  "rate_of_materials_based_on",
+  "price_list",
   "raw_material",
   "raw_material_total",
   "section_break_26",
   "advance_payment",
   "journal_entry",
   "advance",
+  "section_break_27",
+  "additional_cost",
+  "additional_cost_total",
   "amended_from"
  ],
  "fields": [
@@ -111,12 +116,15 @@
    "label": "Qty"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "rate",
    "fieldtype": "Currency",
-   "label": "Rate"
+   "label": "Rate",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "amount",
    "fieldtype": "Currency",
@@ -206,6 +214,7 @@
    "reqd": 1
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "raw_material_total",
    "fieldtype": "Currency",
@@ -237,11 +246,41 @@
    "fieldtype": "Button",
    "label": "Journal Entry",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_27",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "additional_cost",
+   "fieldtype": "Table",
+   "label": "Additional Cost",
+   "options": "Additional Cost"
+  },
+  {
+   "default": "0",
+   "fieldname": "additional_cost_total",
+   "fieldtype": "Currency",
+   "label": "Total",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rate_of_materials_based_on",
+   "fieldtype": "Select",
+   "label": "Rate Of Materials Based On",
+   "options": "\nValuation Rate\nPrice List"
+  },
+  {
+   "depends_on": "eval:doc.rate_of_materials_based_on == \"Price List\"",
+   "fieldname": "price_list",
+   "fieldtype": "Select",
+   "label": "Price List",
+   "options": "\nStandard Buying\nStandard Selling"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-28 10:20:34.036135",
+ "modified": "2020-07-29 16:55:36.475599",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

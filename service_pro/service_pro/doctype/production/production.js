@@ -37,7 +37,8 @@ cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
         })
 }
 cur_frm.cscript.raw_material_remove = function (frm,cdt,cdn) {
-    compute_raw_material_total(cur_frm)
+        compute_raw_material_total(cur_frm)
+
 }
 cur_frm.cscript.cost = function (frm,cdt,cdn) {
     compute_scoop_of_work_total(cur_frm)
@@ -198,11 +199,13 @@ frappe.ui.form.on('Production', {
                             })
                         }, "Generate");
                     } else if(r.message && generate_button && cur_frm.doc.status === "In Progress"){
+                                                cur_frm.set_df_property('raw_material', 'read_only', 1);
+
                         frappe.call({
                             method: "service_pro.service_pro.doctype.production.production.get_dn_or_si",
                             args: {
                                 name: cur_frm.doc.name,
-                                                                doctype: "Sales Invoice"
+                                doctype: "Sales Invoice"
                             },
                             callback: function (r) {
                                 if (!r.message) {

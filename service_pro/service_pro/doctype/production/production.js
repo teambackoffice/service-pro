@@ -79,9 +79,10 @@ frappe.ui.form.on('Production', {
         if(cur_frm.is_new()){
             if(cur_frm.doc.estimation){
                 cur_frm.doc.type = "Service"
+                 frm.set_df_property('series', 'options', ['HA-'])
                 cur_frm.doc.series = "HA-"
-                cur_frm.refresh_field("type")
                 cur_frm.refresh_field("series")
+                cur_frm.refresh_field("type")
             }
              frappe.db.get_single_value('Production Settings', 'finish_good_warehouse')
             .then(warehouse => {

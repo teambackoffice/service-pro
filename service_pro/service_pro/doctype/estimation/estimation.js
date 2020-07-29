@@ -47,10 +47,13 @@ cur_frm.cscript.item_code = function (frm,cdt, cdn) {
     var d = locals[cdt][cdn]
     if(d.item_code){
         frappe.call({
-            method: "service_pro.service_pro.doctype.estimation.estimation.get_rate",
+            method: "service_pro.service_pro.doctype.production.production.get_rate",
             args: {
                 item_code: d.item_code,
-                warehouse: d.warehouse ? d.warehouse : ""
+                warehouse: d.warehouse ? d.warehouse : "",
+                based_on: cur_frm.doc.rate_of_materials_based_on,
+                price_list: cur_frm.doc.price_list
+
             },
             callback: function (r) {
                 d.rate_raw_material = r.message[0]
@@ -60,7 +63,6 @@ cur_frm.cscript.item_code = function (frm,cdt, cdn) {
                 compute_raw_material_total(cur_frm)
             }
         })
-
     }
 
 }

@@ -34,6 +34,8 @@
   "scoop_of_work",
   "scoop_of_work_total",
   "raw_material_section",
+  "rate_of_materials_based_on",
+  "price_list",
   "raw_material",
   "raw_material_total",
   "amended_from"
@@ -215,11 +217,24 @@
    "fieldtype": "Currency",
    "label": "Total",
    "read_only": 1
+  },
+  {
+   "fieldname": "rate_of_materials_based_on",
+   "fieldtype": "Select",
+   "label": "Rate of Materials based on",
+   "options": "\nValuation Rate\nPrice List"
+  },
+  {
+   "depends_on": "eval: doc.rate_of_materials_based_ob == \"Price List\"",
+   "fieldname": "price_list",
+   "fieldtype": "Select",
+   "label": "Price List",
+   "options": "\nStandard Buying\nStandard Selling"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-28 11:53:29.036311",
+ "modified": "2020-07-29 18:28:15.257765",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

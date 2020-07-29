@@ -21,7 +21,8 @@
   "sales_man_name",
   "section_break_12",
   "materials",
-  "amended_from"
+  "amended_from",
+  "letter_head"
  ],
  "fields": [
   {
@@ -117,11 +118,18 @@
    "fieldname": "customer_contact_number",
    "fieldtype": "Data",
    "label": "Customer Contact Number"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "letter_head",
+   "fieldtype": "Link",
+   "label": "Letter Head",
+   "options": "Letter Head"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-28 11:12:02.562604",
+ "modified": "2020-07-29 18:10:12.659549",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Receipt Note",

@@ -45,7 +45,8 @@
   "section_break_27",
   "additional_cost",
   "additional_cost_total",
-  "amended_from"
+  "amended_from",
+  "remarks"
  ],
  "fields": [
   {
@@ -302,11 +303,16 @@
    "fieldtype": "Select",
    "label": "Production Status",
    "options": "\nIn Progress\nCompleted"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Long Text",
+   "label": "Remarks"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-30 17:18:05.228489",
+ "modified": "2020-07-30 17:25:20.206998",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

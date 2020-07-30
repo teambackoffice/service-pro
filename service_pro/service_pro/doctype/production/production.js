@@ -160,11 +160,22 @@ frappe.ui.form.on('Production', {
         frm.set_df_property('type', 'read_only', 1);
 
     },
-	refresh: function() {
+	refresh: function(frm) {
      cur_frm.set_df_property("scoop_of_work", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
         cur_frm.set_df_property("scoop_of_work_total", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
 
+        frappe.call({
+            method: "service_pro.service_pro.doctype.production.production.get_se",
+            args:{
+                name: cur_frm.doc.name
+            },
+            callback: function (r) {
+                if(r.message){
+                    frm.set_df_property('production_status', 'read_only', 1);
+                }
 
+            }
+        })
         cur_frm.set_query('expense_account',"advance_payment", () => {
             return {
                 filters: [
@@ -494,6 +505,8 @@ cur_frm.cscript.warehouse = function (frm,cdt, cdn) {
                 d.amount_raw_material = r.message[0] * d.qty_raw_material
                 d.available_qty = r.message[1]
                 cur_frm.refresh_field("raw_material")
+                                compute_raw_material_total(cur_frm)
+
             }
         })
     }

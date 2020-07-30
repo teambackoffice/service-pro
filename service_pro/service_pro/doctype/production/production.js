@@ -76,28 +76,24 @@ function compute_raw_material_total(cur_frm) {
 
 frappe.ui.form.on('Production', {
     onload: function (frm) {
-if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
+        if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
             filter_link_field(cur_frm)
-
             frm.set_df_property('series', 'options', ['HA-'])
             cur_frm.doc.series = "HA-"
             cur_frm.refresh_field("series")
             cur_frm.set_df_property("scoop_of_work", "hidden", 0)
-                        cur_frm.set_df_property("scoop_of_work_total", "hidden", 0 )
+            cur_frm.set_df_property("scoop_of_work_total", "hidden", 0 )
         } else if(cur_frm.doc.type && cur_frm.doc.type === "Assemble") {
 	        cur_frm.doc.estimation = ""
             cur_frm.refresh_field("estimation")
-            frm.trigger('estimation');
 	        frm.set_df_property('series', 'options', ['','SK-','HA-'])
 
             cur_frm.set_df_property("scoop_of_work", "hidden", 1)
-                        cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
+            cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
 
         } else if(cur_frm.doc.type && cur_frm.doc.type === "Disassemble") {
 	        cur_frm.doc.estimation = ""
             cur_frm.refresh_field("estimation")
-            frm.trigger('estimation');
-
 	        frm.set_df_property('series', 'options', ['SK-D-'])
             cur_frm.doc.series = "SK-D-"
             cur_frm.refresh_field("series")
@@ -165,7 +161,7 @@ if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
 
     },
 	refresh: function() {
-         cur_frm.set_df_property("scoop_of_work", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
+     cur_frm.set_df_property("scoop_of_work", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
         cur_frm.set_df_property("scoop_of_work_total", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
 
 
@@ -226,12 +222,14 @@ if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
         });
 
         var generate_button = true
-
-        for(var x=0;x<cur_frm.doc.scoop_of_work.length;x += 1){
+        if(cur_frm.doc.scoop_of_work !== undefined){
+             for(var x=0;x<cur_frm.doc.scoop_of_work.length;x += 1){
             if(cur_frm.doc.scoop_of_work[x].status === "In Progress"){
                 generate_button = false
             }
         }
+        }
+
         frappe.call({
                 method: "service_pro.service_pro.doctype.production.production.get_se",
                 args:{
@@ -239,7 +237,25 @@ if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
                 },
                 callback: function (r) {
                     if(!r.message && generate_button && cur_frm.doc.status === "In Progress" && cur_frm.doc.docstatus){
-                         cur_frm.add_custom_button(__("Stock Entry"), () => {
+                            if(["Assemble", "Disassemble"].includes(cur_frm.doc.type) ){
+                                if(cur_frm.doc.production_status === "Completed"){
+                                    cur_frm.add_custom_button(__("Stock Entry"), () => {
+                                         cur_frm.call({
+                                            doc: cur_frm.doc,
+                                            method: 'generate_se',
+                                            freeze: true,
+                                            freeze_message: "Generating Stock Entry...",
+                                             async: false,
+                                            callback: (r) => {
+                                                cur_frm.reload_doc()
+
+                                         }
+                                        })
+                                    }, "Generate");
+                                }
+
+                        } else {
+                            cur_frm.add_custom_button(__("Stock Entry"), () => {
                              cur_frm.call({
                                 doc: cur_frm.doc,
                                 method: 'generate_se',
@@ -252,6 +268,8 @@ if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
                              }
                             })
                         }, "Generate");
+                        }
+
                     } else if(r.message && generate_button && cur_frm.doc.status === "In Progress" && cur_frm.doc.docstatus){
                                                 cur_frm.set_df_property('raw_material', 'read_only', 1);
 
@@ -364,6 +382,7 @@ if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
         }
 	},
     estimation: function(frm) {
+
 	    if(cur_frm.doc.type && cur_frm.doc.type === "Service" && cur_frm.doc.estimation){
             get_items_from_estimation(frm,cur_frm)
 
@@ -557,7 +576,6 @@ cur_frm.cscript.journal_entry = function (frm,cdt, cdn) {
 cur_frm.cscript.additional_cost_amount = function (frm,cdt, cdn) {
     compute_additional_cost(cur_frm)
 }
-
 function set_rate_and_amount(cur_frm) {
     cur_frm.doc.rate = cur_frm.doc.raw_material_total + cur_frm.doc.scoop_of_work_total + cur_frm.doc.additional_cost_total
     cur_frm.doc.amount = (cur_frm.doc.raw_material_total + cur_frm.doc.scoop_of_work_total + cur_frm.doc.additional_cost_total) * cur_frm.doc.qty

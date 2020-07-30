@@ -18,6 +18,7 @@
   "delivery_date",
   "type",
   "estimation",
+  "production_status",
   "finished_item_section",
   "item_code_prod",
   "qty",
@@ -291,11 +292,20 @@
    "fieldtype": "Time",
    "label": "Posting Time",
    "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "In Progress",
+   "depends_on": "eval: doc.type != \"Service\" && doc.type != \"\"",
+   "fieldname": "production_status",
+   "fieldtype": "Select",
+   "label": "Production Status",
+   "options": "\nIn Progress\nCompleted"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-30 11:20:15.877662",
+ "modified": "2020-07-30 14:11:54.142916",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

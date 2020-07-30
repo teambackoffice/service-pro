@@ -7,8 +7,28 @@ import frappe
 import json
 from erpnext.stock.utils import get_stock_balance
 from frappe.model.document import Document
-import ast
+from erpnext.stock.stock_ledger import get_previous_sle
+from frappe.utils import cint, flt
+from datetime import datetime
 class Production(Document):
+	def on_submit(self):
+		for i in self.raw_material:
+			if i.production:
+				frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""", ("Completed",i.production))
+				frappe.db.commit()
+	def set_available_qty(self):
+		time = datetime.now().time()
+		date = datetime.now().date()
+		for d in self.get('raw_material'):
+			previous_sle = get_previous_sle({
+				"item_code": d.item_code,
+				"warehouse": d.warehouse,
+				"posting_date": date,
+				"posting_time": time
+			})
+			# get actual stock at source warehouse
+			d.available_qty = previous_sle.get("qty_after_transaction") or 0
+
 	def validate(self):
 		if self.type == "Assemble":
 			self.series = "SK-"
@@ -17,20 +37,30 @@ class Production(Document):
 		elif self.type == "Service":
 			self.series = "HA-"
 
+	def check_raw_materials(self):
+		for i in self.raw_material:
+			if i.available_qty == 0:
+				return False, i.item_code
+		return True, ""
 	def generate_se(self):
-		doc_se = {
-			"doctype": "Stock Entry",
-			"stock_entry_type": "Manufacture" if self.type == "Assemble" or self.type == "Service"  else "Repack",
-			"items": self.get_se_items(),
-			"production": self.name,
-			"additional_costs": self.get_additional_costs()
-		}
+		check,item_code = self.check_raw_materials()
+		allow_negative_stock = cint(frappe.db.get_value("Stock Settings", None, "allow_negative_stock"))
+		if check or (not check and allow_negative_stock):
+			doc_se = {
+				"doctype": "Stock Entry",
+				"stock_entry_type": "Manufacture" if self.type == "Assemble" or self.type == "Service"  else "Repack",
+				"items": self.get_se_items(),
+				"production": self.name,
+				"additional_costs": self.get_additional_costs()
+			}
 
-		frappe.get_doc(doc_se).insert(ignore_permissions=1).submit()
-		if self.type == "Disassemble":
-			self.generate_finish_good_se()
+			frappe.get_doc(doc_se).insert(ignore_permissions=1).submit()
+			if self.type == "Disassemble":
+				self.generate_finish_good_se()
+			return ""
 
-		return ""
+		else:
+			frappe.throw("Item " + item_code + " Has no available stock")
 	def generate_finish_good_se(self):
 		doc_se1 = {
 			"doctype": "Stock Entry",
@@ -116,14 +146,16 @@ class Production(Document):
 		items = []
 
 		for item in self.raw_material:
-			items.append({
-				'item_code': item.item_code,
-				's_warehouse': item.warehouse,
-				'qty': item.qty_raw_material,
-				'uom': "Nos",
-				'basic_rate': item.rate_raw_material,
-				'cost_center': item.cost_center
-			})
+			if item.available_qty > 0:
+				items.append({
+					'item_code': item.item_code,
+					's_warehouse': item.warehouse,
+					'qty': item.qty_raw_material,
+					'uom': "Nos",
+					'basic_rate': item.rate_raw_material,
+					'cost_center': item.cost_center
+				})
+
 		items.append({
 			'item_code': self.item_code_prod,
 			't_warehouse': self.warehouse,
@@ -173,6 +205,7 @@ def get_rate(item_code, warehouse, based_on,price_list):
 		condition += " and buying = 1 "
 	elif price_list == "Standard Selling":
 		condition += " and selling = 1 "
+
 	query = """ SELECT * FROM `tabItem Price` WHERE item_code=%s {0} ORDER BY valid_from DESC LIMIT 1""".format(condition)
 
 	item_price = frappe.db.sql(query,item_code, as_dict=1)

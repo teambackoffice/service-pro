@@ -14,6 +14,7 @@
   "address_name",
   "column_break_4",
   "posting_date",
+  "posting_time",
   "delivery_date",
   "type",
   "estimation",
@@ -34,6 +35,7 @@
   "rate_of_materials_based_on",
   "price_list",
   "raw_material",
+  "update_available_stock",
   "raw_material_total",
   "section_break_26",
   "advance_payment",
@@ -238,7 +240,8 @@
    "fieldname": "item_code_prod",
    "fieldtype": "Link",
    "label": "Item Code",
-   "options": "Item"
+   "options": "Item",
+   "reqd": 1
   },
   {
    "allow_on_submit": 1,
@@ -276,11 +279,23 @@
    "fieldtype": "Select",
    "label": "Price List",
    "options": "\nStandard Buying\nStandard Selling"
+  },
+  {
+   "fieldname": "update_available_stock",
+   "fieldtype": "Button",
+   "label": "Update Available Stock",
+   "options": "set_available_qty"
+  },
+  {
+   "fieldname": "posting_time",
+   "fieldtype": "Time",
+   "label": "Posting Time",
+   "reqd": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-30 10:12:03.903907",
+ "modified": "2020-07-30 11:20:15.877662",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

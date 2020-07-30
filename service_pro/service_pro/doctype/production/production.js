@@ -165,13 +165,8 @@ if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
 
     },
 	refresh: function() {
-
-        if(cur_frm.doc.raw_material !== undefined && cur_frm.doc.raw_material[0].production){
-            cur_frm.doc.status = "Completed"
-            cur_frm.refresh_field("status")
-        }
          cur_frm.set_df_property("scoop_of_work", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
-                        cur_frm.set_df_property("scoop_of_work_total", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
+        cur_frm.set_df_property("scoop_of_work_total", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
 
 
         cur_frm.set_query('expense_account',"advance_payment", () => {

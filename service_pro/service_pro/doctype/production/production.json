@@ -106,7 +106,8 @@
    "fieldname": "umo",
    "fieldtype": "Link",
    "label": "UMO",
-   "options": "UOM"
+   "options": "UOM",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_17",
@@ -305,7 +306,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-30 14:11:54.142916",
+ "modified": "2020-07-30 17:18:05.228489",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

@@ -161,6 +161,7 @@ frappe.ui.form.on('Production', {
 
     },
 	refresh: function(frm) {
+
      cur_frm.set_df_property("scoop_of_work", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
         cur_frm.set_df_property("scoop_of_work_total", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
 
@@ -192,10 +193,11 @@ frappe.ui.form.on('Production', {
         })
         cur_frm.set_query('production',"raw_material", () => {
             return {
-                filters: {
-                    docstatus: 1,
-                    status: "In Progress"
-                }
+                filters: [
+                    ["name", "!=", cur_frm.doc.name],
+                    ["docstatus", "=", 1],
+                    ["status", "=", "In Progress"]
+                ]
             }
         })
         if(cur_frm.doc.docstatus){

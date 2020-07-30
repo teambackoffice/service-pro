@@ -11,6 +11,11 @@ from erpnext.stock.stock_ledger import get_previous_sle
 from frappe.utils import cint, flt
 from datetime import datetime
 class Production(Document):
+	def on_update_after_submit(self):
+		for i in self.raw_material:
+			if i.production:
+				frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""", ("Completed",i.production))
+				frappe.db.commit()
 	def on_cancel(self):
 		for i in self.raw_material:
 			if i.production:

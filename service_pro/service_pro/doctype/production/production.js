@@ -139,6 +139,9 @@ frappe.ui.form.on('Production', {
 
     },
 	refresh: function() {
+         cur_frm.set_df_property("scoop_of_work", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
+                        cur_frm.set_df_property("scoop_of_work_total", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
+
 
         cur_frm.set_query('expense_account',"advance_payment", () => {
             return {
@@ -306,18 +309,21 @@ frappe.ui.form.on('Production', {
     type: function(frm) {
 	    if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
             filter_link_field(cur_frm)
-//             SK-
-// SK-D-
-// HA-
+
             frm.set_df_property('series', 'options', ['HA-'])
             cur_frm.doc.series = "HA-"
             cur_frm.refresh_field("series")
+            cur_frm.set_df_property("scoop_of_work", "hidden", 0)
+                        cur_frm.set_df_property("scoop_of_work_total", "hidden", 0 )
         } else if(cur_frm.doc.type && cur_frm.doc.type === "Assemble") {
 	        cur_frm.doc.estimation = ""
             cur_frm.refresh_field("estimation")
             frm.trigger('estimation');
-
 	        frm.set_df_property('series', 'options', ['','SK-','HA-'])
+
+            cur_frm.set_df_property("scoop_of_work", "hidden", 1)
+                        cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
+
         } else if(cur_frm.doc.type && cur_frm.doc.type === "Disassemble") {
 	        cur_frm.doc.estimation = ""
             cur_frm.refresh_field("estimation")
@@ -326,6 +332,8 @@ frappe.ui.form.on('Production', {
 	        frm.set_df_property('series', 'options', ['SK-D-'])
             cur_frm.doc.series = "SK-D-"
             cur_frm.refresh_field("series")
+            cur_frm.set_df_property("scoop_of_work", "hidden", 1)
+            cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
         }
 	},
     estimation: function(frm) {

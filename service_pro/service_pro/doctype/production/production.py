@@ -203,7 +203,9 @@ class Production(Document):
 @frappe.whitelist()
 def get_rate(item_code, warehouse, based_on,price_list):
 	print("diri baaa")
-	balance = get_stock_balance(item_code,warehouse) if warehouse else 0
+	time = datetime.now().time()
+	date = datetime.now().date()
+	balance = get_stock_balance(item_code,warehouse,date,time) if warehouse else 0
 
 	condition = ""
 	if price_list == "Standard Buying":

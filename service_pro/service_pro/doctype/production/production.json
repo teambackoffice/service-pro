@@ -160,7 +160,6 @@
    "fieldtype": "Section Break"
   },
   {
-   "depends_on": "eval: doc.docstatus == 1",
    "fieldname": "section_break_26",
    "fieldtype": "Section Break"
   },
@@ -281,7 +280,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-29 18:41:21.240365",
+ "modified": "2020-07-30 10:12:03.903907",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

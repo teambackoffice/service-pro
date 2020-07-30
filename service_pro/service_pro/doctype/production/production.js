@@ -140,7 +140,7 @@ frappe.ui.form.on('Production', {
     },
 	refresh: function() {
 
-        if(cur_frm.doc.raw_material[0].production){
+        if(cur_frm.doc.raw_material !== undefined && cur_frm.doc.raw_material[0].production){
             cur_frm.doc.status = "Completed"
             cur_frm.refresh_field("status")
         }
@@ -170,25 +170,32 @@ frappe.ui.form.on('Production', {
                 }
             }
         })
-        frappe.call({
-            method: "service_pro.service_pro.doctype.production.production.get_jv",
-            args: {
-                production: cur_frm.doc.name
-            },
-            callback: function (r) {
-                console.log(r.message)
-                if(r.message){
-                            cur_frm.set_df_property('advance_payment', 'read_only', 1);
-
-                      cur_frm.set_df_property('journal_entry', 'hidden', 0);
-                    cur_frm.set_df_property('advance', 'hidden', 1);
-                } else {
-                    cur_frm.set_df_property('advance_payment', 'read_only', 0);
-                    cur_frm.set_df_property('journal_entry', 'hidden', 1);
-                    cur_frm.set_df_property('advance', 'hidden', 0);
+        if(cur_frm.doc.docstatus){
+            frappe.call({
+                method: "service_pro.service_pro.doctype.production.production.get_jv",
+                args: {
+                    production: cur_frm.doc.name
+                },
+                callback: function (r) {
+                    console.log(r.message)
+                    if(r.message){
+                        cur_frm.set_df_property('advance_payment', 'read_only', 1);
+                        cur_frm.set_df_property('journal_entry', 'hidden', 0);
+                        cur_frm.set_df_property('advance', 'hidden', 1);
+                    } else {
+                        cur_frm.set_df_property('advance_payment', 'read_only', 0);
+                        cur_frm.set_df_property('journal_entry', 'hidden', 1);
+                        cur_frm.set_df_property('advance', 'hidden', 0);
+                    }
                 }
-            }
-        })
+            })
+        } else if (cur_frm.is_new()){
+            console.log("NEW")
+            cur_frm.set_df_property('journal_entry', 'hidden', 1);
+            cur_frm.set_df_property('advance', 'hidden', 1);
+        }
+
+
 	    cur_frm.set_query('income_account', () => {
             return {
                 filters: {

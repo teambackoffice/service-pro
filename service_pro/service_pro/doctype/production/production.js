@@ -445,8 +445,8 @@ cur_frm.cscript.warehouse = function (frm,cdt, cdn) {
             args: {
                 item_code: d.item_code,
                 warehouse: d.warehouse ? d.warehouse : "",
-                based_on: cur_frm.doc.rate_of_materials_based_on,
-                price_list: cur_frm.doc.price_list
+                based_on: cur_frm.doc.rate_of_materials_based_on ? cur_frm.doc.rate_of_materials_based_on : "",
+                price_list: cur_frm.doc.price_list ? cur_frm.doc.price_list : ""
 
             },
             callback: function (r) {
@@ -467,8 +467,8 @@ cur_frm.cscript.item_code = function (frm,cdt, cdn) {
             args: {
                 item_code: d.item_code,
                 warehouse: d.warehouse ? d.warehouse : "",
-                based_on: cur_frm.doc.rate_of_materials_based_on,
-                                price_list: cur_frm.doc.price_list
+                based_on: cur_frm.doc.rate_of_materials_based_on ? cur_frm.doc.rate_of_materials_based_on : "",
+                price_list: cur_frm.doc.price_list ? cur_frm.doc.price_list : ""
 
             },
             callback: function (r) {

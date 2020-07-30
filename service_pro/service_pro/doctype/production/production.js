@@ -100,6 +100,16 @@ frappe.ui.form.on('Production', {
                 cur_frm.doc.income_account = income_account
                 cur_frm.refresh_field("income_account")
             })
+            frappe.db.get_single_value('Production Settings', 'rate_of_materials_based_on')
+            .then(rate => {
+                cur_frm.doc.rate_of_materials_based_on = rate
+                cur_frm.refresh_field("rate_of_materials_based_on")
+            })
+            frappe.db.get_single_value('Production Settings', 'price_list')
+            .then(price_list => {
+                cur_frm.doc.price_list = price_list
+                cur_frm.refresh_field("price_list")
+            })
         }
 
         var status = frappe.meta.get_docfield("Scoop of Work", "status", cur_frm.doc.name);
@@ -185,7 +195,7 @@ frappe.ui.form.on('Production', {
                     name: cur_frm.doc.name
                 },
                 callback: function (r) {
-                    if(!r.message && generate_button && cur_frm.doc.status === "In Progress" && cur_frm.doc.type !== "Service"){
+                    if(!r.message && generate_button && cur_frm.doc.status === "In Progress"){
                          cur_frm.add_custom_button(__("Stock Entry"), () => {
                              cur_frm.call({
                                 doc: cur_frm.doc,
@@ -195,6 +205,8 @@ frappe.ui.form.on('Production', {
                                  async: false,
                                 callback: (r) => {
                                     cur_frm.reload_doc()
+                                     frappe.set_route("Form", "Stock Entry", r.message);
+
                              }
                             })
                         }, "Generate");

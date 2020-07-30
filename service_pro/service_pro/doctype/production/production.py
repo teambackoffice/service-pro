@@ -18,18 +18,17 @@ class Production(Document):
 			self.series = "HA-"
 
 	def generate_se(self):
-		if self.type != "Service":
-			doc_se = {
-				"doctype": "Stock Entry",
-				"stock_entry_type": "Manufacture" if self.type == "Assemble" else "Repack",
-				"items": self.get_se_items(),
-				"production": self.name,
-				"total_additional_costs": self.additional_cost_total
-			}
+		doc_se = {
+			"doctype": "Stock Entry",
+			"stock_entry_type": "Manufacture" if self.type == "Assemble" or self.type == "Service"  else "Repack",
+			"items": self.get_se_items(),
+			"production": self.name,
+			"total_additional_costs": self.additional_cost_total
+		}
 
-			frappe.get_doc(doc_se).insert(ignore_permissions=1).submit()
-			if self.type == "Disassemble":
-				self.generate_finish_good_se()
+		frappe.get_doc(doc_se).insert(ignore_permissions=1).submit()
+		if self.type == "Disassemble":
+			self.generate_finish_good_se()
 
 		return ""
 	def generate_finish_good_se(self):

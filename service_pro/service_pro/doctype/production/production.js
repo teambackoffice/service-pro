@@ -139,6 +139,10 @@ frappe.ui.form.on('Production', {
 
     },
 	refresh: function() {
+        if(cur_frm.doc.raw_material[0].production){
+            cur_frm.doc.status = "Completed"
+            cur_frm.refresh_field("status")
+        }
          cur_frm.set_df_property("scoop_of_work", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
                         cur_frm.set_df_property("scoop_of_work_total", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
 
@@ -157,7 +161,14 @@ frappe.ui.form.on('Production', {
                     ]
             }
         })
-
+        cur_frm.set_query('production',"raw_material", () => {
+            return {
+                filters: {
+                    docstatus: 1,
+                    status: "Completed"
+                }
+            }
+        })
         frappe.call({
             method: "service_pro.service_pro.doctype.production.production.get_jv",
             args: {
@@ -208,7 +219,6 @@ frappe.ui.form.on('Production', {
                                  async: false,
                                 callback: (r) => {
                                     cur_frm.reload_doc()
-                                     frappe.set_route("Form", "Stock Entry", r.message);
 
                              }
                             })

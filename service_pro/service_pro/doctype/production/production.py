@@ -23,7 +23,7 @@ class Production(Document):
 			"stock_entry_type": "Manufacture" if self.type == "Assemble" or self.type == "Service"  else "Repack",
 			"items": self.get_se_items(),
 			"production": self.name,
-			"total_additional_costs": self.additional_cost_total
+			"additional_costs": self.get_additional_costs()
 		}
 
 		frappe.get_doc(doc_se).insert(ignore_permissions=1).submit()
@@ -36,7 +36,7 @@ class Production(Document):
 			"doctype": "Stock Entry",
 			"stock_entry_type": "Manufacture",
 			"production": self.name,
-			"total_additional_costs": self.additional_cost_total,
+			"additional_costs": self.get_additional_costs(),
 			"items": [{
 				'item_code': self.item_code_prod,
 				't_warehouse': self.warehouse,
@@ -48,6 +48,15 @@ class Production(Document):
 		}
 		frappe.get_doc(doc_se1).insert(ignore_permissions=1).submit()
 
+	def get_additional_costs(self):
+		costs = []
+		for i in self.additional_cost:
+			costs.append({
+				"expense_account": i.expense_ledger,
+				"description": i.description,
+				"amount": i.additional_cost_amount
+			})
+		return costs
 	def generate_dn(self):
 		doc_dn = {
 			"doctype": "Delivery Note",

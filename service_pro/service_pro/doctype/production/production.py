@@ -52,7 +52,7 @@ class Production(Document):
 		doc_dn = {
 			"doctype": "Delivery Note",
 			"customer": self.customer,
-			"items": self.get_si_items(),
+			"items": self.get_si_items("DN"),
 			"production": self.get_production_items(),
 		}
 		dn = frappe.get_doc(doc_dn)
@@ -63,8 +63,7 @@ class Production(Document):
 		doc_si = {
 			"doctype": "Sales Invoice",
 			"customer": self.customer,
-			"update_stock": 1,
-			"items": self.get_si_items(),
+			"items": self.get_si_items("SI"),
 			"production": self.get_production_items(),
 		}
 		si = frappe.get_doc(doc_si)
@@ -125,30 +124,31 @@ class Production(Document):
 			'cost_center': self.cost_center
 		})
 		return items
-	def get_si_items(self):
-		return [
-					{
-						'item_code': self.item_code_prod,
-						'item_name': self.get_item_value("item_name"),
-						'description': self.get_item_value("description"),
-						'qty': self.qty,
-						'uom': "Nos",
-						'rate': self.rate,
-						'cost_center': self.cost_center,
-						'income_account': self.income_account
-					}
-				]
+	def get_si_items(self, type):
+
+
+		obj = {
+			'item_code': self.item_code_prod,
+			'item_name': self.get_item_value("item_name"),
+			'description': self.get_item_value("description"),
+			'qty': self.qty,
+			'uom': "Nos",
+			'rate': self.rate,
+			'cost_center': self.cost_center,
+			'income_account': self.income_account
+		}
+		if type == "DN":
+			obj["warehouse"] = self.warehouse
+		return [obj]
 
 	def get_production_items(self):
-		return [
-					{
-						'reference': self.name,
-						'qty': self.qty,
-						'rate': self.rate,
-						'amount': self.amount,
+		return [{
+			'reference': self.name,
+			'qty': self.qty,
+			'rate': self.rate,
+			'amount': self.amount,
 
-					}
-				]
+		}]
 
 	def get_item_value(self, field):
 		items = frappe.db.sql(""" SELECT * FROM `tabItem` WHERE name=%s """, self.item_code_prod, as_dict=1)
@@ -214,6 +214,11 @@ def get_se(name):
 	return len(se) > 0
 
 @frappe.whitelist()
-def get_dn_or_si(name,doctype):
-	dn_or_si = frappe.db.sql(""" SELECT * FROM `tabSales Invoice Production` WHERE reference=%s and parenttype=%s """, (name,doctype), as_dict=1)
-	return len(dn_or_si) > 0
+def get_dn_or_si(name):
+	si = frappe.db.sql(""" 
+ 			SELECT * FROM `tabSales Invoice Production` WHERE reference=%s and parenttype=%s """,
+							 (name,"Sales Invoice"), as_dict=1)
+	dn = frappe.db.sql(""" 
+	 			SELECT * FROM `tabSales Invoice Production` WHERE reference=%s and parenttype=%s """,
+					   (name, "Delivery Note"), as_dict=1)
+	return len(si) > 0,len(dn) > 0

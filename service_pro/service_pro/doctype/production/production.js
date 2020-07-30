@@ -139,6 +139,7 @@ frappe.ui.form.on('Production', {
 
     },
 	refresh: function() {
+
         if(cur_frm.doc.raw_material[0].production){
             cur_frm.doc.status = "Completed"
             cur_frm.refresh_field("status")
@@ -209,7 +210,7 @@ frappe.ui.form.on('Production', {
                     name: cur_frm.doc.name
                 },
                 callback: function (r) {
-                    if(!r.message && generate_button && cur_frm.doc.status === "In Progress"){
+                    if(!r.message && generate_button && cur_frm.doc.status === "In Progress" && cur_frm.doc.docstatus){
                          cur_frm.add_custom_button(__("Stock Entry"), () => {
                              cur_frm.call({
                                 doc: cur_frm.doc,
@@ -223,7 +224,7 @@ frappe.ui.form.on('Production', {
                              }
                             })
                         }, "Generate");
-                    } else if(r.message && generate_button && cur_frm.doc.status === "In Progress"){
+                    } else if(r.message && generate_button && cur_frm.doc.status === "In Progress" && cur_frm.doc.docstatus){
                                                 cur_frm.set_df_property('raw_material', 'read_only', 1);
 
                         frappe.call({
@@ -233,7 +234,7 @@ frappe.ui.form.on('Production', {
                                 doctype: "Sales Invoice"
                             },
                             callback: function (r) {
-                                if (!r.message) {
+                                if (!r.message[0] && !r.message[1]) {
                                     cur_frm.add_custom_button(__("Sales Invoice"), () => {
                                         cur_frm.call({
                                             doc: cur_frm.doc,
@@ -247,17 +248,6 @@ frappe.ui.form.on('Production', {
                                             }
                                         })
                                     },"Generate");
-                                }
-                            }
-                        })
-                        frappe.call({
-                            method: "service_pro.service_pro.doctype.production.production.get_dn_or_si",
-                            args: {
-                                name: cur_frm.doc.name,
-                                doctype: "Delivery Note"
-                            },
-                            callback: function (r) {
-                                if (!r.message) {
                                     cur_frm.add_custom_button(__("Delivery Note"), () => {
                                         cur_frm.call({
                                             doc: cur_frm.doc,
@@ -272,7 +262,6 @@ frappe.ui.form.on('Production', {
                                         })
                                     },"Generate");
                                 }
-
                             }
                         })
 

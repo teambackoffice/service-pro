@@ -324,3 +324,10 @@ def get_dn_si_qty(item_code, qty, name):
 	print(dn)
 	print(float(qty) - float(total_qty))
 	return float(qty) - float(total_qty)
+
+
+@frappe.whitelist()
+def change_status(name):
+	frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""", ("Partially Delivered", name))
+	frappe.db.commit()
+	return 1

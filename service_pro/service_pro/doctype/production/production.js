@@ -162,7 +162,32 @@ frappe.ui.form.on('Production', {
 
     },
 	refresh: function(frm) {
-
+                console.log("NA MAN")
+         if(cur_frm.doc.docstatus){
+         frappe.call({
+            method: "service_pro.service_pro.doctype.production.production.get_dn_si_qty",
+            args: {
+                item_code: cur_frm.doc.item_code_prod,
+                qty: cur_frm.doc.qty,
+                name: cur_frm.doc.name
+            },
+             async: false,
+            callback: function (r) {
+                console.log(r.message)
+                cur_frm.doc.qty_for_sidn = r.message
+                cur_frm.refresh_field("qty_for_sidn")
+            }
+        })}
+    if(parseFloat(cur_frm.doc.qty_for_sidn) > 0 && parseFloat(cur_frm.doc.qty_for_sidn) < cur_frm.doc.qty && cur_frm.doc.docstatus){
+        console.log("NA MAN")
+        frappe.call({
+            method: "service_pro.service_pro.doctype.production.production.change_status",
+            args: {
+                name: cur_frm.doc.name
+            },
+            callback: function () {}
+        })
+    }
      cur_frm.set_df_property("scoop_of_work", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
         cur_frm.set_df_property("scoop_of_work_total", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
 
@@ -202,19 +227,7 @@ frappe.ui.form.on('Production', {
             }
         })
         if(cur_frm.doc.docstatus){
-         frappe.call({
-            method: "service_pro.service_pro.doctype.production.production.get_dn_si_qty",
-            args: {
-                item_code: cur_frm.doc.item_code_prod,
-                qty: cur_frm.doc.qty,
-                name: cur_frm.doc.name
-            },
-            callback: function (r) {
-                console.log(r.message)
-                cur_frm.doc.qty_for_sidn = r.message
-                cur_frm.refresh_field("qty_for_sidn")
-            }
-        })
+
             frappe.call({
                 method: "service_pro.service_pro.doctype.production.production.get_jv",
                 args: {

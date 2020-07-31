@@ -197,7 +197,7 @@
    "fieldtype": "Select",
    "hidden": 1,
    "label": "Status",
-   "options": "In Progress\nCompleted"
+   "options": "In Progress\nPartially Delivered\nCompleted"
   },
   {
    "fieldname": "cost_center",
@@ -322,7 +322,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-31 15:49:27.347773",
+ "modified": "2020-07-31 18:15:35.936540",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

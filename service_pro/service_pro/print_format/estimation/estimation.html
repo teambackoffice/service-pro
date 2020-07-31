@@ -1,0 +1,237 @@
+{%- macro add_header(page_num, max_pages, doc, letter_head, no_letterhead) -%}
+{% if letter_head and not no_letterhead %}
+{{ letter_head }}
+{% endif %}
+
+{% if max_pages > 1 %}
+<p class="text-right">{{ _("Page #{0} of {1}").format(page_num, max_pages) }}</p>
+{% endif %}
+{%- endmacro -%}
+{{ add_header(0,1,doc,letter_head, no_letterhead) }}
+
+<table style="margin-top: 1%">
+    <tr>
+        <th class="text-left" style="border: 1px solid black ;width: 20%;font-size: 120%">
+            <b>DATE</b>
+        </th>
+        <td class="text-left" style="border: 1px solid black ;width: 30%;font-size: 120%">
+            {{doc.posting_date}}
+        </td>
+        <th class="text-left" style="border: 1px solid black ;width: 20%;font-size: 120%">
+            <b>DOCUMENT NO</b>
+        </th>
+        <td class="text-left" style="border: 1px solid black ;width: 25%;font-size: 120%">
+                {{doc.name}}
+
+        </td>
+    </tr>
+     <tr>
+        <th class="text-left" style="border: 1px solid black ;width: 20%;font-size: 120%">
+            <b>CUSTOMER NAME</b>
+        </th>
+        <td class="text-left" style="border: 1px solid black ;width: 30%;font-size: 120%">
+                {{doc.customer_name}}
+
+        </td>
+         <th class="text-left" style="border: 1px solid black ;width: 20%;font-size: 120%">
+            <b>RECEIPT NOTE NO</b>
+        </th>
+        <td class="text-left" style="border: 1px solid black ;width: 25%;font-size: 120%">
+            {% if doc.receipt_note %}
+            {{doc.receipt_note}}
+            {% endif %}
+
+        </td>
+
+    </tr>
+     <tr>
+        <th class="text-left" style="border: 1px solid black ;width: 20%;font-size: 120%">
+            <b>CONTACT PERSON</b>
+        </th>
+        <td class="text-left" style="border: 1px solid black ;width: 30%;font-size: 120%">
+            {{ frappe.db.get_value("Contact", doc.contact_person, "first_name") }}
+            {% if frappe.db.get_value("Contact", doc.contact_person, "middle_name") %}
+                {{ frappe.db.get_value("Contact", doc.contact_person, "middle_name")}}
+            {% endif %}
+            {{ frappe.db.get_value("Contact", doc.contact_person, "last_name") }}
+
+        </td>
+         <th class="text-left" style="border: 1px solid black ;width: 20%;font-size: 120%">
+            <b>CUSTOMER REF</b>
+        </th>
+        <td class="text-left" style="border: 1px solid black ;width: 25%;font-size: 120%">
+            {% if doc.customer_reference %}
+            {{doc.customer_reference}}
+            {% endif %}
+
+        </td>
+
+    </tr>
+    <tr>
+         <th class="text-left" style="border: 1px solid black ;width: 20%;font-size: 120%">
+            <b>DATE OF RECEIPT</b>
+        </th>
+        <td class="text-left" style="border: 1px solid black ;width: 25%;font-size: 120%">
+                        {{doc.date_of_receipt}}
+
+        </td>
+        <th class="text-left" style="border: 1px solid black ;width: 20%;font-size: 120%">
+            <b>ESTIMATED DATE</b>
+        </th>
+        <td class="text-left" style="border: 1px solid black ;width: 25%;font-size: 120%">
+                        {{doc.estimated_date}}
+
+        </td>
+    </tr>
+     <tr>
+        <th class="text-left" style="border: 1px solid black ;width: 20%;font-size: 120%">
+            <b>DELIVERED DATE</b>
+        </th>
+        <td class="text-left" style="border: 1px solid black ;width: 30%;font-size: 120%">
+            {% if doc.delivered_date %}
+            {{doc.delivered_date}}
+            {% endif %}
+
+        </td>
+        <th class="text-left" style="border: 1px solid black ;width: 20%;font-size: 120%">
+        </th>
+        <td class="text-left" style="border: 1px solid black ;width: 25%;font-size: 120%">
+
+        </td>
+    </tr>
+    <tr>
+        <td class="text-left" style="border-top: 1px solid black ;width: 20%;font-size: 120%"></td>
+        <td class="text-left" style="width: 25%;font-size: 120%"></td>
+        <td class="text-left" style="border-top: 1px solid black ;width: 25%;font-size: 120%"></td>
+        <td class="text-left" style="width: 25%;font-size: 120%"></td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <td colspan="8" style="border: 1px solid black;font-size: 120%">
+            <b>CYLINDER DIMENSIONS</b>
+        </td>
+    </tr>
+    <tr>
+        <th class="text-center" style="border: 1px solid black ;width: 12%;font-size: 120%">
+            <b>ROD DIA</b>
+        </th>
+        <td class="text-center" style="border: 1px solid black ;width: 12%;font-size: 120%">
+            <b>{{doc.rod_dia}}</b>
+        </td>
+        <th class="text-center" style="border: 1px solid black ;width: 12%;font-size: 120%">
+            <b>R LENGTH</b>
+        </th>
+        <td class="text-center" style="border: 1px solid black ;width: 12%;font-size: 120%">
+            <b>{{doc.r_length}}</b>
+        </td>
+        <th class="text-center" style="border: 1px solid black ;width: 12%;font-size: 120%">
+            <b>TUBE SIZE</b>
+        </th>
+        <td class="text-center" style="border: 1px solid black ;width: 12%;font-size: 120%">
+            <b>{{doc.tube_size}}</b>
+        </td>
+         <th class="text-center" style="border: 1px solid black ;width: 12%;font-size: 120%">
+            <b>T LENGTH</b>
+        </th>
+        <td class="text-center" style="border: 1px solid black ;width: 12%;font-size: 120%">
+            <b>{{doc.t_length}}</b>
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center" style="border-top: 1px solid black ;width: 12%;font-size: 120%">
+        </td>
+        <td class="text-center" style="width: 12%;font-size: 120%">
+        </td>
+        <td class="text-center" style="border-top: 1px solid black ;width: 12%;font-size: 120%">
+        </td>
+        <td class="text-center" style="width: 12%;font-size: 120%">
+        </td>
+        <td class="text-center" style="border-top: 1px solid black ;width: 12%;font-size: 120%">
+        </td>
+        <td class="text-center" style="width: 12%;font-size: 120%">
+        </td>
+         <td class="text-center" style="border-top: 1px solid black ;width: 12%;font-size: 120%">
+        </td>
+        <td class="text-center" style="width: 12%;font-size: 120%">
+        </td>
+    </tr>
+</table>
+{% set currency = frappe.db.get_single_value('Global Defaults','default_currency') %}
+<table>
+    <tr>
+        <th class="text-center" style="border: 1px solid black ;width: 43%;font-size: 120%">
+            <b>SCOOP OF WORK</b>
+        </th>
+        <th class="text-center" style="border: 1px solid black ;width: 38%;font-size: 120%">
+            <b>ESTIMATED DATE</b>
+        </th>
+        <th class="text-center" style="border: 1px solid black ;width: 17%;font-size: 120%">
+            <b>COST</b>
+        </th>
+    </tr>
+     {% for i in doc.scoop_of_work %}
+        <tr>
+            <td class="text-left" style="border: 1px solid black ;width: 43%;font-size: 120%">
+                {{i.work_name}}
+            </td>
+            <td class="text-center" style="border: 1px solid black ;width: 38%;font-size: 120%">
+                {{i.estimated_date}}
+            </td>
+            <td class="text-center" style="border: 1px solid black ;width: 17%;font-size: 120%">
+                            <b>{{frappe.format_value(i.cost, {'fieldtype': 'Currency', 'options': currency}, doc)}}</b>
+
+            </td>
+        </tr>
+    {% endfor %}
+    <tr>
+        <td class="text-center" style="border: 1px solid black ;width: 43%;font-size: 120%">
+        </td>
+        <th class="text-right" style="border: 1px solid black ;width: 38%;font-size: 120%">
+            <b>TOTAL COST</b>
+        </th>
+        <td class="text-center" style="border: 1px solid black ;width: 17%;font-size: 120%">
+
+            <b>{{frappe.format_value(doc.scoop_of_work_total, {'fieldtype': 'Currency', 'options': currency}, doc)}}</b>
+
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width: 43%;font-size: 120%"></td>
+        <td class="text-center" style="border-top: 1px solid black ;width: 38%;font-size: 120%"></td>
+        <td class="text-center" style="width: 17%;font-size: 120%"></td>
+    </tr>
+</table>
+<table style="margin-top: 1%;min-width: 130px;empty-cells: show; ">
+    <tr>
+        <th class="text-center" style="border: 1px solid black ;width: 33%;font-size: 120%">
+            <b>INSPECTED BY</b>
+        </th>
+        <th class="text-center" style="border: 1px solid black ;width: 33%;font-size: 120%">
+            <b>OPERATION</b>
+        </th>
+        <th class="text-center" style="border: 1px solid black ;width: 33%;font-size: 120%">
+            <b>GENERAL MANAGER</b>
+        </th>
+    </tr>
+    <tr>
+        <td class="text-left" style="border: 1px solid black ;width: 33%;font-size: 120%;min-width: 130px;empty-cells: show; ">
+                 <br>
+                 <br>
+                 <br>
+        </td>
+        <td class="text-center" style="border: 1px solid black ;width: 33%;font-size: 120%;min-width: 130px;empty-cells: show; ">
+                               <br>
+                               <br>
+                               <br>
+
+        </td>
+        <td class="text-left" style="border: 1px solid black ;width: 33%;font-size: 120%;min-width: 130px;empty-cells: show; ">
+                                <br>
+                                <br>
+                                <br>
+
+        </td>
+    </tr>
+</table>

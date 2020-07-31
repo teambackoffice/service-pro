@@ -49,8 +49,7 @@ frappe.ui.form.on('Service Receipt Note', {
                  frappe.db.get_list('Quotation', {
                     fields: ["*"],
                     filters: {
-                        service_receipt: cur_frm.docname,
-                        docstatus: 0
+                        service_receipt_note: cur_frm.docname,
                     }
                 }).then(records => {
                     if(records.length === 0){
@@ -158,17 +157,19 @@ function submit_estimations(frm, cur_frm) {
 }
 
 function create_quotation(frm, cur_frm) {
-    // frm.call({
-    //     doc: frm.doc,
-    //     method: 'create_quotation',
-    //     freeze: true,
-    //     freeze_message: "Creating Quotation...",
-    //     callback: () => {
-    //         cur_frm.refresh()
-    //     }
-    // })
-    frappe.model.open_mapped_doc({
-        method: "service_pro.service_pro.doctype.service_receipt_note.service_receipt_note.make_quotation",
-        frm: me.frm
+    frm.call({
+        doc: frm.doc,
+        method: 'create_quotation',
+        freeze: true,
+        freeze_message: "Creating Quotation...",
+        callback: (r) => {
+
+            frappe.set_route('Form', 'Quotation', r.message)
+
+        }
     })
+    // frappe.model.open_mapped_doc({
+    //     method: "service_pro.service_pro.doctype.service_receipt_note.service_receipt_note.make_quotation",
+    //     frm: me.frm
+    // })
 }

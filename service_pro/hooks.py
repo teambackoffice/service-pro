@@ -91,6 +91,9 @@ doc_events = {
 	"Sales Invoice": {
 		"on_submit": "service_pro.doc_events.sales_invoice.on_submit_si",
 		"on_cancel": "service_pro.doc_events.sales_invoice.on_cancel_si",
+	},
+    "File": {
+		"on_trash": "service_pro.doc_events.file.on_trash_f",
 	}
 }
 
@@ -146,7 +149,7 @@ fixtures = [
                 "name",
                 "in",
                 [
-                    "Quotation-service_receipt",
+                    "Quotation-service_receipt_note",
                     "Sales Invoice-production",
                     "Journal Entry-production",
                     "Stock Entry-production",

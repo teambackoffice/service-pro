@@ -22,6 +22,7 @@
   "finished_item_section",
   "item_code_prod",
   "qty",
+  "qty_for_sidn",
   "rate",
   "cost_center",
   "column_break_17",
@@ -306,13 +307,22 @@
   },
   {
    "fieldname": "remarks",
-   "fieldtype": "Long Text",
+   "fieldtype": "Small Text",
    "label": "Remarks"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "depends_on": "eval: doc.docstatus == 1",
+   "fieldname": "qty_for_sidn",
+   "fieldtype": "Float",
+   "label": "Qty for SI/DN",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-30 17:25:20.206998",
+ "modified": "2020-07-31 15:49:27.347773",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

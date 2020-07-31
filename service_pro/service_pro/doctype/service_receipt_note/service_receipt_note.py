@@ -12,7 +12,6 @@ class ServiceReceiptNote(Document):
 			item_price = frappe.db.sql(
 				""" SELECT * FROM `tabItem Price` WHERE item_code=%s and selling=1 ORDER BY valid_from DESC LIMIT 1""",
 				i.materials, as_dict=1)
-			item_rate = item_price[0].price_list_rate if len(item_price) > 0 else 0
 			doc = {
 				"doctype": "Inspection",
 				"customer": self.customer,
@@ -23,8 +22,6 @@ class ServiceReceiptNote(Document):
 			}
 
 			insert_doc = frappe.get_doc(doc).insert()
-			frappe.db.sql(""" UPDATE `tabService Receipt Note Item` SET against_inspection=%s where name=%s""", (insert_doc.name, i.name))
-			frappe.db.commit()
 	def submit_inspections(self):
 		inspections = frappe.db.sql(""" SELECT * FROM `tabInspection` WHERE service_receipt_note=%s""",self.name, as_dict=1)
 		for inspection in inspections:
@@ -44,27 +41,31 @@ class ServiceReceiptNote(Document):
 		doc = {
 			"doctype": "Quotation",
 			"party_name": self.customer,
-			"service_receipt": self.name,
+			"service_receipt_note": self.name,
 			"items": self.get_items()
 		}
 
-		frappe.get_doc(doc).insert()
-
+		doc_q = frappe.get_doc(doc).insert()
+		frappe.db.sql(""" UPDATE `tabService Receipt Note` SET quotation=%s""", doc_q.name, as_dict=1)
+		frappe.db.commit()
+		return doc_q.name
 	def get_items(self):
 		items = []
 		for item in self.materials:
 			inspection_values = frappe.db.get_value('Inspection',
 													{"service_receipt_note": self.name, "item_code": item.materials},
 													['rate', 'amount'], as_dict=1)
-			item_name = frappe.db.sql(""" SELECT * FROM `tabItem` WHERE name=%s""", item.materials, as_dict=1)
+			item_record = frappe.db.sql(""" SELECT * FROM `tabItem` WHERE name=%s""", item.materials, as_dict=1)
+			print("ITEEEEEEEEEEEEM")
+			print(item_record)
 			items.append({
 				"item_code": item.materials,
-				"item_name": item_name[0].item_name,
-				"description": item_name[0].description,
+				"item_name": item_record[0].item_name,
+				"description": item_record[0].description,
 				"qty": item.qty,
 				"rate": inspection_values.rate,
 				"amount": inspection_values.amount,
-				"uom": "Nos",
+				"uom": item_record[0].default_unit_of_measure,
 
 			})
 		return items

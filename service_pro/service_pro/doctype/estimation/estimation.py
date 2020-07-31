@@ -5,10 +5,23 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
-from erpnext.stock.utils import get_stock_balance
-
+from erpnext.stock.stock_ledger import get_previous_sle
+from frappe.utils import cint, flt
+from datetime import datetime
 class Estimation(Document):
-	pass
+	def set_available_qty(self):
+		time = datetime.now().time()
+		date = datetime.now().date()
+		for d in self.get('raw_material'):
+			previous_sle = get_previous_sle({
+				"item_code": d.item_code,
+				"warehouse": d.warehouse,
+				"posting_date": date,
+				"posting_time": time
+			})
+			# get actual stock at source warehouse
+			d.available_qty = previous_sle.get("qty_after_transaction") or 0
+
 
 @frappe.whitelist()
 def get_dimensions():
@@ -31,9 +44,36 @@ def get_dimensions():
 	return rod_dia, r_length, tube_size, t_length
 
 @frappe.whitelist()
-def get_rate(item_code, warehouse):
-	item_price = frappe.db.sql(""" SELECT * FROM `tabItem Price` WHERE item_code=%s and selling=1 ORDER BY valid_from DESC LIMIT 1""", item_code,as_dict=1)
+def get_rate(item_code, warehouse, based_on,price_list):
+	time = datetime.now().time()
+	date = datetime.now().date()
+	balance = 0
 	if warehouse:
-		print(get_stock_balance(item_code,warehouse))
+		previous_sle = get_previous_sle({
+			"item_code": item_code,
+			"warehouse": warehouse,
+			"posting_date": date,
+			"posting_time": time
+		})
+		# get actual stock at source warehouse
+		balance = previous_sle.get("qty_after_transaction") or 0
 
-	return item_price[0].price_list_rate if len(item_price) > 0 else 0,get_stock_balance(item_code,warehouse) if warehouse else 0
+	condition = ""
+	if price_list == "Standard Buying":
+		condition += " and buying = 1 "
+	elif price_list == "Standard Selling":
+		condition += " and selling = 1 "
+
+	query = """ SELECT * FROM `tabItem Price` WHERE item_code=%s {0} ORDER BY valid_from DESC LIMIT 1""".format(condition)
+
+	item_price = frappe.db.sql(query,item_code, as_dict=1)
+	rate = item_price[0].price_list_rate if len(item_price) > 0 else 0
+	print(based_on)
+	if based_on == "Valuation Rate":
+		print("WALA DIR")
+		item_price = frappe.db.sql(
+			""" SELECT * FROM `tabItem` WHERE item_code=%s""",
+			item_code, as_dict=1)
+		rate = item_price[0].valuation_rate if len(item_price) > 0 else 0
+
+	return rate, balance

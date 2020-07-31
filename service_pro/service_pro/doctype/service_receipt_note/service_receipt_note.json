@@ -19,6 +19,7 @@
   "customer_ref",
   "sales_man",
   "sales_man_name",
+  "quotation",
   "section_break_12",
   "materials",
   "amended_from",
@@ -125,11 +126,17 @@
    "fieldtype": "Link",
    "label": "Letter Head",
    "options": "Letter Head"
+  },
+  {
+   "fieldname": "quotation",
+   "fieldtype": "Link",
+   "label": "Quotation",
+   "options": "Quotation"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-29 18:10:12.659549",
+ "modified": "2020-07-31 14:38:32.109515",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Receipt Note",

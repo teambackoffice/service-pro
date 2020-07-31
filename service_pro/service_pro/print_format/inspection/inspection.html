@@ -1,0 +1,145 @@
+{%- macro add_header(page_num, max_pages, doc, letter_head, no_letterhead) -%}
+{% if letter_head and not no_letterhead %}
+{{ letter_head }}
+{% endif %}
+
+{% if max_pages > 1 %}
+<p class="text-right">{{ _("Page #{0} of {1}").format(page_num, max_pages) }}</p>
+{% endif %}
+{%- endmacro -%}
+{{ add_header(0,1,doc,letter_head, no_letterhead) }}
+
+<table style="margin-top: 1%">
+    <tr>
+        <th class="text-left" style="border: 1px solid black ;width: 50%;font-size: 100%">
+            <b>CUSTOMER NAME</b>
+        </th>
+        <th class="text-left" style="border: 1px solid black ;width: 25%;font-size: 100%">
+            DATE
+        </th>
+        <td class="text-left" style="border: 1px solid black ;width: 25%;font-size: 100%">
+
+        </td>
+
+    </tr>
+    <tr>
+        <td rowspan="2" class="text-left" style="border: 1px solid black ;width: 50%;font-size: 120%">
+            {{doc.image_1}}
+        </td>
+        <th class="text-left" style="border: 1px solid black ;width: 25%;font-size: 100%">
+            ISSUE DATE
+        </th>
+        <td class="text-left" style="border: 1px solid black ;width: 25%;font-size: 100%">
+
+        </td>
+
+    </tr>
+    <tr>
+
+        <th class="text-left" style="border: 1px solid black ;width: 25%;font-size: 100%">
+            CUSTOMER REFERENCE
+        </th>
+        <td class="text-left" style="border: 1px solid black ;width: 25%;font-size: 100%">
+
+        </td>
+
+    </tr>
+    <tr>
+        <th colspan="3" class="text-left" style="border: 1px solid black ;width: 100%;font-size: 100%">
+            <b>DESCRIPTION</b>
+        </th>
+    </tr>
+    <tr>
+        <td colspan="3" class="text-left" style="border: 1px solid black ;width: 100%;font-size: 100%">
+            {% if doc.description %}
+                {{doc.description }}
+            {% else %}
+                <br>
+            {% endif %}
+        </td>
+
+    </tr>
+</table>
+
+<table style="margin-top: 1%">
+    <tr>
+        <th colspan="4" class="text-left" style="border: 1px solid black ;width: 15%;font-size: 100%">
+            <b>PISTON ROD SIZE</b>
+        </th>
+
+        <td colspan="8" class="text-left" style="border: 1px solid black ;width: 85%;font-size: 100%">
+
+        </td>
+
+    </tr>
+    <tr>
+        <td class="text-left" style="border: 1px solid black ;width: 5%;font-size: 90%">
+           GOOD
+        </td>
+
+        <td class="text-left" style="border: 1px solid black ;width: 5%;font-size: 90%">
+            <div style="height: 20px;border: 2px solid black">
+
+            </div>
+        </td>
+        <td class="text-left" style="border: 1px solid black ;width: 5%;font-size: 90%">
+           BEND
+        </td>
+
+        <td class="text-left" style="border: 1px solid black ;width: 5%;font-size: 90%">
+            <div style="height: 20px;border: 2px solid black">
+
+            </div>
+        </td>
+
+        <td class="text-left" style="border: 1px solid black ;width: 5%;font-size: 90%">
+           PITTING
+        </td>
+
+        <td class="text-left" style="border: 1px solid black ;width: 5%;font-size: 90%">
+            <div style="height: 20px;border: 2px solid black">
+
+            </div>
+        </td>
+        <td class="text-left" style="border: 1px solid black ;width: 5%;font-size: 90%">
+           POLISHING
+        </td>
+
+        <td class="text-left" style="border: 1px solid black ;width: 5%;font-size: 90%">
+            <div style="height: 20px;border: 2px solid black">
+
+            </div>
+        </td>
+
+        <td class="text-left" style="border: 1px solid black ;width: 5%;font-size: 90%">
+           CHROMING
+        </td>
+
+        <td class="text-left" style="border: 1px solid black ;width: 5%;font-size: 90%">
+            <div style="height: 20px;border: 2px solid black">
+
+            </div>
+        </td>
+        <td class="text-left" style="border: 1px solid black ;width: 5%;font-size: 90%">
+           ROD CHANGE
+        </td>
+
+        <td class="text-left" style="border: 1px solid black ;width: 5%;font-size: 90%">
+            <div style="height: 20px;border: 2px solid black">
+
+            </div>
+        </td>
+
+    </tr>
+     <tr>
+        <th colspan="4" class="text-left" style="border: 1px solid black ;width: 25%;font-size: 100%">
+            <b>TUBE SIZE</b>
+        </th>
+
+        <td colspan="8" class="text-left" style="border: 1px solid black ;width: 75%;font-size: 100%">
+
+        </td>
+
+    </tr>
+
+</table>

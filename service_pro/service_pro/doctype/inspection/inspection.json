@@ -11,11 +11,9 @@
   "customer",
   "customer_name",
   "description",
-  "issue_number",
   "issue_date",
   "column_break_8",
   "posting_date",
-  "cso_number",
   "customer_reference",
   "service_receipt_note",
   "section_break_13",
@@ -190,7 +188,9 @@
   "remarks_40",
   "section_break_145",
   "terms_and_condition",
-  "amended_from"
+  "amended_from",
+  "section_break_184",
+  "letter_head"
  ],
  "fields": [
   {
@@ -223,11 +223,6 @@
    "label": "Description"
   },
   {
-   "fieldname": "issue_number",
-   "fieldtype": "Data",
-   "label": "Issue Number"
-  },
-  {
    "fieldname": "issue_date",
    "fieldtype": "Date",
    "label": "Issue Date"
@@ -243,11 +238,6 @@
    "in_list_view": 1,
    "label": "Posting Date",
    "reqd": 1
-  },
-  {
-   "fieldname": "cso_number",
-   "fieldtype": "Data",
-   "label": "CSO Number"
   },
   {
    "fieldname": "customer_reference",
@@ -1177,11 +1167,22 @@
    "fieldname": "remarks_38",
    "fieldtype": "Text",
    "label": "Remarks 38"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "letter_head",
+   "fieldtype": "Link",
+   "label": "Letter Head",
+   "options": "Letter Head"
+  },
+  {
+   "fieldname": "section_break_184",
+   "fieldtype": "Section Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-28 10:34:04.502842",
+ "modified": "2020-07-30 12:17:43.002012",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inspection",

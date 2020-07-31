@@ -37,8 +37,10 @@
   "rate_of_materials_based_on",
   "price_list",
   "raw_material",
+  "update_available_stock",
   "raw_material_total",
-  "amended_from"
+  "amended_from",
+  "letter_head"
  ],
  "fields": [
   {
@@ -230,11 +232,24 @@
    "fieldtype": "Select",
    "label": "Price List",
    "options": "\nStandard Buying\nStandard Selling"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "letter_head",
+   "fieldtype": "Link",
+   "label": "Letter Head",
+   "options": "Letter Head"
+  },
+  {
+   "fieldname": "update_available_stock",
+   "fieldtype": "Button",
+   "label": "Update Available Stock",
+   "options": "set_available_qty"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-29 18:30:02.842496",
+ "modified": "2020-07-31 14:13:41.151522",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

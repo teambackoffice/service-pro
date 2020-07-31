@@ -5,7 +5,6 @@
 from __future__ import unicode_literals
 import frappe
 import json
-from erpnext.stock.utils import get_stock_balance
 from frappe.model.document import Document
 from erpnext.stock.stock_ledger import get_previous_sle
 from frappe.utils import cint, flt
@@ -21,6 +20,12 @@ class Production(Document):
 			if i.production:
 				frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""", ("In Progress", i.production))
 				frappe.db.commit()
+
+		se = frappe.db.sql(""" SELECT * FROM `tabStock Entry` WHERE production=%s """, self.name, as_dict=1)
+		if len(se) > 0:
+			for i in se:
+				se_record = frappe.get_doc("Stock Entry", i.name)
+				se_record.cancel()
 	def on_submit(self):
 		for i in self.raw_material:
 			if i.production:
@@ -98,10 +103,13 @@ class Production(Document):
 			})
 		return costs
 	def generate_dn(self):
+		if self.input_qty > self.qty_for_sidn:
+			frappe.throw("Maximum qty that can be generated is " + str(self.qty))
+
 		doc_dn = {
 			"doctype": "Delivery Note",
 			"customer": self.customer,
-			"items": self.get_si_items("DN"),
+			"items": self.get_si_items("DN", self.input_qty),
 			"production": self.get_production_items(),
 		}
 		dn = frappe.get_doc(doc_dn)
@@ -109,10 +117,13 @@ class Production(Document):
 		return dn.name
 
 	def generate_si(self):
+		if self.input_qty > self.qty_for_sidn:
+			frappe.throw("Maximum qty that can be generated is " + str(self.qty))
+
 		doc_si = {
 			"doctype": "Sales Invoice",
 			"customer": self.customer,
-			"items": self.get_si_items("SI"),
+			"items": self.get_si_items("SI", self.input_qty),
 			"production": self.get_production_items(),
 		}
 		si = frappe.get_doc(doc_si)
@@ -175,14 +186,14 @@ class Production(Document):
 			'cost_center': self.cost_center
 		})
 		return items
-	def get_si_items(self, type):
+	def get_si_items(self, type, qty):
 
 
 		obj = {
 			'item_code': self.item_code_prod,
 			'item_name': self.get_item_value("item_name"),
 			'description': self.get_item_value("description"),
-			'qty': self.qty,
+			'qty': qty,
 			'uom': "Nos",
 			'rate': self.rate,
 			'cost_center': self.cost_center,
@@ -284,3 +295,32 @@ def get_dn_or_si(name):
 	 			SELECT * FROM `tabSales Invoice Production` WHERE reference=%s and parenttype=%s """,
 					   (name, "Delivery Note"), as_dict=1)
 	return len(si) > 0,len(dn) > 0
+
+@frappe.whitelist()
+def get_dn_si_qty(item_code, qty, name):
+	si_query = """ 
+ 			SELECT SII.qty as qty FROM `tabSales Invoice` AS SI 
+ 			INNER JOIN `tabSales Invoice Item` AS SII ON SII.parent = SI.name
+ 			INNER JOIN `tabSales Invoice Production` AS SIP ON SI.name = SIP.parent 
+ 			WHERE SIP.reference=%s and SIP.parenttype=%s and SI.docstatus = 1
+ 			"""
+	si = frappe.db.sql(si_query,(name,"Sales Invoice"), as_dict=1)
+	dn_query = """ 
+	 			SELECT DNI.qty as qty FROM `tabDelivery Note` AS DN 
+	 			INNER JOIN `tabDelivery Note Item` AS DNI ON DNI.parent = DN.name
+	 			INNER JOIN `tabSales Invoice Production` AS SIP ON DN.name = SIP.parent 
+	 			WHERE SIP.reference=%s and SIP.parenttype=%s and DN.docstatus = 1
+	 			"""
+	dn = frappe.db.sql(dn_query,(name, "Delivery Note"), as_dict=1)
+
+	total_qty = 0
+
+	if len(si) > 0:
+		total_qty += si[0].qty
+
+	if len(dn) > 0:
+		total_qty += dn[0].qty
+	print(si)
+	print(dn)
+	print(float(qty) - float(total_qty))
+	return float(qty) - float(total_qty)

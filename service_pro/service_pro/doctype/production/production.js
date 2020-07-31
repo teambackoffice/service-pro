@@ -76,10 +76,11 @@ function compute_raw_material_total(cur_frm) {
 
 frappe.ui.form.on('Production', {
     onload: function (frm) {
+
         if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
             filter_link_field(cur_frm)
-            frm.set_df_property('series', 'options', ['HA-'])
-            cur_frm.doc.series = "HA-"
+            frm.set_df_property('series', 'options', ['CS'])
+            cur_frm.doc.series = "CS-"
             cur_frm.refresh_field("series")
             cur_frm.set_df_property("scoop_of_work", "hidden", 0)
             cur_frm.set_df_property("scoop_of_work_total", "hidden", 0 )
@@ -103,8 +104,8 @@ frappe.ui.form.on('Production', {
         if(cur_frm.is_new()){
             if(cur_frm.doc.estimation){
                 cur_frm.doc.type = "Service"
-                 frm.set_df_property('series', 'options', ['HA-'])
-                cur_frm.doc.series = "HA-"
+                 frm.set_df_property('series', 'options', ['CS-'])
+                cur_frm.doc.series = "CS-"
                 cur_frm.refresh_field("series")
                 cur_frm.refresh_field("type")
             }
@@ -201,6 +202,19 @@ frappe.ui.form.on('Production', {
             }
         })
         if(cur_frm.doc.docstatus){
+         frappe.call({
+            method: "service_pro.service_pro.doctype.production.production.get_dn_si_qty",
+            args: {
+                item_code: cur_frm.doc.item_code_prod,
+                qty: cur_frm.doc.qty,
+                name: cur_frm.doc.name
+            },
+            callback: function (r) {
+                console.log(r.message)
+                cur_frm.doc.qty_for_sidn = r.message
+                cur_frm.refresh_field("qty_for_sidn")
+            }
+        })
             frappe.call({
                 method: "service_pro.service_pro.doctype.production.production.get_jv",
                 args: {
@@ -220,6 +234,8 @@ frappe.ui.form.on('Production', {
                 }
             })
         } else if (cur_frm.is_new()){
+            cur_frm.doc.status = "In Progress"
+            cur_frm.refresh_field("status")
             console.log("NEW")
             cur_frm.set_df_property('journal_entry', 'hidden', 1);
             cur_frm.set_df_property('advance', 'hidden', 1);
@@ -293,9 +309,24 @@ frappe.ui.form.on('Production', {
                                 doctype: "Sales Invoice"
                             },
                             callback: function (r) {
-                                if (!r.message[0] && !r.message[1]) {
+                                if (!r.message[0] && cur_frm.doc.qty_for_sidn > 0) {
+
                                     cur_frm.add_custom_button(__("Sales Invoice"), () => {
-                                        cur_frm.call({
+                                        let d = new frappe.ui.Dialog({
+                                        title: "Enter Qty",
+                                        fields: [
+                                            {
+                                                label: 'Qty',
+                                                fieldname: 'qty',
+                                                fieldtype: 'Float',
+                                                default: cur_frm.doc.qty_for_sidn
+                                            }
+                                        ],
+                                        primary_action_label: 'Generate',
+                                        primary_action(values) {
+
+                                            cur_frm.doc.input_qty = values.qty
+                                           cur_frm.call({
                                             doc: cur_frm.doc,
                                             method: 'generate_si',
                                             freeze: true,
@@ -306,9 +337,31 @@ frappe.ui.form.on('Production', {
                                                 frappe.set_route("Form", "Sales Invoice", r.message);
                                             }
                                         })
+                                        }
+                                    });
+
+                                    d.show();
+
                                     },"Generate");
+
+                                }
+                                if(!r.message[1] && cur_frm.doc.qty_for_sidn > 0){
                                     cur_frm.add_custom_button(__("Delivery Note"), () => {
-                                        cur_frm.call({
+                                        let d = new frappe.ui.Dialog({
+                                        title: "Enter Qty",
+                                        fields: [
+                                            {
+                                                label: 'Qty',
+                                                fieldname: 'qty',
+                                                fieldtype: 'Float',
+                                                default: cur_frm.doc.qty
+                                            }
+                                        ],
+                                        primary_action_label: 'Generate',
+                                        primary_action(values) {
+
+                                            cur_frm.doc.input_qty = values.qty
+                                           cur_frm.call({
                                             doc: cur_frm.doc,
                                             method: 'generate_dn',
                                             freeze: true,
@@ -319,8 +372,14 @@ frappe.ui.form.on('Production', {
                                                 frappe.set_route("Form", "Delivery Note", r.message);
                                             }
                                         })
+                                        }
+                                    });
+
+                                    d.show();
+
                                     },"Generate");
                                 }
+
                             }
                         })
 
@@ -368,8 +427,8 @@ frappe.ui.form.on('Production', {
 	    if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
             filter_link_field(cur_frm)
 
-            frm.set_df_property('series', 'options', ['HA-'])
-            cur_frm.doc.series = "HA-"
+            frm.set_df_property('series', 'options', ['CS-'])
+            cur_frm.doc.series = "CS-"
             cur_frm.refresh_field("series")
             cur_frm.set_df_property("scoop_of_work", "hidden", 0)
                         cur_frm.set_df_property("scoop_of_work_total", "hidden", 0 )
@@ -402,10 +461,12 @@ frappe.ui.form.on('Production', {
         } else {
             cur_frm.doc.item_code_prod = undefined
             cur_frm.doc.qty = 1
+            cur_frm.doc.qty_for_sidn = 1
             cur_frm.doc.rate = 0
             cur_frm.doc.amount = 0
             cur_frm.refresh_field("item_code")
             cur_frm.refresh_field("qty")
+            cur_frm.refresh_field("qty_for_sidn")
             cur_frm.refresh_field("rate")
             cur_frm.refresh_field("amount")
 
@@ -443,12 +504,15 @@ function get_items_from_estimation(frm,cur_frm) {
         set_raw_material(doc,frm)
         cur_frm.doc.item_code_prod = doc.item_code
         cur_frm.doc.qty = doc.qty
+        cur_frm.doc.qty_for_sidn = doc.qty
         cur_frm.doc.rate = doc.rate
         cur_frm.doc.amount = doc.qty * doc.rate
         cur_frm.refresh_field("item_code_prod")
         cur_frm.refresh_field("qty")
+        cur_frm.refresh_field("qty_for_sidn")
         cur_frm.refresh_field("rate")
         cur_frm.refresh_field("amount")
+
         frappe.db.get_doc('Item', doc.item_code)
             .then(doc => {
                 cur_frm.doc.umo = doc.stock_uom

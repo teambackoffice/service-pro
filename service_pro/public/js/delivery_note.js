@@ -2,7 +2,7 @@ cur_frm.cscript.customer = function(frm){
     filter_link_field(cur_frm)
 
 }
-cur_frm.cscript.refresh = function(frm){
+cur_frm.cscript.onload = function(frm){
     filter_link_field(cur_frm)
 
 }

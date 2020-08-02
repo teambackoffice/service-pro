@@ -10,11 +10,11 @@ cur_frm.cscript.refresh = function(frm){
 function filter_link_field(cur_frm) {
      cur_frm.set_query('reference', 'production', () => {
         return {
-            filters: {
-                customer: cur_frm.doc.customer,
-                docstatus: 1,
-                status: "In Progress"
-            }
+            filters: [
+                ["customer", "=", cur_frm.doc.customer],
+                ["docstatus", "=", 1],
+                ["status", "in", ["In Progress", "Partially Completed", "Partially Delivered"]],
+            ]
         }
     })
 }

@@ -110,7 +110,7 @@ class Production(Document):
 			"doctype": "Delivery Note",
 			"customer": self.customer,
 			"items": self.get_si_items("DN", self.input_qty),
-			"production": self.get_production_items(),
+			"production": self.get_production_items(self.input_qty),
 		}
 		dn = frappe.get_doc(doc_dn)
 		dn.insert(ignore_permissions=1)
@@ -124,7 +124,7 @@ class Production(Document):
 			"doctype": "Sales Invoice",
 			"customer": self.customer,
 			"items": self.get_si_items("SI", self.input_qty),
-			"production": self.get_production_items(),
+			"production": self.get_production_items(self.input_qty),
 		}
 		si = frappe.get_doc(doc_si)
 		si.insert(ignore_permissions=1)
@@ -203,10 +203,10 @@ class Production(Document):
 			obj["warehouse"] = self.warehouse
 		return [obj]
 
-	def get_production_items(self):
+	def get_production_items(self, qty):
 		return [{
 			'reference': self.name,
-			'qty': self.qty,
+			'qty': qty,
 			'rate': self.rate,
 			'amount': self.amount,
 

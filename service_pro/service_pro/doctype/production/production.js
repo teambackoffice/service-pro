@@ -278,7 +278,7 @@ frappe.ui.form.on('Production', {
                     name: cur_frm.doc.name
                 },
                 callback: function (r) {
-                    if(!r.message && generate_button && cur_frm.doc.status === "In Progress" && cur_frm.doc.docstatus){
+                    if(!r.message && generate_button && ["In Progress", "Partially Completed", "Partially Delivered"].includes(cur_frm.doc.status) && cur_frm.doc.docstatus){
                             if(["Assemble", "Disassemble"].includes(cur_frm.doc.type) ){
                                 if(cur_frm.doc.production_status === "Completed"){
                                     cur_frm.add_custom_button(__("Stock Entry"), () => {
@@ -312,7 +312,7 @@ frappe.ui.form.on('Production', {
                         }, "Generate");
                         }
 
-                    } else if(r.message && generate_button && cur_frm.doc.status === "In Progress" && cur_frm.doc.docstatus){
+                    } else if(r.message && generate_button && ["In Progress", "Partially Completed", "Partially Delivered"].includes(cur_frm.doc.status) && cur_frm.doc.docstatus){
                                                 cur_frm.set_df_property('raw_material', 'read_only', 1);
 
                         frappe.call({
@@ -322,7 +322,7 @@ frappe.ui.form.on('Production', {
                                 doctype: "Sales Invoice"
                             },
                             callback: function (r) {
-                                if (!r.message[0] && cur_frm.doc.qty_for_sidn > 0) {
+                                if (cur_frm.doc.qty_for_sidn > 0) {
 
                                     cur_frm.add_custom_button(__("Sales Invoice"), () => {
                                         let d = new frappe.ui.Dialog({
@@ -358,7 +358,7 @@ frappe.ui.form.on('Production', {
                                     },"Generate");
 
                                 }
-                                if(!r.message[1] && cur_frm.doc.qty_for_sidn > 0){
+                                if( cur_frm.doc.qty_for_sidn > 0){
                                     cur_frm.add_custom_button(__("Delivery Note"), () => {
                                         let d = new frappe.ui.Dialog({
                                         title: "Enter Qty",

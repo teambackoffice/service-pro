@@ -11,11 +11,11 @@ cur_frm.cscript.onload = function(frm){
 function filter_link_field(cur_frm) {
      cur_frm.set_query('reference', 'production', () => {
         return {
-            filters: {
-                customer: cur_frm.doc.customer,
-                docstatus: 1,
-                status: "In Progress"
-            }
+            filters: [
+                ["customer", "=", cur_frm.doc.customer],
+                ["docstatus", "=", 1],
+                ["status", "in", ["In Progress", "Partially Completed", "Partially Delivered"]],
+            ]
         }
     })
 }
@@ -36,7 +36,7 @@ cur_frm.cscript.reference = function (frm,cdt,cdn) {
                     method: "service_pro.service_pro.doctype.production.production.get_dn_si_qty",
                     args: {
                         item_code: doc.item_code_prod,
-                        qty: doc.qty,
+                        qty:   doc.qty,
                         name: d.reference
                     },
                     async: false,

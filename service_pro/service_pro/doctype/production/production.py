@@ -300,7 +300,7 @@ def get_dn_or_si(name):
 def get_dn_si_qty(item_code, qty, name):
 	si_query = """ 
  			SELECT SII.qty as qty FROM `tabSales Invoice` AS SI 
- 			INNER JOIN `tabSales Invoice Item` AS SII ON SII.parent = SI.name
+ 			INNER JOIN `tabSales Invoice Item` AS SII ON SII.parent = SI.name and SII.delivery_note is null
  			INNER JOIN `tabSales Invoice Production` AS SIP ON SI.name = SIP.parent 
  			WHERE SIP.reference=%s and SIP.parenttype=%s and SI.docstatus = 1
  			"""

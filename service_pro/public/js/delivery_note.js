@@ -54,7 +54,7 @@ cur_frm.cscript.reference = function (frm,cdt,cdn) {
                     .then(doc1 => {
                          cur_frm.add_child('items', {
                             item_code: doc.item_code_prod,
-                            qty: doc.qty_1,
+                            qty: qty_1,
                             uom: doc.umo,
                             rate: doc.rate,
                             amount: doc.amount,

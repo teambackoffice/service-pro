@@ -178,16 +178,16 @@ frappe.ui.form.on('Production', {
                 cur_frm.refresh_field("qty_for_sidn")
             }
         })}
-    if(parseFloat(cur_frm.doc.qty_for_sidn) > 0 && parseFloat(cur_frm.doc.qty_for_sidn) < cur_frm.doc.qty && cur_frm.doc.docstatus){
-        console.log("NA MAN")
-        frappe.call({
-            method: "service_pro.service_pro.doctype.production.production.change_status",
-            args: {
-                name: cur_frm.doc.name
-            },
-            callback: function () {}
-        })
-    }
+    // if(parseFloat(cur_frm.doc.qty_for_sidn) > 0 && parseFloat(cur_frm.doc.qty_for_sidn) < cur_frm.doc.qty && cur_frm.doc.docstatus){
+    //     console.log("NA MAN")
+    //     frappe.call({
+    //         method: "service_pro.service_pro.doctype.production.production.change_status",
+    //         args: {
+    //             name: cur_frm.doc.name
+    //         },
+    //         callback: function () {}
+    //     })
+    // }
      cur_frm.set_df_property("scoop_of_work", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
         cur_frm.set_df_property("scoop_of_work_total", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
 
@@ -367,7 +367,7 @@ frappe.ui.form.on('Production', {
                                                 label: 'Qty',
                                                 fieldname: 'qty',
                                                 fieldtype: 'Float',
-                                                default: cur_frm.doc.qty
+                                                default: cur_frm.doc.qty_for_sidn
                                             }
                                         ],
                                         primary_action_label: 'Generate',

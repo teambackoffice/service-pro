@@ -316,10 +316,12 @@ def get_dn_si_qty(item_code, qty, name):
 	total_qty = 0
 
 	if len(si) > 0:
-		total_qty += si[0].qty
+		for i in si:
+			total_qty += i.qty
 
 	if len(dn) > 0:
-		total_qty += dn[0].qty
+		for d in dn:
+			total_qty += d.qty
 	print(si)
 	print(dn)
 	print(float(qty) - float(total_qty))

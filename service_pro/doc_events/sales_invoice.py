@@ -6,7 +6,7 @@ def on_submit_si(doc, method):
         production = frappe.db.sql(""" SELECT * FROM `tabProduction` WHERE name=%s """, prod.reference, as_dict=1)
         if len(production) > 0:
             if get_dn_si_qty("", production[0].qty, prod.reference)> 0:
-                frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""",("Partially Completed", prod.reference))
+                frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""",("Partially Delivered", prod.reference))
                 frappe.db.commit()
             else:
                 frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""",
@@ -38,10 +38,12 @@ def get_dn_si_qty(item_code, qty, name):
 	total_qty = 0
 
 	if len(si) > 0:
-		total_qty += si[0].qty
+		for i in si:
+			total_qty += i.qty
 
 	if len(dn) > 0:
-		total_qty += dn[0].qty
+		for d in dn:
+			total_qty += d.qty
 	print(si)
 	print(dn)
 	print(float(qty) - float(total_qty))

@@ -46,7 +46,7 @@ class ServiceReceiptNote(Document):
 		}
 
 		doc_q = frappe.get_doc(doc).insert()
-		frappe.db.sql(""" UPDATE `tabService Receipt Note` SET quotation=%s""", doc_q.name, as_dict=1)
+		frappe.db.sql(""" UPDATE `tabService Receipt Note` SET quotation=%s WHERE name=%s""",(doc_q.name,self.name), as_dict=1)
 		frappe.db.commit()
 		return doc_q.name
 	def get_items(self):

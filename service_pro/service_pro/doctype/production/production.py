@@ -50,7 +50,7 @@ class Production(Document):
 		elif self.type == "Disassemble":
 			self.series = "SK-D-"
 		elif self.type == "Service":
-			self.series = "HA-"
+			self.series = "CS-"
 
 	def check_raw_materials(self):
 		for i in self.raw_material:
@@ -64,14 +64,11 @@ class Production(Document):
 			doc_se = {
 				"doctype": "Stock Entry",
 				"stock_entry_type": "Manufacture" if self.type == "Assemble" or self.type == "Service"  else "Repack",
-				"items": self.get_se_items(),
+				"items": self.get_manufacture_se_items() if self.type == "Assemble" or self.type == "Service"  else self.get_repack_se_items(),
 				"production": self.name,
 				"additional_costs": self.get_additional_costs()
 			}
-
 			frappe.get_doc(doc_se).insert(ignore_permissions=1).submit()
-			if self.type == "Disassemble":
-				self.generate_finish_good_se()
 			return ""
 
 		else:
@@ -163,7 +160,7 @@ class Production(Document):
 			})
 		print(accounts)
 		return accounts
-	def get_se_items(self):
+	def get_manufacture_se_items(self):
 		items = []
 
 		for item in self.raw_material:
@@ -180,6 +177,30 @@ class Production(Document):
 		items.append({
 			'item_code': self.item_code_prod,
 			't_warehouse': self.warehouse,
+			'qty': self.qty,
+			'uom': self.umo,
+			'basic_rate': self.rate,
+			'cost_center': self.cost_center
+		})
+		return items
+
+	def get_repack_se_items(self):
+		items = []
+
+		for item in self.raw_material:
+			if item.available_qty > 0:
+				items.append({
+					'item_code': item.item_code,
+					't_warehouse': item.warehouse,
+					'qty': item.qty_raw_material,
+					'uom': "Nos",
+					'basic_rate': item.rate_raw_material,
+					'cost_center': item.cost_center
+				})
+
+		items.append({
+			'item_code': self.item_code_prod,
+			's_warehouse': self.warehouse,
 			'qty': self.qty,
 			'uom': self.umo,
 			'basic_rate': self.rate,

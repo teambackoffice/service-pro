@@ -1,12 +1,12 @@
 {
  "actions": [],
- "autoname": "naming_series:",
+ "autoname": "format:{series}{YYYY}-{#####}",
  "creation": "2020-07-15 17:52:59.901625",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "naming_series",
+  "series",
   "posting_date",
   "receipt_note",
   "inspection",
@@ -43,12 +43,6 @@
   "letter_head"
  ],
  "fields": [
-  {
-   "fieldname": "naming_series",
-   "fieldtype": "Select",
-   "label": "Series",
-   "options": "HT-\nWS-\nCE-"
-  },
   {
    "default": "Today",
    "fieldname": "posting_date",
@@ -245,11 +239,17 @@
    "fieldtype": "Button",
    "label": "Update Available Stock",
    "options": "set_available_qty"
+  },
+  {
+   "fieldname": "series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "ER-"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-31 14:13:41.151522",
+ "modified": "2020-08-04 13:57:07.309570",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

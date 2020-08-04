@@ -79,7 +79,7 @@ frappe.ui.form.on('Production', {
 
         if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
             filter_link_field(cur_frm)
-            frm.set_df_property('series', 'options', ['CS'])
+            frm.set_df_property('series', 'options', ['CS-'])
             cur_frm.doc.series = "CS-"
             cur_frm.refresh_field("series")
             cur_frm.set_df_property("scoop_of_work", "hidden", 0)

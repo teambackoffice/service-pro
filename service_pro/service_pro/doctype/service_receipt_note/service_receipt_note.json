@@ -1,12 +1,12 @@
 {
  "actions": [],
- "autoname": "naming_series:",
+ "autoname": "format:{series}{YYYY}-{#####}",
  "creation": "2020-07-14 12:35:09.253008",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "naming_series",
+  "series",
   "column_break_2",
   "posting_date",
   "customer",
@@ -19,19 +19,12 @@
   "customer_ref",
   "sales_man",
   "sales_man_name",
-  "quotation",
   "section_break_12",
   "materials",
   "amended_from",
   "letter_head"
  ],
  "fields": [
-  {
-   "fieldname": "naming_series",
-   "fieldtype": "Select",
-   "label": "Series",
-   "options": "HT-\nWS-\nRN-"
-  },
   {
    "fieldname": "column_break_2",
    "fieldtype": "Section Break"
@@ -128,15 +121,15 @@
    "options": "Letter Head"
   },
   {
-   "fieldname": "quotation",
-   "fieldtype": "Link",
-   "label": "Quotation",
-   "options": "Quotation"
+   "fieldname": "series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "RN-"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-31 14:38:32.109515",
+ "modified": "2020-08-04 14:24:04.059409",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Receipt Note",

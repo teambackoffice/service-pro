@@ -622,7 +622,9 @@ cur_frm.cscript.item_code_prod = function (frm,cdt, cdn) {
                 item_code: cur_frm.doc.item_code_prod
             },
             callback: function (r) {
-                cur_frm.doc.umo = r.message
+                cur_frm.doc.umo = r.message[0]
+                cur_frm.doc.item_name = r.message[1]
+                cur_frm.refresh_field("item_name")
                 cur_frm.refresh_field("umo")
             }
         })

@@ -12,6 +12,7 @@
   "customer_name",
   "address",
   "address_name",
+  "customer_number",
   "column_break_4",
   "posting_date",
   "posting_time",
@@ -21,6 +22,7 @@
   "production_status",
   "finished_item_section",
   "item_code_prod",
+  "item_name",
   "qty",
   "qty_for_sidn",
   "rate",
@@ -318,11 +320,21 @@
    "fieldtype": "Float",
    "label": "Qty for SI/DN",
    "read_only": 1
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name"
+  },
+  {
+   "fieldname": "customer_number",
+   "fieldtype": "Data",
+   "label": "Customer Number"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-07-31 18:15:35.936540",
+ "modified": "2020-08-04 14:53:00.506041",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

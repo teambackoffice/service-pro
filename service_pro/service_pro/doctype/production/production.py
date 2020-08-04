@@ -278,7 +278,7 @@ def get_uom(item_code):
 		""" SELECT * FROM `tabItem` WHERE name=%s""",
 		item_code, as_dict=1)
 
-	return item[0].stock_uom
+	return item[0].stock_uom, item[0].item_name
 
 @frappe.whitelist()
 def get_address(customer):

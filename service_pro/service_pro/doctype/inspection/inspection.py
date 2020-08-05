@@ -14,6 +14,7 @@ class Inspection(Document):
 			"customer": self.customer,
 			"customer_reference": self.customer_reference,
 			"item_code": self.item_code,
+			"item_name": self.item_name,
 			"qty": self.qty,
 			"receipt_note": self.service_receipt_note,
 			"inspection": self.name,

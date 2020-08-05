@@ -63,6 +63,11 @@ cur_frm.cscript.warehouse = function (frm,cdt, cdn) {
 cur_frm.cscript.item_code = function (frm,cdt, cdn) {
     var d = locals[cdt][cdn]
     if(d.item_code){
+     frappe.db.get_doc("Item", d.item_code)
+            .then(doc => {
+               d.item_name = doc.item_name
+                cur_frm.refresh_field("item_name")
+            })
         frappe.call({
             method: "service_pro.service_pro.doctype.production.production.get_rate",
             args: {

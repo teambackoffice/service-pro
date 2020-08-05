@@ -48,3 +48,12 @@ function get_items_from_srn(cur_frm) {
 //     }
 // });
 }
+
+cur_frm.cscript.item_code = function (frm, cdt, cdn) {
+    var d = locals[cdt][cdn]
+     frappe.db.get_doc("Item", d.item_code)
+            .then(doc => {
+               d.item_name = doc.item_name
+                cur_frm.refresh_field("item_name")
+            })
+}

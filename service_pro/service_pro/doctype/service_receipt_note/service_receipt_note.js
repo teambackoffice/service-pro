@@ -173,3 +173,11 @@ function create_quotation(frm, cur_frm) {
     //     frm: me.frm
     // })
 }
+cur_frm.cscript.materials = function (frm, cdt, cdn) {
+    var d = locals[cdt][cdn]
+     frappe.db.get_doc("Item", d.materials)
+            .then(doc => {
+               d.item_name = doc.item_name
+                cur_frm.refresh_field("materials")
+            })
+}

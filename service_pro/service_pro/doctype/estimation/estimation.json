@@ -26,6 +26,7 @@
   "t_length",
   "finished_good",
   "item_code",
+  "item_name",
   "rate",
   "column_break_22",
   "qty",
@@ -245,11 +246,16 @@
    "fieldtype": "Select",
    "label": "Series",
    "options": "ER-"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-08-04 13:57:07.309570",
+ "modified": "2020-08-05 10:34:51.573176",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

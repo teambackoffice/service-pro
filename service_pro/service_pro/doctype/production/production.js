@@ -520,18 +520,23 @@ function get_items_from_estimation(frm,cur_frm) {
     .then(doc => {
         set_scoop_of_work(doc,frm)
         set_raw_material(doc,frm)
+            console.log("asaaaaaa")
         cur_frm.doc.item_code_prod = doc.item_code_est
+                console.log("123qweqw")
+
+        cur_frm.doc.item_name = doc.item_name
         cur_frm.doc.qty = doc.qty
         cur_frm.doc.qty_for_sidn = doc.qty
         cur_frm.doc.rate = doc.rate
         cur_frm.doc.amount = doc.qty * doc.rate
         cur_frm.refresh_field("item_code_prod")
+        cur_frm.refresh_field("item_name")
         cur_frm.refresh_field("qty")
         cur_frm.refresh_field("qty_for_sidn")
         cur_frm.refresh_field("rate")
         cur_frm.refresh_field("amount")
 
-        frappe.db.get_doc('Item', doc.item_code)
+        frappe.db.get_doc('Item', doc.item_code_est)
             .then(doc => {
                 cur_frm.doc.umo = doc.stock_uom
                 cur_frm.refresh_field("umo")
@@ -560,6 +565,7 @@ function set_raw_material(doc, frm) {
       var row = doc.raw_material[i]
       frm.add_child('raw_material', {
             item_code: row.item_code,
+            item_name: row.item_name,
             warehouse: row.warehouse,
             available_qty: row.available_qty,
             qty_raw_material: row.qty_raw_material,

@@ -520,7 +520,7 @@ function get_items_from_estimation(frm,cur_frm) {
     .then(doc => {
         set_scoop_of_work(doc,frm)
         set_raw_material(doc,frm)
-        cur_frm.doc.item_code_prod = doc.item_code
+        cur_frm.doc.item_code_prod = doc.item_code_est
         cur_frm.doc.qty = doc.qty
         cur_frm.doc.qty_for_sidn = doc.qty
         cur_frm.doc.rate = doc.rate

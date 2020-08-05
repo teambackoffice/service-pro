@@ -6,6 +6,7 @@
  "engine": "InnoDB",
  "field_order": [
   "item_code",
+  "item_name",
   "warehouse",
   "available_qty",
   "production",
@@ -78,11 +79,16 @@
    "fieldtype": "Link",
    "label": "Production",
    "options": "Production"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2020-07-30 17:19:33.451032",
+ "modified": "2020-08-05 10:53:01.024183",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Raw Material",

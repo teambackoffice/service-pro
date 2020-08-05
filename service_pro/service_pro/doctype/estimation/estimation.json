@@ -25,7 +25,7 @@
   "tube_size",
   "t_length",
   "finished_good",
-  "item_code",
+  "item_code_est",
   "item_name",
   "rate",
   "column_break_22",
@@ -134,12 +134,6 @@
    "fieldname": "finished_good",
    "fieldtype": "Section Break",
    "label": "Finished Good"
-  },
-  {
-   "fieldname": "item_code",
-   "fieldtype": "Link",
-   "label": "Item Code",
-   "options": "Item"
   },
   {
    "default": "0",
@@ -251,11 +245,17 @@
    "fieldname": "item_name",
    "fieldtype": "Data",
    "label": "Item Name"
+  },
+  {
+   "fieldname": "item_code_est",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-08-05 10:34:51.573176",
+ "modified": "2020-08-05 10:54:21.948230",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

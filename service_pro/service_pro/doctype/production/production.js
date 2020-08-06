@@ -617,6 +617,12 @@ cur_frm.cscript.item_code = function (frm,cdt, cdn) {
 
             },
             callback: function (r) {
+                 frappe.db.get_doc("Item", d.item_code)
+                    .then(doc => {
+                        console.log("NAA MAN")
+                        d.item_name= doc.item_name
+                        cur_frm.refresh_field("raw_material")
+                    })
                 d.rate_raw_material = r.message[0]
                 d.amount_raw_material = r.message[0] * d.qty_raw_material
                 d.available_qty = r.message[1]

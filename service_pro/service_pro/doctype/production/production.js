@@ -199,6 +199,7 @@ frappe.ui.form.on('Production', {
             callback: function (r) {
                 if(r.message){
                     frm.set_df_property('production_status', 'read_only', 1);
+                    frm.set_df_property('additional_cost', 'read_only', 1);
                 }
 
             }
@@ -313,7 +314,8 @@ frappe.ui.form.on('Production', {
                         }
 
                     } else if(r.message && generate_button && ["In Progress", "Partially Completed", "Partially Delivered"].includes(cur_frm.doc.status) && cur_frm.doc.docstatus){
-                                                cur_frm.set_df_property('raw_material', 'read_only', 1);
+                        cur_frm.set_df_property('raw_material', 'read_only', 1);
+                        cur_frm.set_df_property('scoop_of_work', 'read_only', 1);
 
                         frappe.call({
                             method: "service_pro.service_pro.doctype.production.production.get_dn_or_si",

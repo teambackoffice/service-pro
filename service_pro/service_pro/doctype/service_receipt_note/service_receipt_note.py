@@ -15,6 +15,7 @@ class ServiceReceiptNote(Document):
 			doc = {
 				"doctype": "Inspection",
 				"customer": self.customer,
+				"customer_name": self.customer_name,
 				"customer_reference": self.customer_ref,
 				"item_code": i.materials,
 				"item_name": i.item_name,

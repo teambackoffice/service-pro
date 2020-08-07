@@ -205,6 +205,100 @@
 </table>
 <table style="margin-top: 1%;min-width: 130px;empty-cells: show; ">
     <tr>
+        <th colspan="5" class="text-left" style="border: 1px solid black ;width: 15%;font-size: 120%">
+            <b>Finished Goods</b>
+        </th>
+    </tr>
+    <tr>
+        <th class="text-center" style="border: 1px solid black ;width: 15%;font-size: 120%">
+            <b>Item Code</b>
+        </th>
+        <th class="text-center" style="border: 1px solid black ;width: 25%;font-size: 120%">
+            <b>Item Name</b>
+        </th>
+        <th class="text-center" style="border: 1px solid black ;width: 10%;font-size: 120%">
+            <b>Qty</b>
+        </th>
+        <th class="text-center" style="border: 1px solid black ;width: 25%;font-size: 120%">
+            <b>Rate</b>
+        </th>
+        <th class="text-center" style="border: 1px solid black ;width: 25%;font-size: 120%">
+            <b>Amount</b>
+        </th>
+    </tr>
+    <tr>
+        <td class="text-center" style="border: 1px solid black ;width: 15%;font-size: 120%">
+            <b>{{doc.item_code_est}}</b>
+        </td>
+        <td class="text-center" style="border: 1px solid black ;width: 25%;font-size: 120%">
+                        <b>{{doc.item_name}}</b>
+
+        </td>
+        <td class="text-center" style="border: 1px solid black ;width: 10%;font-size: 120%">
+                        <b>{{doc.qty}}</b>
+
+        </td>
+        <td class="text-center" style="border: 1px solid black ;width: 25%;font-size: 120%">
+
+                        <b>{{frappe.format_value(doc.rate, {'fieldtype': 'Currency', 'options': currency}, doc)}}</b>
+
+        </td>
+        <td class="text-center" style="border: 1px solid black ;width: 25%;font-size: 120%">
+                        <b>{{frappe.format_value(doc.amount, {'fieldtype': 'Currency', 'options': currency}, doc)}}</b>
+
+        </td>
+    </tr>
+</table>
+<table style="margin-top: 1%;min-width: 130px;empty-cells: show; ">
+    <tr>
+        <th colspan="5" class="text-left" style="border: 1px solid black ;width: 15%;font-size: 120%">
+            <b>Raw Materials</b>
+        </th>
+    </tr>
+    <tr>
+        <th class="text-center" style="border: 1px solid black ;width: 15%;font-size: 120%">
+            <b>Item Code</b>
+        </th>
+        <th class="text-center" style="border: 1px solid black ;width: 25%;font-size: 120%">
+            <b>Item Name</b>
+        </th>
+        <th class="text-center" style="border: 1px solid black ;width: 10%;font-size: 120%">
+            <b>Qty</b>
+        </th>
+        <th class="text-center" style="border: 1px solid black ;width: 25%;font-size: 120%">
+            <b>Rate</b>
+        </th>
+        <th class="text-center" style="border: 1px solid black ;width: 25%;font-size: 120%">
+            <b>Amount</b>
+        </th>
+    </tr>
+    {%for i in doc.raw_material%}
+    <tr>
+        <td class="text-center" style="border: 1px solid black ;width: 15%;font-size: 120%">
+            <b>{{i.item_code}}</b>
+        </td>
+        <td class="text-center" style="border: 1px solid black ;width: 25%;font-size: 120%">
+                        <b>{{i.item_name}}</b>
+
+        </td>
+        <td class="text-center" style="border: 1px solid black ;width: 10%;font-size: 120%">
+                        <b>{{i.qty_raw_material}}</b>
+
+        </td>
+        <td class="text-center" style="border: 1px solid black ;width: 25%;font-size: 120%">
+
+                        <b>{{frappe.format_value(i.rate_raw_material, {'fieldtype': 'Currency', 'options': currency}, doc)}}</b>
+
+        </td>
+        <td class="text-center" style="border: 1px solid black ;width: 25%;font-size: 120%">
+                        <b>{{frappe.format_value(i.amount_raw_material, {'fieldtype': 'Currency', 'options': currency}, doc)}}</b>
+
+        </td>
+    </tr>
+    {%endfor%}
+</table>
+<table style="margin-top: 1%;min-width: 130px;empty-cells: show; ">
+    <tr>
         <th class="text-center" style="border: 1px solid black ;width: 33%;font-size: 120%">
             <b>INSPECTED BY</b>
         </th>

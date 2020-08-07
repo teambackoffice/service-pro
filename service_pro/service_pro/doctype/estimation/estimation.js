@@ -2,6 +2,16 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Estimation', {
+     customer: function () {
+	    if(cur_frm.doc.customer){
+	         frappe.db.get_doc("Customer", cur_frm.doc.customer)
+            .then(doc => {
+                cur_frm.doc.customer_name = doc.customer_name
+                cur_frm.refresh_field("customer_name")
+            })
+        }
+
+    },
     refresh: function (frm) {
          cur_frm.add_custom_button(__("Material Request"), () => {
                  frappe.set_route('Form', 'Material Request', "New Material Request 1")

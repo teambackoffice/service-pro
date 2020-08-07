@@ -12,6 +12,8 @@ class Inspection(Document):
 		doc = {
 			"doctype": "Estimation",
 			"customer": self.customer,
+			"customer_name": self.customer_name,
+
 			"customer_reference": self.customer_reference,
 			"item_code_est": self.item_code,
 			"item_name": self.item_name,

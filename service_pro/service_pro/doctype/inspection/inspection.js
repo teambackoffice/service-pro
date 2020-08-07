@@ -2,6 +2,16 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Inspection', {
+     customer: function () {
+	    if(cur_frm.doc.customer){
+	         frappe.db.get_doc("Customer", cur_frm.doc.customer)
+            .then(doc => {
+                cur_frm.doc.customer_name = doc.customer_name
+                cur_frm.refresh_field("customer_name")
+            })
+        }
+
+    },
 	// refresh: function(frm) {
      //    if(cur_frm.is_new()){
      //         frm.add_custom_button(__("Service Receipt Note"), () => {

@@ -1,0 +1,238 @@
+<html>
+
+{%- macro add_header(page_num, max_pages, doc, letter_head, no_letterhead) -%}
+{% if letter_head and not no_letterhead %}
+{{ letter_head }}
+{% endif %}
+
+{% if max_pages > 1 %}
+<p class="text-right">{{ _("Page #{0} of {1}").format(page_num, max_pages) }}</p>
+{% endif %}
+{%- endmacro -%}
+{{ add_header(0,1,doc,letter_head, no_letterhead) }}
+
+
+<table>
+    <tr>
+        <td class="text-center">
+            CASH INVOICE <br>
+            {{ _("Cash Invoice") }}
+        </td>
+    </tr>
+</table>
+<div style="width: 100%;border-bottom: 2px solid black"></div>
+
+<table style="margin-top: 1%">
+    <tr>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+            <b>Customer Details</b>
+        </td>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+            <b>تفاصيل العميل</b>
+        </td>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+            <b>Transaction Details</b>
+        </td>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+<b>تفاصيل الصفقه</b>
+        </td>
+    </tr>
+     <tr>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+            <b>CUSTOMER NAME   :</b><br>
+
+            <b>الزبون اسم </b>
+
+        </td>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+               {{doc.customer_name}}
+
+        </td>
+         <td class="text-left" style="width: 25%;font-size: 100%">
+             <b>INVOICE NO </b>:<br>
+             <b>
+                رقم الفاتورة</b>
+        </td>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+           {{doc.name}}
+
+        </td>
+
+    </tr>
+    <tr>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+            <b>VAT NO:</b><br>
+            <b>الرقم الضريبة</b>
+        </td>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+            {%if frappe.db.get_value("Customer",doc.customer,"tax_id")%}
+        {{frappe.db.get_value("Customer",doc.customer,"tax_id")}}
+            {%endif%}
+        </td>
+         <td class="text-left" style="width: 25%;font-size: 100%">
+             <b>DATE :</b><br>
+             <b>                تاريخ الفاتورة</b>
+        </td>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+           {{doc.posting_date}}
+        </td>
+
+    </tr>
+     <tr>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+             <b>PO NUMBER:</b><br>
+            <b>                رقم أمر الشراء</b>
+        </td>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+            {%if doc.po_no%}
+                {{doc.po_no}}
+            {%endif%}
+        </td>
+         <td rowspan="5" class="text-left" style="width: 25%;font-size: 100%">
+             <b>SALES MAN:</b>
+             <br>
+             <b>                رقم أمر الشراء</b>
+        </td>
+        <td rowspan="5" class="text-left" style="width: 25%;font-size: 100%">
+             {%if doc.sales_team | length > 0%}
+                {{doc.sales_team[0].sales_person}}
+            {%endif%}
+        </td>
+    </tr>
+    <tr>
+         <td class="text-left" style="width: 25%;font-size: 100%">
+            <b>ADDRESS:</b>
+        </td>
+        <td colspan="3" class="text-left" style="width: 75%;font-size: 100%">
+               {{doc.address_display.replace("<br>"," ")}}
+        </td>
+
+
+
+    </tr>
+</table>
+<div style="width: 100%;border-bottom: 2px solid black"></div>
+<table style="margin-top: 1%">
+    <tr >
+        <td class="text-left" style="width: 15%;font-size: 100%">
+            <b>ITEM CODE</b><br>
+            <b>الرمز</b>
+        </td>
+        <td class="text-left" style="width: 45%;font-size: 100%">
+            <b>DESCRIPTION</b><br>
+            <b>وصف السلعة</b>
+        </td>
+        <td class="text-left" style="width: 6%;font-size: 100%">
+            <b>QTY</b><br>
+            <b>وحدة</b>
+        </td>
+        <td class="text-left" style="width: 6%;font-size: 100%">
+            <b>UNIT</b><br>
+            <b>وحدة</b>
+        </td>
+        <td class="text-left" style="width: 13%;font-size: 100%">
+            <b>RATE</b><br>
+            <b>سعر الوحدة</b>
+        </td>
+         <td class="text-left" style="width: 6%;font-size: 100%">
+            <b>DISCOUNT</b><br>
+             <b>خصم</b>
+        </td>
+        <td class="text-left" style="width: 6%;font-size: 100%">
+            <b>AMOUNT</b><br>
+            <b>مجموع</b>
+        </td>
+    </tr>
+    {%for i in doc.items%}
+     <tr>
+        <td class="text-left" style="width: 15%;font-size: 100%">
+            <b>{{i.item_code}}</b>
+        </td>
+        <td class="text-left" style="width: 50%;font-size: 100%">
+            <b>{{i.description}}</b>
+        </td>
+        <td class="text-left" style="width: 6%;font-size: 100%">
+            <b>{{"{:,.2f}".format(i.qty)}}</b>
+        </td>
+        <td class="text-left" style="width: 6%;font-size: 100%">
+            <b>{{i.uom}}</b>
+        </td>
+        <td class="text-left" style="width: 6%;font-size: 100%">
+
+            <b>{{ "{:,.2f}".format(i.rate) }}</b>
+        </td>
+         <td class="text-left" style="width: 6%;font-size: 100%">
+             <b>{{ "{:,.2f}".format(i.discount_amount) }}</b>
+        </td>
+        <td class="text-left" style="width: 6%;font-size: 100%">
+                       <b>{{ "{:,.2f}".format(i.amount) }}</b>
+
+        </td>
+    </tr>
+    {%endfor%}
+
+</table>
+<div style="width: 100%;border-bottom: 2px solid black"></div>
+<table style="margin-top: 1%">
+    <tr>
+        <td class="text-left" style="width: 70%;font-size: 100%">
+            <b>Amount in Words:</b><br>
+             <b>{{doc.in_words}}</b>
+        </td>
+        <td class="text-right" style="width: 17%;font-size: 100%">
+            <b>Amount :</b><br>
+            <b>مجموع</b>
+        </td>
+        <td class="text-right" style="width: 13%;font-size: 100%">
+            <b>{{ "{:,.2f}".format(doc.grand_total) }}</b>
+        </td>
+    </tr>
+    <tr>
+        <td class="text-left" style="width: 70%;font-size: 100%">
+            <b>{{doc.in_words}}</b>
+        </td>
+        <td class="text-right" style="width: 17%;font-size: 100%">
+            <b>Total Discount :</b><br>
+            <b>قيمة الخصم</b>
+        </td>
+        <td class="text-right" style="width: 13%;font-size: 100%">
+        <b>{{ "{:,.2f}".format(doc.discount_amount) }}</b>
+
+        </td>
+    </tr>
+    <tr>
+        <td class="text-left" style="width: 70%;font-size: 100%">
+            <b>Bank Details:</b><br>
+            Beneficiary Name: HYDRO TECH EST. FOR EQUIPMENT MAINTENANCE<br>
+            Bank Name: Banque Saudi Fransi, IBAN: SA5655000000097571300124<br>
+            Account Number: 97571300124<br><br>
+
+            Beneficiary Name: HYDRO TECH EST. FOR EQUIPMENT MAINTENANCE<br>
+            Bank Name: Saud British Bank, IBAN: SA594000000057274664001<br>
+            Account Number: 057274664001<br><br>
+        </td>
+        <td class="text-right" style="width: 17%;font-size: 100%">
+            <b>Gross Amount :</b><br>
+            <b>الأجمالي المبلغ</b>
+
+            <br><br>
+            <b>VAT 5% :</b><br>
+            <b>ضريبة القيمة المضافة إجمالي </b>
+
+            <br><br>
+            <b>Net Amount :</b><br>
+            <b>الأجمالي المبلغ</b>
+
+        </td>
+        <td class="text-right" style="width: 13%;font-size: 100%">
+            <b>{{ "{:,.2f}".format(doc.outstanding_amount) }}</b>
+            <br><br><br>
+            <b>{{ "{:,.2f}".format(doc.outstanding_amount) }}</b>
+            <br><br><br><br>
+            <b>{{ "{:,.2f}".format(doc.outstanding_amount) }}</b>
+        </td>
+    </tr>
+</table>
+<div style="width: 100%;border-bottom: 2px solid black"></div>
+
+</html>

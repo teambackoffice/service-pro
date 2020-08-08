@@ -155,6 +155,7 @@ frappe.ui.form.on('Production', {
         status.read_only = (cur_frm.doc.status === "Completed")
 
         cur_frm.set_df_property('advance_payment', 'read_only', cur_frm.doc.status === "Completed");
+        cur_frm.set_df_property('raw_material', 'read_only', cur_frm.doc.status === "Completed");
 
     },
     validate: function (frm) {

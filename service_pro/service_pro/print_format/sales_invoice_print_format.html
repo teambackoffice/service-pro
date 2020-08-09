@@ -104,7 +104,9 @@
             <b>ADDRESS:</b>
         </td>
         <td colspan="3" class="text-left" style="width: 75%;font-size: 100%">
-               {{doc.address_display.replace("<br>"," ")}}
+            {%if doc.address_display %}
+                   {{doc.address_display.replace("<br>"," ")}}
+            {% endif %}
         </td>
 
 

@@ -12,11 +12,11 @@
 {{ add_header(0,1,doc,letter_head, no_letterhead) }}
 
 
-<table>
+<table style="margin-top: 1.7cm">
     <tr>
         <td class="text-center">
-            CASH INVOICE <br>
-            {{ _("Cash Invoice") }}
+            VAT INVOICE <br>
+            فاتورة ضريبة القيمة المضافة
         </td>
     </tr>
 </table>
@@ -218,7 +218,7 @@
             <b>الأجمالي المبلغ</b>
 
             <br><br>
-            <b>VAT 5% :</b><br>
+            <b>VAT 15% :</b><br>
             <b>ضريبة القيمة المضافة إجمالي </b>
 
             <br><br>
@@ -226,10 +226,15 @@
             <b>الأجمالي المبلغ</b>
 
         </td>
+
         <td class="text-right" style="width: 13%;font-size: 100%">
             <b>{{ "{:,.2f}".format(doc.outstanding_amount) }}</b>
             <br><br><br>
-            <b>{{ "{:,.2f}".format(doc.outstanding_amount) }}</b>
+            {% for i in doc.taxes %}
+                {% if "VAT 15%" in i.account_head %}
+                    <b>{{ "{:,.2f}".format(i.total) }}</b>
+                {% endif %}
+            {%endfor%}
             <br><br><br><br>
             <b>{{ "{:,.2f}".format(doc.outstanding_amount) }}</b>
         </td>

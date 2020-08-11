@@ -1,0 +1,103 @@
+<html>
+<style>
+
+	@media screen {
+		.print-format {
+			width: 88mm;
+            padding: 5mm;
+
+		}
+	}
+</style>
+<table style="width: 80mm">
+    <tr>
+        <td class="text-center">
+            {{doc.address_name}}
+        </td>
+    </tr>
+<table style="width: 66mm">
+    <tr>
+        <td class="text-left">
+            <b>Seal Kit No :</b>
+        </td>
+        <td class="text-left">
+            {{doc.name}}
+        </td>
+    </tr>
+    <tr>
+        <td class="text-left">
+          <b>  Date :</b>
+        </td>
+        <td class="text-left">
+            {{doc.posting_date}}
+        </td>
+    </tr>
+    <tr>
+        <td class="text-left">
+           <b>Delivery Date :</b>
+        </td>
+        <td class="text-left">
+            {{doc.delivery_date}}
+        </td>
+    </tr>
+    <tr>
+        <td class="text-left">
+           <b>Customer :</b>
+        </td>
+        <td class="text-left">
+            {{doc.customer_name}}
+        </td>
+    </tr>
+    <tr>
+        <td class="text-left">
+           <b>Customer Number :</b>
+        </td>
+        <td class="text-left">
+            {{doc.customer_number}}
+        </td>
+    </tr>
+</table>
+<br>
+<table style="width: 80mm">
+    <tr>
+        <td class="text-left">
+            <b>Item</b>
+        </td>
+        <td class="text-left">
+            <b>Qty</b>
+        </td>
+        <td class="text-left">
+            <b>Name</b>
+        </td>
+        <td class="text-left">
+            <b>Amount</b>
+        </td>
+    </tr>
+    <tr>
+        <td class="text-left">
+            {{doc.item_code_prod}}
+        </td>
+        <td class="text-left">
+            {{ "{:,.2f}".format(doc.qty) }}
+        </td>
+        <td class="text-left">
+            {{doc.item_name}}
+        </td>
+        <td class="text-right">
+            {{ "{:,.2f}".format(doc.amount) }}
+        </td>
+    </tr>
+    <tr>
+        <td class="text-left">
+        </td>
+        <td class="text-left">
+        </td>
+        <td class="text-right">
+            <b>Total</b>
+        </td>
+        <td class="text-right">
+            {{ "{:,.2f}".format(doc.amount) }}
+        </td>
+    </tr>
+</table>
+</html>

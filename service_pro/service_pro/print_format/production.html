@@ -1,4 +1,13 @@
 <html>
+{%- macro add_header(page_num, max_pages, doc, letter_head, no_letterhead) -%}
+{% if letter_head and not no_letterhead %}
+{{ letter_head }}
+{% endif %}
+
+{% if max_pages > 1 %}
+{% endif %}
+{%- endmacro -%}
+{{ add_header(0,1,doc,letter_head, no_letterhead) }}
 <style>
 
 	@media screen {
@@ -12,7 +21,9 @@
 <table style="width: 80mm">
     <tr>
         <td class="text-center">
-            {{doc.address_name}}
+            Sammish: Seihat Road - Al Khodariya P.O Box: 6341 Dammam 31442 - KSA <br>
+            Tel : +966 543 05 06 07<br>
+            Email : info@hydrotechglobal.com
         </td>
     </tr>
 <table style="width: 66mm">
@@ -58,38 +69,32 @@
     </tr>
 </table>
 <br>
-<table style="width: 80mm">
+<table style="width: 82mm">
     <tr>
-        <td class="text-left">
-            <b>Item</b>
+         <td class="text-left">
+            <b>Item Name</b>
         </td>
         <td class="text-left">
             <b>Qty</b>
         </td>
-        <td class="text-left">
-            <b>Name</b>
-        </td>
-        <td class="text-left">
+
+        <td class="text-right">
             <b>Amount</b>
         </td>
     </tr>
     <tr>
-        <td class="text-left">
-            {{doc.item_code_prod}}
+          <td class="text-left">
+            {{doc.item_name}}
         </td>
         <td class="text-left">
             {{ "{:,.2f}".format(doc.qty) }}
         </td>
-        <td class="text-left">
-            {{doc.item_name}}
-        </td>
+
         <td class="text-right">
             {{ "{:,.2f}".format(doc.amount) }}
         </td>
     </tr>
     <tr>
-        <td class="text-left">
-        </td>
         <td class="text-left">
         </td>
         <td class="text-right">

@@ -49,7 +49,9 @@
   "additional_cost",
   "additional_cost_total",
   "amended_from",
-  "remarks"
+  "remarks",
+  "printing_settings_section",
+  "letter_head"
  ],
  "fields": [
   {
@@ -332,11 +334,23 @@
    "fieldname": "customer_number",
    "fieldtype": "Data",
    "label": "Customer Number"
+  },
+  {
+   "fieldname": "printing_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Printing Settings"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "letter_head",
+   "fieldtype": "Link",
+   "label": "Letter Head",
+   "options": "Letter Head"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-08-06 13:54:07.886379",
+ "modified": "2020-08-12 10:08:38.733016",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

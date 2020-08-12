@@ -71,36 +71,36 @@
 <br>
 <table style="width: 82mm">
     <tr>
-         <td class="text-left">
+         <td class="text-left" style="border: 1px solid black">
             <b>Item Name</b>
         </td>
-        <td class="text-left">
+        <td class="text-left" style="border: 1px solid black">
             <b>Qty</b>
         </td>
 
-        <td class="text-right">
+        <td class="text-right" style="border: 1px solid black">
             <b>Amount</b>
         </td>
     </tr>
     <tr>
-          <td class="text-left">
+          <td class="text-left" style="border: 1px solid black">
             {{doc.item_name}}
         </td>
-        <td class="text-left">
+        <td class="text-left" style="border: 1px solid black">
             {{ "{:,.2f}".format(doc.qty) }}
         </td>
 
-        <td class="text-right">
+        <td class="text-right" style="border: 1px solid black">
             {{ "{:,.2f}".format(doc.amount) }}
         </td>
     </tr>
     <tr>
-        <td class="text-left">
+        <td class="text-left" style="border: 1px solid black">
         </td>
-        <td class="text-right">
+        <td class="text-right" style="border: 1px solid black">
             <b>Total</b>
         </td>
-        <td class="text-right">
+        <td class="text-right" style="border: 1px solid black">
             {{ "{:,.2f}".format(doc.amount) }}
         </td>
     </tr>

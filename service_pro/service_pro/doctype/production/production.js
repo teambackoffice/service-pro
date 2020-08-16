@@ -434,12 +434,33 @@ frappe.ui.form.on('Production', {
                 callback: function (r) {
                     if(r.message){
                         cur_frm.doc.address = r.message.name
-                        cur_frm.doc.address_name = r.message.address_line1 + "\n" +
-                            r.message.city + "\n" +
-                            r.message.county + "\n" +
-                            r.message.country + "\n" +
-                            r.message.state + "\n" +
-                            r.message.pincode
+                        var address = ""
+                        if(r.message.address_line1){
+                            address += r.message.address_line1
+                            address += "\n"
+                        }
+                        if(r.message.city){
+                            address += r.message.city
+                            address += "\n"
+                        }
+                        if(r.message.county){
+                            address += r.message.county
+                            address += "\n"
+                        }
+                        if(r.message.country){
+                            address += r.message.country
+                            address += "\n"
+                        }
+                        if(r.message.state){
+                            address += r.message.state
+                            address += "\n"
+                        }
+                        if(r.message.pincode){
+                            address += r.message.pincode
+                            address += "\n"
+                        }
+
+                        cur_frm.doc.address_name = address
                         cur_frm.refresh_field("address")
                         cur_frm.refresh_field("address_name")
                     }
@@ -503,16 +524,41 @@ frappe.ui.form.on('Production', {
         }
 	},
     address: function(frm) {
-         frappe.db.get_doc("Address", cur_frm.doc.address)
+        if(cur_frm.doc.address){
+            frappe.db.get_doc("Address", cur_frm.doc.address)
             .then(doc => {
-                cur_frm.doc.address_name =  cur_frm.doc.address_name = r.message.address_line1 + "\n" +
-                            r.message.city + "\n" +
-                            r.message.county + "\n" +
-                            r.message.country + "\n" +
-                            r.message.state + "\n" +
-                            r.message.pincode
-             cur_frm.refresh_field("address_name")
+                console.log(doc)
+                var address = ""
+                if(doc.address_line1){
+                    address += doc.address_line1
+                    address += "\n"
+                }
+                if(doc.city){
+                    address += doc.city
+                    address += "\n"
+                }
+                if(doc.county){
+                    address += doc.county
+                    address += "\n"
+                }
+                if(doc.country){
+                    address += doc.country
+                    address += "\n"
+                }
+                if(doc.state){
+                    address += doc.state
+                    address += "\n"
+                }
+                if(doc.pincode){
+                    address += doc.pincode
+                    address += "\n"
+                }
+                cur_frm.doc.address_name = address
+
+                cur_frm.refresh_field("address_name")
             })
+        }
+
 	},
 
 });

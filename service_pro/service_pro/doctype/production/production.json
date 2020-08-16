@@ -14,6 +14,7 @@
   "address_name",
   "customer_number",
   "sales_man",
+  "sales_man_name",
   "column_break_4",
   "posting_date",
   "posting_time",
@@ -359,11 +360,18 @@
    "fieldname": "old_sk_number",
    "fieldtype": "Data",
    "label": "Old SK Number"
+  },
+  {
+   "fetch_from": "sales_man.employee_name",
+   "fieldname": "sales_man_name",
+   "fieldtype": "Data",
+   "label": "Sales Man Name",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-08-16 07:29:26.748825",
+ "modified": "2020-08-16 09:49:38.545759",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

@@ -5,6 +5,9 @@
     <br>
     <br>
     <br>
+    <br>
+    <br>
+    <br>
   </div>
 </div>
 <table style="width: 100%">
@@ -219,10 +222,12 @@
             Account Number: 057274664001<br><br>
         </td>
         <td class="text-right" style="width: 17%;font-size: 100%">
+            {% if  doc.items|sum(attribute='discount_amount') > 0 or doc.discount_amount | abs > 0%}
 
-           <b>Total Discount :</b><br>
-            <b>قيمة الخصم</b>
-            <br><br>
+               <b>Total Discount :</b><br>
+                <b>قيمة الخصم</b>
+                <br><br>
+            {%endif%}
                         {% if  doc.advances|length > 0%}
 
             <b>Advance:</b>
@@ -241,10 +246,15 @@
 
             {% if  doc.items|sum(attribute='discount_amount') > 0%}
                 <b>{{ "{:,.2f}".format(doc.items|sum(attribute='discount_amount')) }}</b>
+            <br><br><br>
             {% else %}
-                    <b>{{ "{:,.2f}".format(doc.discount_amount | abs) }}</b>
+                    {% if doc.discount_amount | abs > 0 %}
+
+                        <b>{{ "{:,.2f}".format(doc.discount_amount | abs) }}</b>
+                        <br><br><br>
+                    {% endif %}
             {%endif%}
-                <br><br><br>
+
 
             {% if  doc.advances|length > 0%}
                 <b>{{ "{:,.2f}".format(doc.advances|sum(attribute='allocated_amount')) }}</b>

@@ -122,7 +122,6 @@ class Production(Document):
 			"customer": self.customer,
 			"items": self.get_si_items("SI", self.input_qty),
 			"production": self.get_production_items(self.input_qty),
-			"sales_man": self.get_sales_man(),
 		}
 		si = frappe.get_doc(doc_si)
 		si.insert(ignore_permissions=1)

@@ -27,13 +27,21 @@ cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
     var d = locals[cdt][cdn]
    frappe.db.get_single_value('Production Settings', 'raw_material_warehouse')
         .then(warehouse => {
-            d.warehouse = warehouse
-            cur_frm.refresh_field("raw_material")
+            if(warehouse){
+                d.warehouse = warehouse
+                cur_frm.refresh_field("raw_material")
+            }
         })
     frappe.db.get_single_value('Production Settings', 'raw_material_cost_center')
         .then(cost_center => {
-            d.cost_center = cost_center
-            cur_frm.refresh_field("raw_material")
+            if(cost_center){
+                 d.cost_center = cost_center
+                cur_frm.refresh_field("raw_material")
+            } else {
+                d.cost_center = cur_frm.doc.cost_center
+                cur_frm.refresh_field("raw_material")
+            }
+
         })
 }
 cur_frm.cscript.raw_material_remove = function (frm,cdt,cdn) {

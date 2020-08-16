@@ -200,8 +200,11 @@
             <b>قيمة الخصم</b>
         </td>
         <td class="text-right" style="width: 13%;font-size: 100%">
-        <b>{{ "{:,.2f}".format(doc.items|sum(attribute='discount_amount')) }}</b>
-
+            {% if  doc.items|sum(attribute='discount_amount') > 0%}
+                <b>{{ "{:,.2f}".format(doc.items|sum(attribute='discount_amount')) }}</b>
+            {% else %}
+                    <b>{{ "{:,.2f}".format(doc.discount_amount | abs) }}</b>
+            {%endif%}
         </td>
     </tr>
     <tr>
@@ -223,22 +226,15 @@
             <b>VAT 15% :</b><br>
             <b>ضريبة القيمة المضافة إجمالي </b>
 
-            <br><br>
-            <b>Net Amount :</b><br>
-            <b>الأجمالي المبلغ</b>
 
         </td>
 
         <td class="text-right" style="width: 13%;font-size: 100%">
             <b>{{ "{:,.2f}".format(doc.outstanding_amount) }}</b>
             <br><br><br>
-            {% for i in doc.taxes %}
-                {% if "VAT 15%" in i.account_head %}
-                    <b>{{ "{:,.2f}".format(i.total) }}</b>
-                {% endif %}
-            {%endfor%}
-            <br><br><br><br>
-            <b>{{ "{:,.2f}".format(doc.net_total) }}</b>
+
+                        <b>{{ "{:,.2f}".format(doc.total_taxes_and_charges) }}</b>
+
         </td>
     </tr>
 </table>

@@ -13,12 +13,14 @@
   "address",
   "address_name",
   "customer_number",
+  "sales_man",
   "column_break_4",
   "posting_date",
   "posting_time",
   "delivery_date",
   "type",
   "estimation",
+  "old_sk_number",
   "production_status",
   "finished_item_section",
   "item_code_prod",
@@ -346,11 +348,22 @@
    "fieldtype": "Link",
    "label": "Letter Head",
    "options": "Letter Head"
+  },
+  {
+   "fieldname": "sales_man",
+   "fieldtype": "Link",
+   "label": "Sales Man",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "old_sk_number",
+   "fieldtype": "Data",
+   "label": "Old SK Number"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-08-12 10:08:38.733016",
+ "modified": "2020-08-16 07:29:26.748825",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

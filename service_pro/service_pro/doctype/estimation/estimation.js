@@ -18,7 +18,7 @@ frappe.ui.form.on('Estimation', {
             });
     },
 	onload: function(frm) {
-	     frappe.db.get_single_value('Production Settings', 'rate_of_materials_based_on')
+         frappe.db.get_single_value('Production Settings', 'rate_of_materials_based_on')
             .then(rate => {
                 cur_frm.doc.rate_of_materials_based_on = rate
                 cur_frm.refresh_field("rate_of_materials_based_on")
@@ -97,6 +97,7 @@ cur_frm.cscript.item_code = function (frm,cdt, cdn) {
                 frappe.db.get_doc("Item", d.item_code)
         .then(doc => {
            d.item_name = doc.item_name
+           d.umo = doc.stock_uom
             cur_frm.refresh_field("raw_material")
         })
                 d.rate_raw_material = r.message[0]

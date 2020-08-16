@@ -52,19 +52,30 @@ cur_frm.cscript.reference = function (frm,cdt,cdn) {
 
         if(add){
              frappe.db.get_doc('Item', doc.item_code_prod)
-                    .then(doc1 => {
-                         cur_frm.add_child('items', {
-                            item_code: doc.item_code_prod,
-                            qty: doc.qty_1,
-                            uom: doc.umo,
-                            rate: doc.rate,
-                            amount: doc.amount,
-                            item_name: doc1.item_name,
-                            description: doc1.description,
-                        });
+                .then(doc1 => {
+                     cur_frm.add_child('items', {
+                        item_code: doc.item_code_prod,
+                        qty: doc.qty_1,
+                        uom: doc.umo,
+                        rate: doc.rate,
+                        amount: doc.amount,
+                        item_name: doc1.item_name,
+                        description: doc1.description,
+                    });
 
-                    cur_frm.refresh_field('items');
-                })
+                cur_frm.refresh_field('items');
+            })
+            if(doc.sales_man){
+                  cur_frm.add_child('sales_man', {
+                sales_man: doc.sales_man,
+                reference: d.reference,
+            });
+         cur_frm.refresh_field('sales_man');
+
+
+            }
+
+
 
         }
 

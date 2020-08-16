@@ -156,6 +156,7 @@ frappe.ui.form.on('Production', {
 
         cur_frm.set_df_property('advance_payment', 'read_only', cur_frm.doc.status === "Completed");
         cur_frm.set_df_property('raw_material', 'read_only', cur_frm.doc.status === "Completed");
+        cur_frm.set_df_property('rate', 'read_only', cur_frm.doc.status !== "In Progress" );
 
     },
     validate: function (frm) {
@@ -342,7 +343,7 @@ frappe.ui.form.on('Production', {
                                         primary_action(values) {
 
                                             cur_frm.doc.input_qty = values.qty
-                                           cur_frm.call({
+                                            cur_frm.call({
                                             doc: cur_frm.doc,
                                             method: 'generate_si',
                                             freeze: true,
@@ -568,12 +569,14 @@ function set_raw_material(doc, frm) {
       var row = doc.raw_material[i]
       frm.add_child('raw_material', {
             item_code: row.item_code,
+            umo: row.umo,
             item_name: row.item_name,
             warehouse: row.warehouse,
             available_qty: row.available_qty,
             qty_raw_material: row.qty_raw_material,
             rate_raw_material: row.rate_raw_material,
-            amount_raw_material: row.amount_raw_material
+            amount_raw_material: row.amount_raw_material,
+            cost_center: row.cost_center
         });
 
     frm.refresh_field('raw_material');
@@ -622,6 +625,8 @@ cur_frm.cscript.item_code = function (frm,cdt, cdn) {
                     .then(doc => {
                         console.log("NAA MAN")
                         d.item_name= doc.item_name
+                           d.umo = doc.stock_uom
+
                         cur_frm.refresh_field("raw_material")
                     })
                 d.rate_raw_material = r.message[0]

@@ -108,12 +108,12 @@
   },
   {
    "fieldname": "rod_dia",
-   "fieldtype": "Select",
+   "fieldtype": "Data",
    "label": "ROD DIA"
   },
   {
    "fieldname": "r_length",
-   "fieldtype": "Select",
+   "fieldtype": "Data",
    "label": "R LENGTH"
   },
   {
@@ -122,12 +122,12 @@
   },
   {
    "fieldname": "tube_size",
-   "fieldtype": "Select",
+   "fieldtype": "Data",
    "label": "TUBE SIZE"
   },
   {
    "fieldname": "t_length",
-   "fieldtype": "Select",
+   "fieldtype": "Data",
    "label": "T LENGTH"
   },
   {
@@ -257,7 +257,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-08-05 15:28:21.991642",
+ "modified": "2020-08-16 17:43:48.426822",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

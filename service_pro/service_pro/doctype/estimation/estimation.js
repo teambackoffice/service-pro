@@ -33,16 +33,16 @@ frappe.ui.form.on('Estimation', {
         df.in_grid_view = 0
         df.hidden = 1
         df1.hidden = 1
-        frappe.call({
-            method: "service_pro.service_pro.doctype.estimation.estimation.get_dimensions",
-            args:{},
-            callback: function (r) {
-                frm.set_df_property('rod_dia', 'options', r.message[0])
-                frm.set_df_property('r_length', 'options', r.message[1])
-                frm.set_df_property('tube_size', 'options', r.message[2])
-                frm.set_df_property('t_length', 'options', r.message[3])
-            }
-        })
+        // frappe.call({
+        //     method: "service_pro.service_pro.doctype.estimation.estimation.get_dimensions",
+        //     args:{},
+        //     callback: function (r) {
+        //         frm.set_df_property('rod_dia', 'options', r.message[0])
+        //         frm.set_df_property('r_length', 'options', r.message[1])
+        //         frm.set_df_property('tube_size', 'options', r.message[2])
+        //         frm.set_df_property('t_length', 'options', r.message[3])
+        //     }
+        // })
 	},
 });
 

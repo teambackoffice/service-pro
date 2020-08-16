@@ -223,10 +223,14 @@
            <b>Total Discount :</b><br>
             <b>قيمة الخصم</b>
             <br><br>
+                        {% if  doc.advances|length > 0%}
+
             <b>Advance:</b>
             <br>
             <b>مقدم</b>
             <br><br>
+                        {%endif%}
+
              <b>Gross Amount :</b>
             <br>
             <b>الأجمالي المبلغ</b>
@@ -244,14 +248,13 @@
 
             {% if  doc.advances|length > 0%}
                 <b>{{ "{:,.2f}".format(doc.advances|sum(attribute='allocated_amount')) }}</b>
-            {% else %}
-                    <b>{{ "{:,.2f}".format(0) }}</b>
-            {%endif%}
+
             <br><br><br>
+            {%endif%}
             {% if  doc.advances | length > 0%}
-                <b>{{ "{:,.2f}".format(doc.outstanding_amount + doc.advances|sum(attribute='allocated_amount'))}}</b>
+                <b>{{ "{:,.2f}".format(doc.grand_total + doc.advances|sum(attribute='allocated_amount'))}}</b>
             {%else%}
-                        <b>{{ "{:,.2f}".format(doc.outstanding_amount)}}</b>
+                        <b>{{ "{:,.2f}".format(doc.grand_total)}}</b>
 
             {%endif%}
 

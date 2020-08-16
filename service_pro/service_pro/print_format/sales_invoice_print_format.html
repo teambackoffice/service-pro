@@ -90,8 +90,8 @@
              <b>                رقم أمر الشراء</b>
         </td>
         <td rowspan="5" class="text-left" style="width: 25%;font-size: 100%">
-             {%if doc.sales_team | length > 0%}
-                {{doc.sales_team[0].sales_person}}
+             {%if doc.sales_man%}
+                {{doc.sales_man_name}}
             {%endif%}
         </td>
     </tr>

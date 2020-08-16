@@ -155,7 +155,8 @@ fixtures = [
                     "Stock Entry-production",
                     "Delivery Note-production",
                     "Sales Invoice-amount_in_arabic_words_",
-                    "Sales Invoice-sales_man"
+                    "Sales Invoice-sales_man",
+                    "Sales Invoice-sales_man_name"
                 ]
             ]
         ]

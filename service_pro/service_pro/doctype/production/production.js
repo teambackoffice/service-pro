@@ -1,6 +1,7 @@
 // Copyright (c) 2020, jan and contributors
 // For license information, please see license.txt
 cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
+
     var d = locals[cdt][cdn]
     if(d.qty_raw_material && d.qty_raw_material <= d.available_qty){
         d.amount_raw_material = d.rate_raw_material * d.qty_raw_material
@@ -47,9 +48,12 @@ cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
 cur_frm.cscript.raw_material_remove = function (frm,cdt,cdn) {
         compute_raw_material_total(cur_frm)
 
+
 }
 cur_frm.cscript.cost = function (frm,cdt,cdn) {
+
     compute_scoop_of_work_total(cur_frm)
+
 }
 cur_frm.cscript.scoop_of_work_remove = function (frm,cdt,cdn) {
     compute_scoop_of_work_total(cur_frm)
@@ -164,7 +168,6 @@ frappe.ui.form.on('Production', {
 
         cur_frm.set_df_property('advance_payment', 'read_only', cur_frm.doc.status === "Completed");
         cur_frm.set_df_property('raw_material', 'read_only', cur_frm.doc.status === "Completed");
-        cur_frm.set_df_property('rate', 'read_only', cur_frm.doc.status !== "In Progress" );
 
     },
     validate: function (frm) {
@@ -210,6 +213,10 @@ frappe.ui.form.on('Production', {
                 if(r.message){
                     frm.set_df_property('production_status', 'read_only', 1);
                     frm.set_df_property('additional_cost', 'read_only', 1);
+                    cur_frm.set_df_property('invoice_rate', 'read_only', 1);
+
+                } else {
+                    cur_frm.set_df_property('invoice_rate', 'read_only', 0);
                 }
 
             }
@@ -665,6 +672,7 @@ cur_frm.cscript.warehouse = function (frm,cdt, cdn) {
 cur_frm.cscript.item_code = function (frm,cdt, cdn) {
     var d = locals[cdt][cdn]
     if(d.item_code){
+
         frappe.call({
             method: "service_pro.service_pro.doctype.production.production.get_rate",
             args: {
@@ -679,7 +687,7 @@ cur_frm.cscript.item_code = function (frm,cdt, cdn) {
                     .then(doc => {
                         console.log("NAA MAN")
                         d.item_name= doc.item_name
-                           d.umo = doc.stock_uom
+                       d.umo = doc.stock_uom
 
                         cur_frm.refresh_field("raw_material")
                     })

@@ -46,8 +46,8 @@ cur_frm.cscript.reference = function (frm,cdt,cdn) {
                     }
                 })
                 d.qty = qty_1
-                d.rate = doc.rate
-                d.amount = doc.amount
+                d.rate = doc.invoice_rate
+                d.amount =doc.invoice_rate *qty_1
                 cur_frm.refresh_field("production")
 
         if(add){
@@ -55,10 +55,10 @@ cur_frm.cscript.reference = function (frm,cdt,cdn) {
                 .then(doc1 => {
                      cur_frm.add_child('items', {
                         item_code: doc.item_code_prod,
-                        qty: doc.qty_1,
+                        qty: qty_1,
                         uom: doc.umo,
-                        rate: doc.rate,
-                        amount: doc.amount,
+                        rate: doc.invoice_rate,
+                        amount: doc.invoice_rate * qty_1,
                         item_name: doc1.item_name,
                         description: doc1.description,
                     });

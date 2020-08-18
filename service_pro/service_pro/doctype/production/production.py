@@ -180,7 +180,7 @@ class Production(Document):
 			'qty': self.qty,
 			'uom': self.umo,
 			'basic_rate': self.rate,
-			'cost_center': self.cost_center
+			'cost_center': self.cost_center,
 		})
 		return items
 
@@ -228,8 +228,8 @@ class Production(Document):
 		return [{
 			'reference': self.name,
 			'qty': qty,
-			'rate': self.rate,
-			'amount': self.amount,
+			'rate': self.invoice_rate,
+			'amount': self.invoice_rate * qty,
 
 		}]
 	def get_sales_man(self):
@@ -359,3 +359,8 @@ def change_status(name):
 	frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""", ("Partially Delivered", name))
 	frappe.db.commit()
 	return 1
+
+@frappe.whitelist()
+def get_valuation_rate(item_code):
+	item = frappe.db.sql(""" SELECT * FROM `tabItem` WHERE item_code=%s""", (item_code),as_dict=1)
+	return item[0].valuation_rate if len(item) > 0 else 0

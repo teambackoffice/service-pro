@@ -130,7 +130,6 @@
    "label": "Qty"
   },
   {
-   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "rate",
    "fieldtype": "Currency",
@@ -380,7 +379,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-08-18 07:12:52.602607",
+ "modified": "2020-08-18 07:34:07.494805",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

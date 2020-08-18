@@ -485,20 +485,17 @@ frappe.ui.form.on('Production', {
             cur_frm.refresh_field("series")
             cur_frm.set_df_property("scoop_of_work", "hidden", 0)
                         cur_frm.set_df_property("scoop_of_work_total", "hidden", 0 )
-            	        frm.set_df_property('rate', 'read_only', 1)
 
         } else if(cur_frm.doc.type && cur_frm.doc.type === "Assemble") {
 	        cur_frm.doc.estimation = ""
             cur_frm.refresh_field("estimation")
             frm.trigger('estimation');
 	        frm.set_df_property('series', 'options', ['','SK-','HA-'])
-	        frm.set_df_property('rate', 'read_only', 0)
 
             cur_frm.set_df_property("scoop_of_work", "hidden", 1)
             cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
 
         } else if(cur_frm.doc.type && cur_frm.doc.type === "Disassemble") {
-	        	        frm.set_df_property('rate', 'read_only', 1)
 
 	        cur_frm.doc.estimation = ""
             cur_frm.refresh_field("estimation")

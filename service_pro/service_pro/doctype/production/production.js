@@ -590,7 +590,7 @@ function get_items_from_estimation(frm,cur_frm) {
         cur_frm.doc.qty = doc.qty
         cur_frm.doc.qty_for_sidn = doc.qty
         cur_frm.doc.rate = doc.rate
-        cur_frm.doc.amount = doc.qty * doc.rate
+        cur_frm.doc.amount = doc.qty * doc.invoice_rate
         cur_frm.refresh_field("item_code_prod")
         cur_frm.refresh_field("item_name")
         cur_frm.refresh_field("qty")
@@ -716,11 +716,11 @@ cur_frm.cscript.item_code_prod = function (frm,cdt, cdn) {
 
 }
 cur_frm.cscript.qty = function (frm,cdt, cdn) {
-    cur_frm.doc.amount = cur_frm.doc.qty * cur_frm.doc.rate
+    cur_frm.doc.amount = cur_frm.doc.qty * cur_frm.doc.invoice_rate
     cur_frm.refresh_field("amount")
 }
-cur_frm.cscript.rate = function (frm,cdt, cdn) {
-    cur_frm.doc.amount = cur_frm.doc.qty * cur_frm.doc.rate
+cur_frm.cscript.invoice_rate = function (frm,cdt, cdn) {
+    cur_frm.doc.amount = cur_frm.doc.qty * cur_frm.doc.invoice_rate
     cur_frm.refresh_field("amount")
 
 }
@@ -756,7 +756,7 @@ cur_frm.cscript.additional_cost_amount = function (frm,cdt, cdn) {
 }
 function set_rate_and_amount(cur_frm) {
     cur_frm.doc.rate = cur_frm.doc.raw_material_total + cur_frm.doc.scoop_of_work_total + cur_frm.doc.additional_cost_total
-    cur_frm.doc.amount = (cur_frm.doc.raw_material_total + cur_frm.doc.scoop_of_work_total + cur_frm.doc.additional_cost_total) * cur_frm.doc.qty
+    cur_frm.doc.amount = cur_frm.doc.invoice_rate * cur_frm.doc.qty
     cur_frm.refresh_field("amount")
     cur_frm.refresh_field("rate")
 }

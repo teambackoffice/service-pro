@@ -1,20 +1,25 @@
 // Copyright (c) 2020, jan and contributors
 // For license information, please see license.txt
 cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
+    frappe.db.get_single_value('Stock Settings', 'allow_negative_stock')
+        .then(ans => {
+            var d = locals[cdt][cdn]
+        console.log(ans)
+            if((d.qty_raw_material && d.qty_raw_material <= d.available_qty) || ans){
+                d.amount_raw_material = d.rate_raw_material * d.qty_raw_material
+                cur_frm.refresh_field("raw_material")
+            } else {
+                var qty = d.qty_raw_material
+                d.qty_raw_material = d.available_qty
+                d.amount_raw_material = d.rate_raw_material * d.available_qty
+                cur_frm.refresh_field("raw_material")
+                frappe.throw("Not enough stock. Can't change to " + qty.toString())
 
-    var d = locals[cdt][cdn]
-    if(d.qty_raw_material && d.qty_raw_material <= d.available_qty){
-        d.amount_raw_material = d.rate_raw_material * d.qty_raw_material
-        cur_frm.refresh_field("raw_material")
-    } else {
-        var qty = d.qty_raw_material
-        d.qty_raw_material = d.available_qty
-        d.amount_raw_material = d.rate_raw_material * d.available_qty
-        cur_frm.refresh_field("raw_material")
-        frappe.throw("Not enough stock. Can't change to " + qty.toString())
+            }
+            compute_raw_material_total(cur_frm)
+            compute_for_selling_price(cur_frm)
+        })
 
-    }
-    compute_raw_material_total(cur_frm)
 }
 cur_frm.cscript.rate_raw_material = function (frm,cdt,cdn) {
    var d = locals[cdt][cdn]
@@ -23,6 +28,7 @@ cur_frm.cscript.rate_raw_material = function (frm,cdt,cdn) {
         cur_frm.refresh_field("raw_material")
     }
     compute_raw_material_total(cur_frm)
+    compute_for_selling_price(cur_frm)
 }
 cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
     var d = locals[cdt][cdn]
@@ -47,7 +53,7 @@ cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
 }
 cur_frm.cscript.raw_material_remove = function (frm,cdt,cdn) {
         compute_raw_material_total(cur_frm)
-
+compute_for_selling_price(cur_frm)
 
 }
 cur_frm.cscript.cost = function (frm,cdt,cdn) {
@@ -701,6 +707,7 @@ cur_frm.cscript.item_code = function (frm,cdt, cdn) {
                 d.available_qty = r.message[1]
                 cur_frm.refresh_field("raw_material")
                 compute_raw_material_total(cur_frm)
+                compute_for_selling_price(cur_frm)
             }
         })
     }
@@ -767,4 +774,30 @@ function set_rate_and_amount(cur_frm) {
     cur_frm.doc.amount = cur_frm.doc.invoice_rate * cur_frm.doc.qty
     cur_frm.refresh_field("amount")
     cur_frm.refresh_field("rate")
+}
+
+function compute_for_selling_price(cur_frm) {
+    var selling_price_total = 0
+    var total_qty = 0
+    for(var x=0;x < cur_frm.doc.raw_material.length;x+= 1){
+        total_qty += cur_frm.doc.raw_material[x].qty_raw_material
+        frappe.call({
+            method: "service_pro.service_pro.doctype.production.production.get_rate",
+            args: {
+                item_code: cur_frm.doc.raw_material[x].item_code,
+                warehouse: cur_frm.doc.raw_material[x].warehouse ? cur_frm.doc.raw_material[x].warehouse : "",
+                based_on:  "Price List",
+                price_list:  "Standard Selling"
+
+            },
+            async: false,
+            callback: function (r) {
+                selling_price_total += r.message[0]
+            }
+        })
+    }
+    cur_frm.doc.total_selling_price = selling_price_total
+    cur_frm.doc.total_selling_price__qty = selling_price_total / total_qty
+    cur_frm.refresh_field("total_selling_price")
+    cur_frm.refresh_field("total_selling_price__qty")
 }

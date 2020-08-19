@@ -43,8 +43,12 @@
   "rate_of_materials_based_on",
   "price_list",
   "raw_material",
+  "section_break_38",
   "update_available_stock",
   "raw_material_total",
+  "column_break_34",
+  "total_selling_price",
+  "total_selling_price__qty",
   "section_break_26",
   "advance_payment",
   "journal_entry",
@@ -237,6 +241,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "scoop_of_work_total",
    "fieldtype": "Currency",
@@ -376,11 +381,33 @@
    "fieldtype": "Currency",
    "label": "Invoice Rate",
    "reqd": 1
+  },
+  {
+   "fieldname": "column_break_34",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_selling_price",
+   "fieldtype": "Currency",
+   "label": "Total Selling Price",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_selling_price__qty",
+   "fieldtype": "Currency",
+   "label": "Total Selling Price / Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_38",
+   "fieldtype": "Section Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-08-19 06:35:13.575209",
+ "modified": "2020-08-19 12:50:28.323574",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

@@ -164,15 +164,14 @@ class Production(Document):
 		items = []
 
 		for item in self.raw_material:
-			if item.available_qty > 0:
-				items.append({
-					'item_code': item.item_code,
-					's_warehouse': item.warehouse,
-					'qty': item.qty_raw_material,
-					'uom': "Nos",
-					'basic_rate': item.rate_raw_material,
-					'cost_center': item.cost_center
-				})
+			items.append({
+				'item_code': item.item_code,
+				's_warehouse': item.warehouse,
+				'qty': item.qty_raw_material,
+				'uom': "Nos",
+				'basic_rate': item.rate_raw_material,
+				'cost_center': item.cost_center
+			})
 
 		items.append({
 			'item_code': self.item_code_prod,

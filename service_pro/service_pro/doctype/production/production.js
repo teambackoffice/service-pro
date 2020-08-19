@@ -79,7 +79,7 @@ function compute_scoop_of_work_total(cur_frm) {
 function compute_raw_material_total(cur_frm) {
     var total = 0
     for(var x=0;x<cur_frm.doc.raw_material.length;x += 1){
-        total += cur_frm.doc.raw_material[x].amount_raw_material
+        total += cur_frm.doc.raw_material[x].rate_raw_material
     }
     cur_frm.doc.raw_material_total = total
     cur_frm.refresh_field("raw_material_total")

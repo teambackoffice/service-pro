@@ -8,10 +8,12 @@
   "work_name",
   "estimated_date",
   "cost",
+  "value_of_good_solid",
   "status"
  ],
  "fields": [
   {
+   "columns": 2,
    "fieldname": "work_name",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -26,6 +28,7 @@
    "label": "Estimated Date"
   },
   {
+   "columns": 2,
    "default": "0",
    "fieldname": "cost",
    "fieldtype": "Currency",
@@ -40,11 +43,19 @@
    "in_list_view": 1,
    "label": "Status",
    "options": "\nIn Progress\nCompleted"
+  },
+  {
+   "columns": 2,
+   "default": "0",
+   "fieldname": "value_of_good_solid",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Value of Good Solid"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2020-07-27 04:55:33.129884",
+ "modified": "2020-08-19 08:14:47.773793",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Scoop of Work",

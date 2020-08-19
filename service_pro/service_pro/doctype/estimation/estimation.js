@@ -29,10 +29,12 @@ frappe.ui.form.on('Estimation', {
                 cur_frm.refresh_field("price_list")
             })
 	    var df = frappe.meta.get_docfield("Scoop of Work", "status", cur_frm.doc.name);
+	    var df0 = frappe.meta.get_docfield("Scoop of Work", "value_of_good_solid", cur_frm.doc.name);
 	    var df1 = frappe.meta.get_docfield("Raw Material", "production", cur_frm.doc.name);
         df.in_grid_view = 0
         df.hidden = 1
         df1.hidden = 1
+        df0.hidden = 1
         // frappe.call({
         //     method: "service_pro.service_pro.doctype.estimation.estimation.get_dimensions",
         //     args:{},

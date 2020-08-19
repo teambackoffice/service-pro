@@ -55,6 +55,11 @@ cur_frm.cscript.cost = function (frm,cdt,cdn) {
     compute_scoop_of_work_total(cur_frm)
 
 }
+cur_frm.cscript.value_of_good_solid = function (frm,cdt,cdn) {
+
+    compute_scoop_of_work_total(cur_frm)
+
+}
 cur_frm.cscript.scoop_of_work_remove = function (frm,cdt,cdn) {
     compute_scoop_of_work_total(cur_frm)
 }
@@ -70,7 +75,10 @@ function compute_additional_cost(cur_frm) {
 function compute_scoop_of_work_total(cur_frm) {
     var total = 0
     for(var x=0;x<cur_frm.doc.scoop_of_work.length;x += 1){
-        total += cur_frm.doc.scoop_of_work[x].cost
+        if(cur_frm.doc.scoop_of_work[x].value_of_good_solid){
+            total += cur_frm.doc.scoop_of_work[x].cost
+        }
+
     }
     cur_frm.doc.scoop_of_work_total = total
     cur_frm.refresh_field("scoop_of_work_total")

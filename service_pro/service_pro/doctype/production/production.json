@@ -46,6 +46,7 @@
   "section_break_38",
   "update_available_stock",
   "raw_material_total",
+  "raw_material_amount",
   "column_break_34",
   "total_selling_price",
   "total_selling_price__qty",
@@ -405,11 +406,19 @@
   {
    "fieldname": "section_break_38",
    "fieldtype": "Section Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "raw_material_amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-08-19 14:33:23.805524",
+ "modified": "2020-08-20 06:13:25.592727",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

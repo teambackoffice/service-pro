@@ -798,14 +798,14 @@ function compute_for_selling_price(cur_frm) {
             },
             async: false,
             callback: function (r) {
-                selling_price_total += r.message[0]
+                selling_price_total += (r.message[0] * cur_frm.doc.raw_material[x].qty_raw_material)
             }
         })
         }
 
     }
-    cur_frm.doc.total_selling_price = selling_price_total * total_qty
-    cur_frm.doc.total_selling_price__qty = (selling_price_total * total_qty) / cur_frm.doc.qty
+    cur_frm.doc.total_selling_price = selling_price_total
+    cur_frm.doc.total_selling_price__qty = selling_price_total / cur_frm.doc.qty
     cur_frm.refresh_field("total_selling_price")
     cur_frm.refresh_field("total_selling_price__qty")
 }

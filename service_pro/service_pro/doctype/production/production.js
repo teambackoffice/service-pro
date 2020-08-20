@@ -814,6 +814,7 @@ cur_frm.cscript.production = function (frm,cdt, cdn) {
             .then(prod => {
                 d.rate_raw_material = prod.rate
                 d.qty_raw_material = prod.qty
+                d.amount_raw_material = prod.amount
                 cur_frm.refresh_field("raw_material")
 
             })

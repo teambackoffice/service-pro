@@ -735,6 +735,9 @@ cur_frm.cscript.item_code_prod = function (frm,cdt, cdn) {
 cur_frm.cscript.qty = function (frm,cdt, cdn) {
     cur_frm.doc.amount = cur_frm.doc.qty * cur_frm.doc.invoice_rate
     cur_frm.refresh_field("amount")
+    compute_for_selling_price(cur_frm)
+    compute_raw_material_total(cur_frm)
+
 }
 cur_frm.cscript.invoice_rate = function (frm,cdt, cdn) {
     cur_frm.doc.amount = cur_frm.doc.qty * cur_frm.doc.invoice_rate

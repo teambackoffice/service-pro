@@ -801,3 +801,17 @@ function compute_for_selling_price(cur_frm) {
     cur_frm.refresh_field("total_selling_price")
     cur_frm.refresh_field("total_selling_price__qty")
 }
+
+cur_frm.cscript.production = function (frm,cdt, cdn) {
+    var d = locals[cdt][cdn]
+    if(d.production){
+        frappe.db.get_doc('Production', d.production)
+            .then(prod => {
+                d.rate_raw_material = prod.rate
+                d.qty_raw_material = prod.qty
+                cur_frm.refresh_field("raw_material")
+
+            })
+    }
+
+}

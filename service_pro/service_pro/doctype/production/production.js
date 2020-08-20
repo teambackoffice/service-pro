@@ -819,6 +819,8 @@ cur_frm.cscript.production = function (frm,cdt, cdn) {
                 d.qty_raw_material = prod.qty
                 d.amount_raw_material = prod.raw_material_total
                 cur_frm.refresh_field("raw_material")
+                compute_raw_material_total(cur_frm)
+                compute_for_selling_price(cur_frm)
 
             })
     }

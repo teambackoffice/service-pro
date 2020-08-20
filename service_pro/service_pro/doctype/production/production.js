@@ -96,7 +96,7 @@ function compute_raw_material_total(cur_frm) {
         amount += cur_frm.doc.raw_material[x].amount_raw_material
     }
     cur_frm.doc.raw_material_amount = amount
-    cur_frm.doc.raw_material_total = cur_frm.doc.qty / amount
+    cur_frm.doc.raw_material_total =  amount / cur_frm.doc.qty
     cur_frm.refresh_field("raw_material_total")
     cur_frm.refresh_field("raw_material_amount")
      set_rate_and_amount(cur_frm)
@@ -798,8 +798,8 @@ function compute_for_selling_price(cur_frm) {
             }
         })
     }
-    cur_frm.doc.total_selling_price = selling_price_total / total_qty
-    cur_frm.doc.total_selling_price__qty = cur_frm.doc.qty / selling_price_total
+    cur_frm.doc.total_selling_price = selling_price_total * total_qty
+    cur_frm.doc.total_selling_price__qty = (selling_price_total * total_qty) / cur_frm.doc.qty
     cur_frm.refresh_field("total_selling_price")
     cur_frm.refresh_field("total_selling_price__qty")
 }

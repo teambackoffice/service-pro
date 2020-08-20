@@ -786,7 +786,8 @@ function compute_for_selling_price(cur_frm) {
     var total_qty = 0
     for(var x=0;x < cur_frm.doc.raw_material.length;x+= 1){
         total_qty += cur_frm.doc.raw_material[x].qty_raw_material
-        frappe.call({
+        if(cur_frm.doc.raw_material[x].item_code){
+            frappe.call({
             method: "service_pro.service_pro.doctype.production.production.get_rate",
             args: {
                 item_code: cur_frm.doc.raw_material[x].item_code,
@@ -800,6 +801,8 @@ function compute_for_selling_price(cur_frm) {
                 selling_price_total += r.message[0]
             }
         })
+        }
+
     }
     cur_frm.doc.total_selling_price = selling_price_total * total_qty
     cur_frm.doc.total_selling_price__qty = (selling_price_total * total_qty) / cur_frm.doc.qty

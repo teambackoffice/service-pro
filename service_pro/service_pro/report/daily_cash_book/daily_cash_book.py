@@ -50,31 +50,45 @@ def execute(filters=None):
  					(SELECT sales_person FROM `tabSales Team` AS ST WHERE ST.parent = SI.name LIMIT 1) as sales_man_agent,
 					(SELECT mode_of_payment FROM `tabSales Invoice Payment` AS SIP WHERE SIP.parent = SI.name LIMIT 1) as mop,
 					SI.total_taxes_and_charges as vat,
- 					(SELECT allocated_amount FROM `tabSales Invoice Advance` AS A WHERE A.parent = SI.name LIMIT 1) as advance,
  					SI.total as net_total,
  					SI.grand_total as grand_total,
  					(SELECT incentives FROM `tabSales Team` AS ST WHERE ST.parent = SI.name LIMIT 1) as insentive,
- 					SI.total - (SELECT incentives FROM `tabSales Team` AS ST WHERE ST.parent = SI.name LIMIT 1) as net_amount,
  					SI.status as status
 				FROM `tabSales Invoice` AS SI {0} WHERE SI.docstatus = 1 {1}""".format(query_,condition)
-	print(query)
+
 	data = frappe.db.sql(query,as_dict=1)
+	for i in data:
 
+		if filters.get("from_date") and filters.get("to_date") and filters.get("pos_profile"):
+			jv = frappe.db.sql(""" 
+							SELECT * FROM `tabJournal Entry`AS JE 
+							INNER JOIN `tabJournal Entry Item` AS JEI ON JEI.parent = JE.name 
+							WHERE JE.posting_date BETWEEN %s and %s 
+								and JEI.is_advance = 'Yes' 
+								and JEI.party_type = 'Customer' 
+								and JEI.party = %s and JE.docstatus=1""", (filters.get("from_date"),filters.get("to_date"),i.customer), as_dict=1)
+			if len(jv) > 0:
+				i['advance'] = jv[0].credit_in_account_currency
 
+		if ('advance' in i and i.advance == 0 and i.insentive == 0) or (i.advance == 0 and i.insentive > 0):
+			i['net_amount'] = i.net_total
+		elif 'advance' in i and  i.advance > 0 and i.insentive == 0:
+			i['net_amount'] = i.net_total + i.advance
+		elif 'advance' in i and  i.advance == 0:
+			i['net_amount'] = i.net_total - i.insentive
 	return columns, data
 
 
 def get_columns():
 	columns = [
 		{"label": "Date", "fieldname": "date", "fieldtype": "Date","width": "100"},
+		{"label": "Advance", "fieldname": "advance", "fieldtype": "Float", "precision": "2", "width": "100"},
 		{"label": "SI No", "fieldname": "si_no", "fieldtype": "Link","options": "Sales Invoice","width": "150"},
 		{"label": "Customer Name", "fieldname": "customer_name", "fieldtype": "Data", "width": "150"},
 		{"label": "Sales Man/Agent", "fieldname": "sales_man_agent", "fieldtype": "Data", "width": "150"},
-		{"label": "MOP", "fieldname": "mop", "fieldtype": "Data", "width": "100"},
-		{"label": "VAT", "fieldname": "vat", "fieldtype": "Float","precision": "2", "width": "100"},
-		{"label": "Advance", "fieldname": "advance", "fieldtype": "Float","precision": "2","width": "100"},
+		{"label": "MOP", "fieldname": "mop", "fieldtype": "Data", "width": "120"},
 		{"label": "Net Total", "fieldname": "net_total", "fieldtype": "Float","precision": "2","width": "100"},
-
+		{"label": "VAT", "fieldname": "vat", "fieldtype": "Float", "precision": "2", "width": "100"},
 		{"label": "Grand Total", "fieldname": "grand_total","fieldtype": "Float","precision": "2","width": "100"},
 		{"label": "Insentive", "fieldname": "insentive", "fieldtype": "Float","precision": "2","width": "100"},
 		{"label": "Net Amount", "fieldname": "net_amount", "fieldtype": "Float","precision": "2","width": "100"},

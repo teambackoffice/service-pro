@@ -2,9 +2,9 @@
 // For license information, please see license.txt
 /* eslint-disable */
 
-frappe.query_reports["Dily Cash Book"] = {
+frappe.query_reports["Daily Cash Book"] = {
 	"filters": [
-		{
+{
 			fieldname: "to_date",
             label: __("To Date"),
             fieldtype: "Date",

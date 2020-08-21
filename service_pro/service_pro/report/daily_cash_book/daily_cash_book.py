@@ -47,7 +47,7 @@ def execute(filters=None):
  					SI.posting_date as date,
  					SI.name as si_no,
  					(SELECT allocated_amount FROM `tabSales Invoice Advance` AS A WHERE A.parent = SI.name LIMIT 1) as advance,
- 					SI.customer as customer_name,
+ 					(SELECT customer_name FROM `tabCustomer` AS C WHERE C.name = SI.customer) as customer_name,
  					SI.grand_total as grand_total,
  					(SELECT sales_person FROM `tabSales Team` AS ST WHERE ST.parent = SI.name LIMIT 1) as sales_man_agent,
  					(SELECT incentives FROM `tabSales Team` AS ST WHERE ST.parent = SI.name LIMIT 1) as insentive,

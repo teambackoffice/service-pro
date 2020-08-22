@@ -78,6 +78,8 @@ def execute(filters=None):
 			print(jv)
 			if len(jv) > 0:
 				new_data.append({
+					"date": i.date,
+					"customer_name": i.customer_name,
 					"si_no": jv[0].parent,
 					"advance":jv[0].credit_in_account_currency,
 					"net_amount":jv[0].credit_in_account_currency,

@@ -65,25 +65,24 @@ def execute(filters=None):
 		new_data.append(i)
 
 		# i['advance'] = 0
-		if filters.get("pos_profile"):
-			jv_query = """ 
-							SELECT * FROM `tabJournal Entry`AS JE 
-							INNER JOIN `tabJournal Entry Account` AS JEI ON JEI.parent = JE.name 
-							WHERE JE.posting_date = '{0}' 
-								and JEI.is_advance = 'Yes' 
-								and JEI.party_type = 'Customer' 
-								and JEI.party = '{1}' and JE.docstatus=1""".format(i.date,i.customer)
-			print(jv_query)
-			jv = frappe.db.sql(jv_query, as_dict=1)
-			print(jv)
-			if len(jv) > 0:
-				new_data.append({
-					"date": i.date,
-					"customer_name": i.customer_name,
-					"si_no": jv[0].parent,
-					"advance":jv[0].credit_in_account_currency,
-					"net_amount":jv[0].credit_in_account_currency,
-				})
+		jv_query = """ 
+						SELECT * FROM `tabJournal Entry`AS JE 
+						INNER JOIN `tabJournal Entry Account` AS JEI ON JEI.parent = JE.name 
+						WHERE JE.posting_date = '{0}' 
+							and JEI.is_advance = 'Yes' 
+							and JEI.party_type = 'Customer' 
+							and JEI.party = '{1}' and JE.docstatus=1""".format(i.date,i.customer)
+		print(jv_query)
+		jv = frappe.db.sql(jv_query, as_dict=1)
+		print(jv)
+		if len(jv) > 0:
+			new_data.append({
+				"date": i.date,
+				"customer_name": i.customer_name,
+				"si_no": jv[0].parent,
+				"advance":jv[0].credit_in_account_currency,
+				"net_amount":jv[0].credit_in_account_currency,
+			})
 		# if 'advance' in i and i.insentive:
 		# 	if (i.advance == 0 and i.insentive == 0) or (i.advance == 0 and i.insentive > 0):
 		# 		i['net_amount'] = i.net_total

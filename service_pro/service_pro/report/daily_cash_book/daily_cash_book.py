@@ -9,6 +9,9 @@ def execute(filters=None):
 
 	condition = ""
 	query_ = ""
+	if filters.get("paid_disabled"):
+		condition += " and "
+		condition += " SI.status!='{0}' ".format("Paid")
 	if len(filters.get("mop")) > 1:
 		mop_array = []
 		for i in filters.get("mop"):

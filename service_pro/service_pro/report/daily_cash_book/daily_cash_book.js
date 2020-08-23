@@ -44,5 +44,10 @@ frappe.query_reports["Daily Cash Book"] = {
 				return frappe.db.get_link_options("Mode of Payment", txt);
 			},
 		},
+		{
+			fieldname: "paid_disabled",
+            label: __("Paid Disabled"),
+            fieldtype: "Check",
+		},
 	]
 };

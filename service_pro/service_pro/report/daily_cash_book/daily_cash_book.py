@@ -51,7 +51,9 @@ def execute(filters=None):
  					(SELECT sales_person FROM `tabSales Team` AS ST WHERE ST.parent = SI.name LIMIT 1) as sales_man_agent,
 					(SELECT mode_of_payment FROM `tabSales Invoice Payment` AS SIP WHERE SIP.parent = SI.name LIMIT 1) as mop,
 					SI.total_taxes_and_charges as vat,
- 					SI.total as net_total,
+ 					SI.total as total,
+ 					SI.paid,
+ 					SI.net_total as net_total,
  					SI.grand_total as grand_total,
  					(SELECT incentives FROM `tabSales Team` AS ST WHERE ST.parent = SI.name LIMIT 1) as insentive,
  					SI.status as status
@@ -61,7 +63,7 @@ def execute(filters=None):
 	new_data = []
 	for i in datas:
 		i['advance'] = 0
-		i['net_amount'] = i.net_total - i.insentive if i.insentive else i.net_total
+		i['net_amount'] = i.grand_total - i.insentive if i.paid else i.grand_total
 		new_data.append(i)
 
 		# i['advance'] = 0
@@ -102,6 +104,7 @@ def get_columns():
 		{"label": "MOP", "fieldname": "mop", "fieldtype": "Data", "width": "120"},
 		{"label": "Advance", "fieldname": "advance", "fieldtype": "Float", "precision": "2", "width": "100"},
 
+		{"label": "Total", "fieldname": "total", "fieldtype": "Float","precision": "2","width": "100"},
 		{"label": "Net Total", "fieldname": "net_total", "fieldtype": "Float","precision": "2","width": "100"},
 		{"label": "VAT", "fieldname": "vat", "fieldtype": "Float", "precision": "2", "width": "100"},
 		{"label": "Grand Total", "fieldname": "grand_total","fieldtype": "Float","precision": "2","width": "100"},

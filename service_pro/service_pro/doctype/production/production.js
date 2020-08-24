@@ -782,32 +782,22 @@ function set_rate_and_amount(cur_frm) {
 }
 
 function compute_for_selling_price(cur_frm) {
-    var selling_price_total = 0
-    var total_qty = 0
-    for(var x=0;x < cur_frm.doc.raw_material.length;x+= 1){
-        total_qty += cur_frm.doc.raw_material[x].qty_raw_material
-        if(cur_frm.doc.raw_material[x].item_code){
             frappe.call({
-            method: "service_pro.service_pro.doctype.production.production.get_rate",
-            args: {
-                item_code: cur_frm.doc.raw_material[x].item_code,
-                warehouse: cur_frm.doc.raw_material[x].warehouse ? cur_frm.doc.raw_material[x].warehouse : "",
-                based_on:  "Price List",
-                price_list:  "Standard Selling"
+                method: "service_pro.service_pro.doctype.production.production.compute_selling_price",
+                args: {
+                    raw_materials: cur_frm.doc.raw_material
 
-            },
-            async: false,
-            callback: function (r) {
-                selling_price_total += (r.message[0] * cur_frm.doc.raw_material[x].qty_raw_material)
-            }
-        })
-        }
+                },
+                async: false,
+                callback: function (r) {
+                   cur_frm.doc.total_selling_price = r.message
+                    cur_frm.doc.total_selling_price__qty = r.message / cur_frm.doc.qty
+                    cur_frm.refresh_field("total_selling_price")
+                    cur_frm.refresh_field("total_selling_price__qty")
+                }
+            })
 
-    }
-    cur_frm.doc.total_selling_price = selling_price_total
-    cur_frm.doc.total_selling_price__qty = selling_price_total / cur_frm.doc.qty
-    cur_frm.refresh_field("total_selling_price")
-    cur_frm.refresh_field("total_selling_price__qty")
+
 }
 
 cur_frm.cscript.production = function (frm,cdt, cdn) {

@@ -95,13 +95,14 @@ def execute(filters=None):
 		new_data.append(i)
 
 		if len(jv) > 0:
-			new_data.append({
-				"date": i.date,
-				"customer_name": i.customer_name,
-				"si_no": jv[0].parent,
-				"advance":jv[0].credit_in_account_currency,
-				"net_amount":jv[0].credit_in_account_currency,
-			})
+			if check_jv_in_data(new_data, jv):
+				new_data.append({
+					"date": i.date,
+					"customer_name": i.customer_name,
+					"si_no": jv[0].parent,
+					"advance":jv[0].credit_in_account_currency,
+					"net_amount":jv[0].credit_in_account_currency,
+				})
 		if len(pe) > 0:
 			new_data.append({
 				"date": i.date,
@@ -119,6 +120,11 @@ def execute(filters=None):
 		# 		i['net_amount'] = i.net_total - i.insentive
 	return columns, new_data
 
+def check_jv_in_data(new_data, jv):
+	for i in new_data:
+		if i["si_no"] == jv[0].parent:
+			return False
+	return True
 
 def get_columns():
 	columns = [

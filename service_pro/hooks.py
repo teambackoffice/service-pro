@@ -157,7 +157,8 @@ fixtures = [
                     "Sales Invoice-amount_in_arabic_words_",
                     "Sales Invoice-sales_man",
                     "Sales Invoice-sales_man_name",
-                    "Sales Invoice-paid"
+                    "Sales Invoice-paid",
+                    "Sales Invoice Item-include_discount"
                 ]
             ]
         ]

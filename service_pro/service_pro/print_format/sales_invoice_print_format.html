@@ -272,13 +272,7 @@
             <b>VAT 15%:</b><br>
             <b>ضريبة القيمة المضافة </b>
             <br><br>
-            {% if  doc.advances|length > 0%}
 
-                    <b>Advance:</b>
-                    <br>
-                    <b>مقدم</b>
-                    <br><br>
-            {%endif%}
 
              <b>Gross Amount :</b>
             <br>
@@ -288,23 +282,9 @@
 
         <td class="text-right" style="width: 13%;font-size: 100%">
 
-
-                        <b>{{ "{:,.2f}".format(doc.total_taxes_and_charges) }}</b>
+                <b>{{ "{:,.2f}".format(doc.total_taxes_and_charges) }}</b>
             <br><br><br><br>
-
-
-            {% if  doc.advances|length > 0%}
-                <b>{{ "{:,.2f}".format(doc.advances|sum(attribute='allocated_amount')) }}</b>
-
-            <br><br><br>
-            {%endif%}
-            {% if  doc.advances | length > 0%}
-                <b>{{ "{:,.2f}".format(doc.grand_total + doc.advances|sum(attribute='allocated_amount'))}}</b>
-            {%else%}
-                        <b>{{ "{:,.2f}".format(doc.grand_total)}}</b>
-
-            {%endif%}
-
+                <b>{{ "{:,.2f}".format(doc.grand_total)}}</b>
         </td>
     </tr>
 </table>

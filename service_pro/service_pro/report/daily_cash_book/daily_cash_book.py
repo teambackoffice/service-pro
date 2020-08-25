@@ -20,6 +20,14 @@ def execute(filters=None):
 	elif len(filters.get("mop")) == 1:
 		query_ += " INNER JOIN `tabSales Invoice Payment` AS SIP ON SIP.parent = SI.name and SIP.mode_of_payment = '{0}' ".format(filters.get("mop")[0])
 
+	if filters.get("customer"):
+		condition += " and "
+		condition += " SI.customer='{0}' ".format(filters.get("customer"))
+
+	if filters.get("invoice_number"):
+		condition += " and "
+		condition += " SI.name='{0}' ".format(filters.get("invoice_number"))
+
 	if filters.get("to_date") and filters.get("from_date"):
 		condition += " and "
 		condition += "SI.posting_date BETWEEN '{0}' and '{1}'".format(filters.get("to_date"),filters.get("from_date"))

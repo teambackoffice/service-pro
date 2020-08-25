@@ -4,7 +4,7 @@
 
 frappe.query_reports["Daily Cash Book"] = {
 	"filters": [
-{
+		{
 			fieldname: "to_date",
             label: __("To Date"),
             fieldtype: "Date",
@@ -13,6 +13,18 @@ frappe.query_reports["Daily Cash Book"] = {
 			fieldname: "from_date",
             label: __("From Date"),
             fieldtype: "Date",
+		},
+		{
+			fieldname: "customer",
+            label: __("Customer"),
+            fieldtype: "Link",
+            options: "Customer",
+		},
+		{
+			fieldname: "invoice_number",
+            label: __("Invoice Number"),
+            fieldtype: "Link",
+            options: "Sales Invoice",
 		},
 		{
 			fieldname: "pos_profile",

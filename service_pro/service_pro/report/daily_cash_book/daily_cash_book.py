@@ -65,21 +65,27 @@ def execute(filters=None):
 	datas = frappe.db.sql(query,as_dict=1)
 	new_data = []
 	for i in datas:
+		payment_entry_query = """
+						SELECT PE.name, PE.paid_amount FROM `tabPayment Entry`AS PE
+						INNER JOIN `tabPayment Entry Reference` AS PER ON PER.parent = PE.name
+						WHERE PER.reference_doctype= '{0}'
+							and PER.reference_name = '{1}'
+							and PE.docstatus=1""".format("Sales Invoice", i.name)
+		jv_query = """ 
+				SELECT * FROM `tabJournal Entry`AS JE 
+				INNER JOIN `tabJournal Entry Account` AS JEI ON JEI.parent = JE.name 
+				WHERE JE.posting_date = '{0}' 
+					and JEI.is_advance = 'Yes' 
+					and JEI.party_type = 'Customer' 
+					and JEI.party = '{1}' and JE.docstatus=1""".format(i.date, i.customer)
+
+		jv = frappe.db.sql(jv_query, as_dict=1)
+		pe = frappe.db.sql(payment_entry_query, as_dict=1)
 		i['advance'] = 0
-		i['net_amount'] = i.grand_total - i.insentive if i.paid else i.grand_total
+		advance_amount = jv[0].credit_in_account_currency if len(jv) > 0 else 0
+		i['net_amount'] = i.grand_total - i.insentive - advance_amount if i.paid else i.grand_total - advance_amount
 		new_data.append(i)
 
-		# i['advance'] = 0
-		jv_query = """ 
-						SELECT * FROM `tabJournal Entry`AS JE 
-						INNER JOIN `tabJournal Entry Account` AS JEI ON JEI.parent = JE.name 
-						WHERE JE.posting_date = '{0}' 
-							and JEI.is_advance = 'Yes' 
-							and JEI.party_type = 'Customer' 
-							and JEI.party = '{1}' and JE.docstatus=1""".format(i.date,i.customer)
-		print(jv_query)
-		jv = frappe.db.sql(jv_query, as_dict=1)
-		print(jv)
 		if len(jv) > 0:
 			new_data.append({
 				"date": i.date,
@@ -87,6 +93,14 @@ def execute(filters=None):
 				"si_no": jv[0].parent,
 				"advance":jv[0].credit_in_account_currency,
 				"net_amount":jv[0].credit_in_account_currency,
+			})
+		if len(pe) > 0:
+			new_data.append({
+				"date": i.date,
+				"customer_name": i.customer_name,
+				"si_no": pe[0].name,
+				"advance":pe[0].paid_amount,
+				"net_amount":pe[0].paid_amount,
 			})
 		# if 'advance' in i and i.insentive:
 		# 	if (i.advance == 0 and i.insentive == 0) or (i.advance == 0 and i.insentive > 0):
@@ -105,6 +119,7 @@ def get_columns():
 		{"label": "Customer Name", "fieldname": "customer_name", "fieldtype": "Data", "width": "150"},
 		{"label": "Sales Man/Agent", "fieldname": "sales_man_agent", "fieldtype": "Data", "width": "150"},
 		{"label": "MOP", "fieldname": "mop", "fieldtype": "Data", "width": "120"},
+		{"label": "Payment Receive", "fieldname": "payment_receive", "fieldtype": "Data", "width": "120"},
 		{"label": "Advance", "fieldname": "advance", "fieldtype": "Float", "precision": "2", "width": "100"},
 
 		{"label": "Total", "fieldname": "total", "fieldtype": "Float","precision": "2","width": "100"},

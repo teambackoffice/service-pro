@@ -269,12 +269,29 @@
         </td>
 
         <td class="text-right" style="width: 13%;font-size: 100%">
-                <b>{{ "{:,.2f}".format(doc.grand_total)}}</b>
+
+            {% if  doc.items|sum(attribute='discount_amount') > 0%}
+                <b>{{ "{:,.2f}".format(doc.items|sum(attribute='amount') - doc.items|sum(attribute='discount_amount'))}}</b>
+            {% else %}
+                {% if doc.discount_amount | abs > 0 %}
+                    <b>{{ "{:,.2f}".format(doc.items|sum(attribute='amount') - doc.discount_amount | abs)}}</b>
+                {% else %}
+                    <b>{{ "{:,.2f}".format(doc.items|sum(attribute='amount'))}}</b>
+                {% endif %}
+            {%endif%}
 
                 <br><br><br><br>
                 <b>{{ "{:,.2f}".format(doc.total_taxes_and_charges) }}</b>
                 <br><br>
-                <b>{{ "{:,.2f}".format(doc.grand_total + doc.total_taxes_and_charges) }}</b>
+                {% if  doc.items|sum(attribute='discount_amount') > 0%}
+                    <b>{{ "{:,.2f}".format((doc.items|sum(attribute='amount') - doc.items|sum(attribute='discount_amount') ) + doc.total_taxes_and_charges)}}</b>
+                {% else %}
+                    {% if doc.discount_amount | abs > 0 %}
+                        <b>{{ "{:,.2f}".format((doc.items|sum(attribute='amount') - doc.discount_amount | abs) + doc.total_taxes_and_charges)}}</b>
+                    {% else %}
+                        <b>{{ "{:,.2f}".format(doc.items|sum(attribute='amount') + doc.total_taxes_and_charges)}}</b>
+                    {% endif %}
+                {%endif%}
 
         </td>
     </tr>

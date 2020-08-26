@@ -79,29 +79,24 @@ def execute(filters=None):
 						WHERE PER.reference_doctype= '{0}'
 							and PER.reference_name = '{1}'
 							and PE.docstatus=1""".format("Sales Invoice", i.name)
-		jv_query = """ 
-				SELECT * FROM `tabJournal Entry`AS JE 
-				INNER JOIN `tabJournal Entry Account` AS JEI ON JEI.parent = JE.name 
-				WHERE JE.posting_date = '{0}' 
-					and JEI.is_advance = 'Yes' 
-					and JEI.party_type = 'Customer' 
-					and JEI.party = '{1}' and JE.docstatus=1""".format(i.date, i.customer)
+		jv_query = """ SELECT SUM(allocated_amount) as allocated_amount, reference_name FROM `tabSales Invoice Advance` WHERE parent='{0}'""".format(i.name)
 
 		jv = frappe.db.sql(jv_query, as_dict=1)
+		print(jv)
 		pe = frappe.db.sql(payment_entry_query, as_dict=1)
 		i['advance'] = 0
-		advance_amount = jv[0].credit_in_account_currency if len(jv) > 0 else 0
+		advance_amount = jv[0].allocated_amount if len(jv) > 0 and jv[0].allocated_amount else 0
 		i['net_amount'] = i.grand_total - i.insentive - advance_amount if i.paid else i.grand_total - advance_amount
 		new_data.append(i)
 
-		if len(jv) > 0:
+		if len(jv) > 0 and jv[0].allocated_amount:
 			if check_jv_in_data(new_data, jv):
 				new_data.append({
 					"date": i.date,
 					"customer_name": i.customer_name,
-					"si_no": jv[0].parent,
-					"advance":jv[0].credit_in_account_currency,
-					"net_amount":jv[0].credit_in_account_currency,
+					"si_no": jv[0].reference_name,
+					"advance":jv[0].allocated_amount,
+					"net_amount":jv[0].allocated_amount,
 				})
 		if len(pe) > 0:
 			new_data.append({

@@ -13,8 +13,6 @@
     <br>
     <br>
     <br>
-    <br>
-    <br>
   </div>
 </div>
 <table style="width: 100%">
@@ -106,6 +104,10 @@
              <br><br>
              <b>Pro Ref:</b>
         </td>
+         {% set production_ref = [] %}
+            {% for i in doc.production %}
+                {{ production_ref.append(i.reference) }}
+            {% endfor %}
         <td class="text-left" style="width: 25%;font-size: 100%">
              {%if doc.po_no%}
                 {{doc.po_no}}
@@ -113,10 +115,7 @@
             {%if doc.sales_man%}
                 {{doc.sales_man_name}}
             {%endif%}<br><br><br>
-            {% set production_ref = [] %}
-                {% for i in doc.production %}
-                    {{ production_ref.append(i.reference) }}
-                {% endfor %}
+
             {{ production_ref | join(",")}}
         </td>
     </tr>

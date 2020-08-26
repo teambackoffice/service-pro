@@ -370,7 +370,7 @@ def compute_selling_price(raw_materials):
 	selling_price_total = 0
 	raw_material = json.loads(raw_materials)
 	for i in raw_material:
-		warehouse = i['warehouse'] if i['warehouse'] else "",
+		warehouse = i['warehouse'] if 'warehouse' in i and i['warehouse'] else "",
 		selling_price = get_rate(i['item_code'],warehouse,"Price List", "Standard Selling")
 
 		selling_price_total += (selling_price[0] * i['qty_raw_material'])

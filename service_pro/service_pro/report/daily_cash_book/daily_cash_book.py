@@ -65,6 +65,7 @@ def execute(filters=None):
 					SI.total_taxes_and_charges as vat,
  					SI.total as total,
  					SI.paid,
+ 					SI.discount_amount as discount,
  					SI.net_total as net_total,
  					SI.grand_total as grand_total,
  					(SELECT incentives FROM `tabSales Team` AS ST WHERE ST.parent = SI.name LIMIT 1) as insentive,
@@ -146,6 +147,7 @@ def get_columns():
 		{"label": "Advance", "fieldname": "advance", "fieldtype": "Float", "precision": "2", "width": "100"},
 
 		{"label": "Total", "fieldname": "total", "fieldtype": "Float","precision": "2","width": "100"},
+		{"label": "Discount", "fieldname": "discount", "fieldtype": "Float","precision": "2","width": "100"},
 		{"label": "Net Total", "fieldname": "net_total", "fieldtype": "Float","precision": "2","width": "100"},
 		{"label": "VAT", "fieldname": "vat", "fieldtype": "Float", "precision": "2", "width": "100"},
 		{"label": "Grand Total", "fieldname": "grand_total","fieldtype": "Float","precision": "2","width": "100"},

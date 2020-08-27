@@ -91,6 +91,8 @@ def pe_add(filters, new_data):
 	if filters.get("customer"):
 		condition_pe += " and PE.party='{0}' ".format(filters.get("customer"))
 
+	if filters.get("mop"):
+		condition_pe += " and PE.mode_of_payment='{0}' ".format(filters.get("mop"))
 	payment_entry_query = """
 					SELECT * FROM `tabPayment Entry`AS PE 
 					WHERE PE.docstatus= 1 {0}""".format(condition_pe)

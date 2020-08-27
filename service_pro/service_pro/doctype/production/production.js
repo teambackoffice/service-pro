@@ -296,6 +296,13 @@ frappe.ui.form.on('Production', {
                 }
             }
         });
+         cur_frm.set_query('cost_center', () => {
+            return {
+                filters: {
+                    is_group: 0,
+                }
+            }
+        });
 
         var generate_button = true
         if(cur_frm.doc.scoop_of_work !== undefined){

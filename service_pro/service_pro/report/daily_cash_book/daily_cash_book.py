@@ -91,11 +91,14 @@ def pe_add(filters, new_data):
 	if filters.get("customer"):
 		condition_pe += " and PE.party='{0}' ".format(filters.get("customer"))
 
-	if filters.get("mop"):
+	if len(filters.get("mop")) > 1:
 		mop_array = []
 		for i in filters.get("mop"):
 			mop_array.append(i)
 		condition_pe += " and PE.mode_of_payment in {0} ".format(tuple(mop_array))
+	elif len(filters.get("mop")) == 1:
+		condition_pe += " and PE.mode_of_payment = '{0}' ".format(filters.get("mop")[0])
+
 	payment_entry_query = """
 					SELECT * FROM `tabPayment Entry`AS PE 
 					WHERE PE.docstatus= 1 {0}""".format(condition_pe)

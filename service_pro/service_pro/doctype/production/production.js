@@ -57,7 +57,6 @@ compute_for_selling_price(cur_frm)
 
 }
 cur_frm.cscript.cost = function (frm,cdt,cdn) {
-
     compute_scoop_of_work_total(cur_frm)
 
 }
@@ -301,6 +300,14 @@ frappe.ui.form.on('Production', {
                 filters: {
                     is_group: 0,
                 }
+            }
+        });
+         cur_frm.set_query('cylinder_service', () => {
+            return {
+                filters: [
+                    ["status", "!=", "Completed"],
+                    ["series", "=", "CS-"],
+                ]
             }
         });
 
@@ -781,8 +788,11 @@ cur_frm.cscript.journal_entry = function (frm,cdt, cdn) {
 cur_frm.cscript.additional_cost_amount = function (frm,cdt, cdn) {
     compute_additional_cost(cur_frm)
 }
+cur_frm.cscript.editable_total = function (frm,cdt, cdn) {
+    set_rate_and_amount(cur_frm)
+}
 function set_rate_and_amount(cur_frm) {
-    cur_frm.doc.rate = cur_frm.doc.raw_material_total + cur_frm.doc.scoop_of_work_total + cur_frm.doc.additional_cost_total
+    cur_frm.doc.rate = cur_frm.doc.raw_material_total + cur_frm.doc.editable_total + cur_frm.doc.additional_cost_total
     cur_frm.doc.amount = cur_frm.doc.invoice_rate * cur_frm.doc.qty
     cur_frm.refresh_field("amount")
     cur_frm.refresh_field("rate")
@@ -822,4 +832,7 @@ cur_frm.cscript.production = function (frm,cdt, cdn) {
             })
     }
 
+}
+cur_frm.cscript.material_request = function () {
+    frappe.set_route('Form', 'Material Request', "New Material Request 1")
 }

@@ -7,6 +7,8 @@
  "engine": "InnoDB",
  "field_order": [
   "series",
+  "customer_and_workshop",
+  "cylinder_service",
   "status",
   "customer",
   "customer_name",
@@ -38,6 +40,9 @@
   "cost_center",
   "section_break_21",
   "scoop_of_work",
+  "section_break111",
+  "editable_total",
+  "column_break111",
   "scoop_of_work_total",
   "section_break_24",
   "rate_of_materials_based_on",
@@ -48,6 +53,7 @@
   "raw_material_total",
   "raw_material_amount",
   "column_break_34",
+  "material_request",
   "total_selling_price",
   "total_selling_price__qty",
   "section_break_26",
@@ -211,7 +217,7 @@
    "fieldtype": "Select",
    "hidden": 1,
    "label": "Status",
-   "options": "In Progress\nPartially Delivered\nCompleted"
+   "options": "In Progress\nPartially Delivered\nCompleted\nTo Deliver and Bill\nTo Deliver\nTo Bill"
   },
   {
    "fieldname": "cost_center",
@@ -246,7 +252,7 @@
    "default": "0",
    "fieldname": "scoop_of_work_total",
    "fieldtype": "Currency",
-   "label": "Total",
+   "label": "Total Cost",
    "read_only": 1
   },
   {
@@ -414,11 +420,44 @@
    "fieldtype": "Currency",
    "label": "Amount",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break111",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break111",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "editable_total",
+   "fieldtype": "Currency",
+   "label": "Total"
+  },
+  {
+   "fieldname": "material_request",
+   "fieldtype": "Button",
+   "label": "Material Request"
+  },
+  {
+   "fieldname": "customer_and_workshop",
+   "fieldtype": "Select",
+   "label": "Customer and Workshop",
+   "options": "\nCustomer\nWorkshop"
+  },
+  {
+   "depends_on": "eval: doc.customer_and_workshop == \"Workshop\"",
+   "fieldname": "cylinder_service",
+   "fieldtype": "Link",
+   "label": "Cylinder Service",
+   "mandatory_depends_on": "eval: doc.customer_and_workshop == \"Workshop\"",
+   "options": "Production"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-08-20 06:13:25.592727",
+ "modified": "2020-08-28 13:12:07.140557",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

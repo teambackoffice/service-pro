@@ -9,21 +9,19 @@ from frappe.model.mapper import get_mapped_doc
 class ServiceReceiptNote(Document):
 	def on_submit(self):
 		for i in self.materials:
-			item_price = frappe.db.sql(
-				""" SELECT * FROM `tabItem Price` WHERE item_code=%s and selling=1 ORDER BY valid_from DESC LIMIT 1""",
-				i.materials, as_dict=1)
-			doc = {
-				"doctype": "Inspection",
-				"customer": self.customer,
-				"customer_name": self.customer_name,
-				"customer_reference": self.customer_ref,
-				"item_code": i.materials,
-				"item_name": i.item_name,
-				"qty": i.qty,
-				"service_receipt_note": self.name
-			}
+			for ii in range(0,i.qty):
+				doc = {
+					"doctype": "Inspection",
+					"customer": self.customer,
+					"customer_name": self.customer_name,
+					"customer_reference": self.customer_ref,
+					"item_code": i.materials,
+					"item_name": i.item_name,
+					"qty": 1,
+					"service_receipt_note": self.name
+				}
 
-			insert_doc = frappe.get_doc(doc).insert()
+				frappe.get_doc(doc).insert()
 	def submit_inspections(self):
 		inspections = frappe.db.sql(""" SELECT * FROM `tabInspection` WHERE service_receipt_note=%s""",self.name, as_dict=1)
 		for inspection in inspections:

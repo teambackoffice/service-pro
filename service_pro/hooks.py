@@ -33,7 +33,8 @@ app_license = "MIT"
 doctype_js = {
     "Quotation" : "public/js/quotation.js",
     "Sales Invoice" : "public/js/sales_invoice.js",
-    "Delivery Note" : "public/js/delivery_note.js",
+    "Purchase Receipt" : "public/js/purchase_receipt.js",
+    "Material Request" : "public/js/material_request.js",
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -158,7 +159,9 @@ fixtures = [
                     "Sales Invoice-sales_man",
                     "Sales Invoice-sales_man_name",
                     "Sales Invoice-paid",
-                    "Sales Invoice Item-include_discount"
+                    "Sales Invoice Item-include_discount",
+                    "Purchase Receipt-production",
+                    "Material Request-production"
                 ]
             ]
         ]

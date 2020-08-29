@@ -443,11 +443,12 @@
    "label": "Material Request"
   },
   {
+   "depends_on": "eval: doc.type != \"Service\"",
    "fieldname": "customer_and_workshop",
    "fieldtype": "Select",
    "label": "Customer and Workshop",
-   "options": "\nCustomer\nWorkshop",
-   "reqd": 1
+   "mandatory_depends_on": "eval: doc.type != \"Service\"",
+   "options": "\nCustomer\nWorkshop"
   },
   {
    "depends_on": "eval: doc.customer_and_workshop == \"Workshop\"",
@@ -460,7 +461,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-08-29 13:42:03.065857",
+ "modified": "2020-08-29 14:17:37.312265",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

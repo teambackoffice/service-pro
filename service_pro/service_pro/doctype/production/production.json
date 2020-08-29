@@ -451,17 +451,17 @@
    "options": "\nCustomer\nWorkshop"
   },
   {
-   "depends_on": "eval: doc.customer_and_workshop == \"Workshop\"",
+   "depends_on": "eval: doc.customer_and_workshop == \"Workshop\" && doc.type != \"Service\"",
    "fieldname": "cylinder_service",
    "fieldtype": "Link",
    "label": "Cylinder Service",
-   "mandatory_depends_on": "eval: doc.customer_and_workshop == \"Workshop\"",
+   "mandatory_depends_on": "eval: doc.customer_and_workshop == \"Workshop\" && doc.type != \"Service\"",
    "options": "Production"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-08-29 14:17:37.312265",
+ "modified": "2020-08-29 14:32:54.325799",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

@@ -636,6 +636,7 @@ function get_items_from_estimation(frm,cur_frm) {
         cur_frm.doc.rate = doc.rate
         cur_frm.doc.amount = doc.qty * doc.invoice_rate
         cur_frm.refresh_field("item_code_prod")
+        cur_frm.refresh_field("customer")
         cur_frm.refresh_field("item_name")
         cur_frm.refresh_field("qty")
         cur_frm.refresh_field("qty_for_sidn")

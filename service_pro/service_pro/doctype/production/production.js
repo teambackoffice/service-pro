@@ -79,14 +79,19 @@ function compute_additional_cost(cur_frm) {
 }
 function compute_scoop_of_work_total(cur_frm) {
     var total = 0
+    var total_cost = 0
     for(var x=0;x<cur_frm.doc.scoop_of_work.length;x += 1){
         if(cur_frm.doc.scoop_of_work[x].value_of_good_solid){
             total += cur_frm.doc.scoop_of_work[x].cost
         }
 
+            total_cost += cur_frm.doc.scoop_of_work[x].cost
+
     }
-    cur_frm.doc.scoop_of_work_total = total
+    cur_frm.doc.scoop_of_work_total = total_cost
+    cur_frm.doc.editable_total = total
     cur_frm.refresh_field("scoop_of_work_total")
+    cur_frm.refresh_field("editable_total")
      set_rate_and_amount(cur_frm)
 }
 function compute_raw_material_total(cur_frm) {
@@ -524,6 +529,9 @@ frappe.ui.form.on('Production', {
 
             cur_frm.set_df_property("scoop_of_work", "hidden", 1)
             cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
+            cur_frm.set_df_property("editable_total", "hidden", 1)
+            cur_frm.set_df_property("section_break_21", "hidden", 1)
+            cur_frm.set_df_property("section_break111", "hidden", 1)
 
         } else if(cur_frm.doc.type && cur_frm.doc.type === "Disassemble") {
 
@@ -536,6 +544,10 @@ frappe.ui.form.on('Production', {
             cur_frm.refresh_field("series")
             cur_frm.set_df_property("scoop_of_work", "hidden", 1)
             cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
+            cur_frm.set_df_property("editable_total", "hidden", 1)
+            cur_frm.set_df_property("section_break_21", "hidden", 1)
+            cur_frm.set_df_property("section_break111", "hidden", 1)
+
         }
 	},
     estimation: function(frm) {

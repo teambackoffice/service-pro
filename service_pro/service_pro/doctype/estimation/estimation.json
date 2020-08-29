@@ -33,7 +33,10 @@
   "amount",
   "scoop_of_works_section",
   "scoop_of_work",
+  "section_break_28",
   "scoop_of_work_total",
+  "column_break_29",
+  "total_cost",
   "raw_material_section",
   "rate_of_materials_based_on",
   "price_list",
@@ -199,8 +202,7 @@
    "default": "0",
    "fieldname": "scoop_of_work_total",
    "fieldtype": "Currency",
-   "label": "Total",
-   "read_only": 1
+   "label": "Total"
   },
   {
    "default": "0",
@@ -253,11 +255,26 @@
    "fieldtype": "Link",
    "label": "Item Code",
    "options": "Item"
+  },
+  {
+   "fieldname": "column_break_29",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "total_cost",
+   "fieldtype": "Currency",
+   "label": "Total Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_28",
+   "fieldtype": "Section Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-08-16 17:43:48.426822",
+ "modified": "2020-08-29 13:52:35.800445",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

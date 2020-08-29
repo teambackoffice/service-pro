@@ -140,8 +140,8 @@ function compute_scoop_of_work_total(cur_frm) {
     for(var x=0;x<cur_frm.doc.scoop_of_work.length;x += 1){
         total += cur_frm.doc.scoop_of_work[x].cost
     }
-    cur_frm.doc.scoop_of_work_total = total
-    cur_frm.refresh_field("scoop_of_work_total")
+    cur_frm.doc.total_cost = total
+    cur_frm.refresh_field("total_cost")
     set_rate_and_amount(cur_frm)
 }
 function compute_raw_material_total(cur_frm) {
@@ -194,7 +194,9 @@ cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
             cur_frm.refresh_field("raw_material")
         })
 }
-
+cur_frm.cscript.scoop_of_work_total = function (frm,cdt,cdn) {
+   set_rate_and_amount(cur_frm)
+}
 function set_rate_and_amount(cur_frm) {
     cur_frm.doc.rate = cur_frm.doc.raw_material_total + cur_frm.doc.scoop_of_work_total
     cur_frm.doc.amount = (cur_frm.doc.raw_material_total + cur_frm.doc.scoop_of_work_total) * cur_frm.doc.qty

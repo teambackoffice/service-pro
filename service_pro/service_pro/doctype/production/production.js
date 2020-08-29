@@ -554,7 +554,6 @@ frappe.ui.form.on('Production', {
 
 	    if(cur_frm.doc.type && cur_frm.doc.type === "Service" && cur_frm.doc.estimation){
             get_items_from_estimation(frm,cur_frm)
-
         } else {
             cur_frm.doc.item_code_prod = undefined
             cur_frm.doc.qty = 1
@@ -625,6 +624,9 @@ function get_items_from_estimation(frm,cur_frm) {
         set_scoop_of_work(doc,frm)
         set_raw_material(doc,frm)
             console.log("asaaaaaa")
+        cur_frm.doc.customer = doc.customer
+        cur_frm.trigger('customer');
+
         cur_frm.doc.item_code_prod = doc.item_code_est
                 console.log("123qweqw")
 

@@ -211,16 +211,7 @@ frappe.ui.form.on('Production', {
                 cur_frm.refresh_field("qty_for_sidn")
             }
         })}
-    // if(parseFloat(cur_frm.doc.qty_for_sidn) > 0 && parseFloat(cur_frm.doc.qty_for_sidn) < cur_frm.doc.qty && cur_frm.doc.docstatus){
-    //     console.log("NA MAN")
-    //     frappe.call({
-    //         method: "service_pro.service_pro.doctype.production.production.change_status",
-    //         args: {
-    //             name: cur_frm.doc.name
-    //         },
-    //         callback: function () {}
-    //     })
-    // }
+
      cur_frm.set_df_property("scoop_of_work", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
         cur_frm.set_df_property("scoop_of_work_total", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
 
@@ -365,7 +356,7 @@ frappe.ui.form.on('Production', {
                         }, "Generate");
                         }
 
-                    } else if(r.message && generate_button && ["In Progress", "Partially Completed", "Partially Delivered"].includes(cur_frm.doc.status) && cur_frm.doc.docstatus){
+                    } else if(r.message && generate_button && ["In Progress", "Partially Completed", "Partially Delivered", "To Deliver", "To Bill", "To Deliver and Bill"].includes(cur_frm.doc.status) && cur_frm.doc.docstatus){
                         cur_frm.set_df_property('raw_material', 'read_only', 1);
                         cur_frm.set_df_property('scoop_of_work', 'read_only', 1);
 
@@ -399,7 +390,7 @@ frappe.ui.form.on('Production', {
                                             freeze: true,
                                             freeze_message: "Generating Sales Invoice ...",
                                             callback: (r) => {
-                                                                                    cur_frm.reload_doc()
+                                                    cur_frm.reload_doc()
 
                                                 frappe.set_route("Form", "Sales Invoice", r.message);
                                             }
@@ -611,10 +602,10 @@ frappe.ui.form.on('Production', {
 function filter_link_field(cur_frm) {
      cur_frm.set_query('estimation', () => {
         return {
-            filters: {
-                customer: cur_frm.doc.customer,
-                docstatus: 1,
-            }
+            filters: [
+                ["docstatus","=",1],
+                ["status","=","To Production"]
+            ]
         }
     })
 }
@@ -626,15 +617,16 @@ function get_items_from_estimation(frm,cur_frm) {
             console.log("asaaaaaa")
         cur_frm.doc.customer = doc.customer
         cur_frm.trigger('customer');
-
         cur_frm.doc.item_code_prod = doc.item_code_est
-                console.log("123qweqw")
-
         cur_frm.doc.item_name = doc.item_name
         cur_frm.doc.qty = doc.qty
         cur_frm.doc.qty_for_sidn = doc.qty
         cur_frm.doc.rate = doc.rate
-        cur_frm.doc.amount = doc.qty * doc.invoice_rate
+    console.log("QTY")
+    console.log(doc.qty)
+    console.log("INVOICE RATE")
+    console.log("QTY")
+        cur_frm.doc.amount = doc.qty * cur_frm.doc.invoice_rate
         cur_frm.refresh_field("item_code_prod")
         cur_frm.refresh_field("customer")
         cur_frm.refresh_field("item_name")
@@ -659,6 +651,7 @@ function set_scoop_of_work(doc, frm) {
             work_name: row.work_name,
             estimated_date: row.estimated_date,
             cost: row.cost,
+          value_of_good_solid: 1
         });
 
     frm.refresh_field('scoop_of_work');

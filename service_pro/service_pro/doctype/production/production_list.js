@@ -1,19 +1,12 @@
 frappe.listview_settings['Production'] = {
-	add_fields: ["base_grand_total", "customer_name", "currency", "delivery_date",
-		"per_delivered", "per_billed", "status", "order_type", "name", "skip_delivery_note"],
+	add_fields: ["status"],
 	get_indicator: function (doc) {
-		if (doc.status === "In Progress") {
+		if (["In Progress", "Partially Delivered", "To Bill", "To Deliver", "To Deliver and Bill"].includes(doc.status)) {
 			// Closed
-			return [__(doc.status), "orange", "status,=,In Progress"];
+			return [__(doc.status), "orange", "status,=," + doc.status];
 		} else if (doc.status === "Completed") {
 			// Closed
 			return [__(doc.status), "green", "status,=,In Progress"];
-		} else if (doc.status === "Partially Delivered") {
-			// Closed
-			return [__(doc.status), "orange", "status,=,Partially Delivered"];
-		} else if (doc.status === "Partially Completed") {
-			// Closed
-			return [__(doc.status), "orange", "status,=,Partially Delivered"];
 		}
 
 	},

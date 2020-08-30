@@ -7,6 +7,10 @@ import frappe
 from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
 class ServiceReceiptNote(Document):
+	def change_status(self, status):
+		frappe.db.sql(""" UPDATE `tabService Receipt Note` SET status=%s WHERE name=%s """,(status, self.name))
+		frappe.db.commit()
+
 	def on_submit(self):
 		for i in self.materials:
 			for ii in range(0,i.qty):

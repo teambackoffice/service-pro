@@ -12,52 +12,50 @@ frappe.ui.form.on('Inspection', {
         }
 
     },
-	// refresh: function(frm) {
-     //    if(cur_frm.is_new()){
-     //         frm.add_custom_button(__("Service Receipt Note"), () => {
-     //                    get_items_from_srn(cur_frm)
-     //                }, __("Get Items From"))
-     //    }
-	// }
+    refresh: function (frm) {
+        cur_frm.set_query('service_receipt_note', () => {
+            return {
+                filters: [
+                    ["docstatus", "=", 1],
+                    ["status", "=", "To Inspection"]
+                ]
+            }
+        })
+        if(cur_frm.doc.docstatus && !(["Closed", "Completed"].includes(cur_frm.doc.status))){
+            console.log("WALA MAN")
+             frm.add_custom_button(__("Close"), () => {
+                    cur_frm.call({
+                        doc: cur_frm.doc,
+                        method: 'change_status',
+                        args: {
+                            status: "Closed"
+                        },
+                        freeze: true,
+                        freeze_message: "Closing...",
+                        callback: () => {
+                            cur_frm.reload_doc()
+                        }
+                })
+            })
+        } else if (cur_frm.doc.status === "Closed"){
+            frm.add_custom_button(__("Open"), () => {
+                    cur_frm.call({
+                        doc: cur_frm.doc,
+                        method: 'change_status',
+                        args: {
+                            status: "To Estimation"
+                        },
+                        freeze: true,
+                        freeze_message: "Opening...",
+                        callback: () => {
+                        cur_frm.reload_doc()
+                        }
+                })
+            })
+        }
+    }
 });
 
-function get_items_from_srn(cur_frm) {
-    new frappe.ui.form.MultiSelectDialog({
-        doctype: "Service Receipt Note Item",
-        target: cur_frm,
-        setters: {},
-        date_field: "posting_date",
-        get_query() {
-            return {
-                filters: { docstatus: ['!=', 2] }
-            }
-        },
-        action(selections) {
-            console.log(selections);
-        }
-    });
-
-// MultiSelectDialog with custom query method
-// let query_args = {
-//     query:"dotted.path.to.method",
-//     filters: { docstatus: ["!=", 2], supplier: "John Doe" }
-// }
-//
-// new frappe.ui.form.MultiSelectDialog({
-//     doctype: "Material Request",
-//     target: this.cur_frm,
-//     setters: {
-//         company: "Zoot"
-//     },
-//     date_field: "transaction_date",
-//     get_query() {
-//         return query_args;
-//     },
-//     action(selections) {
-//         console.log(selections);
-//     }
-// });
-}
 
 cur_frm.cscript.item_code = function (frm, cdt, cdn) {
     var d = locals[cdt][cdn]

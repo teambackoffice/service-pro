@@ -69,6 +69,8 @@ class Production(Document):
 				"additional_costs": self.get_additional_costs()
 			}
 			frappe.get_doc(doc_se).insert(ignore_permissions=1).submit()
+			frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""",("To Deliver and Bill",self.name))
+			frappe.db.commit()
 			return ""
 
 		else:
@@ -111,6 +113,8 @@ class Production(Document):
 		}
 		dn = frappe.get_doc(doc_dn)
 		dn.insert(ignore_permissions=1)
+		# frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""", ("To Bill", self.name))
+		# frappe.db.commit()
 		return dn.name
 
 	def generate_si(self):
@@ -125,6 +129,8 @@ class Production(Document):
 		}
 		si = frappe.get_doc(doc_si)
 		si.insert(ignore_permissions=1)
+		frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""", ("To Deliver", self.name))
+		frappe.db.commit()
 		return si.name
 	def generate_jv(self):
 		doc_jv = {

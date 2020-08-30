@@ -1,7 +1,56 @@
 // Copyright (c) 2020, jan and contributors
 // For license information, please see license.txt
+cur_frm.cscript.inspection = function (frm, cdt, cdn) {
+    var d = locals[cdt][cdn]
+    if(d.inspection){
+        var names = Array.from(cur_frm.doc.inspections, x => "inspection" in x ? x.inspection:"")
+        cur_frm.fields_dict.inspections.grid.get_field("inspection").get_query =
+			function() {
+				return {
+					filters: [
+                    	["item_code", "=", d.item_code],
+                        ["service_receipt_note", "=", cur_frm.doc.receipt_note],
+                    	["docstatus", "=", 1],
+                           ["status", "=", "To Estimation"],
+                    	["name", "not in", names]
+					]
+				}
+			}
 
+			if(cur_frm.doc.qty > 0){
+                cur_frm.doc.qty  += 1
+                cur_frm.refresh_field("qty")
+                                set_rate_and_amount(cur_frm)
+
+            } else {
+			    frappe.db.get_doc("Inspection", d.inspection)
+                    .then(doc => {
+                      cur_frm.doc.item_code_est = doc.item_code
+                      cur_frm.doc.qty = 1
+                cur_frm.trigger("item_code_est")
+                cur_frm.refresh_field("qty")
+                cur_frm.refresh_field("item_code_est")
+                set_rate_and_amount(cur_frm)
+                    })
+            }
+    }
+}
 frappe.ui.form.on('Estimation', {
+    receipt_note: function () {
+        if(cur_frm.doc.receipt_note){
+            cur_frm.fields_dict.inspections.grid.get_field("inspection").get_query =
+			function() {
+				return {
+					filters: [
+                    	["service_receipt_note", "=", cur_frm.doc.receipt_note],
+                    	["docstatus", "=", 1],
+                        ["status", "=", "To Estimation"]
+					]
+				}
+			}
+        }
+
+    },
      customer: function () {
 	    if(cur_frm.doc.customer){
 	         frappe.db.get_doc("Customer", cur_frm.doc.customer)
@@ -13,6 +62,46 @@ frappe.ui.form.on('Estimation', {
 
     },
     refresh: function (frm) {
+
+         cur_frm.set_query('receipt_note', () => {
+            return {
+                filters: [
+                    ["docstatus", "=", 1],
+                    ["status", "=", "To Estimation"]
+                ]
+            }
+        })
+        if(cur_frm.doc.docstatus && !(["Closed", "Completed"].includes(cur_frm.doc.status))){
+             frm.add_custom_button(__("Close"), () => {
+                    cur_frm.call({
+                        doc: cur_frm.doc,
+                        method: 'change_status',
+                        args: {
+                            status: "Closed"
+                        },
+                        freeze: true,
+                        freeze_message: "Closing...",
+                        callback: () => {
+                        cur_frm.reload_doc()
+                        }
+                })
+            })
+        } else if (cur_frm.doc.status === "Closed"){
+            frm.add_custom_button(__("Open"), () => {
+                    cur_frm.call({
+                        doc: cur_frm.doc,
+                        method: 'change_status',
+                        args: {
+                            status: "To Production"
+                        },
+                        freeze: true,
+                        freeze_message: "Opening...",
+                        callback: () => {
+                        cur_frm.reload_doc()
+                        }
+                })
+            })
+        }
          cur_frm.add_custom_button(__("Material Request"), () => {
                  frappe.set_route('Form', 'Material Request', "New Material Request 1")
             });
@@ -35,17 +124,7 @@ frappe.ui.form.on('Estimation', {
         df.hidden = 1
         df1.hidden = 1
         df0.hidden = 1
-        // frappe.call({
-        //     method: "service_pro.service_pro.doctype.estimation.estimation.get_dimensions",
-        //     args:{},
-        //     callback: function (r) {
-        //         frm.set_df_property('rod_dia', 'options', r.message[0])
-        //         frm.set_df_property('r_length', 'options', r.message[1])
-        //         frm.set_df_property('tube_size', 'options', r.message[2])
-        //         frm.set_df_property('t_length', 'options', r.message[3])
-        //     }
-        // })
-	},
+	}
 });
 
 cur_frm.cscript.warehouse = function (frm,cdt, cdn) {
@@ -97,11 +176,11 @@ cur_frm.cscript.item_code = function (frm,cdt, cdn) {
             },
             callback: function (r) {
                 frappe.db.get_doc("Item", d.item_code)
-        .then(doc => {
-           d.item_name = doc.item_name
-           d.umo = doc.stock_uom
-            cur_frm.refresh_field("raw_material")
-        })
+                    .then(doc => {
+                       d.item_name = doc.item_name
+                       d.umo = doc.stock_uom
+                        cur_frm.refresh_field("raw_material")
+                    })
                 d.rate_raw_material = r.message[0]
                 d.amount_raw_material = r.message[0] * d.qty_raw_material
                 d.available_qty = r.message[1]

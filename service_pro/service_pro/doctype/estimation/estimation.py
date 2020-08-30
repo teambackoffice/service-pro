@@ -9,6 +9,26 @@ from erpnext.stock.stock_ledger import get_previous_sle
 from frappe.utils import cint, flt
 from datetime import datetime
 class Estimation(Document):
+	def change_status(self, status):
+		frappe.db.sql(""" UPDATE `tabEstimation` SET status=%s WHERE name=%s """,(status, self.name))
+		frappe.db.commit()
+
+	def on_submit(self):
+		for i in self.inspections:
+			self.check_status("To Production", i.inspection)
+
+	def on_cancel(self):
+		for i in self.inspections:
+			self.check_status("To Estimation", i.inspection)
+
+	def check_status(self,status, name):
+		frappe.db.sql(""" UPDATE `tabInspection` SET status=%s WHERE name=%s """,
+					  (status, name))
+
+		frappe.db.sql(""" UPDATE `tabService Receipt Note` SET status=%s WHERE name=%s """,
+					  (status, self.receipt_note))
+
+		frappe.db.commit()
 	def set_available_qty(self):
 		time = datetime.now().time()
 		date = datetime.now().date()

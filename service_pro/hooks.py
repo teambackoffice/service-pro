@@ -95,6 +95,9 @@ doc_events = {
 	},
     "File": {
 		"on_trash": "service_pro.doc_events.file.on_trash_f",
+	},
+    "Delivery Note": {
+		"on_submit": "service_pro.doc_events.delivery_note.change_status",
 	}
 }
 

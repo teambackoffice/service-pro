@@ -6,6 +6,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "status",
   "series",
   "column_break_2",
   "posting_date",
@@ -125,11 +126,20 @@
    "fieldtype": "Select",
    "label": "Series",
    "options": "RN-"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "To Inspection",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Status",
+   "options": "\nClosed\nTo Inspection\nTo Estimation\nTo Production"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-08-04 14:24:04.059409",
+ "modified": "2020-08-30 11:08:14.981441",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Receipt Note",

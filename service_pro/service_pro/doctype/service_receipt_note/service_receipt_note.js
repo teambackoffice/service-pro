@@ -15,7 +15,23 @@ frappe.ui.form.on('Service Receipt Note', {
                 };
            }
         });
-        if(cur_frm.doc.docstatus){
+
+        if(cur_frm.doc.docstatus && !(["Closed", "Completed"].includes(cur_frm.doc.status))){
+            frm.add_custom_button(__("Close"), () => {
+                    cur_frm.call({
+                        doc: cur_frm.doc,
+                        method: 'change_status',
+                        args: {
+                            status: "Closed"
+                        },
+                        freeze: true,
+                        freeze_message: "Closing...",
+                        callback: () => {
+                        cur_frm.reload_doc()
+                        }
+                })
+            })
+
             frappe.db.get_list('Inspection', {
                 fields: ["*"],
                 filters: {
@@ -81,6 +97,21 @@ frappe.ui.form.on('Service Receipt Note', {
                 })
 
 
+        } else if (cur_frm.doc.status === "Closed"){
+            frm.add_custom_button(__("Open"), () => {
+                    cur_frm.call({
+                        doc: cur_frm.doc,
+                        method: 'change_status',
+                        args: {
+                            status: "To Inspection"
+                        },
+                        freeze: true,
+                        freeze_message: "Opening...",
+                        callback: () => {
+                        cur_frm.reload_doc()
+                        }
+                })
+            })
         }
 	},
     customer: function () {
@@ -148,7 +179,7 @@ function submit_estimations(frm, cur_frm) {
                 freeze: true,
                 freeze_message: "Submitting Estimation/s...",
                 callback: () => {
-                    cur_frm.refresh()
+                    cur_frm.reload_doc()
                 }
             })
         }, () => {

@@ -113,8 +113,7 @@ class Production(Document):
 		}
 		dn = frappe.get_doc(doc_dn)
 		dn.insert(ignore_permissions=1)
-		# frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""", ("To Bill", self.name))
-		# frappe.db.commit()
+
 		return dn.name
 
 	def generate_si(self):
@@ -129,8 +128,6 @@ class Production(Document):
 		}
 		si = frappe.get_doc(doc_si)
 		si.insert(ignore_permissions=1)
-		frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""", ("To Deliver", self.name))
-		frappe.db.commit()
 		return si.name
 	def generate_jv(self):
 		doc_jv = {
@@ -331,7 +328,7 @@ def get_dn_or_si(name):
 def get_dn_si_qty(item_code, qty, name):
 	si_query = """ 
  			SELECT SIP.qty as qty FROM `tabSales Invoice` AS SI 
- 			INNER JOIN `tabSales Invoice Item` AS SII ON SII.parent = SI.name and SII.delivery_note is null
+ 			INNER JOIN `tabSales Invoice Item` AS SII ON SII.parent = SI.name
  			INNER JOIN `tabSales Invoice Production` AS SIP ON SI.name = SIP.parent 
  			WHERE SIP.reference=%s and SIP.parenttype=%s and SI.docstatus = 1
  			"""
@@ -346,18 +343,19 @@ def get_dn_si_qty(item_code, qty, name):
 
 	total_qty = 0
 
-	if len(si) > 0:
+	if len(si) > len(dn):
 		for i in si:
 			total_qty += i.qty
 
-	if len(dn) > 0:
+	elif len(dn) > len(si):
 		for d in dn:
 			total_qty += d.qty
-	print(si)
-	print(dn)
-	print(float(qty) - float(total_qty))
-	return float(qty) - float(total_qty)
 
+	elif len(dn) == len(si):
+		for d in dn:
+			total_qty += d.qty
+
+	return float(qty) - float(total_qty)
 
 @frappe.whitelist()
 def change_status(name):

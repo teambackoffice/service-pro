@@ -12,7 +12,10 @@ class Estimation(Document):
 	def change_status(self, status):
 		frappe.db.sql(""" UPDATE `tabEstimation` SET status=%s WHERE name=%s """,(status, self.name))
 		frappe.db.commit()
-
+	def validate(self):
+		for raw in self.raw_material:
+			if not raw.cost_center:
+				frappe.throw("Please Input Valid Cost Center in Raw Material row " + str(raw.idx))
 	def on_submit(self):
 		for i in self.inspections:
 			self.check_status("To Production", i.inspection)

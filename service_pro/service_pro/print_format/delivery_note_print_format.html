@@ -1,0 +1,144 @@
+<html>
+<style>
+	@media screen {
+		.print-format {
+			width: 8.5in;
+			padding: 0.25in;
+		}
+	}
+</style>
+<div id="header-html" class="hidden-pdf" >
+  <div>
+    <br>
+    <br>
+    <br>
+    <br>
+  </div>
+</div>
+<table style="width: 100%">
+    <tr>
+        <td >
+            <span style="font-size: 18px;margin-left: 3in !important;"><b>DELIVERY NOTE</b> </span>
+        </td>
+    </tr>
+</table>
+<table style="margin-top: 1% !important;">
+    <tr>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+            <b>CUSTOMER NAME :</b>
+        </td>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+            {{frappe.db.get_value("Customer", doc.customer, "customer_name")}}
+        </td>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+        </td>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+        </td>
+    </tr>
+     <tr>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+            <b>SALES EXECUTIVE</b> :<br>
+        </td>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+                {%if doc.sales_man%}
+                    {{doc.sales_man_name}}
+                {%endif%}
+        </td>
+         <td class="text-left" style="width: 25%;font-size: 100%">
+             <b>DN NUMBER </b>:
+        </td>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+           {{doc.name}}
+
+        </td>
+
+    </tr>
+    <tr>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+            <b>PURCHASER</b> :<br>
+        </td>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+
+        </td>
+         <td class="text-left" style="width: 25%;font-size: 100%">
+             <b>DATE </b>:<br>
+        </td>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+           {{doc.posting_date}}
+        </td>
+
+    </tr>
+     <tr>
+          <td class="text-left" style="width: 25%;font-size: 100%">
+            <b>PO NO:</b>
+        </td>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+            {%if doc.po_no %}
+                   {{doc.po_no}}
+            {% endif %}
+        </td>
+
+         <td class="text-left" style="width: 25%;font-size: 100%">
+             <b>LOCATION</b>:<br>
+        </td>
+        <td class="text-left" style="width: 25%;font-size: 100%">
+             {%if doc.location %}
+                   {{doc.location}}
+            {% endif %}
+        </td>
+    </tr>
+</table>
+<table style="margin-top: 1%;border-bottom: 2px solid black;">
+    <tr style="border-bottom: 2px solid black;border-top: 2px solid black;">
+        <td class="text-left" style="width: 10%;font-size: 100%">
+            <b>SI.NO</b>
+        </td>
+        <td class="text-left" style="width: 70%;font-size: 100%">
+            <b>PRODUCT DESCRIPTION</b><br>
+        </td>
+        <td class="text-left" style="width:10%;font-size: 100%">
+            <b>QTY</b><br>
+        </td>
+        <td class="text-left" style="width: 10%;font-size: 100%">
+            <b>UNIT</b><br>
+        </td>
+    </tr>
+    {%for i in doc.items%}
+     <tr>
+
+        <td class="text-left" style="width: 10%;font-size: 100%">
+            <b>{{i.idx}}</b>
+        </td>
+        <td class="text-left" style="width: 70%;font-size: 100%">
+            <b>{{i.description}}</b>
+        </td>
+        <td class="text-left" style="width: 10%;font-size: 100%">
+            <b>{{"{:,.2f}".format(i.qty)}}</b>
+        </td>
+        <td class="text-left" style="width: 10%;font-size: 100%">
+            <b>{{i.uom}}</b>
+        </td>
+    </tr>
+    {%endfor%}
+
+</table>
+<table style="margin-top: 10%">
+    <tr>
+        <td class="text-center" style="width: 50%;font-size: 100%">
+            Materials Received in Good Condition<br>Recipient Office Seal
+        </td>
+        <td class="text-center" style="width: 50%;font-size: 100%">
+            Materials Supplied in Good Condition<br>Supplier Office Seal
+        </td>
+    </tr>
+</table>
+<div>
+    <div id="footer-html" class="visible-pdf">
+       <br>
+       <br>
+       <br>
+    </div>
+</div>
+</html>
+
+

@@ -205,10 +205,14 @@ function create_quotation(frm, cur_frm) {
     // })
 }
 cur_frm.cscript.materials = function (frm, cdt, cdn) {
+
     var d = locals[cdt][cdn]
-     frappe.db.get_doc("Item", d.materials)
+    if(d.materials){
+       frappe.db.get_doc("Item", d.materials)
             .then(doc => {
                d.item_name = doc.item_name
                 cur_frm.refresh_field("materials")
             })
+    }
+
 }

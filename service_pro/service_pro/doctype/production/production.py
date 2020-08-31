@@ -15,6 +15,12 @@ class Production(Document):
 			if i.production:
 				frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""", ("Completed",i.production))
 				frappe.db.commit()
+	def change_production_status(self, production):
+		raw_material = frappe.db.sql(""" SELECT * FROM `tabRaw Material` WHERE name=%s""",production, as_dict=1)
+		if len(raw_material) > 0 and raw_material[0].production:
+
+			frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""", ("To Deliver and Bill", raw_material[0].production))
+			frappe.db.commit()
 	def on_cancel(self):
 		for i in self.raw_material:
 			if i.production:

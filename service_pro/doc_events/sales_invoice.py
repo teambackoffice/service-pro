@@ -29,11 +29,6 @@ def on_submit_si(doc, method):
 							  ("Partially Delivered", prod.reference))
 				frappe.db.commit()
 
-
-
-
-
-
 def get_service_records(reference):
 	estimation_ = ""
 	estimation = frappe.db.sql(""" SELECT * FROM `tabProduction` WHERE name= %s""", reference, as_dict=1)
@@ -78,40 +73,60 @@ def get_service_records_cancel(reference):
 @frappe.whitelist()
 def on_cancel_si(doc, method):
 	for prod in doc.production:
-		frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""",("To Bill", prod.reference))
-		frappe.db.commit()
-		get_service_records_cancel(prod.reference)
+		production = frappe.db.sql(""" SELECT * FROM `tabProduction` WHERE name=%s """, prod.reference, as_dict=1)
+		if len(production) > 0:
+			if doc.update_stock:
+				frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""", ("To Deliver and Bill", prod.reference))
+				frappe.db.commit()
+				get_service_records(prod.reference)
+
+			elif get_lengths(prod.reference)[0] == 0 and get_lengths(prod.reference)[1] == 0:
+				frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""",
+							  ("To Deliver and Bill", prod.reference))
+				frappe.db.commit()
+				get_service_records(prod.reference)
+
+			elif get_dn_qty(prod.reference) >= 0 and \
+					((get_dn_si_qty("", production[0].qty, prod.reference) >= 0 and get_lengths(prod.reference)[0] !=
+						get_lengths(prod.reference)[1])):
+				frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""", ("To Bill", prod.reference))
+				frappe.db.commit()
+
+			elif get_dn_si_qty("", production[0].qty, prod.reference) > 0:
+				frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""",
+							  ("Partially Delivered", prod.reference))
+				frappe.db.commit()
 
 def get_lengths(name):
 	si_query = """ 
-     			SELECT SIP.qty as qty FROM `tabSales Invoice` AS SI 
+     			SELECT SIP.qty as qty, SI.status FROM `tabSales Invoice` AS SI 
      			INNER JOIN `tabSales Invoice Item` AS SII ON SII.parent = SI.name
      			INNER JOIN `tabSales Invoice Production` AS SIP ON SI.name = SIP.parent 
-     			WHERE SIP.reference=%s and SIP.parenttype=%s and SI.docstatus = 1
+     			WHERE SIP.reference=%s and SIP.parenttype=%s and SI.docstatus = 1 and SI.status!='Cancelled'
      			"""
 	si = frappe.db.sql(si_query, (name, "Sales Invoice"), as_dict=1)
 	dn_query = """ 
-    	 			SELECT SIP.qty as qty FROM `tabDelivery Note` AS DN 
+    	 			SELECT SIP.qty as qty, DN.status FROM `tabDelivery Note` AS DN 
     	 			INNER JOIN `tabDelivery Note Item` AS DNI ON DNI.parent = DN.name
     	 			INNER JOIN `tabSales Invoice Production` AS SIP ON DN.name = SIP.parent 
-    	 			WHERE SIP.reference=%s and SIP.parenttype=%s and DN.docstatus = 1
+    	 			WHERE SIP.reference=%s and SIP.parenttype=%s and DN.docstatus = 1 and DN.status!='Cancelled'
     	 			"""
 	dn = frappe.db.sql(dn_query, (name, "Delivery Note"), as_dict=1)
 
 	return len(dn), len(si)
 def get_dn_si_qty(item_code, qty, name):
 	si_query = """ 
- 			SELECT SIP.qty as qty FROM `tabSales Invoice` AS SI 
+ 			SELECT SIP.qty as qty, SI.status FROM `tabSales Invoice` AS SI 
  			INNER JOIN `tabSales Invoice Item` AS SII ON SII.parent = SI.name
  			INNER JOIN `tabSales Invoice Production` AS SIP ON SI.name = SIP.parent 
- 			WHERE SIP.reference=%s and SIP.parenttype=%s and SI.docstatus = 1
+ 			WHERE SIP.reference=%s and SIP.parenttype=%s and SI.docstatus = 1 and SI.status!='Cancelled'
  			"""
 	si = frappe.db.sql(si_query,(name,"Sales Invoice"), as_dict=1)
 	dn_query = """ 
-	 			SELECT SIP.qty as qty FROM `tabDelivery Note` AS DN 
+	 			SELECT SIP.qty as qty, DN.status FROM `tabDelivery Note` AS DN 
 	 			INNER JOIN `tabDelivery Note Item` AS DNI ON DNI.parent = DN.name
 	 			INNER JOIN `tabSales Invoice Production` AS SIP ON DN.name = SIP.parent 
-	 			WHERE SIP.reference=%s and SIP.parenttype=%s and DN.docstatus = 1
+	 			WHERE SIP.reference=%s and SIP.parenttype=%s and DN.docstatus = 1 and DN.status!='Cancelled'
 	 			"""
 	dn = frappe.db.sql(dn_query,(name, "Delivery Note"), as_dict=1)
 
@@ -134,10 +149,10 @@ def get_dn_si_qty(item_code, qty, name):
 def get_dn_qty(name):
 
 	dn_query = """ 
-	 			SELECT SIP.qty as qty FROM `tabDelivery Note` AS DN 
+	 			SELECT SIP.qty as qty, DN.status FROM `tabDelivery Note` AS DN 
 	 			INNER JOIN `tabDelivery Note Item` AS DNI ON DNI.parent = DN.name
 	 			INNER JOIN `tabSales Invoice Production` AS SIP ON DN.name = SIP.parent 
-	 			WHERE SIP.reference=%s and SIP.parenttype=%s and DN.docstatus = 1
+	 			WHERE SIP.reference=%s and SIP.parenttype=%s and DN.docstatus = 1 and DN.status!='Cancelled'
 	 			"""
 	dn = frappe.db.sql(dn_query, (name, "Delivery Note"), as_dict=1)
 

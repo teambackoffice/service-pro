@@ -52,8 +52,22 @@ cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
         })
 }
 cur_frm.cscript.raw_material_remove = function (frm,cdt,cdn) {
+    var d = frappe.get_doc(cdt, cdn);
         compute_raw_material_total(cur_frm)
-compute_for_selling_price(cur_frm)
+        compute_for_selling_price(cur_frm)
+    if(cdn){
+         cur_frm.call({
+            doc: cur_frm.doc,
+            method: 'change_production_status',
+            args: {
+              production: cdn
+            },
+            freeze: true,
+            freeze_message: "Changing Production Status...",
+             async: false,
+            callback: (r) => {}
+    }   )
+    }
 
 }
 cur_frm.cscript.cost = function (frm,cdt,cdn) {
@@ -259,8 +273,9 @@ frappe.ui.form.on('Production', {
             return {
                 filters: [
                     ["name", "!=", cur_frm.doc.name],
+                    ["series", "=", "SK-"],
                     ["docstatus", "=", 1],
-                    ["status", "=", "In Progress"]
+                    ["status", "=", "To Deliver and Bill"]
                 ]
             }
         })

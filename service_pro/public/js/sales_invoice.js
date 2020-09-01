@@ -5,7 +5,9 @@ cur_frm.cscript.customer = function(frm){
 }
 cur_frm.cscript.onload = function(frm){
     filter_link_field(cur_frm)
-
+    if(frappe.boot.user.roles.includes("Accounts Manager") || frappe.boot.user.roles.includes("System Manager")){
+            cur_frm.set_df_property("paid", "allow_on_submit", 1)
+    }
 }
 
 function filter_link_field(cur_frm) {

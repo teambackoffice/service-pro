@@ -172,6 +172,18 @@ fixtures = [
                 ]
             ]
         ]
+    },
+    {
+        "doctype": "Property Setter",
+        "filters": [
+            [
+                "name",
+                "in",
+                [
+                    "Sales Invoice-paid-allow_on_submit",
+                ]
+            ]
+        ]
     }
 ]
 

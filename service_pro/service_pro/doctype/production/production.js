@@ -674,8 +674,7 @@ function set_scoop_of_work(doc, frm) {
       frm.add_child('scoop_of_work', {
             work_name: row.work_name,
             estimated_date: row.estimated_date,
-            cost: row.cost,
-          value_of_good_solid: 1
+            cost: row.cost
         });
 
     frm.refresh_field('scoop_of_work');

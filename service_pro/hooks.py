@@ -165,7 +165,10 @@ fixtures = [
                     "Sales Invoice-paid",
                     "Sales Invoice Item-include_discount",
                     "Purchase Receipt-production",
-                    "Material Request-production"
+                    "Material Request-production",
+                    "Delivery Note-location",
+                    "Delivery Note-sales_man_name",
+                    "Delivery Note-sales_man"
                 ]
             ]
         ]

@@ -449,7 +449,6 @@
    "fieldname": "customer_and_workshop",
    "fieldtype": "Select",
    "label": "Customer and Workshop",
-   "mandatory_depends_on": "eval: doc.type != \"Service\"",
    "options": "\nCustomer\nWorkshop"
   },
   {
@@ -463,7 +462,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-08-30 17:16:32.778864",
+ "modified": "2020-09-01 09:11:54.515466",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

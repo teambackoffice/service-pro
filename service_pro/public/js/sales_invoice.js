@@ -5,12 +5,15 @@ cur_frm.cscript.customer = function(frm){
 }
 cur_frm.cscript.onload = function(frm){
     filter_link_field(cur_frm)
-    if(frappe.boot.user.roles.includes("Accounts Manager") || frappe.boot.user.roles.includes("System Manager")){
-            cur_frm.set_df_property("paid", "read_only", 0)
-    } else {
-        cur_frm.set_df_property("paid", "read_only", 1)
+    if(cur_frm.doc.docstatus){
+      if(frappe.boot.user.roles.includes("Accounts Manager") || frappe.boot.user.roles.includes("System Manager")){
+                cur_frm.set_df_property("paid", "read_only", 0)
+        } else {
+            cur_frm.set_df_property("paid", "read_only", 1)
 
+     }
     }
+
 }
 
 function filter_link_field(cur_frm) {
@@ -19,7 +22,7 @@ function filter_link_field(cur_frm) {
             filters: [
                 ["customer", "=", cur_frm.doc.customer],
                 ["docstatus", "=", 1],
-                ["status", "in", ["In Progress", "Partially Completed", "Partially Delivered"]],
+                ["status", "in", ["Partially Completed", "Partially Delivered"]],
             ]
         }
     })

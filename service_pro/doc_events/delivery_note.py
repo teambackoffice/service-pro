@@ -38,7 +38,7 @@ def get_lengths(name):
      			SELECT SIP.qty as qty, SI.status FROM `tabSales Invoice` AS SI 
      			INNER JOIN `tabSales Invoice Item` AS SII ON SII.parent = SI.name
      			INNER JOIN `tabSales Invoice Production` AS SIP ON SI.name = SIP.parent 
-     			WHERE SIP.reference=%s and SIP.parenttype=%s and SI.docstatus = 1 and SI.status!='Cancelled'
+     			WHERE SIP.reference=%s and SIP.parenttype=%s and SI.docstatus = 1 and SI.status!='Cancelled' and SI.update_stock = 0
      			"""
     si = frappe.db.sql(si_query, (name, "Sales Invoice"), as_dict=1)
     dn_query = """ 

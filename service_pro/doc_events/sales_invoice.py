@@ -7,10 +7,10 @@ def on_submit_si(doc, method):
 		if len(production) > 0:
 			print("GET LEEEEEEEEEEEEENGTHS")
 			print(get_lengths(prod.reference))
-			if doc.update_stock:
-				frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""", ("Completed", prod.reference))
+			if doc.update_stock and get_dn_si_qty("", production[0].qty, prod.reference) > 0 :
+				frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""",
+							  ("Partially Delivered", prod.reference))
 				frappe.db.commit()
-				get_service_records(prod.reference)
 
 			elif get_dn_si_qty("", production[0].qty, prod.reference) == 0 and get_lengths(prod.reference)[0] == get_lengths(prod.reference)[1] :
 
@@ -102,7 +102,7 @@ def get_lengths(name):
      			SELECT SIP.qty as qty, SI.status FROM `tabSales Invoice` AS SI 
      			INNER JOIN `tabSales Invoice Item` AS SII ON SII.parent = SI.name
      			INNER JOIN `tabSales Invoice Production` AS SIP ON SI.name = SIP.parent 
-     			WHERE SIP.reference=%s and SIP.parenttype=%s and SI.docstatus = 1 and SI.status!='Cancelled'
+     			WHERE SIP.reference=%s and SIP.parenttype=%s and SI.docstatus = 1 and SI.status!='Cancelled' and SI.update_stock = 0
      			"""
 	si = frappe.db.sql(si_query, (name, "Sales Invoice"), as_dict=1)
 	dn_query = """ 

@@ -168,7 +168,18 @@ fixtures = [
                     "Material Request-production",
                     "Delivery Note-location",
                     "Delivery Note-sales_man_name",
-                    "Delivery Note-sales_man"
+                    "Delivery Note-sales_man",
+                    "Sales Invoice-showroom_card",
+                    "Sales Invoice-showroom_cash",
+                    "Sales Invoice-card",
+                    "Sales Invoice-cash",
+                    "Sales Invoice-unpaid",
+                    "Sales Invoice-liabilities_account",
+                    "Sales Invoice-expense_account",
+                    "Sales Invoice-expense_cost_center",
+                    "Sales Invoice-incentive",
+                    "Sales Invoice-incentive_journal",
+                    "Sales Invoice-column_break_181",
                 ]
             ]
         ]

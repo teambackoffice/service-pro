@@ -13,7 +13,7 @@ function filter_link_field(cur_frm) {
             filters: [
                 ["customer", "=", cur_frm.doc.customer],
                 ["docstatus", "=", 1],
-                ["status", "in", ["Partially Completed", "Partially Delivered"]],
+                ["status", "in", ["To Deliver and Bill", "To Deliver","Partially Completed", "Partially Delivered"]],
             ]
         }
     })

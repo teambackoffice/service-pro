@@ -24,5 +24,12 @@ frappe.ui.form.on('Production Settings', {
             }
         }
         })
+        cur_frm.set_query('expense_cost_center', () => {
+        return {
+            filters: {
+                is_group: 0,
+            }
+        }
+        })
 	}
 });

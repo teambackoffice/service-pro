@@ -13,7 +13,13 @@
   "raw_material_warehouse",
   "raw_material_cost_center",
   "rate_of_materials_based_on",
-  "price_list"
+  "price_list",
+  "incentive_journal_section",
+  "expense_account",
+  "expense_cost_center",
+  "column_break_13",
+  "showroom_cash",
+  "showroom_card"
  ],
  "fields": [
   {
@@ -68,11 +74,44 @@
    "fieldtype": "Select",
    "label": "Price List",
    "options": "\nStandard Buying\nStandard Selling"
+  },
+  {
+   "fieldname": "incentive_journal_section",
+   "fieldtype": "Section Break",
+   "label": "Incentive Journal"
+  },
+  {
+   "fieldname": "expense_account",
+   "fieldtype": "Link",
+   "label": "Expense Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "expense_cost_center",
+   "fieldtype": "Link",
+   "label": "Expense Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "column_break_13",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "showroom_cash",
+   "fieldtype": "Link",
+   "label": "Showroom Cash",
+   "options": "Account"
+  },
+  {
+   "fieldname": "showroom_card",
+   "fieldtype": "Link",
+   "label": "Showroom Card",
+   "options": "Account"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2020-07-30 08:54:55.459496",
+ "modified": "2020-09-02 19:16:07.411170",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

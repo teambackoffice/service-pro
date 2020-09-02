@@ -1,7 +1,35 @@
 import frappe
 
+def generate_jv(doc):
+	if doc.paid and doc.cash:
+		doc_jv = {
+			"doctype": "Journal Entry",
+			"voucher_type": "Journal Entry",
+			"posting_date": doc.posting_date,
+			"accounts": jv_accounts(doc),
+		}
+
+		jv = frappe.get_doc(doc_jv)
+		jv.insert(ignore_permissions=1)
+		jv.submit()
+
+def jv_accounts(doc):
+	accounts = []
+	accounts.append({
+		'account': doc.expense_account,
+		'debit_in_account_currency': doc.incentive,
+		'credit_in_account_currency': 0,
+		'cost_center': doc.expense_cost_center,
+	})
+	accounts.append({
+		'account': doc.showroom_cash,
+		'debit_in_account_currency': 0,
+		'credit_in_account_currency': doc.incentive
+	})
+	return accounts
 @frappe.whitelist()
 def on_submit_si(doc, method):
+	generate_jv(doc)
 	for prod in doc.production:
 		production = frappe.db.sql(""" SELECT * FROM `tabProduction` WHERE name=%s """, prod.reference, as_dict=1)
 		if len(production) > 0:

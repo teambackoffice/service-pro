@@ -1,7 +1,43 @@
 
+cur_frm.cscript.incentives = function(frm){
+    compute_incentives(cur_frm)
+}
+cur_frm.cscript.sales_team_remove = function(frm){
+    compute_incentives(cur_frm)
+}
 cur_frm.cscript.customer = function(frm){
     filter_link_field(cur_frm)
 
+}
+cur_frm.cscript.paid = function(frm){
+    frappe.db.get_single_value('Production Settings', 'expense_cost_center')
+        .then(expense_cost_center => {
+            cur_frm.doc.expense_cost_center = expense_cost_center
+            cur_frm.refresh_field("expense_cost_center")
+        })
+    if(cur_frm.doc.paid){
+        cur_frm.doc.unpaid = 0
+        cur_frm.refresh_field("unpaid")
+    }
+
+
+}
+cur_frm.cscript.unpaid = function(frm){
+   if(cur_frm.doc.unpaid){
+        cur_frm.doc.paid = 0
+        cur_frm.refresh_field("paid")
+   }
+
+
+}
+cur_frm.cscript.refresh = function(frm){
+   cur_frm.set_query('expense_cost_center', () => {
+        return {
+            filters: {
+                is_group: 0,
+            }
+        }
+    });
 }
 cur_frm.cscript.onload = function(frm){
     filter_link_field(cur_frm)
@@ -13,9 +49,31 @@ cur_frm.cscript.onload = function(frm){
 
      }
     }
+    frappe.db.get_single_value('Production Settings', 'expense_account')
+            .then(expense_account => {
+                cur_frm.doc.expense_account = expense_account
+                cur_frm.refresh_field("expense_account")
+            })
+    frappe.db.get_single_value('Production Settings', 'showroom_cash')
+            .then(showroom_cash => {
+                cur_frm.doc.showroom_cash = showroom_cash
+                cur_frm.refresh_field("showroom_cash")
+            })
+    frappe.db.get_single_value('Production Settings', 'showroom_card')
+            .then(showroom_card => {
+                cur_frm.doc.showroom_card = showroom_card
+                cur_frm.refresh_field("showroom_card")
+            })
 
 }
-
+function compute_incentives(cur_frm) {
+    var incentive_total = 0
+    for(var i=0;i<cur_frm.doc.sales_team.length;i+=1){
+        incentive_total += cur_frm.doc.sales_team[i].incentives
+    }
+    cur_frm.doc.incentive = incentive_total
+    cur_frm.refresh_field("incentive")
+}
 function filter_link_field(cur_frm) {
      cur_frm.set_query('reference', 'production', () => {
         return {

@@ -5,6 +5,17 @@ cur_frm.cscript.incentives = function(frm){
 cur_frm.cscript.sales_team_remove = function(frm){
     compute_incentives(cur_frm)
 }
+cur_frm.cscript.sales_person = function(frm,cdt, cdn){
+    var d = locals[cdt][cdn]
+    if(d.sales_person){
+        frappe.db.get_value('Sales Person', d.sales_person, "liabilities_account")
+        .then(liabilities_account => {
+            console.log(liabilities_account)
+            cur_frm.doc.liabilities_account = liabilities_account.message.liabilities_account
+        cur_frm.refresh_field("liabilities_account")
+        })
+    }
+}
 cur_frm.cscript.customer = function(frm){
     filter_link_field(cur_frm)
 
@@ -23,6 +34,11 @@ cur_frm.cscript.paid = function(frm){
 
 }
 cur_frm.cscript.unpaid = function(frm){
+    frappe.db.get_single_value('Production Settings', 'expense_cost_center')
+        .then(expense_cost_center => {
+            cur_frm.doc.expense_cost_center = expense_cost_center
+            cur_frm.refresh_field("expense_cost_center")
+        })
    if(cur_frm.doc.unpaid){
         cur_frm.doc.paid = 0
         cur_frm.refresh_field("paid")
@@ -30,25 +46,23 @@ cur_frm.cscript.unpaid = function(frm){
 
 
 }
-cur_frm.cscript.refresh = function(frm){
-   cur_frm.set_query('expense_cost_center', () => {
+cur_frm.cscript.onload = function(frm){
+    filter_link_field(cur_frm)
+    // if(cur_frm.doc.docstatus){
+    //   if(frappe.boot.user.roles.includes("Accounts Manager") || frappe.boot.user.roles.includes("System Manager")){
+    //             cur_frm.set_df_property("paid", "read_only", 0)
+    //     } else {
+    //         cur_frm.set_df_property("paid", "read_only", 1)
+    //
+    //  }
+    // }
+    cur_frm.set_query('expense_cost_center', () => {
         return {
             filters: {
                 is_group: 0,
             }
         }
     });
-}
-cur_frm.cscript.onload = function(frm){
-    filter_link_field(cur_frm)
-    if(cur_frm.doc.docstatus){
-      if(frappe.boot.user.roles.includes("Accounts Manager") || frappe.boot.user.roles.includes("System Manager")){
-                cur_frm.set_df_property("paid", "read_only", 0)
-        } else {
-            cur_frm.set_df_property("paid", "read_only", 1)
-
-     }
-    }
     frappe.db.get_single_value('Production Settings', 'expense_account')
             .then(expense_account => {
                 cur_frm.doc.expense_account = expense_account

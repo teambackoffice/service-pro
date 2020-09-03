@@ -180,18 +180,8 @@ fixtures = [
                     "Sales Invoice-incentive",
                     "Sales Invoice-incentive_journal",
                     "Sales Invoice-column_break_181",
-                ]
-            ]
-        ]
-    },
-    {
-        "doctype": "Property Setter",
-        "filters": [
-            [
-                "name",
-                "in",
-                [
-                    "Sales Invoice-paid-allow_on_submit",
+                    "Sales Invoice-journal_entry",
+                    "Sales Person-liabilities_account"
                 ]
             ]
         ]

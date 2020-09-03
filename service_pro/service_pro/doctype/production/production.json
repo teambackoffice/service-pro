@@ -9,6 +9,7 @@
   "series",
   "customer_and_workshop",
   "cylinder_service",
+  "last_status",
   "status",
   "customer",
   "customer_name",
@@ -219,7 +220,7 @@
    "fieldtype": "Select",
    "hidden": 1,
    "label": "Status",
-   "options": "In Progress\nPartially Delivered\nCompleted\nTo Deliver and Bill\nTo Deliver\nTo Bill"
+   "options": "In Progress\nPartially Delivered\nCompleted\nTo Deliver and Bill\nTo Deliver\nTo Bill\nClosed"
   },
   {
    "fieldname": "cost_center",
@@ -458,11 +459,18 @@
    "label": "Cylinder Service",
    "mandatory_depends_on": "eval: doc.customer_and_workshop == \"Workshop\" && doc.type != \"Service\"",
    "options": "Production"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "last_status",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Last Status"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-01 09:11:54.515466",
+ "modified": "2020-09-03 14:36:56.064274",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

@@ -1,19 +1,35 @@
 import frappe
 
 def generate_jv(doc):
-	if doc.paid and doc.cash:
+	if doc.paid:
 		doc_jv = {
 			"doctype": "Journal Entry",
 			"voucher_type": "Journal Entry",
 			"posting_date": doc.posting_date,
-			"accounts": jv_accounts(doc),
+			"accounts": jv_accounts_paid(doc),
 		}
 
 		jv = frappe.get_doc(doc_jv)
 		jv.insert(ignore_permissions=1)
 		jv.submit()
+		frappe.db.sql(""" UPDATE `tabSales Invoice` SET journal_entry=%s WHERE name=%s""", (jv.name, doc.name))
+		frappe.db.commit()
 
-def jv_accounts(doc):
+	elif doc.unpaid:
+		doc_jv = {
+			"doctype": "Journal Entry",
+			"voucher_type": "Journal Entry",
+			"posting_date": doc.posting_date,
+			"accounts": jv_accounts_unpaid(doc),
+		}
+
+		jv = frappe.get_doc(doc_jv)
+		jv.insert(ignore_permissions=1)
+		jv.submit()
+		doc.journal_entry = jv.name
+		frappe.db.sql(""" UPDATE `tabSales Invoice` SET journal_entry=%s WHERE name=%s""", (jv.name, doc.name))
+		frappe.db.commit()
+def jv_accounts_unpaid(doc):
 	accounts = []
 	accounts.append({
 		'account': doc.expense_account,
@@ -22,7 +38,36 @@ def jv_accounts(doc):
 		'cost_center': doc.expense_cost_center,
 	})
 	accounts.append({
-		'account': doc.showroom_cash,
+		'account': doc.liabilities_account,
+		'debit_in_account_currency': 0,
+		'credit_in_account_currency': doc.incentive
+	})
+	return accounts
+
+def jv_accounts_paid(doc):
+	accounts = []
+	accounts.append({
+		'account': doc.expense_account,
+		'debit_in_account_currency': doc.incentive,
+		'credit_in_account_currency': 0,
+		'cost_center': doc.expense_cost_center,
+	})
+	showroom_account = ""
+	if doc.cash:
+		mop_cash = frappe.db.sql(""" SELECT * FROM `tabMode of Payment Account` WHERE parent=%s """, (doc.showroom_cash), as_dict=1)
+		if len(mop_cash) > 0:
+			showroom_account = mop_cash[0].default_account
+	elif doc.card:
+		print(doc.showroom_card)
+		mop_card = frappe.db.sql(""" SELECT * FROM `tabMode of Payment Account` WHERE parent=%s """,
+								 (doc.showroom_card), as_dict=1)
+		print(mop_card)
+		if len(mop_card) > 0:
+			showroom_account = mop_card[0].default_account
+	print("AJSHDLKAJSDLKJASD")
+	print(showroom_account)
+	accounts.append({
+		'account': showroom_account,
 		'debit_in_account_currency': 0,
 		'credit_in_account_currency': doc.incentive
 	})

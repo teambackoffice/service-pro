@@ -7,9 +7,9 @@ frappe.listview_settings['Production'] = {
 		} else if (["In Progress", "Partially Delivered"].includes(doc.status)) {
 			// Closed
 			return [__(doc.status), "orange", "status,=," + doc.status];
-		} else if (doc.status === "Completed") {
+		} else if (doc.status === "Completed" || doc.status === "Closed") {
 			// Closed
-			return [__(doc.status), "green", "status,=,In Progress"];
+			return [__(doc.status), "green", "status,=," + doc.status];
 		}
 
 	},

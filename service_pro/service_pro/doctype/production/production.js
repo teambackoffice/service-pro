@@ -209,6 +209,52 @@ frappe.ui.form.on('Production', {
 
     },
 	refresh: function(frm) {
+         if(cur_frm.doc.docstatus && cur_frm.doc.status === "In Progress"){
+             frm.add_custom_button(__("Close"), () => {
+                    cur_frm.call({
+                        doc: cur_frm.doc,
+                        method: 'change_status',
+                        args: {
+                            status: "Closed"
+                        },
+                        freeze: true,
+                        freeze_message: "Closing...",
+                        callback: () => {
+                        cur_frm.reload_doc()
+                        }
+                })
+            })
+        } else if (cur_frm.doc.docstatus && cur_frm.doc.status === "Closed"){
+            frm.add_custom_button(__("Open"), () => {
+                    cur_frm.call({
+                        doc: cur_frm.doc,
+                        method: 'change_status',
+                        args: {
+                            status: "Open"
+                        },
+                        freeze: true,
+                        freeze_message: "Opening...",
+                        callback: () => {
+                        cur_frm.reload_doc()
+                        }
+                })
+            })
+        } else if (cur_frm.doc.docstatus && cur_frm.doc.status !== "Completed") {
+            frm.add_custom_button(__("Complete"), () => {
+                    cur_frm.call({
+                        doc: cur_frm.doc,
+                        method: 'change_status',
+                        args: {
+                            status: "Completed"
+                        },
+                        freeze: true,
+                        freeze_message: "Completing...",
+                        callback: () => {
+                        cur_frm.reload_doc()
+                        }
+                })
+            })
+         }
                 console.log("NA MAN")
          if(cur_frm.doc.docstatus){
          frappe.call({

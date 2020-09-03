@@ -10,6 +10,7 @@ from frappe.utils import cint, flt
 from datetime import datetime
 class Estimation(Document):
 	def change_status(self, status):
+
 		frappe.db.sql(""" UPDATE `tabEstimation` SET status=%s WHERE name=%s """,(status, self.name))
 		frappe.db.commit()
 	def validate(self):

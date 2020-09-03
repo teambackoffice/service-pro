@@ -100,18 +100,18 @@
    "fieldname": "showroom_cash",
    "fieldtype": "Link",
    "label": "Showroom Cash",
-   "options": "Account"
+   "options": "Mode of Payment"
   },
   {
    "fieldname": "showroom_card",
    "fieldtype": "Link",
    "label": "Showroom Card",
-   "options": "Account"
+   "options": "Mode of Payment"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2020-09-02 19:16:07.411170",
+ "modified": "2020-09-03 14:51:59.840062",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

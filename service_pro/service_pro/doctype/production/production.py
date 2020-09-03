@@ -10,6 +10,14 @@ from erpnext.stock.stock_ledger import get_previous_sle
 from frappe.utils import cint, flt
 from datetime import datetime
 class Production(Document):
+	def change_status(self, status):
+		if status == "Closed" or status == "Completed":
+			frappe.db.sql(""" UPDATE `tabProduction` SET last_status=%s WHERE name=%s """,(self.status, self.name))
+			frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s """,(status, self.name))
+			frappe.db.commit()
+		elif status == "Open":
+			frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s """, (self.last_status, self.name))
+			frappe.db.commit()
 	def on_update_after_submit(self):
 		for i in self.raw_material:
 			if i.production:

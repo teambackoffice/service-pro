@@ -65,6 +65,12 @@ def execute(filters=None):
 					SI.total_taxes_and_charges as vat,
  					SI.total as total,
  					SI.paid,
+ 					SI.unpaid,
+ 					SI.incentive,
+ 					SI.showroom_card,
+ 					SI.showroom_cash,
+ 					SI.cash,
+ 					SI.card,
  					SI.discount_amount as discount,
  					SI.net_total as net_total,
  					SI.grand_total as grand_total,
@@ -76,8 +82,21 @@ def execute(filters=None):
 	new_data = []
 	for i in datas:
 		i['advance'] = 0
-		i['net_amount'] = i.grand_total - i.insentive if i.paid else i.grand_total
+		i['net_amount'] = i.grand_total
+		if i.unpaid:
+			i['incentive_unpaid'] = i.incentive
 		new_data.append(i)
+		if i.paid:
+			new_data.append({
+				"date": i.date,
+				"si_no": i.name,
+				"customer_name": i.customer_name,
+				"sales_man_agent": i.sales_man_agent,
+				"mop": i.showroom_card if i.card else i.showroom_cash,
+				"incentive_paid": 0 - i.incentive,
+				"net_amount": 0 - i.incentive
+
+			})
 	jv_add(filters, new_data)
 	pe_add(filters, new_data)
 	return columns, new_data
@@ -159,7 +178,8 @@ def get_columns():
 		{"label": "Net Total", "fieldname": "net_total", "fieldtype": "Float","precision": "2","width": "100"},
 		{"label": "VAT", "fieldname": "vat", "fieldtype": "Float", "precision": "2", "width": "100"},
 		{"label": "Grand Total", "fieldname": "grand_total","fieldtype": "Float","precision": "2","width": "100"},
-		{"label": "Insentive", "fieldname": "insentive", "fieldtype": "Float","precision": "2","width": "100"},
+		{"label": "Incentive Paid", "fieldname": "incentive_paid", "fieldtype": "Float","precision": "2","width": "100"},
+		{"label": "Incentive Unpaid", "fieldname": "incentive_unpaid", "fieldtype": "Float","precision": "2","width": "100"},
 		{"label": "Net Amount", "fieldname": "net_amount", "fieldtype": "Float","precision": "2","width": "100"},
 		{"label": "Status", "fieldname": "status", "fieldtype": "Data","width": "100"},
 	]

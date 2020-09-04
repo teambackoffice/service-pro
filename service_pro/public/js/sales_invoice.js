@@ -17,6 +17,14 @@ cur_frm.cscript.sales_person = function(frm,cdt, cdn){
     }
 }
 cur_frm.cscript.customer = function(frm){
+    if(cur_frm.doc.customer){
+         frappe.db.get_value('Customer', cur_frm.doc.customer, "customer_name")
+            .then(customer_name => {
+                cur_frm.doc.customer_name = customer_name.message.customer_name
+                    cur_frm.refresh_field("customer_name")
+
+            })
+    }
     filter_link_field(cur_frm)
 
 }
@@ -48,14 +56,6 @@ cur_frm.cscript.unpaid = function(frm){
 }
 cur_frm.cscript.onload = function(frm){
     filter_link_field(cur_frm)
-    // if(cur_frm.doc.docstatus){
-    //   if(frappe.boot.user.roles.includes("Accounts Manager") || frappe.boot.user.roles.includes("System Manager")){
-    //             cur_frm.set_df_property("paid", "read_only", 0)
-    //     } else {
-    //         cur_frm.set_df_property("paid", "read_only", 1)
-    //
-    //  }
-    // }
     cur_frm.set_query('expense_cost_center', () => {
         return {
             filters: {
@@ -78,7 +78,6 @@ cur_frm.cscript.onload = function(frm){
                 cur_frm.doc.showroom_card = showroom_card
                 cur_frm.refresh_field("showroom_card")
             })
-
 }
 function compute_incentives(cur_frm) {
     var incentive_total = 0
@@ -98,6 +97,9 @@ function filter_link_field(cur_frm) {
             ]
         }
     })
+
+
+
 }
 
 cur_frm.cscript.reference = function (frm,cdt,cdn) {

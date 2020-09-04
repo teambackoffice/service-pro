@@ -239,7 +239,7 @@ frappe.ui.form.on('Production', {
                         }
                 })
             })
-        } else if (cur_frm.doc.docstatus && cur_frm.doc.status !== "Completed") {
+        } else if (cur_frm.doc.docstatus && cur_frm.doc.status !== "Completed" && frappe.boot.user.roles.includes("System Manager")) {
             frm.add_custom_button(__("Complete"), () => {
                     cur_frm.call({
                         doc: cur_frm.doc,

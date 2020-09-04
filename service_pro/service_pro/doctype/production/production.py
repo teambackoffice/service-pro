@@ -225,14 +225,13 @@ class Production(Document):
 		return items
 	def get_si_items(self, type, qty):
 
-
 		obj = {
 			'item_code': self.item_code_prod,
 			'item_name': self.get_item_value("item_name"),
 			'description': self.get_item_value("description"),
 			'qty': qty,
 			'uom': "Nos",
-			'rate': self.rate,
+			'rate': self.invoice_rate,
 			'cost_center': self.cost_center,
 			'income_account': self.income_account
 		}

@@ -179,7 +179,7 @@ def get_columns():
 		{"label": "VAT", "fieldname": "vat", "fieldtype": "Float", "precision": "2", "width": "100"},
 		{"label": "Grand Total", "fieldname": "grand_total","fieldtype": "Float","precision": "2","width": "100"},
 		{"label": "Incentive Paid", "fieldname": "incentive_paid", "fieldtype": "Float","precision": "2","width": "100"},
-		{"label": "Incentive Unpaid", "fieldname": "incentive_unpaid", "fieldtype": "Float","precision": "2","width": "100"},
+		{"label": "Incentive Unpaid", "fieldname": "incentive_unpaid", "fieldtype": "Float","precision": "2","width": "120"},
 		{"label": "Net Amount", "fieldname": "net_amount", "fieldtype": "Float","precision": "2","width": "100"},
 		{"label": "Status", "fieldname": "status", "fieldtype": "Data","width": "100"},
 	]

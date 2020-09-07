@@ -16,9 +16,9 @@ def execute(filters=None):
 		mop_array = []
 		for i in filters.get("mop"):
 			mop_array.append(i)
-		query_ += " INNER JOIN `tabSales Invoice Payment` AS SIP ON SIP.parent = SI.name and SIP.mode_of_payment in {0} ".format(tuple(mop_array))
+		query_ += " INNER JOIN `tabSales Invoice Payment` AS SIP ON SIP.parent = SI.name and SIP.mode_of_payment in {0} and SI.paid = 1 and SI.showroom_cash in {1}".format(tuple(mop_array),tuple(mop_array))
 	elif len(filters.get("mop")) == 1:
-		query_ += " INNER JOIN `tabSales Invoice Payment` AS SIP ON SIP.parent = SI.name and SIP.mode_of_payment = '{0}' ".format(filters.get("mop")[0])
+		query_ += " INNER JOIN `tabSales Invoice Payment` AS SIP ON SIP.parent = SI.name and SIP.mode_of_payment = '{0}' and SI.paid = 1 and SI.showroom_cash = '{1}'".format(filters.get("mop")[0],filters.get("mop")[0])
 
 	if filters.get("customer"):
 		condition += " and "
@@ -79,11 +79,12 @@ def execute(filters=None):
 				FROM `tabSales Invoice` AS SI {0} WHERE SI.docstatus = 1 {1}""".format(query_,condition)
 
 	datas = frappe.db.sql(query,as_dict=1)
+
 	new_data = []
 	for i in datas:
+		print(i.mop)
 		i['advance'] = 0
 		i['net_amount'] = i.grand_total
-		i['mop'] = i.showroom_card if i.card else i.showroom_cash
 		if i.unpaid:
 			i['incentive_unpaid'] = i.incentive
 		new_data.append(i)
@@ -93,7 +94,7 @@ def execute(filters=None):
 				"si_no": i.name,
 				"customer_name": i.customer_name,
 				"sales_man_agent": i.sales_man_agent,
-				"mop": i.showroom_card if i.card else i.showroom_cash,
+				"mop": i.showroom_cash if i.cash else "",
 				"incentive_paid": 0 - i.incentive,
 				"net_amount": 0 - i.incentive
 

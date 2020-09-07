@@ -52,25 +52,14 @@ def jv_accounts_paid(doc):
 		'credit_in_account_currency': 0,
 		'cost_center': doc.expense_cost_center,
 	})
-	showroom_account = ""
 	if doc.cash:
 		mop_cash = frappe.db.sql(""" SELECT * FROM `tabMode of Payment Account` WHERE parent=%s """, (doc.showroom_cash), as_dict=1)
 		if len(mop_cash) > 0:
-			showroom_account = mop_cash[0].default_account
-	elif doc.card:
-		print(doc.showroom_card)
-		mop_card = frappe.db.sql(""" SELECT * FROM `tabMode of Payment Account` WHERE parent=%s """,
-								 (doc.showroom_card), as_dict=1)
-		print(mop_card)
-		if len(mop_card) > 0:
-			showroom_account = mop_card[0].default_account
-	print("AJSHDLKAJSDLKJASD")
-	print(showroom_account)
-	accounts.append({
-		'account': showroom_account,
-		'debit_in_account_currency': 0,
-		'credit_in_account_currency': doc.incentive
-	})
+			accounts.append({
+				'account': mop_cash[0].default_account,
+				'debit_in_account_currency': 0,
+				'credit_in_account_currency': doc.incentive
+			})
 	return accounts
 @frappe.whitelist()
 def on_submit_si(doc, method):

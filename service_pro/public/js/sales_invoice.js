@@ -36,7 +36,10 @@ cur_frm.cscript.paid = function(frm){
         })
     if(cur_frm.doc.paid){
         cur_frm.doc.unpaid = 0
+        cur_frm.doc.cash = 1
+
         cur_frm.refresh_field("unpaid")
+        cur_frm.refresh_field("cash")
     }
 
 
@@ -49,7 +52,9 @@ cur_frm.cscript.unpaid = function(frm){
         })
    if(cur_frm.doc.unpaid){
         cur_frm.doc.paid = 0
+        cur_frm.doc.cash = 0
         cur_frm.refresh_field("paid")
+        cur_frm.refresh_field("cash")
    }
 
 

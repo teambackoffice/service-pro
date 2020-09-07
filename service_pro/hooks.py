@@ -171,7 +171,6 @@ fixtures = [
                     "Delivery Note-sales_man",
                     "Sales Invoice-showroom_card",
                     "Sales Invoice-showroom_cash",
-                    "Sales Invoice-card",
                     "Sales Invoice-cash",
                     "Sales Invoice-unpaid",
                     "Sales Invoice-liabilities_account",

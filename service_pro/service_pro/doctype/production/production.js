@@ -896,7 +896,8 @@ function set_rate_and_amount(cur_frm) {
 }
 
 function compute_for_selling_price(cur_frm) {
-            frappe.call({
+if(cur_frm.doc.raw_material !== undefined){
+    frappe.call({
                 method: "service_pro.service_pro.doctype.production.production.compute_selling_price",
                 args: {
                     raw_materials: cur_frm.doc.raw_material
@@ -910,6 +911,8 @@ function compute_for_selling_price(cur_frm) {
                     cur_frm.refresh_field("total_selling_price__qty")
                 }
             })
+}
+
 
 
 }
@@ -927,7 +930,7 @@ cur_frm.cscript.production = function (frm,cdt, cdn) {
                     callback: function (r) {
                         d.rate_raw_material = prod.rate
                         d.qty_raw_material = r.message
-                        d.amount_raw_material = prod.raw_material_total
+                        d.amount_raw_material = prod.rate * r.message
                         cur_frm.refresh_field("raw_material")
                         compute_raw_material_total(cur_frm)
                         compute_for_selling_price(cur_frm)

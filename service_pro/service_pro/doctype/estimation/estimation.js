@@ -44,7 +44,7 @@ frappe.ui.form.on('Estimation', {
 					filters: [
                     	["service_receipt_note", "=", cur_frm.doc.receipt_note],
                     	["docstatus", "=", 1],
-                        ["status", "=", "To Estimation"]
+                        ["status", "in", ["To Production","To Estimation"]]
 					]
 				}
 			}
@@ -67,7 +67,7 @@ frappe.ui.form.on('Estimation', {
             return {
                 filters: [
                     ["docstatus", "=", 1],
-                    ["status", "=", "To Estimation"]
+                    ["status", "in", ["To Production","To Estimation"]]
                 ]
             }
         })

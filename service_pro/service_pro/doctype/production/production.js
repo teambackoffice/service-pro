@@ -157,8 +157,16 @@ function compute_raw_material_total(cur_frm) {
     cur_frm.refresh_field("raw_material_amount")
      set_rate_and_amount(cur_frm)
 }
-
 frappe.ui.form.on('Production', {
+    onload_post_render: function(frm) {
+             console.log("HAHA")
+            console.log(document.querySelectorAll("[data-doctype='Sales Invoice']"))
+                    document.querySelectorAll("[data-doctype='Sales Invoice']")[1].style.display ="none";
+                    document.querySelectorAll("[data-doctype='Delivery Note']")[1].style.display ="none";
+                    document.querySelectorAll("[data-doctype='Stock Entry']")[1].style.display ="none";
+
+
+        },
     onload: function (frm) {
 
         if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
@@ -241,12 +249,14 @@ frappe.ui.form.on('Production', {
         cur_frm.set_df_property('advance_payment', 'read_only', cur_frm.doc.status === "Completed");
         cur_frm.set_df_property('raw_material', 'read_only', cur_frm.doc.status === "Completed");
 
+
     },
     validate: function (frm) {
         frm.set_df_property('type', 'read_only', 1);
 
     },
 	refresh: function(frm) {
+
          if(cur_frm.doc.docstatus && cur_frm.doc.status === "In Progress"){
              frm.add_custom_button(__("Close"), () => {
                     cur_frm.call({

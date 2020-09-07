@@ -8,7 +8,7 @@
  "field_order": [
   "series",
   "customer_and_workshop",
-  "cylinder_service",
+  "linked_productions",
   "last_status",
   "status",
   "customer",
@@ -220,7 +220,7 @@
    "fieldtype": "Select",
    "hidden": 1,
    "label": "Status",
-   "options": "In Progress\nPartially Delivered\nCompleted\nTo Deliver and Bill\nTo Deliver\nTo Bill\nClosed"
+   "options": "In Progress\nPartially Delivered\nCompleted\nTo Deliver and Bill\nTo Deliver\nTo Bill\nClosed\nLinked"
   },
   {
    "fieldname": "cost_center",
@@ -453,24 +453,24 @@
    "options": "\nCustomer\nWorkshop"
   },
   {
-   "depends_on": "eval: doc.customer_and_workshop == \"Workshop\" && doc.type != \"Service\"",
-   "fieldname": "cylinder_service",
-   "fieldtype": "Link",
-   "label": "Cylinder Service",
-   "mandatory_depends_on": "eval: doc.customer_and_workshop == \"Workshop\" && doc.type != \"Service\"",
-   "options": "Production"
-  },
-  {
    "allow_on_submit": 1,
    "fieldname": "last_status",
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Last Status"
+  },
+  {
+   "depends_on": "eval: doc.customer_and_workshop == \"Workshop\" && doc.type != \"Service\"",
+   "fieldname": "linked_productions",
+   "fieldtype": "Table",
+   "label": "Cylinder Service",
+   "mandatory_depends_on": "eval: doc.customer_and_workshop == \"Workshop\" && doc.type != \"Service\"",
+   "options": "Linked Productions"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-03 14:36:56.064274",
+ "modified": "2020-09-07 06:32:05.494540",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

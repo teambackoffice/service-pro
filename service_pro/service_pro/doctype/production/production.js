@@ -4,7 +4,23 @@ cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
     frappe.db.get_single_value('Stock Settings', 'allow_negative_stock')
         .then(ans => {
             var d = locals[cdt][cdn]
-        console.log(ans)
+
+             frappe.call({
+                    method: "service_pro.service_pro.doctype.production.production.get_available_qty",
+                    args: {
+                        production: d.production
+                    },
+                    async: false,
+                    callback: function (r) {
+                        if(d.qty_raw_material > r.message){
+                                var qty_ = d.qty_raw_material
+                            d.qty_raw_material = r.message
+                            cur_frm.refresh_field("raw_material")
+                                frappe.throw("Can't change Qty to " + qty_.toString() + ". Maximum Available qty is " + r.message.toString())
+                        }
+                    }
+                })
+
             if((d.qty_raw_material && d.qty_raw_material <= d.available_qty) || ans){
                 d.amount_raw_material = d.rate_raw_material * d.qty_raw_material
                 cur_frm.refresh_field("raw_material")
@@ -18,6 +34,8 @@ cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
             }
             compute_raw_material_total(cur_frm)
             compute_for_selling_price(cur_frm)
+
+
         })
 
 }
@@ -321,7 +339,7 @@ frappe.ui.form.on('Production', {
                     ["name", "!=", cur_frm.doc.name],
                     ["series", "=", "SK-"],
                     ["docstatus", "=", 1],
-                    ["status", "=", "To Deliver and Bill"]
+                    ["status", "in", ["To Deliver and Bill","Linked"]]
                 ]
             }
         })
@@ -368,14 +386,15 @@ frappe.ui.form.on('Production', {
                 }
             }
         });
-         cur_frm.set_query('cylinder_service', () => {
-            return {
-                filters: [
+         cur_frm.fields_dict.linked_productions.grid.get_field("cylinder_service").get_query =
+			function() {
+				return {
+					 filters: [
                     ["status", "!=", "Completed"],
                     ["series", "=", "CS-"],
                 ]
-            }
-        });
+				}
+			}
 
         var generate_button = true
         if(cur_frm.doc.scoop_of_work !== undefined){
@@ -899,12 +918,21 @@ cur_frm.cscript.production = function (frm,cdt, cdn) {
     if(d.production){
         frappe.db.get_doc('Production', d.production)
             .then(prod => {
-                d.rate_raw_material = prod.rate
-                d.qty_raw_material = prod.qty
-                d.amount_raw_material = prod.raw_material_total
-                cur_frm.refresh_field("raw_material")
-                compute_raw_material_total(cur_frm)
-                compute_for_selling_price(cur_frm)
+                frappe.call({
+                    method: "service_pro.service_pro.doctype.production.production.get_available_qty",
+                    args: {
+                        production: d.production
+                    },
+                    callback: function (r) {
+                        d.rate_raw_material = prod.rate
+                        d.qty_raw_material = r.message
+                        d.amount_raw_material = prod.raw_material_total
+                        cur_frm.refresh_field("raw_material")
+                        compute_raw_material_total(cur_frm)
+                        compute_for_selling_price(cur_frm)
+                    }
+                })
+
 
             })
     }

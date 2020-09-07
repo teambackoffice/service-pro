@@ -83,6 +83,7 @@ def execute(filters=None):
 	for i in datas:
 		i['advance'] = 0
 		i['net_amount'] = i.grand_total
+		i['mop'] = i.showroom_card if i.card else i.showroom_cash
 		if i.unpaid:
 			i['incentive_unpaid'] = i.incentive
 		new_data.append(i)

@@ -21,8 +21,14 @@ class Production(Document):
 	def on_update_after_submit(self):
 		for i in self.raw_material:
 			if i.production:
-				frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""", ("Completed",i.production))
-				frappe.db.commit()
+				get_qty = frappe.db.sql(""" SELECT * FROM `tabProduction` WHERE name=%s""", i.production, as_dict=1)
+				get_qty_total = frappe.db.sql(""" SELECT SUM(qty_raw_material) as qty_raw_material FROM `tabRaw Material` WHERE production=%s """, i.production, as_dict=1)
+				if get_qty[0].qty == get_qty_total[0].qty_raw_material:
+					frappe.db.sql(""" UPDATE `tabProduction` SET status=%s, last_status=%s WHERE name=%s""", ("Completed",get_qty[0].status,i.production))
+					frappe.db.commit()
+				else:
+					frappe.db.sql(""" UPDATE `tabProduction` SET status=%s, last_status=%s WHERE name=%s""", ("Linked",get_qty[0].status,i.production))
+					frappe.db.commit()
 	def change_production_status(self, production):
 		raw_material = frappe.db.sql(""" SELECT * FROM `tabRaw Material` WHERE name=%s""",production, as_dict=1)
 		if len(raw_material) > 0 and raw_material[0].production:
@@ -43,8 +49,14 @@ class Production(Document):
 	def on_submit(self):
 		for i in self.raw_material:
 			if i.production:
-				frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""", ("Completed",i.production))
-				frappe.db.commit()
+				get_qty = frappe.db.sql(""" SELECT * FROM `tabProduction` WHERE name=%s""", i.production, as_dict=1)
+				get_qty_total = frappe.db.sql(""" SELECT SUM(qty_raw_material) as qty_raw_material FROM `tabRaw Material` WHERE production=%s """, i.production, as_dict=1)
+				if get_qty[0].qty == get_qty_total[0].qty_raw_material:
+					frappe.db.sql(""" UPDATE `tabProduction` SET status=%s, last_status=%s WHERE name=%s""", ("Completed",get_qty[0].status,i.production))
+					frappe.db.commit()
+				else:
+					frappe.db.sql(""" UPDATE `tabProduction` SET status=%s, last_status=%s WHERE name=%s""", ("Linked",get_qty[0].status,i.production))
+					frappe.db.commit()
 	def set_available_qty(self):
 		time = datetime.now().time()
 		date = datetime.now().date()
@@ -257,6 +269,14 @@ class Production(Document):
 		items = frappe.db.sql(""" SELECT * FROM `tabItem` WHERE name=%s """, self.item_code_prod, as_dict=1)
 		return items[0][field]
 
+@frappe.whitelist()
+def get_available_qty(production):
+	get_qty = frappe.db.sql(""" SELECT * FROM `tabProduction` WHERE name=%s""", production, as_dict=1)
+	get_qty_total = frappe.db.sql(
+		""" SELECT SUM(RM.qty_raw_material) as qty_raw_material FROM `tabProduction` AS P INNER JOIN `tabRaw Material` AS RM ON RM.parent = P.name and RM.production=%s WHERE P.docstatus=1 """,
+		production, as_dict=1)
+	print(get_qty_total)
+	return get_qty[0].qty - get_qty_total[0].qty_raw_material if get_qty_total[0].qty_raw_material else get_qty[0].qty
 @frappe.whitelist()
 def get_rate(item_code, warehouse, based_on,price_list):
 	time = datetime.now().time()

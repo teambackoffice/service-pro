@@ -21,8 +21,14 @@ cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
                         } else {
                               frappe.db.get_doc("Production", d.production)
                             .then(doc => {
-                                d.rate_raw_material = doc.rate / d.qty_raw_material
-                                d.amount_raw_material = doc.rate / d.qty_raw_material
+                                if(doc.qty % d.qty_raw_material === 0){
+                                    d.rate_raw_material = doc.rate / (doc.qty / d.qty_raw_material)
+                                    d.amount_raw_material = doc.rate / (doc.qty / d.qty_raw_material)
+                                } else {
+                                    d.rate_raw_material = doc.rate / d.qty_raw_material
+                                    d.amount_raw_material = doc.rate / d.qty_raw_material
+                                }
+
                                 cur_frm.refresh_field("raw_material")
                             })
                         }
@@ -941,9 +947,15 @@ cur_frm.cscript.production = function (frm,cdt, cdn) {
                         production: d.production
                     },
                     callback: function (r) {
-                        d.rate_raw_material = prod.rate
                         d.qty_raw_material = r.message
-                        d.amount_raw_material = prod.rate
+
+                        if(prod.qty % d.qty_raw_material === 0){
+                            d.rate_raw_material = prod.rate / (prod.qty / d.qty_raw_material)
+                            d.amount_raw_material = prod.rate / (prod.qty / d.qty_raw_material)
+                        } else {
+                            d.rate_raw_material = prod.rate / d.qty_raw_material
+                            d.amount_raw_material = prod.rate / d.qty_raw_material
+                        }
                         cur_frm.refresh_field("raw_material")
                         compute_raw_material_total(cur_frm)
                         compute_for_selling_price(cur_frm)

@@ -4,8 +4,8 @@ cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
     frappe.db.get_single_value('Stock Settings', 'allow_negative_stock')
         .then(ans => {
             var d = locals[cdt][cdn]
-
-             frappe.call({
+            if(d.production){
+                frappe.call({
                     method: "service_pro.service_pro.doctype.production.production.get_available_qty",
                     args: {
                         production: d.production
@@ -20,6 +20,7 @@ cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
                         }
                     }
                 })
+            }
 
             if((d.qty_raw_material && d.qty_raw_material <= d.available_qty) || ans){
                 d.amount_raw_material = d.rate_raw_material * d.qty_raw_material

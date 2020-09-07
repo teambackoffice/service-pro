@@ -13,13 +13,23 @@ cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
                     async: false,
                     callback: function (r) {
                         if(d.qty_raw_material > r.message){
-                                var qty_ = d.qty_raw_material
-                            d.qty_raw_material = r.message
+                            var qty_ = d.qty_raw_material
+                             d.qty_raw_material = r.message
+
                             cur_frm.refresh_field("raw_material")
-                                frappe.throw("Can't change Qty to " + qty_.toString() + ". Maximum Available qty is " + r.message.toString())
+                            frappe.throw("Can't change Qty to " + qty_.toString() + ". Maximum Available qty is " + r.message.toString())
+                        } else {
+                              frappe.db.get_doc("Production", d.production)
+                            .then(doc => {
+                                d.rate_raw_material = doc.rate / d.qty_raw_material
+                                cur_frm.refresh_field("raw_material")
+                            })
                         }
+
+
                     }
                 })
+
             }
 
             if((d.qty_raw_material && d.qty_raw_material <= d.available_qty) || ans){
@@ -942,6 +952,7 @@ cur_frm.cscript.production = function (frm,cdt, cdn) {
     }
 
 }
+
 cur_frm.cscript.material_request = function () {
     frappe.set_route('Form', 'Material Request', "New Material Request 1")
 }

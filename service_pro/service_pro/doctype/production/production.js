@@ -22,6 +22,7 @@ cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
                               frappe.db.get_doc("Production", d.production)
                             .then(doc => {
                                 d.rate_raw_material = doc.rate / d.qty_raw_material
+                                d.amount_raw_material = doc.rate / d.qty_raw_material
                                 cur_frm.refresh_field("raw_material")
                             })
                         }
@@ -30,19 +31,21 @@ cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
                     }
                 })
 
-            }
-
-            if((d.qty_raw_material && d.qty_raw_material <= d.available_qty) || ans){
+            } else {
+                if((d.qty_raw_material && d.qty_raw_material <= d.available_qty) || ans){
                 d.amount_raw_material = d.rate_raw_material * d.qty_raw_material
                 cur_frm.refresh_field("raw_material")
-            } else {
-                var qty = d.qty_raw_material
-                d.qty_raw_material = d.available_qty
-                d.amount_raw_material = d.rate_raw_material * d.available_qty
-                cur_frm.refresh_field("raw_material")
-                frappe.throw("Not enough stock. Can't change to " + qty.toString())
+                } else {
+                    var qty = d.qty_raw_material
+                    d.qty_raw_material = d.available_qty
+                    d.amount_raw_material = d.rate_raw_material * d.available_qty
+                    cur_frm.refresh_field("raw_material")
+                    frappe.throw("Not enough stock. Can't change to " + qty.toString())
 
+                }
             }
+
+
             compute_raw_material_total(cur_frm)
             compute_for_selling_price(cur_frm)
 

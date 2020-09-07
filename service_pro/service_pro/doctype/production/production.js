@@ -943,7 +943,7 @@ cur_frm.cscript.production = function (frm,cdt, cdn) {
                     callback: function (r) {
                         d.rate_raw_material = prod.rate
                         d.qty_raw_material = r.message
-                        d.amount_raw_material = prod.rate * r.message
+                        d.amount_raw_material = prod.rate
                         cur_frm.refresh_field("raw_material")
                         compute_raw_material_total(cur_frm)
                         compute_for_selling_price(cur_frm)

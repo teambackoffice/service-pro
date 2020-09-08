@@ -157,10 +157,37 @@ function compute_raw_material_total(cur_frm) {
     cur_frm.refresh_field("raw_material_amount")
      set_rate_and_amount(cur_frm)
 }
+cur_frm.cscript.cylinder_service = function (frm, cdt, cdn) {
+    var d = locals[cdt][cdn]
+    if(d.cylinder_service){
+        console.log("CYLINDER SERVICE")
+        frappe.db.get_doc("Production", d.cylinder_service)
+            .then(prod => {
+                cur_frm.doc.customer = prod.customer
+                cur_frm.refresh_field("customer")
+                cur_frm.trigger("customer")
+            var names = Array.from(cur_frm.doc.linked_productions, x => "cylinder_service" in x ? x.cylinder_service:"")
+             cur_frm.fields_dict.linked_productions.grid.get_field("cylinder_service").get_query =
+                function() {
+                    var filters =  [
+                        ["name", "not in", names],
+                        ["status", "!=", "Completed"],
+                        ["docstatus", "=", 1],
+                        ["series", "=", "CS-"],
+                    ]
+                    if(cur_frm.doc.customer){
+                        filters.push(["customer", "=", cur_frm.doc.customer])
+                    }
+                    return {
+                         filters: filters
+                    }
+                }
+        })
+    }
+}
 frappe.ui.form.on('Production', {
     onload_post_render: function(frm) {
-             console.log("HAHA")
-            console.log(document.querySelectorAll("[data-doctype='Sales Invoice']"))
+
                     document.querySelectorAll("[data-doctype='Sales Invoice']")[1].style.display ="none";
                     document.querySelectorAll("[data-doctype='Delivery Note']")[1].style.display ="none";
                     document.querySelectorAll("[data-doctype='Stock Entry']")[1].style.display ="none";

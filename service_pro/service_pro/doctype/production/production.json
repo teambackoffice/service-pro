@@ -71,7 +71,6 @@
  ],
  "fields": [
   {
-   "fetch_from": "cylinder_service.customer",
    "fieldname": "customer",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -470,7 +469,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-07 06:32:05.494540",
+ "modified": "2020-09-08 15:50:39.660169",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

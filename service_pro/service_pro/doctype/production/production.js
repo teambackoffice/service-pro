@@ -422,6 +422,7 @@ frappe.ui.form.on('Production', {
 				return {
 					 filters: [
                     ["status", "!=", "Completed"],
+                    ["docstatus", "=", 1],
                     ["series", "=", "CS-"],
                 ]
 				}

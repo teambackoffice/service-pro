@@ -8,15 +8,17 @@ cur_frm.cscript.onload = function(frm){
 }
 
 function filter_link_field(cur_frm) {
-     cur_frm.set_query('reference', 'production', () => {
-        return {
-            filters: [
-                ["customer", "=", cur_frm.doc.customer],
-                ["docstatus", "=", 1],
-                ["status", "in", ["To Deliver and Bill", "To Deliver","Partially Completed", "Partially Delivered"]],
-            ]
-        }
-    })
+      cur_frm.fields_dict.production.grid.get_field("reference").get_query =
+			function() {
+				return {
+				    filters: [
+                        ["customer", "=", cur_frm.doc.customer],
+                        ["docstatus", "=", 1],
+                        ["status", "in", ["To Deliver and Bill", "To Deliver","Partially Completed", "Partially Delivered"]]
+                    ]
+                }
+            }
+
 }
 
 cur_frm.cscript.reference = function (frm,cdt,cdn) {

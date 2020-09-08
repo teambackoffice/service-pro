@@ -314,6 +314,7 @@ frappe.ui.form.on('Production', {
             },
              async: false,
             callback: function (r) {
+                console.log("ASDJALKSD")
                 console.log(r.message)
                 cur_frm.doc.qty_for_sidn = r.message
                 cur_frm.refresh_field("qty_for_sidn")

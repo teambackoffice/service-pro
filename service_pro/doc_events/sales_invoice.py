@@ -162,14 +162,12 @@ def on_cancel_si(doc, method):
 def get_lengths(name):
 	si_query = """ 
      			SELECT SIP.qty as qty, SI.status FROM `tabSales Invoice` AS SI 
-     			INNER JOIN `tabSales Invoice Item` AS SII ON SII.parent = SI.name
      			INNER JOIN `tabSales Invoice Production` AS SIP ON SI.name = SIP.parent 
      			WHERE SIP.reference=%s and SIP.parenttype=%s and SI.docstatus = 1 and SI.status!='Cancelled' and SI.update_stock = 0
      			"""
 	si = frappe.db.sql(si_query, (name, "Sales Invoice"), as_dict=1)
 	dn_query = """ 
     	 			SELECT SIP.qty as qty, DN.status FROM `tabDelivery Note` AS DN 
-    	 			INNER JOIN `tabDelivery Note Item` AS DNI ON DNI.parent = DN.name
     	 			INNER JOIN `tabSales Invoice Production` AS SIP ON DN.name = SIP.parent 
     	 			WHERE SIP.reference=%s and SIP.parenttype=%s and DN.docstatus = 1 and DN.status!='Cancelled'
     	 			"""
@@ -179,14 +177,12 @@ def get_lengths(name):
 def get_dn_si_qty(item_code, qty, name):
 	si_query = """ 
  			SELECT SIP.qty as qty, SI.status FROM `tabSales Invoice` AS SI 
- 			INNER JOIN `tabSales Invoice Item` AS SII ON SII.parent = SI.name
  			INNER JOIN `tabSales Invoice Production` AS SIP ON SI.name = SIP.parent 
  			WHERE SIP.reference=%s and SIP.parenttype=%s and SI.docstatus = 1 and SI.status!='Cancelled'
  			"""
 	si = frappe.db.sql(si_query,(name,"Sales Invoice"), as_dict=1)
 	dn_query = """ 
 	 			SELECT SIP.qty as qty, DN.status FROM `tabDelivery Note` AS DN 
-	 			INNER JOIN `tabDelivery Note Item` AS DNI ON DNI.parent = DN.name
 	 			INNER JOIN `tabSales Invoice Production` AS SIP ON DN.name = SIP.parent 
 	 			WHERE SIP.reference=%s and SIP.parenttype=%s and DN.docstatus = 1 and DN.status!='Cancelled'
 	 			"""
@@ -212,7 +208,6 @@ def get_dn_qty(name):
 
 	dn_query = """ 
 	 			SELECT SIP.qty as qty, DN.status FROM `tabDelivery Note` AS DN 
-	 			INNER JOIN `tabDelivery Note Item` AS DNI ON DNI.parent = DN.name
 	 			INNER JOIN `tabSales Invoice Production` AS SIP ON DN.name = SIP.parent 
 	 			WHERE SIP.reference=%s and SIP.parenttype=%s and DN.docstatus = 1 and DN.status!='Cancelled'
 	 			"""

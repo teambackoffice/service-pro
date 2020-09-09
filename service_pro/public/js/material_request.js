@@ -12,7 +12,7 @@ function filter_link_field(cur_frm) {
         return {
             filters: [
                 ["docstatus", "=", 1],
-                ["status", "in", ["To Deliver and Bill"]],
+                ["status", "in", ["To Deliver and Bill", "In Progress"]],
             ]
         }
     })

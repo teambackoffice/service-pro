@@ -16,9 +16,9 @@ def execute(filters=None):
 		mop_array = []
 		for i in filters.get("mop"):
 			mop_array.append(i)
-		query_ += " INNER JOIN `tabSales Invoice Payment` AS SIP ON SIP.parent = SI.name and SIP.mode_of_payment in {0} and SI.paid = 1 and SI.showroom_cash in {1}".format(tuple(mop_array),tuple(mop_array))
+		query_ += " INNER JOIN `tabSales Invoice Payment` AS SIP ON SIP.parent = SI.name and SIP.mode_of_payment in {0} ".format(tuple(mop_array),tuple(mop_array))
 	elif len(filters.get("mop")) == 1:
-		query_ += " INNER JOIN `tabSales Invoice Payment` AS SIP ON SIP.parent = SI.name and SIP.mode_of_payment = '{0}' and SI.paid = 1 and SI.showroom_cash = '{1}'".format(filters.get("mop")[0],filters.get("mop")[0])
+		query_ += " INNER JOIN `tabSales Invoice Payment` AS SIP ON SIP.parent = SI.name and SIP.mode_of_payment = '{0}' ".format(filters.get("mop")[0],filters.get("mop")[0])
 
 	if filters.get("customer"):
 		condition += " and "

@@ -12,11 +12,13 @@ def execute(filters=None):
 	if filters.get("paid_disabled"):
 		condition += " and "
 		condition += " SI.status!='{0}' ".format("Paid")
+
 	if len(filters.get("mop")) > 1:
 		mop_array = []
 		for i in filters.get("mop"):
 			mop_array.append(i)
 		query_ += " INNER JOIN `tabSales Invoice Payment` AS SIP ON SIP.parent = SI.name and SIP.mode_of_payment in {0} ".format(tuple(mop_array),tuple(mop_array))
+
 	elif len(filters.get("mop")) == 1:
 		query_ += " INNER JOIN `tabSales Invoice Payment` AS SIP ON SIP.parent = SI.name and SIP.mode_of_payment = '{0}' ".format(filters.get("mop")[0],filters.get("mop")[0])
 
@@ -28,9 +30,9 @@ def execute(filters=None):
 		condition += " and "
 		condition += " SI.name='{0}' ".format(filters.get("invoice_number"))
 
-	if filters.get("to_date") and filters.get("from_date"):
+	if filters.get("to_date"):
 		condition += " and "
-		condition += "SI.posting_date BETWEEN '{0}' and '{1}'".format(filters.get("to_date"),filters.get("from_date"))
+		condition += "SI.posting_date = '{0}'".format(filters.get("to_date"))
 
 	if filters.get("pos_profile"):
 		condition += " and "
@@ -74,6 +76,7 @@ def execute(filters=None):
  					SI.discount_amount as discount,
  					SI.net_total as net_total,
  					SI.grand_total as grand_total,
+ 					SI.is_pos,
  					(SELECT incentives FROM `tabSales Team` AS ST WHERE ST.parent = SI.name LIMIT 1) as insentive,
  					SI.status as status
 				FROM `tabSales Invoice` AS SI {0} WHERE SI.docstatus = 1 {1}""".format(query_,condition)
@@ -81,10 +84,12 @@ def execute(filters=None):
 	datas = frappe.db.sql(query,as_dict=1)
 
 	new_data = []
+	list_of_pe = []
 	for i in datas:
 		print(i.mop)
 		i['advance'] = 0
-		i['net_amount'] = i.grand_total
+		i['net_amount'] = i.grand_total if not get_pe(i.name, filters.get("to_date")) else 0
+
 		if i.unpaid:
 			i['incentive_unpaid'] = i.incentive
 		new_data.append(i)
@@ -99,15 +104,34 @@ def execute(filters=None):
 				"net_amount": 0 - i.incentive
 
 			})
-	jv_add(filters, new_data)
-	pe_add(filters, new_data)
-	return columns, new_data
+		pe = get_pe(i.name, filters.get("to_date"))
+		if pe:
+			new_data.append({
+				"date": pe[0].posting_date,
+				"customer_name": i.customer_name,
+				"si_no": pe[0].parent,
+				"mop": pe[0].mode_of_payment,
+				"payment_receive": pe[0].paid_amount,
+				"net_amount": pe[0].paid_amount,
+			})
+			list_of_pe.append(pe[0].name)
 
-def pe_add(filters, new_data):
+	jv_add(filters, new_data)
+	pe_add(filters, new_data,list_of_pe)
+	return columns, new_data
+def get_pe(name, date):
+	condition = ""
+	if date:
+		condition = "WHERE PE.posting_date = '{0}'".format(date)
+	query = """ SELECT * FROM `tabPayment Entry` AS PE INNER JOIN `tabPayment Entry Reference` AS PER ON  PER.parent = PE.name and PER.reference_name='{0}' WHERE PE.posting_date='{1}'""".format(name, date)
+	pe = frappe.db.sql(query, as_dict=1)
+	if len(pe) > 0:
+		return pe
+	return None
+def pe_add(filters, new_data,list_of_pe):
 	condition_pe = ""
-	if filters.get("from_date") and filters.get("to_date"):
-		condition_pe += " and PE.posting_date BETWEEN '{0}' and '{1}'".format(filters.get("from_date"),
-																			  filters.get("to_date"))
+	if filters.get("to_date"):
+		condition_pe += " and PE.posting_date = '{0}'".format(filters.get("to_date"))
 
 	if filters.get("customer"):
 		condition_pe += " and PE.party='{0}' ".format(filters.get("customer"))
@@ -117,23 +141,24 @@ def pe_add(filters, new_data):
 		for i in filters.get("mop"):
 			mop_array.append(i)
 		condition_pe += " and PE.mode_of_payment in {0} ".format(tuple(mop_array))
+
 	elif len(filters.get("mop")) == 1:
 		condition_pe += " and PE.mode_of_payment = '{0}' ".format(filters.get("mop")[0])
 
 	payment_entry_query = """
 					SELECT * FROM `tabPayment Entry`AS PE 
 					WHERE PE.docstatus= 1 {0}""".format(condition_pe)
-	print(payment_entry_query)
 	pe = frappe.db.sql(payment_entry_query, as_dict=1)
 	for iii in pe:
-		new_data.append({
-			"date": iii.posting_date,
-			"customer_name": iii.party_name,
-			"si_no": iii.name,
-			"mop": iii.mode_of_payment,
-			"payment_receive":iii.paid_amount,
-			"net_amount":iii.paid_amount,
-		})
+		if iii.name not in list_of_pe:
+			new_data.append({
+				"date": iii.posting_date,
+				"customer_name": iii.party_name,
+				"si_no": iii.name,
+				"mop": iii.mode_of_payment,
+				"payment_receive":iii.paid_amount,
+				"net_amount":iii.paid_amount,
+			})
 def jv_add(filters, new_data):
     condition_jv = ""
     if filters.get("from_date") and filters.get("to_date"):

@@ -10,11 +10,6 @@ frappe.query_reports["Daily Cash Book"] = {
             fieldtype: "Date",
 		},
 		{
-			fieldname: "from_date",
-            label: __("From Date"),
-            fieldtype: "Date",
-		},
-		{
 			fieldname: "customer",
             label: __("Customer"),
             fieldtype: "Link",

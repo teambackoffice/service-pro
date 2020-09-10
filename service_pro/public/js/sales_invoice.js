@@ -18,15 +18,9 @@ cur_frm.cscript.sales_person = function(frm,cdt, cdn){
 }
 frappe.ui.form.on('Load Tracking', {
     customer: function(frm){
-    if(cur_frm.doc.customer){
-         frappe.db.get_value('Customer', cur_frm.doc.customer, "customer_name")
-            .then(customer_name => {
-                cur_frm.doc.customer_name = customer_name.message.customer_name
-                    cur_frm.refresh_field("customer_name")
+
                 filter_link_field(cur_frm)
 
-            })
-    }
 
 }
 })

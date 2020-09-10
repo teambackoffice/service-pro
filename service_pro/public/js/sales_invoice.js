@@ -16,18 +16,20 @@ cur_frm.cscript.sales_person = function(frm,cdt, cdn){
         })
     }
 }
-cur_frm.cscript.customer = function(frm){
+frappe.ui.form.on('Load Tracking', {
+    customer: function(frm){
     if(cur_frm.doc.customer){
          frappe.db.get_value('Customer', cur_frm.doc.customer, "customer_name")
             .then(customer_name => {
                 cur_frm.doc.customer_name = customer_name.message.customer_name
                     cur_frm.refresh_field("customer_name")
+                filter_link_field(cur_frm)
 
             })
     }
-    filter_link_field(cur_frm)
 
 }
+})
 cur_frm.cscript.paid = function(frm){
     frappe.db.get_single_value('Production Settings', 'expense_cost_center')
         .then(expense_cost_center => {
@@ -102,8 +104,6 @@ function filter_link_field(cur_frm) {
             ]
         }
     })
-
-
 
 }
 

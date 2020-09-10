@@ -161,9 +161,8 @@ def pe_add(filters, new_data,list_of_pe):
 			})
 def jv_add(filters, new_data):
     condition_jv = ""
-    if filters.get("from_date") and filters.get("to_date"):
-        condition_jv += " and JE.posting_date BETWEEN '{0}' and '{1}'".format(filters.get("from_date"),
-                                                                              filters.get("to_date"))
+    if filters.get("to_date"):
+        condition_jv += " and JE.posting_date ='{0}' ".format(filters.get("to_date"))
 
     if filters.get("customer"):
         condition_jv += " and party='{0}' ".format(filters.get("customer"))

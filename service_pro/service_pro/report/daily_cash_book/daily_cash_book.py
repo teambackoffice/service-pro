@@ -8,19 +8,9 @@ def execute(filters=None):
 	columns, data = get_columns(), []
 
 	condition = ""
-	query_ = ""
 	if filters.get("paid_disabled"):
 		condition += " and "
 		condition += " SI.status!='{0}' ".format("Paid")
-
-	if len(filters.get("mop")) > 1:
-		mop_array = []
-		for i in filters.get("mop"):
-			mop_array.append(i)
-		query_ += " INNER JOIN `tabSales Invoice Payment` AS SIP ON SIP.parent = SI.name and SIP.mode_of_payment in {0} ".format(tuple(mop_array),tuple(mop_array))
-
-	elif len(filters.get("mop")) == 1:
-		query_ += " INNER JOIN `tabSales Invoice Payment` AS SIP ON SIP.parent = SI.name and SIP.mode_of_payment = '{0}' ".format(filters.get("mop")[0],filters.get("mop")[0])
 
 	if filters.get("customer"):
 		condition += " and "
@@ -79,7 +69,7 @@ def execute(filters=None):
  					SI.is_pos,
  					(SELECT incentives FROM `tabSales Team` AS ST WHERE ST.parent = SI.name LIMIT 1) as insentive,
  					SI.status as status
-				FROM `tabSales Invoice` AS SI {0} WHERE SI.docstatus = 1 {1}""".format(query_,condition)
+				FROM `tabSales Invoice` AS SI WHERE SI.docstatus = 1 {0}""".format(condition)
 
 	datas = frappe.db.sql(query,as_dict=1)
 
@@ -92,8 +82,11 @@ def execute(filters=None):
 
 		if i.unpaid:
 			i['incentive_unpaid'] = i.incentive
-		new_data.append(i)
-		if i.paid:
+
+		if not filters.get("mop") or (filters.get("mop") and i.mop in filters.get("mop")):
+			new_data.append(i)
+
+		if not filters.get("mop") or (i.paid and i.showroom_cash in filters.get("mop")):
 			new_data.append({
 				"date": i.date,
 				"si_no": i.name,

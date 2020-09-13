@@ -63,7 +63,7 @@ def jv_accounts_paid(doc):
 	return accounts
 @frappe.whitelist()
 def on_submit_si(doc, method):
-	if len(doc.sales_team) == 0 and not doc.paid and not doc.unpaid:
+	if len(doc.sales_team) > 0 and not doc.paid and not doc.unpaid:
 		frappe.throw("Please select Paid or Unpaid for Sales Person")
 
 	generate_jv(doc)

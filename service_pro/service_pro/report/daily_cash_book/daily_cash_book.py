@@ -99,15 +99,16 @@ def execute(filters=None):
 			})
 		pe = get_pe(i.name, filters.get("to_date"))
 		if pe:
-			new_data.append({
-				"date": pe[0].posting_date,
-				"customer_name": i.customer_name,
-				"si_no": pe[0].parent,
-				"mop": pe[0].mode_of_payment,
-				"payment_receive": pe[0].paid_amount,
-				"net_amount": pe[0].paid_amount,
-			})
-			list_of_pe.append(pe[0].name)
+			if (filters.get("mop") and pe[0].mode_of_payment in filters.get("mop")) or not filters.get("mop"):
+				new_data.append({
+					"date": pe[0].posting_date,
+					"customer_name": i.customer_name,
+					"si_no": pe[0].parent,
+					"mop": pe[0].mode_of_payment,
+					"payment_receive": pe[0].paid_amount,
+					"net_amount": pe[0].paid_amount,
+				})
+				list_of_pe.append(pe[0].name)
 
 	jv_add(filters, new_data)
 	pe_add(filters, new_data,list_of_pe)
@@ -116,7 +117,8 @@ def get_pe(name, date):
 	condition = ""
 	if date:
 		condition = "WHERE PE.posting_date = '{0}'".format(date)
-	query = """ SELECT * FROM `tabPayment Entry` AS PE INNER JOIN `tabPayment Entry Reference` AS PER ON  PER.parent = PE.name and PER.reference_name='{0}' WHERE PE.posting_date='{1}'""".format(name, date)
+
+	query = """ SELECT * FROM `tabPayment Entry` AS PE INNER JOIN `tabPayment Entry Reference` AS PER ON  PER.parent = PE.name and PER.reference_name='{0}' {1}""".format(name, condition)
 	pe = frappe.db.sql(query, as_dict=1)
 	if len(pe) > 0:
 		return pe

@@ -63,12 +63,13 @@ def jv_accounts_paid(doc):
 	return accounts
 @frappe.whitelist()
 def on_submit_si(doc, method):
+	if len(doc.sales_team) == 0 and not doc.paid and not doc.unpaid:
+		frappe.throw("Please select Paid or Unpaid for Sales Person")
+
 	generate_jv(doc)
 	for prod in doc.production:
 		production = frappe.db.sql(""" SELECT * FROM `tabProduction` WHERE name=%s """, prod.reference, as_dict=1)
 		if len(production) > 0:
-			print("GET LEEEEEEEEEEEEENGTHS")
-			print(get_lengths(prod.reference))
 			if doc.update_stock and get_dn_si_qty("", production[0].qty, prod.reference) > 0 :
 				frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""",
 							  ("Partially Delivered", prod.reference))

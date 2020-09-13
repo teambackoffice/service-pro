@@ -2,7 +2,8 @@
 <style>
 	@media screen {
 		.print-format {
-			width: 8.5in;
+			width: 8.3in;
+			height: 11.7in;
 			padding: 0.25in;
 		}
 	}
@@ -30,74 +31,80 @@
 
 <table style="margin-top: 1% !important;width: 100% !important;">
     <tr>
-        <td class="text-left" style="width: 25%;font-size: 100%">
+        <td class="text-left" style="width: 17%;font-size: 100%">
             <b>Customer Details</b>
         </td>
         <td class="text-left" style="width: 25%;font-size: 100%">
             <b>تفاصيل العميل</b>
         </td>
-        <td class="text-left" style="width: 25%;font-size: 100%">
+                 <td style="width: 10%;"></td>
+
+        <td class="text-left" style="width: 5%;font-size: 100%">
             <b>Transaction Details</b>
         </td>
-        <td class="text-left" style="width: 25%;font-size: 100%">
+        <td class="text-left" style="width: 5%;font-size: 100%">
 <b>تفاصيل الصفقه</b>
         </td>
     </tr>
      <tr>
-        <td class="text-left" style="width: 25%;font-size: 100%">
+        <td class="text-left" style="width: 15%;font-size: 100%">
             <b>CUSTOMER NAME   :</b><br>
 
             <b>الزبون اسم </b>
 
         </td>
-        <td class="text-left" style="width: 25%;font-size: 100%">
+        <td class="text-left" style="width: 20%;font-size: 100%">
                {{doc.customer_name}} <br>
                     {%if doc.customer_name_in_arabic%}
                         {{doc.customer_name_in_arabic}}
                     {%endif%}
 
         </td>
-         <td class="text-left" style="width: 25%;font-size: 100%">
+         <td style="width: 10%;"></td>
+         <td class="text-left" style="width: 15%;font-size: 100%">
              <b>INVOICE NO </b>:<br>
              <b>
                 رقم الفاتورة</b>
         </td>
-        <td class="text-left" style="width: 25%;font-size: 100%">
+        <td class="text-left" style="width: 20%;font-size: 100%">
            {{doc.name}}
 
         </td>
 
     </tr>
     <tr>
-        <td class="text-left" style="width: 25%;font-size: 100%">
+        <td class="text-left" style="width: 15%;font-size: 100%">
             <b>VAT NO:</b><br>
             <b>الرقم الضريبة</b>
         </td>
-        <td class="text-left" style="width: 25%;font-size: 100%">
+        <td class="text-left" style="width: 20%;font-size: 100%">
             {%if frappe.db.get_value("Customer",doc.customer,"tax_id")%}
                     {{frappe.db.get_value("Customer",doc.customer,"tax_id")}}
             {%endif%}
         </td>
-         <td class="text-left" style="width: 25%;font-size: 100%">
+                 <td style="width: 10%;"></td>
+
+         <td class="text-left" style="width: 15%;font-size: 100%">
              <b>DATE :</b><br>
              <b>                تاريخ الفاتورة</b>
         </td>
-        <td class="text-left" style="width: 25%;font-size: 100%">
+        <td class="text-left" style="width: 20%;font-size: 100%">
            {{doc.posting_date}}
         </td>
 
     </tr>
      <tr>
-          <td class="text-left" style="width: 25%;font-size: 100%">
+          <td class="text-left" style="width: 15%;font-size: 100%">
             <b>ADDRESS:</b>
         </td>
-        <td class="text-left" style="width: 25%;font-size: 100%">
+        <td class="text-left" style="width: 20%;font-size: 100%">
             {%if doc.address_display %}
                    {{doc.address_display}}
             {% endif %}
         </td>
+         <td style="width: 10%;"></td>
 
-         <td class="text-left" style="width: 25%;font-size: 100%">
+         <td class="text-left" style="width: 15%;font-size: 100%">
               {%if doc.items[0].delivery_note%}
                                       <b>DELIVERY NOTE:</b><br><br>
 
@@ -118,7 +125,7 @@
 {% endfor %}
          </div>
 
-        <td class="text-left" style="width: 25%;font-size: 100%">
+        <td class="text-left" style="width: 20%;font-size: 100%">
              {%if doc.items[0].delivery_note%}
                             {{doc.items[0].delivery_note}}
 

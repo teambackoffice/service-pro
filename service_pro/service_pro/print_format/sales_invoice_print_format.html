@@ -112,11 +112,15 @@
 <br><br>
              {%endif%}
              <b>PO NUMBER:</b><br>
-            <b>                رقم أمر الشراء</b><br><br>
-              <b>SALES MAN:</b>
+                <b>                رقم أمر الشراء</b><br><br>
+                         {%if doc.sales_man%}
+
+             <b>SALES MAN:</b>
              <br>
              <b>المندوب</b>
              <br><br>
+                          {%endif%}
+
              <b>SK/CS/HA Ref:</b>
         </td>
          <div style="display: none">

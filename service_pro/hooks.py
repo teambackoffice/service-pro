@@ -184,6 +184,8 @@ fixtures = [
                     "Sales Person-liabilities_account",
                     "Customer-sales_man",
                     "Customer-sales_man_name",
+                    "Journal Entry-agent_payment_request",
+                    "Quotation-site_visit_report"
                 ]
             ]
         ]

@@ -1,0 +1,36 @@
+{
+ "actions": [],
+ "creation": "2020-09-15 14:22:26.197215",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "expense_details",
+  "cost"
+ ],
+ "fields": [
+  {
+   "fieldname": "expense_details",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Expense Details"
+  },
+  {
+   "fieldname": "cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Cost"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2020-09-15 14:22:26.197215",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Total Expense",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

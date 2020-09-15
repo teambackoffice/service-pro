@@ -55,7 +55,7 @@
   "update_available_stock",
   "raw_material_total",
   "raw_material_amount",
-  "column_break_34",
+  "column_break_50",
   "material_request",
   "total_selling_price",
   "total_selling_price__qty",
@@ -69,8 +69,7 @@
   "amended_from",
   "remarks",
   "printing_settings_section",
-  "letter_head",
-  "data_65"
+  "letter_head"
  ],
  "fields": [
   {
@@ -395,10 +394,6 @@
    "reqd": 1
   },
   {
-   "fieldname": "column_break_34",
-   "fieldtype": "Column Break"
-  },
-  {
    "allow_on_submit": 1,
    "default": "0",
    "fieldname": "total_selling_price",
@@ -481,13 +476,13 @@
    "read_only": 1
   },
   {
-   "fieldname": "data_65",
-   "fieldtype": "Data"
+   "fieldname": "column_break_50",
+   "fieldtype": "Column Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-10 16:57:33.770039",
+ "modified": "2020-09-15 15:00:25.800733",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

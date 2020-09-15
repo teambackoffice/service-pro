@@ -111,7 +111,6 @@ def execute(filters=None):
 				list_of_pe.append(pe[0].name)
 
 	jv_add(filters, new_data)
-	pe_add(filters, new_data,list_of_pe)
 	return columns, new_data
 def get_pe(name, date):
 	condition = ""

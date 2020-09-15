@@ -1,0 +1,172 @@
+{
+ "actions": [],
+ "creation": "2020-09-11 15:16:52.356408",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "status",
+  "customer",
+  "customer_name",
+  "column_break_4",
+  "posting_date",
+  "visit_time",
+  "contact_person",
+  "contact_number",
+  "section_break_9",
+  "team_members",
+  "section_break_11",
+  "scoop_of_work",
+  "section_break_13",
+  "rate_of_materials_based_on",
+  "price_list",
+  "raw_material",
+  "update_available_stock",
+  "total",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "allow_on_submit": 1,
+   "default": "In Progress",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Status",
+   "options": "\nIn Progress\nCompleted"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "customer.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "visit_time",
+   "fieldtype": "Time",
+   "label": "Visit Time"
+  },
+  {
+   "fieldname": "contact_person",
+   "fieldtype": "Link",
+   "label": "Contact Person",
+   "options": "Contact"
+  },
+  {
+   "fieldname": "contact_number",
+   "fieldtype": "Data",
+   "label": "Contact Number"
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Site Job Report",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "team_members",
+   "fieldtype": "Table",
+   "label": "Team Members",
+   "options": "Team Members"
+  },
+  {
+   "fieldname": "section_break_11",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "scoop_of_work",
+   "fieldtype": "Table",
+   "label": "Scoop of Work",
+   "options": "Site Job SOW",
+   "read_only_depends_on": "eval:doc.status == \"Completed\""
+  },
+  {
+   "fieldname": "section_break_13",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "rate_of_materials_based_on",
+   "fieldtype": "Select",
+   "label": "Rate Of Materials Based On",
+   "options": "\nValuation Rate\nPrice List"
+  },
+  {
+   "depends_on": "eval:doc.rate_of_materials_based_on == \"Price List\"",
+   "fieldname": "price_list",
+   "fieldtype": "Select",
+   "label": "Price List",
+   "options": "\nStandard Buying\nStandard Selling"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "raw_material",
+   "fieldtype": "Table",
+   "label": "Raw Material",
+   "options": "Raw Material"
+  },
+  {
+   "fieldname": "update_available_stock",
+   "fieldtype": "Button",
+   "label": "Update Available Stock",
+   "options": "set_available_qty"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "total",
+   "fieldtype": "Currency",
+   "label": "Total",
+   "read_only": 1
+  }
+ ],
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2020-09-13 13:57:05.858528",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Site Job Report",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

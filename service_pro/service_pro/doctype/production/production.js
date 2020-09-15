@@ -1010,3 +1010,11 @@ cur_frm.cscript.production = function (frm,cdt, cdn) {
 cur_frm.cscript.material_request = function () {
     frappe.set_route('Form', 'Material Request', "New Material Request 1")
 }
+
+// function set_item_selling_price(cur_frm) {
+//     if(cur_frm.doc.raw_material !== undefined){
+//         for(var x=0;x<cur_frm.doc.raw_material.length; x += 1){
+//
+//         }
+//     }
+// }

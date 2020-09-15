@@ -181,7 +181,9 @@ fixtures = [
                     "Sales Invoice-incentive_journal",
                     "Sales Invoice-column_break_181",
                     "Sales Invoice-journal_entry",
-                    "Sales Person-liabilities_account"
+                    "Sales Person-liabilities_account",
+                    "Customer-sales_man",
+                    "Customer-sales_man_name",
                 ]
             ]
         ]

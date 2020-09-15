@@ -49,6 +49,8 @@
   "rate_of_materials_based_on",
   "price_list",
   "raw_material",
+  "section_break_44",
+  "item_selling_price_list",
   "section_break_38",
   "update_available_stock",
   "raw_material_total",
@@ -67,7 +69,8 @@
   "amended_from",
   "remarks",
   "printing_settings_section",
-  "letter_head"
+  "letter_head",
+  "data_65"
  ],
  "fields": [
   {
@@ -465,11 +468,26 @@
    "label": "Cylinder Service",
    "mandatory_depends_on": "eval: doc.customer_and_workshop == \"Workshop\" && doc.type != \"Service\"",
    "options": "Linked Productions"
+  },
+  {
+   "fieldname": "section_break_44",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "item_selling_price_list",
+   "fieldtype": "Table",
+   "label": "Item Selling Price List",
+   "options": "Item Selling Price List",
+   "read_only": 1
+  },
+  {
+   "fieldname": "data_65",
+   "fieldtype": "Data"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-08 15:50:39.660169",
+ "modified": "2020-09-10 16:57:33.770039",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

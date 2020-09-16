@@ -7,6 +7,11 @@ import frappe
 from frappe.model.document import Document
 
 class AgentPaymentRequest(Document):
+	def validate(self):
+		if not self.liabilities_account:
+			frappe.throw("Please select liablities account for Sales Person " + self.agent_name)
+
+
 	def generate_journal_entry(self):
 		doc_jv = {
 			"doctype": "Journal Entry",

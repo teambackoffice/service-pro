@@ -1,10 +1,12 @@
 {
  "actions": [],
+ "autoname": "naming_series:",
  "creation": "2020-09-11 15:44:40.963097",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "naming_series",
   "type",
   "priority",
   "column_break_3",
@@ -12,12 +14,7 @@
   "approver",
   "approve_status",
   "section_break_7",
-  "name1",
-  "employee_name",
-  "column_break_9",
-  "doc1",
-  "column_break_11",
-  "outstanding",
+  "details",
   "section_break_13",
   "clearance_date"
  ],
@@ -59,27 +56,6 @@
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "name1",
-   "fieldtype": "Link",
-   "label": "Name",
-   "options": "Supplier"
-  },
-  {
-   "fieldname": "column_break_9",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_11",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "outstanding",
-   "fieldtype": "Currency",
-   "label": "Outstanding",
-   "read_only": 1
-  },
-  {
    "fieldname": "section_break_13",
    "fieldtype": "Section Break"
   },
@@ -90,21 +66,19 @@
    "label": "Clearance Date"
   },
   {
-   "fieldname": "doc1",
-   "fieldtype": "Link",
-   "label": "Doc",
-   "options": "Sales Invoice"
+   "fieldname": "details",
+   "fieldtype": "Table",
+   "options": "Payment Scheduler Details"
   },
   {
-   "depends_on": "eval: doc.type == \"Expense Claim\"",
-   "fieldname": "employee_name",
-   "fieldtype": "Data",
-   "label": "Employee Name",
-   "read_only": 1
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "PS-.YYYY.-"
   }
  ],
  "links": [],
- "modified": "2020-09-13 14:26:18.542152",
+ "modified": "2020-09-16 18:47:17.569633",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Payment Scheduler",

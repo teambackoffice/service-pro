@@ -87,11 +87,13 @@
    "fieldtype": "Section Break"
   },
   {
+   "default": "Unpaid",
    "fieldname": "status",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Status",
    "no_copy": 1,
-   "options": "Draft\nPaid\nUnpaid\nClaimed\nCancelled",
+   "options": "\nPaid\nUnpaid",
    "read_only": 1
   },
   {
@@ -157,7 +159,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-16 13:50:49.446524",
+ "modified": "2020-09-16 18:49:26.198275",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Agent Payment Request",

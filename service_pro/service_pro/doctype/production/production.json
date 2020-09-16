@@ -368,6 +368,7 @@
    "options": "Letter Head"
   },
   {
+   "fetch_from": "customer.sales_man",
    "fieldname": "sales_man",
    "fieldtype": "Link",
    "label": "Sales Man",
@@ -482,7 +483,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-15 15:00:25.800733",
+ "modified": "2020-09-16 19:36:46.001142",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

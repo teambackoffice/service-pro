@@ -9,15 +9,19 @@ frappe.ui.form.on('Site Visit Report', {
 
 cur_frm.cscript.svrj_status = function (frm,cdt,cdn) {
     var row = locals[cdt][cdn]
+    console.log(row.svrj_status !== "Troubleshooting")
+
+    var job_card_number = frappe.meta.get_docfield("Site Visit Report Jobs", "job_card_number", cur_frm.doc.name);
+     job_card_number.read_only = row.svrj_status  !== "Troubleshooting"
+        cur_frm.refresh_field("site_visit_report_jobs")
+
+}
+cur_frm.cscript.site_visit_report_jobs_add = function (frm,cdt,cdn) {
+        var row = locals[cdt][cdn]
+console.log(row.svrj_status !== "Troubleshooting")
     var job_card_number = frappe.meta.get_docfield("Site Visit Report Jobs", "job_card_number", cur_frm.doc.name);
 
-    if(row.svrj_status === "For Visit"){
-                job_card_number.fieldtype = "Data"
+     job_card_number.read_only = row.svrj_status !== "Troubleshooting"
+        cur_frm.refresh_field("site_visit_report_jobs")
 
-    } else if(row.svrj_status === "For Work"){
-        console.log("FOR WORK")
-                job_card_number.fieldtype = "Select"
-
-    }
-    cur_frm.refresh_field("site_visit_report_jobs")
 }

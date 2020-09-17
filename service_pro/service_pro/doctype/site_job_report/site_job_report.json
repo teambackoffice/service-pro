@@ -35,7 +35,6 @@
    "default": "In Progress",
    "fieldname": "status",
    "fieldtype": "Select",
-   "hidden": 1,
    "label": "Status",
    "options": "\nIn Progress\nCompleted"
   },
@@ -170,7 +169,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-17 13:53:25.538531",
+ "modified": "2020-09-17 17:16:58.504150",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Site Job Report",

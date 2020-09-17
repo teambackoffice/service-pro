@@ -10,6 +10,7 @@
   "contact_person",
   "feedback",
   "column_break_5",
+  "rework",
   "job_card_number",
   "visit_time",
   "contact_number",
@@ -25,11 +26,13 @@
    "options": "Customer"
   },
   {
+   "depends_on": "eval: doc.svrj_status == \"Troubleshooting\" && doc.rework",
    "fieldname": "job_card_number",
    "fieldtype": "Link",
    "label": "Job Card Number",
-   "options": "Site Visit Report",
-   "read_only": 1
+   "mandatory_depends_on": "eval:doc.rework",
+   "options": "Site Job Report",
+   "read_only_depends_on": "eval:doc.rework == 0"
   },
   {
    "fieldname": "visit_time",
@@ -78,11 +81,17 @@
    "fieldname": "generate_site_job_report",
    "fieldtype": "Button",
    "label": "Generate Site Job Report"
+  },
+  {
+   "default": "0",
+   "fieldname": "rework",
+   "fieldtype": "Check",
+   "label": "Rework"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2020-09-17 14:15:36.949114",
+ "modified": "2020-09-17 17:24:57.987181",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Site Visit Report Jobs",

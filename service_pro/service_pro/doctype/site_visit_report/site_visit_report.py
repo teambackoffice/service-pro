@@ -7,9 +7,14 @@ import frappe
 from frappe.model.document import Document
 
 class SiteVisitReport(Document):
+	def validate(self):
+		for i in self.site_visit_report_jobs:
+			if i.rework and not i.job_card_number:
+				frappe.throw(""" Job Card Number is required in row """ + str(i.idx))
+
 	def on_submit(self):
 		for i in self.site_visit_report_jobs:
-			if i.svrj_status == "Troubleshooting":
+			if i.svrj_status == "Troubleshooting" and not i.rework:
 				doc_site_job = {
 					"doctype": "Site Job Report",
 					"customer": i.customer,

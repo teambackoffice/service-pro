@@ -190,3 +190,30 @@ cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
 
         })
 }
+
+
+cur_frm.cscript.refresh = function (frm) {
+
+    if(cur_frm.doc.docstatus && cur_frm.doc.sjr_status === "Completed" && !cur_frm.doc.permanent_submit){
+        frappe.confirm('Permanently Complete??',
+            () => {
+        frappe.call({
+            method: "service_pro.service_pro.doctype.site_job_report.site_job_report.permanent_submit",
+            args: {
+                name: cur_frm.doc.name
+            },
+            async: false,
+            callback: function () {
+                cur_frm.reload_doc()
+            }
+        })
+            }, () => {
+                // action to perform if No is selected
+            })
+    }
+}
+
+cur_frm.cscript.onload = function (frm) {
+   cur_frm.doc.sjr_status = cur_frm.doc.status
+    cur_frm.refresh_field("sjr_status")
+}

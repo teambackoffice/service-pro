@@ -9,6 +9,8 @@ from datetime import datetime
 from erpnext.stock.stock_ledger import get_previous_sle
 
 class SiteJobReport(Document):
+
+
 	def on_trash(self):
 		if self.svrj_row_name:
 			frappe.db.sql(""" UPDATE `tabSite Visit Report Jobs` SET job_card_number=%s WHERE name=%s""",("", self.svrj_row_name))
@@ -76,3 +78,9 @@ def get_available_qty(production):
 		production, as_dict=1)
 	print(get_qty_total)
 	return get_qty[0].qty - get_qty_total[0].qty_raw_material if get_qty_total[0].qty_raw_material else get_qty[0].qty
+
+
+@frappe.whitelist()
+def permanent_submit(name):
+	frappe.db.sql(""" UPDATE `tabSite Job Report` SET permanent_submit=1, sjr_status='Completed', status='Completed' WHERE name=%s""", name)
+	frappe.db.commit()

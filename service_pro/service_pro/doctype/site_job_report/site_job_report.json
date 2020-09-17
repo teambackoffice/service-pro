@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
+  "sjr_status",
   "status",
   "customer",
   "customer_name",
@@ -27,6 +28,7 @@
   "update_available_stock",
   "total",
   "svrj_row_name",
+  "permanent_submit",
   "amended_from"
  ],
  "fields": [
@@ -35,6 +37,7 @@
    "default": "In Progress",
    "fieldname": "status",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Status",
    "options": "\nIn Progress\nCompleted"
   },
@@ -165,11 +168,28 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "SVRJ Row Name"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "permanent_submit",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Permanent Submit"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "In Progress",
+   "depends_on": "eval: doc.permanent_submit == 0",
+   "fieldname": "sjr_status",
+   "fieldtype": "Select",
+   "label": "SJR Status",
+   "options": "\nIn Progress\nCompleted"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-17 17:16:58.504150",
+ "modified": "2020-09-17 19:03:22.931366",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Site Job Report",

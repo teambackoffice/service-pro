@@ -107,6 +107,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "scoop_of_work",
    "fieldtype": "Table",
    "label": "Scoop of Work",
@@ -189,7 +190,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-17 19:03:22.931366",
+ "modified": "2020-09-17 19:07:11.136785",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Site Job Report",

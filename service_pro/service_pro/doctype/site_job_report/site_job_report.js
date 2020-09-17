@@ -213,6 +213,7 @@ cur_frm.cscript.refresh = function (frm) {
     }
     if(cur_frm.doc.permanent_submit){
         cur_frm.set_df_property("raw_material", "read_only", 1)
+        cur_frm.set_df_property("scoop_of_work", "read_only", 1)
         cur_frm.set_df_property("update_available_stock", "hidden", 1)
     }
 }

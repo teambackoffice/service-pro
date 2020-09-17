@@ -25,8 +25,9 @@ class SiteVisitReport(Document):
 					"svrj_row_name": i.name
 				}
 				site_job_name = frappe.get_doc(doc_site_job).insert()
-				i.job_card_number = site_job_name.name
-
+				frappe.db.sql(""" UPDATE `tabSite Visit Report Jobs` SET job_card_number=%s WHERE name=%s""",
+							  (site_job_name.name, i.name))
+				frappe.db.commit()
 
 @frappe.whitelist()
 def generate_sjr(name):

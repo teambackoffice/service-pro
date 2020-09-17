@@ -9,8 +9,6 @@
   "status",
   "naming_series",
   "type",
-  "customer",
-  "customer_name",
   "column_break_3",
   "posting_date",
   "priority",
@@ -69,19 +67,6 @@
    "options": "PS-.YYYY.-"
   },
   {
-   "fieldname": "customer",
-   "fieldtype": "Link",
-   "label": "Customer",
-   "options": "Customer"
-  },
-  {
-   "fetch_from": "customer.customer_name",
-   "fieldname": "customer_name",
-   "fieldtype": "Data",
-   "label": "Customer Name",
-   "read_only": 1
-  },
-  {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
@@ -101,7 +86,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-17 08:30:19.146463",
+ "modified": "2020-09-17 17:40:39.453116",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Payment Scheduler",

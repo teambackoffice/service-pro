@@ -80,6 +80,15 @@ cur_frm.cscript.name1 = function (frm, cdt, cdn) {
         })
 
 
+    } else if(row.name1 && cur_frm.doc.type === "Supplier"){
+
+        frappe.db.get_value('Supplier', row.name1, 'supplier_name')
+        .then(supplier_name => {
+            row.supplier_name = supplier_name.message.supplier_name
+            cur_frm.refresh_field("details")
+        })
+
+
     }
 
 }

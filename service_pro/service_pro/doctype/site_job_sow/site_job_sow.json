@@ -27,9 +27,10 @@
   },
   {
    "fieldname": "current_status",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Current Status"
+   "label": "Current Status",
+   "options": "Work"
   },
   {
    "fieldname": "remarks",
@@ -40,7 +41,7 @@
  ],
  "istable": 1,
  "links": [],
- "modified": "2020-09-11 15:20:56.616862",
+ "modified": "2020-09-17 14:22:32.435315",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Site Job SOW",

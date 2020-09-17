@@ -5,27 +5,12 @@ frappe.ui.form.on('Site Job Report', {
 	onload: function(frm) {
  if(cur_frm.is_new()){
 
-             frappe.db.get_single_value('Production Settings', 'finish_good_warehouse')
-            .then(warehouse => {
-                cur_frm.doc.warehouse = warehouse
-                cur_frm.refresh_field("warehouse")
-            })
-            frappe.db.get_single_value('Production Settings', 'finish_good_cost_center')
-            .then(cost_center => {
-                cur_frm.doc.cost_center = cost_center
-                cur_frm.refresh_field("cost_center")
-            })
-            frappe.db.get_single_value('Production Settings', 'income_account')
-            .then(income_account => {
-                cur_frm.doc.income_account = income_account
-                cur_frm.refresh_field("income_account")
-            })
-            frappe.db.get_single_value('Production Settings', 'rate_of_materials_based_on')
+            frappe.db.get_single_value('Production Settings', 'rate_of_materials_based_on_sjr')
             .then(rate => {
                 cur_frm.doc.rate_of_materials_based_on = rate
                 cur_frm.refresh_field("rate_of_materials_based_on")
             })
-            frappe.db.get_single_value('Production Settings', 'price_list')
+            frappe.db.get_single_value('Production Settings', 'price_list_sjr')
             .then(price_list => {
                 cur_frm.doc.price_list = price_list
                 cur_frm.refresh_field("price_list")
@@ -186,14 +171,14 @@ function compute_raw_material_total(cur_frm) {
 }
 cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
     var d = locals[cdt][cdn]
-   frappe.db.get_single_value('Production Settings', 'raw_material_warehouse')
+   frappe.db.get_single_value('Production Settings', 'warehouse_sjr')
         .then(warehouse => {
             if(warehouse){
                 d.warehouse = warehouse
                 cur_frm.refresh_field("raw_material")
             }
         })
-    frappe.db.get_single_value('Production Settings', 'raw_material_cost_center')
+    frappe.db.get_single_value('Production Settings', 'cost_center_sjr')
         .then(cost_center => {
             if(cost_center){
                  d.cost_center = cost_center

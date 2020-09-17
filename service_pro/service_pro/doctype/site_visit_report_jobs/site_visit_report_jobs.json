@@ -13,7 +13,8 @@
   "job_card_number",
   "visit_time",
   "contact_number",
-  "svrj_status"
+  "svrj_status",
+  "generate_site_job_report"
  ],
  "fields": [
   {
@@ -27,7 +28,8 @@
    "fieldname": "job_card_number",
    "fieldtype": "Link",
    "label": "Job Card Number",
-   "options": "Site Visit Report"
+   "options": "Site Visit Report",
+   "read_only": 1
   },
   {
    "fieldname": "visit_time",
@@ -70,11 +72,17 @@
    "in_list_view": 1,
    "label": "Status",
    "options": "Visit\nTroubleshooting\nDelivery\nNew Customer\nFollow up\nRegular Visit\nInvoice Submission"
+  },
+  {
+   "depends_on": "eval: !doc.job_card_number && doc.svrj_status == \"Troubleshooting\"",
+   "fieldname": "generate_site_job_report",
+   "fieldtype": "Button",
+   "label": "Generate Site Job Report"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2020-09-17 08:36:49.092263",
+ "modified": "2020-09-17 14:15:36.949114",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Site Visit Report Jobs",

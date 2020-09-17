@@ -26,6 +26,7 @@
   "raw_material",
   "update_available_stock",
   "total",
+  "svrj_row_name",
   "amended_from"
  ],
  "fields": [
@@ -159,11 +160,17 @@
    "label": "Site Visit Report",
    "options": "Site Visit Report",
    "read_only": 1
+  },
+  {
+   "fieldname": "svrj_row_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "SVRJ Row Name"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-17 08:44:52.857434",
+ "modified": "2020-09-17 13:53:25.538531",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Site Job Report",

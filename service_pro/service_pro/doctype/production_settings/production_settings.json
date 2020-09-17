@@ -19,7 +19,12 @@
   "expense_cost_center",
   "column_break_13",
   "showroom_cash",
-  "showroom_card"
+  "showroom_card",
+  "site_job_report_section",
+  "warehouse_sjr",
+  "cost_center_sjr",
+  "rate_of_materials_based_on_sjr",
+  "price_list_sjr"
  ],
  "fields": [
   {
@@ -107,11 +112,41 @@
    "fieldtype": "Link",
    "label": "Showroom Card",
    "options": "Mode of Payment"
+  },
+  {
+   "fieldname": "site_job_report_section",
+   "fieldtype": "Section Break",
+   "label": "Site Job Report"
+  },
+  {
+   "fieldname": "warehouse_sjr",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "cost_center_sjr",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "rate_of_materials_based_on_sjr",
+   "fieldtype": "Select",
+   "label": "Rate of Materials Based On",
+   "options": "\nValuation Rate\nPrice List"
+  },
+  {
+   "depends_on": "eval: doc.rate_of_materials_based_on_sjr == \"Price List\"",
+   "fieldname": "price_list_sjr",
+   "fieldtype": "Select",
+   "label": "Price List",
+   "options": "\nStandard Buying\nStandard Selling"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2020-09-03 14:51:59.840062",
+ "modified": "2020-09-17 14:25:41.366193",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

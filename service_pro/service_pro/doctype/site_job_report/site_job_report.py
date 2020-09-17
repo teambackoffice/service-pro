@@ -9,6 +9,16 @@ from datetime import datetime
 from erpnext.stock.stock_ledger import get_previous_sle
 
 class SiteJobReport(Document):
+	def on_trash(self):
+		if self.svrj_row_name:
+			frappe.db.sql(""" UPDATE `tabSite Visit Report Jobs` SET job_card_number=%s WHERE name=%s""",("", self.svrj_row_name))
+			frappe.db.commit()
+
+	def on_cancel(self):
+		if self.svrj_row_name:
+			frappe.db.sql(""" UPDATE `tabSite Visit Report Jobs` SET job_card_number=%s WHERE name=%s""",("", self.svrj_row_name))
+			frappe.db.commit()
+
 	def set_available_qty(self):
 		time = datetime.now().time()
 		date = datetime.now().date()

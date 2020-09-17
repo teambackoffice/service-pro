@@ -3,7 +3,7 @@
 
 frappe.ui.form.on('Site Visit Report', {
 	refresh: function(frm) {
-
+        document.querySelectorAll("[data-doctype='Site Job Report']")[1].style.display ="none";
 	}
 });
 

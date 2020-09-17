@@ -1,6 +1,6 @@
 {
  "actions": [],
- "autoname": "naming_series",
+ "autoname": "naming_series:",
  "creation": "2020-09-16 19:43:42.633349",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -100,7 +100,7 @@
   }
  ],
  "links": [],
- "modified": "2020-09-16 19:56:09.233145",
+ "modified": "2020-09-17 08:35:37.604771",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Job Completion Report",

@@ -16,5 +16,6 @@ class SiteVisitReport(Document):
 					"visit_time": i.visit_time,
 					"contact_person": i.contact_person,
 					"contact_number": i.contact_number,
+					"site_visit_report": self.name
 				}
 				frappe.get_doc(doc_site_job).insert()

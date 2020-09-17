@@ -6,17 +6,19 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "status",
   "naming_series",
   "type",
-  "priority",
+  "customer",
+  "customer_name",
   "column_break_3",
   "posting_date",
-  "approver",
-  "approve_status",
+  "priority",
   "section_break_7",
   "details",
   "section_break_13",
-  "clearance_date"
+  "clearance_date",
+  "amended_from"
  ],
  "fields": [
   {
@@ -42,16 +44,6 @@
    "label": "Posting Date"
   },
   {
-   "fieldname": "approver",
-   "fieldtype": "Data",
-   "label": "Approver"
-  },
-  {
-   "fieldname": "approve_status",
-   "fieldtype": "Data",
-   "label": "Approve Status"
-  },
-  {
    "fieldname": "section_break_7",
    "fieldtype": "Section Break"
   },
@@ -75,10 +67,41 @@
    "fieldtype": "Select",
    "label": "Series",
    "options": "PS-.YYYY.-"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fetch_from": "customer.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Payment Scheduler",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "default": "Approved",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Status",
+   "options": "Approved"
   }
  ],
+ "is_submittable": 1,
  "links": [],
- "modified": "2020-09-16 18:47:17.569633",
+ "modified": "2020-09-17 08:30:19.146463",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Payment Scheduler",

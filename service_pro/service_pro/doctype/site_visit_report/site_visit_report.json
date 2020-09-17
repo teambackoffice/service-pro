@@ -6,6 +6,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "status",
   "naming_series",
   "employee",
   "employee_name",
@@ -78,11 +79,19 @@
    "fieldtype": "Select",
    "label": "Series",
    "options": "SVR-.YYYY.-"
+  },
+  {
+   "default": "Completed",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Status",
+   "options": "Completed"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-15 14:57:49.052442",
+ "modified": "2020-09-17 08:49:59.571387",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Site Visit Report",

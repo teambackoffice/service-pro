@@ -69,12 +69,12 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Visit\nTroubleshooting\nDelivery\nNew Customer\nFollow up\nRegular Visit\nInvoice Summations"
+   "options": "Visit\nTroubleshooting\nDelivery\nNew Customer\nFollow up\nRegular Visit\nInvoice Submission"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2020-09-16 13:53:21.138461",
+ "modified": "2020-09-17 08:36:49.092263",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Site Visit Report Jobs",

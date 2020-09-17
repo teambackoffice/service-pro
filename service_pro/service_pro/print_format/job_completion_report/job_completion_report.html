@@ -1,0 +1,143 @@
+<html>
+<style>
+	@media screen {
+		.print-format {
+			width: 8.3in;
+			height: 11.7in;
+		}
+	}
+</style>
+<div id="header-html" class="hidden-pdf" >
+  <div>
+    <br>
+    <br>
+    <br>
+    <br>
+  </div>
+</div>
+    <h3 style="text-align: center">
+        <u >
+            <b>
+                Work Completion Report
+            </b>
+        </u>
+    </h3>
+<table style="width: 100%" class="center">
+    <tr>
+        <td style="width: 15%;font-size: 14px">
+           <b>CLIENT</b>
+        </td>
+        <td style="width: 20%;font-size: 14px">
+            <b>{{doc.customer_name}}</b>
+        </td>
+        <td style="width: 20%">
+        </td>
+        <td style="width: 10%;font-size: 14px">
+          <b>Date</b>
+        </td>
+        <td style="width: 10%;font-size: 14px">
+            <b>{{doc.posting_date}}</b>
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 15%;font-size: 14px">
+           <b>LOCATION</b>
+        </td>
+        <td style="width: 20%;font-size: 14px">
+            {%if doc.location%}
+            <b>{{doc.location}}</b>
+            {%endif%}
+        </td>
+        <td style="width: 20%">
+        </td>
+        <td style="width: 10%">
+        </td>
+        <td style="width: 10%">
+        </td>
+    </tr>
+</table>
+<div style="text-indent: 120px;;font-size: 14px; margin-top: 20px">
+    {{frappe.db.get_value("Terms and Conditions", doc.to_whom_it_may_concern, "terms")}}
+</div>
+<table style="width: 100%; margin-top:  30px" class="center">
+    <tr>
+        <td style="width: 15%;font-size: 14px" class="text-center">
+            <b><u>PROJECT</u></b>
+        </td>
+        <td style="width: 20%;font-size: 14px">
+        </td>
+        <td style="width: 20%">
+        </td>
+        <td style="width: 10%;font-size: 14px">
+        </td>
+        <td style="width: 10%;font-size: 14px">
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 15%;font-size: 14px">
+           {{doc.project}}
+        </td>
+        <td style="width: 20%;font-size: 14px">
+        </td>
+        <td style="width: 20%">
+        </td>
+        <td style="width: 10%">
+        </td>
+        <td style="width: 10%">
+        </td>
+    </tr>
+</table>
+
+<table style="width: 100%; margin-top:  30px" class="center">
+    <tr>
+        <td style="width: 25%;font-size: 14px" class="text-center">
+            <b><u>PROJECT DESCRIPTION</u></b>
+        </td>
+        <td style="width: 10%;font-size: 14px">
+        </td>
+        <td style="width: 10%">
+        </td>
+        <td style="width: 10%;font-size: 14px">
+        </td>
+        <td style="width: 10%;font-size: 14px">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="5" style="width: 100%;font-size: 14px">
+              {{frappe.db.get_value("Terms and Conditions", doc.project_desription, "terms")}}
+
+        </td>
+
+    </tr>
+</table>
+<table style="width: 100%; margin-top:  30px" class="center">
+    <tr>
+        <td style="width: 15%;font-size: 14px" class="text-center">
+            Project Start Date:
+        </td>
+        <td style="width: 20%;font-size: 14px">
+            {%if doc.project_start_date%}
+            {{doc.project_start_date}}
+            {%endif%}
+        </td>
+        <td style="width: 10%">
+        </td>
+        <td style="width: 15%;font-size: 14px">
+            Project End Date:
+        </td>
+        <td style="width: 10%;font-size: 14px">
+                        {%if doc.project_end_date%}
+
+            {{doc.project_end_date}}
+            {%endif%}
+        </td>
+    </tr>
+</table>
+<div>
+    <div id="footer-html" class="visible-pdf">
+       <br>
+       <br>
+       <br>
+    </div>
+</div>
+</html>

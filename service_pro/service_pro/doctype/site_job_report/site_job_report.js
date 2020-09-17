@@ -211,6 +211,10 @@ cur_frm.cscript.refresh = function (frm) {
                 // action to perform if No is selected
             })
     }
+    if(cur_frm.doc.permanent_submit){
+        cur_frm.set_df_property("raw_material", "read_only", 1)
+        cur_frm.set_df_property("update_available_stock", "hidden", 1)
+    }
 }
 
 cur_frm.cscript.onload = function (frm) {

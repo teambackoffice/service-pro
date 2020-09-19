@@ -12,27 +12,29 @@
  "fields": [
   {
    "fieldname": "item_name",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Item Name",
-   "options": "Item"
+   "read_only": 1
   },
   {
    "fieldname": "qty",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Qty"
+   "label": "Qty",
+   "read_only": 1
   },
   {
    "fieldname": "selling_rate",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Selling Rate"
+   "label": "Selling Rate",
+   "read_only": 1
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2020-09-10 16:57:46.821749",
+ "modified": "2020-09-19 12:58:03.068482",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Item Selling Price List",

@@ -195,7 +195,7 @@ cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
 cur_frm.cscript.refresh = function (frm) {
 
     if(cur_frm.doc.docstatus && cur_frm.doc.sjr_status === "Completed" && !cur_frm.doc.permanent_submit){
-        frappe.confirm('Permanently Complete??',
+        frappe.confirm('Permanently Complete ' + cur_frm.doc.name + '?',
             () => {
         frappe.call({
             method: "service_pro.service_pro.doctype.site_job_report.site_job_report.permanent_submit",

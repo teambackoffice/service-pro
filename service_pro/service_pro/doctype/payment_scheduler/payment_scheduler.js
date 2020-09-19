@@ -35,13 +35,16 @@ cur_frm.cscript.type = function (frm, cdt, cdn) {
     var doc1 = frappe.meta.get_docfield("Payment Scheduler Details", "doc1", cur_frm.doc.name);
     name1.options = cur_frm.doc.type === "Supplier" ? cur_frm.doc.type : cur_frm.doc.type === "Expense Claim" ? "Employee" : "Sales Person"
 
-    if(cur_frm.doc.type === "Supplier" || cur_frm.doc.type === "Agent"){
-        doc1.options = "Sales Invoice"
+    if(cur_frm.doc.type === "Supplier" ){
+        doc1.options = "Purchase Invoice"
                 cur_frm.trigger("refresh")
 
 
     } else if (cur_frm.doc.type === "Expense Claim"){
         doc1.options = "Expense Claim"
+        cur_frm.trigger("refresh")
+    } else if (cur_frm.doc.type === "Agent"){
+        doc1.options = "Sales Invoice"
         cur_frm.trigger("refresh")
     }
 
@@ -50,7 +53,7 @@ cur_frm.cscript.type = function (frm, cdt, cdn) {
 cur_frm.cscript.doc1 = function (frm, cdt, cdn) {
     var row = locals[cdt][cdn]
     if(row.doc1 && cur_frm.doc.type === "Supplier"){
-        frappe.db.get_value('Sales Invoice', row.doc1, 'outstanding_amount')
+        frappe.db.get_value('Purchase Invoice', row.doc1, 'outstanding_amount')
         .then(outstanding => {
             row.outstanding = outstanding.message.outstanding_amount
             cur_frm.refresh_field("details")

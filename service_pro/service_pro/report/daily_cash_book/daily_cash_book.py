@@ -86,7 +86,7 @@ def execute(filters=None):
 		if not filters.get("mop") or (filters.get("mop") and i.mop in filters.get("mop")):
 			new_data.append(i)
 
-		if not filters.get("mop") or (i.paid and i.showroom_cash in filters.get("mop")):
+		if (not filters.get("mop") or (i.paid and i.showroom_cash in filters.get("mop"))) and i.incentive > 0 :
 			new_data.append({
 				"date": i.date,
 				"si_no": i.name,

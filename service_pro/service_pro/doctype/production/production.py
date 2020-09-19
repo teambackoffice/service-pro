@@ -89,8 +89,8 @@ class Production(Document):
 		if check or (not check and allow_negative_stock):
 			doc_se = {
 				"doctype": "Stock Entry",
-				"stock_entry_type": "Manufacture" if self.type == "Assemble" or self.type == "Service"  else "Repack",
-				"items": self.get_manufacture_se_items() if self.type == "Assemble" or self.type == "Service"  else self.get_repack_se_items(),
+				"stock_entry_type": "Manufacture" if self.type == "Assemble" or self.type == "Service"  else "Material Issue" if self.type == "Re-Service" else"Repack",
+				"items": self.get_manufacture_se_items() if self.type == "Assemble" or self.type == "Service"  else self.get_material_issue_se_items() if self.type == "Re-Service" else self.get_repack_se_items(),
 				"production": self.name,
 				"additional_costs": self.get_additional_costs()
 			}
@@ -210,6 +210,20 @@ class Production(Document):
 			'basic_rate': self.rate,
 			'cost_center': self.cost_center,
 		})
+		return items
+
+	def get_material_issue_se_items(self):
+		items = []
+
+		for item in self.raw_material:
+			items.append({
+				'item_code': item.item_code,
+				's_warehouse': item.warehouse,
+				'qty': item.qty_raw_material,
+				'uom': "Nos",
+				'basic_rate': item.rate_raw_material,
+				'cost_center': item.cost_center
+			})
 		return items
 
 	def get_repack_se_items(self):

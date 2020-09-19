@@ -187,15 +187,14 @@ cur_frm.cscript.cylinder_service = function (frm, cdt, cdn) {
 }
 frappe.ui.form.on('Production', {
     onload_post_render: function(frm) {
-
-                    document.querySelectorAll("[data-doctype='Sales Invoice']")[1].style.display ="none";
-                    document.querySelectorAll("[data-doctype='Delivery Note']")[1].style.display ="none";
-                    document.querySelectorAll("[data-doctype='Stock Entry']")[1].style.display ="none";
-
+if(!cur_frm.is_new()) {
+    document.querySelectorAll("[data-doctype='Sales Invoice']")[1].style.display = "none";
+    document.querySelectorAll("[data-doctype='Delivery Note']")[1].style.display = "none";
+    document.querySelectorAll("[data-doctype='Stock Entry']")[1].style.display = "none";
+}
 
         },
     onload: function (frm) {
-
         if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
             filter_link_field(cur_frm)
             frm.set_df_property('series', 'options', ['CS-'])
@@ -219,6 +218,12 @@ frappe.ui.form.on('Production', {
             cur_frm.refresh_field("series")
             cur_frm.set_df_property("scoop_of_work", "hidden", 1)
             cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
+        } else if(cur_frm.doc.type && cur_frm.doc.type === "Re-Service") {
+	        cur_frm.doc.estimation = ""
+            cur_frm.refresh_field("estimation")
+	        frm.set_df_property('series', 'options', ['RCS-'])
+            cur_frm.doc.series = "RCS-"
+            cur_frm.refresh_field("series")
         }
         if(cur_frm.is_new()){
             if(cur_frm.doc.estimation){
@@ -280,6 +285,7 @@ frappe.ui.form.on('Production', {
     },
     validate: function (frm) {
         frm.set_df_property('type', 'read_only', 1);
+        set_item_selling_price(cur_frm)
 
     },
 	refresh: function(frm) {
@@ -504,7 +510,7 @@ frappe.ui.form.on('Production', {
                         }, "Generate");
                         }
 
-                    } else if(r.message && generate_button && ["In Progress", "Partially Completed", "Partially Delivered", "To Deliver", "To Bill", "To Deliver and Bill"].includes(cur_frm.doc.status) && cur_frm.doc.docstatus){
+                    } else if(r.message && generate_button && ["In Progress", "Partially Completed", "Partially Delivered", "To Deliver", "To Bill", "To Deliver and Bill"].includes(cur_frm.doc.status) && cur_frm.doc.docstatus && cur_frm.doc.type !== "Re-Service"){
                         cur_frm.set_df_property('raw_material', 'read_only', 1);
                         cur_frm.set_df_property('scoop_of_work', 'read_only', 1);
 
@@ -671,6 +677,18 @@ frappe.ui.form.on('Production', {
             cur_frm.set_df_property("editable_total", "hidden", 1)
             cur_frm.set_df_property("section_break_21", "hidden", 1)
             cur_frm.set_df_property("section_break111", "hidden", 1)
+            cur_frm.clear_table("linked_productions")
+            cur_frm.refresh_field("linked_productions")
+            cur_frm.fields_dict.linked_productions.grid.get_field("cylinder_service").get_query =
+			function() {
+				return {
+					 filters: [
+                    ["status", "!=", "Completed"],
+                    ["docstatus", "=", 1],
+                    ["series", "=", "CS-"],
+                ]
+				}
+			}
 
         } else if(cur_frm.doc.type && cur_frm.doc.type === "Disassemble") {
 
@@ -686,6 +704,40 @@ frappe.ui.form.on('Production', {
             cur_frm.set_df_property("editable_total", "hidden", 1)
             cur_frm.set_df_property("section_break_21", "hidden", 1)
             cur_frm.set_df_property("section_break111", "hidden", 1)
+            cur_frm.clear_table("linked_productions")
+            cur_frm.refresh_field("linked_productions")
+            cur_frm.fields_dict.linked_productions.grid.get_field("cylinder_service").get_query =
+			function() {
+				return {
+					 filters: [
+                    ["status", "!=", "Completed"],
+                    ["docstatus", "=", 1],
+                    ["series", "=", "CS-"],
+                ]
+				}
+			}
+
+        } else if(cur_frm.doc.type && cur_frm.doc.type === "Re-Service") {
+
+	        cur_frm.doc.estimation = ""
+            cur_frm.refresh_field("estimation")
+            frm.trigger('estimation');
+
+	        frm.set_df_property('series', 'options', ['RCS-'])
+            cur_frm.doc.series = "RCS-"
+            cur_frm.refresh_field("series")
+            cur_frm.clear_table("linked_productions")
+            cur_frm.refresh_field("linked_productions")
+            cur_frm.fields_dict.linked_productions.grid.get_field("cylinder_service").get_query =
+			function() {
+				return {
+					 filters: [
+                    ["status", "=", "Completed"],
+                    ["docstatus", "=", 1],
+                    ["series", "=", "CS-"],
+                ]
+				}
+			}
 
         }
 	},
@@ -1011,10 +1063,18 @@ cur_frm.cscript.material_request = function () {
     frappe.set_route('Form', 'Material Request', "New Material Request 1")
 }
 
-// function set_item_selling_price(cur_frm) {
-//     if(cur_frm.doc.raw_material !== undefined){
-//         for(var x=0;x<cur_frm.doc.raw_material.length; x += 1){
-//
-//         }
-//     }
-// }
+function set_item_selling_price(cur_frm) {
+    if(cur_frm.doc.raw_material !== undefined){
+        cur_frm.clear_table("item_selling_price_list")
+                    cur_frm.refresh_field("item_selling_price_list")
+
+        for(var x=0;x<cur_frm.doc.raw_material.length; x += 1){
+            cur_frm.add_child('item_selling_price_list', {
+                item_name: cur_frm.doc.raw_material[x].item_name,
+                qty: cur_frm.doc.raw_material[x].qty_raw_material,
+                selling_rate: cur_frm.doc.raw_material[x].rate_raw_material
+            });
+            cur_frm.refresh_field("item_selling_price_list")
+        }
+    }
+}

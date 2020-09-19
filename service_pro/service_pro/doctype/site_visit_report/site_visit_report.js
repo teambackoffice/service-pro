@@ -15,6 +15,7 @@ frappe.ui.form.on('Site Visit Report', {
                 return{
                     filters:[
                         ['status', '=', "In Progress"],
+                        ['docstatus', '=', 1],
                         ['customer', '=', child.customer],
 
                     ]

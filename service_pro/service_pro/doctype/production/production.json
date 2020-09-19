@@ -106,7 +106,7 @@
    "fieldname": "type",
    "fieldtype": "Select",
    "label": "Type",
-   "options": "\nAssemble\nDisassemble\nService",
+   "options": "\nAssemble\nDisassemble\nService\nRe-Service",
    "reqd": 1
   },
   {
@@ -470,6 +470,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "item_selling_price_list",
    "fieldtype": "Table",
    "label": "Item Selling Price List",
@@ -483,7 +484,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-16 19:36:46.001142",
+ "modified": "2020-09-19 13:05:23.262580",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

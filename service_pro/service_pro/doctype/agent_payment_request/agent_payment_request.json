@@ -75,7 +75,7 @@
    "fieldname": "purpose",
    "fieldtype": "Small Text",
    "in_list_view": 1,
-   "label": "Purpose",
+   "label": "Remarks",
    "reqd": 1
   },
   {
@@ -159,7 +159,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-16 18:49:26.198275",
+ "modified": "2020-09-19 12:52:00.320208",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Agent Payment Request",

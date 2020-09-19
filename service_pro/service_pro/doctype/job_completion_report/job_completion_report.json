@@ -15,8 +15,10 @@
   "site_job_report",
   "section_break_8",
   "to_whom_it_may_concern",
+  "to_whom_it_may_concern_text",
   "project",
   "project_description",
+  "project_description_text",
   "project_start_date",
   "project_end_date"
  ],
@@ -98,10 +100,20 @@
    "fieldtype": "Link",
    "label": "To Whom It May Concern",
    "options": "Terms and Conditions"
+  },
+  {
+   "fetch_from": "to_whom_it_may_concern.terms",
+   "fieldname": "to_whom_it_may_concern_text",
+   "fieldtype": "Text Editor"
+  },
+  {
+   "fetch_from": "project_description.terms",
+   "fieldname": "project_description_text",
+   "fieldtype": "Text Editor"
   }
  ],
  "links": [],
- "modified": "2020-09-19 17:36:04.696891",
+ "modified": "2020-09-19 18:44:22.034663",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Job Completion Report",

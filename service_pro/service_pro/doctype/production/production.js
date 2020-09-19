@@ -93,6 +93,7 @@ cur_frm.cscript.raw_material_remove = function (frm,cdt,cdn) {
     var d = frappe.get_doc(cdt, cdn);
         compute_raw_material_total(cur_frm)
         compute_for_selling_price(cur_frm)
+    set_item_selling_price(cur_frm)
     if(cdn){
          cur_frm.call({
             doc: cur_frm.doc,
@@ -1023,8 +1024,9 @@ if(cur_frm.doc.raw_material !== undefined){
     frappe.call({
                 method: "service_pro.service_pro.doctype.production.production.compute_selling_price",
                 args: {
-                    raw_materials: cur_frm.doc.raw_material
-
+                    raw_materials: cur_frm.doc.raw_material,
+                    based_on: cur_frm.doc.rate_of_materials_based_on ? cur_frm.doc.rate_of_materials_based_on : "",
+                    price_list: cur_frm.doc.price_list ? cur_frm.doc.price_list : ""
                 },
                 async: false,
                 callback: function (r) {

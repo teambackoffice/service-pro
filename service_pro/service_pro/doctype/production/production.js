@@ -300,7 +300,9 @@ if(!cur_frm.is_new()) {
 
     },
 	refresh: function(frm) {
-
+        cur_frm.get_field("item_selling_price_list").grid.cannot_add_rows = true;
+cur_frm.get_field("item_selling_price_list").grid.only_sortable();
+cur_frm.refresh_field("item_selling_price_list")
          if(cur_frm.doc.docstatus && cur_frm.doc.status === "In Progress"){
              frm.add_custom_button(__("Close"), () => {
                     cur_frm.call({
@@ -1025,8 +1027,6 @@ if(cur_frm.doc.raw_material !== undefined){
                 method: "service_pro.service_pro.doctype.production.production.compute_selling_price",
                 args: {
                     raw_materials: cur_frm.doc.raw_material,
-                    based_on: cur_frm.doc.rate_of_materials_based_on ? cur_frm.doc.rate_of_materials_based_on : "",
-                    price_list: cur_frm.doc.price_list ? cur_frm.doc.price_list : ""
                 },
                 async: false,
                 callback: function (r) {
@@ -1080,22 +1080,37 @@ cur_frm.cscript.material_request = function () {
 
 function set_item_selling_price(cur_frm) {
     console.log(cur_frm.doc.raw_material)
-    if(cur_frm.doc.raw_material !== undefined){
+
+
+    if(cur_frm.doc.raw_material.length > 0){
         cur_frm.clear_table("item_selling_price_list")
         cur_frm.refresh_field("item_selling_price_list")
+        !cur_frm.fields_dict['section_break_44'].collapse();
+        frappe.call({
+            method: "service_pro.service_pro.doctype.production.production.selling_price_list",
+            args:{
+                raw_materials: cur_frm.doc.raw_material
+            },
+            async: false,
+            callback: function (r) {
+                for(var x=0;x<r.message.length; x += 1){
+                    cur_frm.add_child('item_selling_price_list', {
+                        item_name: r.message[x].item_name,
+                        qty: r.message[x].qty_raw_material,
+                        selling_rate: r.message[x].rate_raw_material
+                    });
+                    cur_frm.refresh_field("item_selling_price_list")
 
-        for(var x=0;x<cur_frm.doc.raw_material.length; x += 1){
-            console.log(cur_frm.doc.raw_material[x])
-            console.log('item_name' in cur_frm.doc.raw_material[x])
-            cur_frm.add_child('item_selling_price_list', {
-                item_name: cur_frm.doc.raw_material[x].item_name,
-                qty: cur_frm.doc.raw_material[x].qty_raw_material,
-                selling_rate: cur_frm.doc.raw_material[x].rate_raw_material
-            });
-            cur_frm.refresh_field("item_selling_price_list")
 
+                }
+            }
+        })
 
-        }
+    } else {
+
+        cur_frm.clear_table("item_selling_price_list")
+        cur_frm.refresh_field("item_selling_price_list")
     }
+
     console.log("HUMAN")
 }

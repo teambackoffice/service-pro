@@ -423,14 +423,33 @@ def get_valuation_rate(item_code):
 	return item[0].valuation_rate if len(item) > 0 else 0
 
 @frappe.whitelist()
-def compute_selling_price(raw_materials, based_on, price_list):
+def compute_selling_price(raw_materials):
 	import json
 	selling_price_total = 0
 	raw_material = json.loads(raw_materials)
 	for i in raw_material:
 		warehouse = i['warehouse'] if 'warehouse' in i and i['warehouse'] else "",
 		if 'item_code' in i:
-			selling_price = get_rate(i['item_code'],warehouse,based_on, price_list)
+			selling_price = get_rate(i['item_code'],warehouse,"Price List", "Standard Selling")
 
 			selling_price_total += (selling_price[0] * i['qty_raw_material'])
 	return selling_price_total
+
+
+@frappe.whitelist()
+def selling_price_list(raw_materials):
+	import json
+	array_selling = []
+	raw_material = json.loads(raw_materials)
+
+	for i in raw_material:
+		warehouse = i['warehouse'] if 'warehouse' in i and i['warehouse'] else "",
+		if 'item_code' in i:
+			selling_price = get_rate(i['item_code'],warehouse,"Price List", "Standard Selling")
+
+			array_selling.append({
+				"item_name": i['item_name'],
+				"qty_raw_material": i['qty_raw_material'],
+				"rate_raw_material": selling_price[0] * i['qty_raw_material']
+			})
+	return array_selling

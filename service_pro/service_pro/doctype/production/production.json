@@ -49,6 +49,7 @@
   "rate_of_materials_based_on",
   "price_list",
   "raw_material",
+  "section_break_44",
   "item_selling_price_list",
   "section_break_38",
   "update_available_stock",
@@ -469,17 +470,22 @@
    "fieldname": "item_selling_price_list",
    "fieldtype": "Table",
    "label": "Item Selling Price List",
-   "options": "Item Selling Price List",
-   "read_only": 1
+   "options": "Item Selling Price List"
   },
   {
    "fieldname": "column_break_50",
    "fieldtype": "Column Break"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_44",
+   "fieldtype": "Section Break",
+   "label": "Item Selling Prices"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-19 18:53:32.873892",
+ "modified": "2020-09-19 19:50:29.565591",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

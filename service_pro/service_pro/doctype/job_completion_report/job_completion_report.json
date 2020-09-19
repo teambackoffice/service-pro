@@ -22,6 +22,7 @@
  ],
  "fields": [
   {
+   "fetch_from": "site_job_report.customer",
    "fieldname": "customer",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -100,7 +101,7 @@
   }
  ],
  "links": [],
- "modified": "2020-09-17 08:35:37.604771",
+ "modified": "2020-09-19 17:36:04.696891",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Job Completion Report",

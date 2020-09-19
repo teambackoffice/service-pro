@@ -29,7 +29,13 @@
   "total",
   "svrj_row_name",
   "permanent_submit",
-  "amended_from"
+  "amended_from",
+  "images_section",
+  "attach_1",
+  "image_1",
+  "column_break_28",
+  "attach_2",
+  "image_2"
  ],
  "fields": [
   {
@@ -186,11 +192,43 @@
    "fieldtype": "Select",
    "label": "SJR Status",
    "options": "\nIn Progress\nCompleted"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "images_section",
+   "fieldtype": "Section Break",
+   "label": "Images"
+  },
+  {
+   "fieldname": "attach_1",
+   "fieldtype": "Attach",
+   "label": "Attach 1"
+  },
+  {
+   "fieldname": "image_1",
+   "fieldtype": "Image",
+   "label": "Image 1",
+   "options": "attach_1"
+  },
+  {
+   "fieldname": "column_break_28",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attach_2",
+   "fieldtype": "Attach",
+   "label": "Attach 2"
+  },
+  {
+   "fieldname": "image_2",
+   "fieldtype": "Image",
+   "label": "Image 2",
+   "options": "attach_2"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-17 19:07:11.136785",
+ "modified": "2020-09-19 17:41:45.398633",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Site Job Report",

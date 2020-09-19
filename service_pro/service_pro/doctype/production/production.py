@@ -95,10 +95,17 @@ class Production(Document):
 				"additional_costs": self.get_additional_costs()
 			}
 			frappe.get_doc(doc_se).insert(ignore_permissions=1).submit()
-			frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""",("To Deliver and Bill",self.name))
-			frappe.db.commit()
-			return ""
 
+
+			if self.type == "Re-Service":
+				frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""",
+							  ("Completed", self.name))
+				frappe.db.commit()
+			else:
+				frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""",
+							  ("To Deliver and Bill", self.name))
+				frappe.db.commit()
+			return ""
 		else:
 			frappe.throw("Item " + item_code + " Has no available stock")
 	def generate_finish_good_se(self):

@@ -23,7 +23,7 @@
    "fieldname": "type",
    "fieldtype": "Select",
    "label": "Type",
-   "options": "\nSupplier\nExpense Claim\nAgent"
+   "options": "\nSupplier\nExpense Claim\nAgent\nInterest"
   },
   {
    "fieldname": "priority",
@@ -86,7 +86,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-17 17:40:39.453116",
+ "modified": "2020-09-19 17:29:07.040490",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Payment Scheduler",

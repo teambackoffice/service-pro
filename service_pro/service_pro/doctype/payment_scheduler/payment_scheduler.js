@@ -12,7 +12,7 @@ frappe.ui.form.on('Payment Scheduler','refresh', function(frm) {
                 ]
             }
         }
-    } else if (cur_frm.doc.type === "Supplier" || cur_frm.doc.type === "Agent") {
+    } else if (cur_frm.doc.type === "Supplier" || cur_frm.doc.type === "Agent" || cur_frm.doc.type === "Interest") {
         frm.fields_dict['details'].grid.get_field("doc1").get_query = function (doc, cdt, cdn) {
             return {
                 filters: [
@@ -43,7 +43,7 @@ cur_frm.cscript.type = function (frm, cdt, cdn) {
     } else if (cur_frm.doc.type === "Expense Claim"){
         doc1.options = "Expense Claim"
         cur_frm.trigger("refresh")
-    } else if (cur_frm.doc.type === "Agent"){
+    } else if (cur_frm.doc.type === "Agent" || cur_frm.doc.type === "Interest"){
         doc1.options = "Sales Invoice"
         cur_frm.trigger("refresh")
     }
@@ -64,7 +64,7 @@ cur_frm.cscript.doc1 = function (frm, cdt, cdn) {
             row.outstanding = total_claimed_amount.message.total_claimed_amount
             cur_frm.refresh_field("details")
         })
-    } else if(row.doc1 && cur_frm.doc.type === "Agent") {
+    } else if(row.doc1 && (cur_frm.doc.type === "Agent" || cur_frm.doc.type === "Interest")) {
         frappe.db.get_value('Sales Invoice', row.doc1, 'incentive')
         .then(incentive => {
             row.outstanding = incentive.message.incentive

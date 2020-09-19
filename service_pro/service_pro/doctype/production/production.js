@@ -54,7 +54,7 @@ cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
 
             compute_raw_material_total(cur_frm)
             compute_for_selling_price(cur_frm)
-
+set_item_selling_price(cur_frm)
 
         })
 
@@ -173,10 +173,14 @@ cur_frm.cscript.cylinder_service = function (frm, cdt, cdn) {
                         ["name", "not in", names],
                         ["status", "!=", "Completed"],
                         ["docstatus", "=", 1],
-                        ["series", "=", "CS-"],
                     ]
                     if(cur_frm.doc.customer){
                         filters.push(["customer", "=", cur_frm.doc.customer])
+                    }
+                    if(cur_frm.doc.type === 'Re-Service'){
+                    filters.push(["series", "in", ['RCS-', 'RSK-', 'RHA-', 'RPB-']])
+                    } else {
+                        filters.push(["series", "=", "CS-"])
                     }
                     return {
                          filters: filters
@@ -205,7 +209,7 @@ if(!cur_frm.is_new()) {
         } else if(cur_frm.doc.type && cur_frm.doc.type === "Assemble") {
 	        cur_frm.doc.estimation = ""
             cur_frm.refresh_field("estimation")
-	        frm.set_df_property('series', 'options', ['','SK-','HA-'])
+	        frm.set_df_property('series', 'options', ['','SK-','HA-','PB-'])
 
             cur_frm.set_df_property("scoop_of_work", "hidden", 1)
             cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
@@ -221,9 +225,11 @@ if(!cur_frm.is_new()) {
         } else if(cur_frm.doc.type && cur_frm.doc.type === "Re-Service") {
 	        cur_frm.doc.estimation = ""
             cur_frm.refresh_field("estimation")
-	        frm.set_df_property('series', 'options', ['RCS-'])
+	        frm.set_df_property('series', 'options', ['RCS-', 'RSK-', 'RHA-', 'RPB-'])
             cur_frm.doc.series = "RCS-"
             cur_frm.refresh_field("series")
+            cur_frm.set_df_property("scoop_of_work", "hidden", 1)
+            cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
         }
         if(cur_frm.is_new()){
             if(cur_frm.doc.estimation){
@@ -285,7 +291,6 @@ if(!cur_frm.is_new()) {
     },
     validate: function (frm) {
         frm.set_df_property('type', 'read_only', 1);
-        set_item_selling_price(cur_frm)
 
     },
 	refresh: function(frm) {
@@ -670,7 +675,7 @@ if(!cur_frm.is_new()) {
 	        cur_frm.doc.estimation = ""
             cur_frm.refresh_field("estimation")
             frm.trigger('estimation');
-	        frm.set_df_property('series', 'options', ['','SK-','HA-'])
+	        frm.set_df_property('series', 'options', ['','SK-','HA-', 'PB-'])
 
             cur_frm.set_df_property("scoop_of_work", "hidden", 1)
             cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
@@ -723,9 +728,11 @@ if(!cur_frm.is_new()) {
             cur_frm.refresh_field("estimation")
             frm.trigger('estimation');
 
-	        frm.set_df_property('series', 'options', ['RCS-'])
+	        frm.set_df_property('series', 'options', ['RCS-', 'RSK-', 'RHA-', 'RPB-'])
             cur_frm.doc.series = "RCS-"
             cur_frm.refresh_field("series")
+            cur_frm.set_df_property("scoop_of_work", "hidden", 1)
+            cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
             cur_frm.clear_table("linked_productions")
             cur_frm.refresh_field("linked_productions")
             cur_frm.fields_dict.linked_productions.grid.get_field("cylinder_service").get_query =
@@ -734,7 +741,7 @@ if(!cur_frm.is_new()) {
 					 filters: [
                     ["status", "=", "Completed"],
                     ["docstatus", "=", 1],
-                    ["series", "=", "CS-"],
+                    ["series", "in", ['RCS-', 'RSK-', 'RHA-', 'RPB-']],
                 ]
 				}
 			}
@@ -924,6 +931,7 @@ cur_frm.cscript.item_code = function (frm,cdt, cdn) {
                        d.umo = doc.stock_uom
 
                         cur_frm.refresh_field("raw_material")
+                set_item_selling_price(cur_frm)
                     })
                 d.rate_raw_material = r.message[0]
                 d.amount_raw_material = r.message[0] * d.qty_raw_material
@@ -1064,17 +1072,23 @@ cur_frm.cscript.material_request = function () {
 }
 
 function set_item_selling_price(cur_frm) {
+    console.log(cur_frm.doc.raw_material)
     if(cur_frm.doc.raw_material !== undefined){
         cur_frm.clear_table("item_selling_price_list")
-                    cur_frm.refresh_field("item_selling_price_list")
+        cur_frm.refresh_field("item_selling_price_list")
 
         for(var x=0;x<cur_frm.doc.raw_material.length; x += 1){
+            console.log(cur_frm.doc.raw_material[x])
+            console.log('item_name' in cur_frm.doc.raw_material[x])
             cur_frm.add_child('item_selling_price_list', {
                 item_name: cur_frm.doc.raw_material[x].item_name,
                 qty: cur_frm.doc.raw_material[x].qty_raw_material,
                 selling_rate: cur_frm.doc.raw_material[x].rate_raw_material
             });
             cur_frm.refresh_field("item_selling_price_list")
+
+
         }
     }
+    console.log("HUMAN")
 }

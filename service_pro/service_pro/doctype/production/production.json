@@ -49,7 +49,6 @@
   "rate_of_materials_based_on",
   "price_list",
   "raw_material",
-  "section_break_44",
   "item_selling_price_list",
   "section_break_38",
   "update_available_stock",
@@ -444,7 +443,7 @@
    "label": "Material Request"
   },
   {
-   "depends_on": "eval: doc.type != \"Service\"",
+   "depends_on": "eval: doc.type != \"Service\" && doc.type != \"Re-Service\"",
    "fieldname": "customer_and_workshop",
    "fieldtype": "Select",
    "label": "Customer and Workshop",
@@ -458,16 +457,12 @@
    "label": "Last Status"
   },
   {
-   "depends_on": "eval: doc.customer_and_workshop == \"Workshop\" && doc.type != \"Service\"",
+   "depends_on": "eval: (doc.customer_and_workshop == \"Workshop\" && doc.type != \"Service\") || doc.type == \"Re-Service\"",
    "fieldname": "linked_productions",
    "fieldtype": "Table",
    "label": "Cylinder Service",
-   "mandatory_depends_on": "eval: doc.customer_and_workshop == \"Workshop\" && doc.type != \"Service\"",
+   "mandatory_depends_on": "eval: (doc.customer_and_workshop == \"Workshop\" && doc.type != \"Service\") || doc.type==\"Re-Service\"",
    "options": "Linked Productions"
-  },
-  {
-   "fieldname": "section_break_44",
-   "fieldtype": "Section Break"
   },
   {
    "allow_on_submit": 1,
@@ -484,7 +479,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-19 13:05:23.262580",
+ "modified": "2020-09-19 18:06:28.171192",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

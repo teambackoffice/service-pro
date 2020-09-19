@@ -177,17 +177,17 @@ cur_frm.cscript.cylinder_service = function (frm, cdt, cdn) {
                     if(cur_frm.doc.customer){
                         filters.push(["customer", "=", cur_frm.doc.customer])
                     }
-                    if(cur_frm.doc.type === 'Re-Service'){
-                    filters.push(["series", "in", ['RCS-', 'RSK-', 'RHA-', 'RPB-']])
-                    } else {
-                        filters.push(["series", "=", "CS-"])
-                    }
+                    filters.push(["series", "in", ["CS-", "SK-", "HK-", "PB-"]])
                     return {
                          filters: filters
                     }
                 }
         })
     }
+}
+function showPosition(position) {
+  console.log("Latitude: " + position.coords.latitude)
+    console.log("Longitude: " + position.coords.longitude)
 }
 frappe.ui.form.on('Production', {
     onload_post_render: function(frm) {
@@ -199,6 +199,7 @@ if(!cur_frm.is_new()) {
 
         },
     onload: function (frm) {
+        navigator.geolocation.getCurrentPosition(showPosition);
         if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
             filter_link_field(cur_frm)
             frm.set_df_property('series', 'options', ['CS-'])
@@ -741,7 +742,7 @@ if(!cur_frm.is_new()) {
 					 filters: [
                     ["status", "=", "Completed"],
                     ["docstatus", "=", 1],
-                    ["series", "in", ['RCS-', 'RSK-', 'RHA-', 'RPB-']],
+                    ["series", "in", ["CS-", "SK-", "HK-", "PB-"]],
                 ]
 				}
 			}

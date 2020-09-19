@@ -177,7 +177,11 @@ cur_frm.cscript.cylinder_service = function (frm, cdt, cdn) {
                     if(cur_frm.doc.customer){
                         filters.push(["customer", "=", cur_frm.doc.customer])
                     }
-                    filters.push(["series", "in", ["CS-", "SK-", "HK-", "PB-"]])
+                    if(cur_frm.doc.type === 'Re-Service'){
+                        filters.push(["series", "in", ["CS-", "SK-", "HK-", "PB-"]])
+                    } else {
+                        filters.push(["series", "=", "CS-"])
+                    }
                     return {
                          filters: filters
                     }

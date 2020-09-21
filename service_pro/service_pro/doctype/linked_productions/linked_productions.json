@@ -12,13 +12,13 @@
    "fieldname": "cylinder_service",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Cylinder Service",
+   "label": "Service Reference",
    "options": "Production"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2020-09-07 06:13:35.929178",
+ "modified": "2020-09-20 15:12:37.138015",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Linked Productions",

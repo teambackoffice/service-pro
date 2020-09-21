@@ -461,7 +461,7 @@
    "depends_on": "eval: (doc.customer_and_workshop == \"Workshop\" && doc.type != \"Service\") || doc.type == \"Re-Service\"",
    "fieldname": "linked_productions",
    "fieldtype": "Table",
-   "label": "Cylinder Service",
+   "label": "Service Reference",
    "mandatory_depends_on": "eval: (doc.customer_and_workshop == \"Workshop\" && doc.type != \"Service\") || doc.type==\"Re-Service\"",
    "options": "Linked Productions"
   },
@@ -485,7 +485,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-19 19:50:29.565591",
+ "modified": "2020-09-20 14:58:33.266925",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

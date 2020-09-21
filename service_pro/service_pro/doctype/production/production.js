@@ -193,6 +193,7 @@ cur_frm.cscript.cylinder_service = function (frm, cdt, cdn) {
 function showPosition(position) {
   console.log("Latitude: " + position.coords.latitude)
     console.log("Longitude: " + position.coords.longitude)
+    console.log(position)
 }
 frappe.ui.form.on('Production', {
     onload_post_render: function(frm) {

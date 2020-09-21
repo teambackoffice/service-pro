@@ -670,6 +670,22 @@ cur_frm.refresh_field("item_selling_price_list")
             })
         }
 	},
+    series: function(){
+        if(cur_frm.doc.series && cur_frm.doc.type === "Re-Service"){
+            cur_frm.clear_table("linked_productions")
+            cur_frm.refresh_field("linked_productions")
+            cur_frm.fields_dict.linked_productions.grid.get_field("cylinder_service").get_query =
+			function() {
+				return {
+					 filters: [
+                    ["status", "!=", "Completed"],
+                    ["docstatus", "=", 1],
+                    ["series", "=", cur_frm.doc.series.replace("R", "")],
+                ]
+				}
+			}
+        }
+    },
     type: function(frm) {
 	    if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
             filter_link_field(cur_frm)
@@ -750,7 +766,7 @@ cur_frm.refresh_field("item_selling_price_list")
 					 filters: [
                     ["status", "=", "Completed"],
                     ["docstatus", "=", 1],
-                    ["series", "in", ["CS-", "SK-", "HK-", "PB-"]],
+                    ["series", "in", ["CS-"]],
                 ]
 				}
 			}

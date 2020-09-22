@@ -14,6 +14,7 @@
   "priority",
   "section_break_7",
   "details",
+  "details_interest",
   "section_break_13",
   "clearance_date",
   "amended_from"
@@ -56,6 +57,7 @@
    "label": "Clearance Date"
   },
   {
+   "depends_on": "eval: doc.type != \"Interest\"",
    "fieldname": "details",
    "fieldtype": "Table",
    "options": "Payment Scheduler Details"
@@ -82,11 +84,17 @@
    "hidden": 1,
    "label": "Status",
    "options": "Approved"
+  },
+  {
+   "depends_on": "eval: doc.type == \"Interest\"",
+   "fieldname": "details_interest",
+   "fieldtype": "Table",
+   "options": "Payment Scheduler Details Interest"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-19 17:29:07.040490",
+ "modified": "2020-09-22 17:12:21.981433",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Payment Scheduler",

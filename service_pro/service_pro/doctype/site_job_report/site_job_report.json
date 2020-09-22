@@ -13,7 +13,8 @@
   "customer_name",
   "column_break_4",
   "site_visit_report",
-  "posting_date",
+  "start_date",
+  "end_date",
   "visit_time",
   "contact_person",
   "contact_number",
@@ -65,13 +66,6 @@
   {
    "fieldname": "column_break_4",
    "fieldtype": "Column Break"
-  },
-  {
-   "default": "Today",
-   "fieldname": "posting_date",
-   "fieldtype": "Date",
-   "label": "Posting Date",
-   "reqd": 1
   },
   {
    "fieldname": "visit_time",
@@ -224,11 +218,25 @@
    "fieldtype": "Image",
    "label": "Image 2",
    "options": "attach_2"
+  },
+  {
+   "default": "Today",
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date",
+   "reqd": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date",
+   "reqd": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-19 17:41:45.398633",
+ "modified": "2020-09-22 16:30:04.134362",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Site Job Report",

@@ -6,7 +6,8 @@
  "engine": "InnoDB",
  "field_order": [
   "employee",
-  "employee_name"
+  "employee_name",
+  "date"
  ],
  "fields": [
   {
@@ -23,11 +24,18 @@
    "in_list_view": 1,
    "label": "Employee Name",
    "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2020-09-11 15:37:51.910637",
+ "modified": "2020-09-22 15:44:28.532965",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Team Members",

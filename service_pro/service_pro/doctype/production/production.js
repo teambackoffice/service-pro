@@ -217,6 +217,7 @@ frappe.ui.form.on('Production', {
             document.querySelectorAll("[data-doctype='Sales Invoice']")[1].style.display = "none";
             document.querySelectorAll("[data-doctype='Delivery Note']")[1].style.display = "none";
             document.querySelectorAll("[data-doctype='Stock Entry']")[1].style.display = "none";
+            document.querySelectorAll("[data-doctype='Job Completion Report']")[1].style.display = "none";
         }
 
         },

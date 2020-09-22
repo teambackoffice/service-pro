@@ -13,6 +13,7 @@
   "location",
   "posting_date",
   "site_job_report",
+  "production",
   "section_break_8",
   "to_whom_it_may_concern",
   "to_whom_it_may_concern_text",
@@ -120,11 +121,17 @@
    "options": "Job Completion Report",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "production",
+   "fieldtype": "Link",
+   "label": "Production",
+   "options": "Production"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-19 19:11:43.609592",
+ "modified": "2020-09-22 16:45:41.672751",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Job Completion Report",

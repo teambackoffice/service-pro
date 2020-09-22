@@ -16,7 +16,7 @@ cur_frm.cscript.sales_person = function(frm,cdt, cdn){
         })
     }
 }
-frappe.ui.form.on('Load Tracking', {
+frappe.ui.form.on('Sales Invoice', {
     customer: function(frm){
 
                 filter_link_field(cur_frm)

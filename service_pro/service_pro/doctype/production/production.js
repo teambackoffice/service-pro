@@ -196,12 +196,28 @@ function showPosition(position) {
     console.log(position)
 }
 frappe.ui.form.on('Production', {
+    site_job_report: function () {
+        if(cur_frm.doc.site_job_report){
+            frappe.db.get_doc("Site Job Report", cur_frm.doc.site_job_report)
+          .then(sjr => {
+              for(var i=0; i<sjr.scoop_of_work.length;i+=1){
+                    cur_frm.add_child("scoop_of_work", {
+                        work_name: sjr.scoop_of_work[i].work_name,
+                        expected_date: sjr.scoop_of_work[i].expected_date
+                    })
+            cur_frm.refresh_field("scoop_of_work")
+              }
+
+      })
+        }
+
+    },
     onload_post_render: function(frm) {
-if(!cur_frm.is_new()) {
-    document.querySelectorAll("[data-doctype='Sales Invoice']")[1].style.display = "none";
-    document.querySelectorAll("[data-doctype='Delivery Note']")[1].style.display = "none";
-    document.querySelectorAll("[data-doctype='Stock Entry']")[1].style.display = "none";
-}
+        if(!cur_frm.is_new()) {
+            document.querySelectorAll("[data-doctype='Sales Invoice']")[1].style.display = "none";
+            document.querySelectorAll("[data-doctype='Delivery Note']")[1].style.display = "none";
+            document.querySelectorAll("[data-doctype='Stock Entry']")[1].style.display = "none";
+        }
 
         },
     onload: function (frm) {

@@ -109,17 +109,17 @@
                                       <b>DN NUMBER:</b><br>
              <b> مذكرة تسليم</b>
 
-<br><br>
+                <br><br>
              {%endif%}
              <b>PO NUMBER:</b><br>
                 <b>                رقم أمر الشراء</b><br><br>
-                         {%if doc.sales_man%}
+             {%if doc.sales_man%}
 
-             <b>SALES MAN:</b>
-             <br>
-             <b>المندوب</b>
-             <br><br>
-                          {%endif%}
+                 <b>SALES MAN:</b>
+                 <br>
+                 <b>المندوب</b>
+                 <br><br>
+              {%endif%}
 
              <b>SK/CS/HA Ref:</b>
         </td>
@@ -135,12 +135,15 @@
                             {{doc.items[0].delivery_note}}
 
                 {%endif%}
+            <br><br><br>
              {%if doc.po_no%}
                 {{doc.po_no}}
-            {%endif%}<br><br><br>
+            {%endif%}
+            <br><br><br>
             {%if doc.sales_man%}
                 {{doc.sales_man_name}}
-            {%endif%}<br><br><br>
+            {%endif%}
+            <br><br><br>
 
             {{ production_ref | join(",")}}
         </td>
@@ -201,14 +204,14 @@
         </td>
         <td class="text-left" style="width: 6%;font-size: 100%">
 
-            <b>{{ "{:,.2f}".format(i.rate) }}</b>
+            <b>{{ "{:,.2f}".format(i.price_list_rate) }}</b>
         </td>
-                  <div style="display: none">
+          <div style="display: none">
 
-         {%if i.include_discount%}
-             {{ new_item_array.append(i)}}
-                      {%endif%}
-                  </div>
+             {%if i.include_discount%}
+                 {{ new_item_array.append(i)}}
+              {%endif%}
+          </div>
 
          <td class="text-left" style="width: 6%;font-size: 100%">
              {%if i.include_discount%}

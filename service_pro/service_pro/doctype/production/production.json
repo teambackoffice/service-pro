@@ -24,6 +24,7 @@
   "delivery_date",
   "type",
   "estimation",
+  "site_job_report",
   "old_sk_number",
   "production_status",
   "finished_item_section",
@@ -481,11 +482,18 @@
    "fieldname": "section_break_44",
    "fieldtype": "Section Break",
    "label": "Item Selling Prices"
+  },
+  {
+   "depends_on": "eval: doc.type == \"Service\"",
+   "fieldname": "site_job_report",
+   "fieldtype": "Link",
+   "label": "Site Job Report",
+   "options": "Site Job Report"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-20 14:58:33.266925",
+ "modified": "2020-09-22 14:08:17.513314",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

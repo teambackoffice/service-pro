@@ -190,7 +190,8 @@ fixtures = [
                     "Journal Entry-agent_payment_request",
                     "Quotation-site_visit_report",
                     "Journal Entry-petty_cash_request",
-                    "Employee-petty_cash_account"
+                    "Employee-petty_cash_account",
+                    "Sales Invoice Item-si_discount",
                 ]
             ]
         ]

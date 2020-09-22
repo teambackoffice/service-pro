@@ -246,7 +246,11 @@
             <b>مجموع</b>
         </td>
         <td class="text-right" style="width: 13%;font-size: 100%">
-            <b>{{ "{:,.2f}".format(doc.items | sum(attribute='amount') - doc.items | sum(attribute='si_discount')) }}</b>
+            {%if doc.items | sum(attribute='si_discount') > 0%}
+                <b>{{ "{:,.2f}".format(doc.items | sum(attribute='amount') - doc.items | sum(attribute='si_discount')) }}</b>
+            {%else%}
+                <b>{{ "{:,.2f}".format(doc.items | sum(attribute='amount')) }}</b>
+            {%endif%}
         </td>
     </tr>
     <tr>
@@ -315,7 +319,7 @@
         <td class="text-right" style="width: 13%;font-size: 100%">
 
             {% if  new_item_array|sum(attribute='si_discount') > 0%}
-                <b>{{ "{:,.2f}".format((doc.items | sum(attribute='amount') - doc.items | sum(attribute='si_discount')) - new_item_array|sum(attribute='si_discount'))}}</b>
+                <b>{{ "{:,.2f}".format((doc.items | sum(attribute='amount') - doc.items | sum(attribute='si_discount')))}}</b>
             {% else %}
                 {% if doc.discount_amount | abs > 0 %}
                     <b>{{ "{:,.2f}".format((doc.items | sum(attribute='amount') - doc.items | sum(attribute='si_discount')) - doc.discount_amount | abs)}}</b>
@@ -328,7 +332,7 @@
                 <b>{{ "{:,.2f}".format(doc.total_taxes_and_charges) }}</b>
                 <br><br>
                 {% if  new_item_array|sum(attribute='si_discount') > 0%}
-                    <b>{{ "{:,.2f}".format(((doc.items | sum(attribute='amount') - doc.items | sum(attribute='si_discount')) - new_item_array|sum(attribute='si_discount') ) + doc.total_taxes_and_charges)}}</b>
+                    <b>{{ "{:,.2f}".format(((doc.items | sum(attribute='amount') - doc.items | sum(attribute='si_discount')) ) + doc.total_taxes_and_charges)}}</b>
                 {% else %}
                     {% if doc.discount_amount | abs > 0 %}
                         <b>{{ "{:,.2f}".format(((doc.items | sum(attribute='amount') - doc.items | sum(attribute='si_discount')) - doc.discount_amount | abs) + doc.total_taxes_and_charges)}}</b>

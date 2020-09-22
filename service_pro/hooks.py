@@ -188,7 +188,9 @@ fixtures = [
                     "Customer-sales_man",
                     "Customer-sales_man_name",
                     "Journal Entry-agent_payment_request",
-                    "Quotation-site_visit_report"
+                    "Quotation-site_visit_report",
+                    "Journal Entry-petty_cash_request",
+                    "Employee-petty_cash_account"
                 ]
             ]
         ]

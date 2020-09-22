@@ -21,8 +21,7 @@
   "status",
   "company",
   "column_break_18",
-  "agent_name",
-  "liabilities_account",
+  "employee_account",
   "mode_of_payment",
   "amended_from"
  ],
@@ -87,7 +86,7 @@
    "fieldname": "agent_outstanding_amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Agent Outstanding Amount",
+   "label": "Employee Outstanding Amount",
    "options": "Company:company:default_currency",
    "reqd": 1
   },
@@ -117,21 +116,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "agent_name",
-   "fieldtype": "Link",
-   "ignore_user_permissions": 1,
-   "label": "Agent Name",
-   "options": "Sales Person",
-   "reqd": 1
-  },
-  {
-   "fetch_from": "agent_name.liabilities_account",
-   "fieldname": "liabilities_account",
-   "fieldtype": "Data",
-   "label": "Liabilities Account",
-   "read_only": 1
-  },
-  {
    "fieldname": "mode_of_payment",
    "fieldtype": "Link",
    "label": "Mode of Payment",
@@ -146,11 +130,20 @@
    "options": "Petty Cash Request",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fetch_from": "employee.petty_cash_account",
+   "fieldname": "employee_account",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Employee Account",
+   "options": "Account",
+   "reqd": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-22 17:20:26.165397",
+ "modified": "2020-09-22 17:47:49.594799",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Petty Cash Request",

@@ -7,11 +7,6 @@ import frappe
 from frappe.model.document import Document
 
 class PettyCashRequest(Document):
-	def validate(self):
-		if not self.liabilities_account:
-			frappe.throw("Please select liablities account for Sales Person " + self.agent_name)
-
-
 	def generate_journal_entry(self):
 		doc_jv = {
 			"doctype": "Journal Entry",
@@ -30,7 +25,7 @@ class PettyCashRequest(Document):
 		amount = 0
 
 		accounts.append({
-			'account': self.liabilities_account,
+			'account': self.employee_account,
 			'debit_in_account_currency': self.agent_outstanding_amount,
 			'credit_in_account_currency': 0,
 		})

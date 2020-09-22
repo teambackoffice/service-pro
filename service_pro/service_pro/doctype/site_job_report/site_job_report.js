@@ -200,7 +200,11 @@ cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
 
 
 cur_frm.cscript.refresh = function (frm) {
-
+        if(cur_frm.doc.status === "In Progress"){
+                    cur_frm.set_df_property("end_date", "read_only", 0)
+        } else {
+                    cur_frm.set_df_property("end_date", "read_only", 1)
+        }
     if(cur_frm.doc.docstatus && cur_frm.doc.sjr_status === "Completed" && !cur_frm.doc.permanent_submit){
         frappe.confirm('Permanently Complete ' + cur_frm.doc.name + '?',
             () => {

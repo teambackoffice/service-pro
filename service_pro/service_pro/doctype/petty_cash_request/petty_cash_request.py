@@ -28,6 +28,8 @@ class PettyCashRequest(Document):
 			'account': self.employee_account,
 			'debit_in_account_currency': self.agent_outstanding_amount,
 			'credit_in_account_currency': 0,
+			'party_type': "Employee",
+			'party': self.employee,
 		})
 
 		credit_acount = frappe.db.sql(""" SELECT * FROM `tabMode of Payment Account` WHERE parent=%s LIMIT 1""", self.mode_of_payment,as_dict=1)
@@ -37,8 +39,7 @@ class PettyCashRequest(Document):
 				'account': credit_acount[0].default_account,
 				'debit_in_account_currency': 0,
 				'credit_in_account_currency': self.agent_outstanding_amount,
-				'party_type': "Employee",
-				'party': self.employee,
+
 			})
 		print(accounts)
 		return accounts

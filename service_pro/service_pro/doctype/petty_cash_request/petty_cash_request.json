@@ -138,12 +138,13 @@
    "ignore_user_permissions": 1,
    "label": "Employee Account",
    "options": "Account",
+   "read_only": 1,
    "reqd": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-22 17:47:49.594799",
+ "modified": "2020-09-22 17:57:32.089681",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Petty Cash Request",

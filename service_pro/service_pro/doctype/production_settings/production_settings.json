@@ -24,7 +24,10 @@
   "warehouse_sjr",
   "cost_center_sjr",
   "rate_of_materials_based_on_sjr",
-  "price_list_sjr"
+  "price_list_sjr",
+  "inspection_settings_section",
+  "image_width",
+  "image_height"
  ],
  "fields": [
   {
@@ -142,11 +145,26 @@
    "fieldtype": "Select",
    "label": "Price List",
    "options": "\nStandard Buying\nStandard Selling"
+  },
+  {
+   "fieldname": "inspection_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Inspection Settings"
+  },
+  {
+   "fieldname": "image_width",
+   "fieldtype": "Int",
+   "label": "Image Width"
+  },
+  {
+   "fieldname": "image_height",
+   "fieldtype": "Int",
+   "label": "Image Height"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2020-09-17 14:25:41.366193",
+ "modified": "2020-09-22 18:33:32.796005",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

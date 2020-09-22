@@ -329,6 +329,7 @@
   },
   {
    "collapsible": 1,
+   "depends_on": "eval: !cur_frm.is_new()",
    "fieldname": "section_break_36",
    "fieldtype": "Section Break",
    "label": "ARRIVED / OFFLOADED CYLINDER"
@@ -365,6 +366,7 @@
   },
   {
    "collapsible": 1,
+   "depends_on": "eval: !cur_frm.is_new()",
    "fieldname": "strippping_from_hydraulic_cylinder_barrel_section",
    "fieldtype": "Section Break",
    "label": "STRIPPPING FROM HYDRAULIC CYLINDER BARREL"
@@ -419,6 +421,7 @@
   },
   {
    "collapsible": 1,
+   "depends_on": "eval: !cur_frm.is_new()",
    "fieldname": "assessment_of_seal_kit_section",
    "fieldtype": "Section Break",
    "label": "ASSESSMENT OF SEAL KIT"
@@ -451,6 +454,7 @@
   },
   {
    "collapsible": 1,
+   "depends_on": "eval: !cur_frm.is_new()",
    "fieldname": "assessment_of_rod_section",
    "fieldtype": "Section Break",
    "label": "ASSESSMENT OF ROD"
@@ -516,6 +520,7 @@
   },
   {
    "collapsible": 1,
+   "depends_on": "eval: !cur_frm.is_new()",
    "fieldname": "assessment_of_tube_section",
    "fieldtype": "Section Break",
    "label": "ASSESSMENT OF TUBE"
@@ -581,6 +586,7 @@
   },
   {
    "collapsible": 1,
+   "depends_on": "eval: !cur_frm.is_new()",
    "fieldname": "assessment_of_gland_section",
    "fieldtype": "Section Break",
    "label": "ASSESSMENT OF GLAND"
@@ -635,6 +641,7 @@
   },
   {
    "collapsible": 1,
+   "depends_on": "eval: !cur_frm.is_new()",
    "fieldname": "assessment_of_sleeve_section",
    "fieldtype": "Section Break",
    "label": "ASSESSMENT OF SLEEVE"
@@ -667,6 +674,7 @@
   },
   {
    "collapsible": 1,
+   "depends_on": "eval: !cur_frm.is_new()",
    "fieldname": "assessment_of_piston_section",
    "fieldtype": "Section Break",
    "label": "ASSESSMENT OF PISTON"
@@ -721,6 +729,7 @@
   },
   {
    "collapsible": 1,
+   "depends_on": "eval: !cur_frm.is_new()",
    "fieldname": "assessment_of_clevis_section",
    "fieldtype": "Section Break",
    "label": "ASSESSMENT OF CLEVIS"
@@ -753,6 +762,7 @@
   },
   {
    "collapsible": 1,
+   "depends_on": "eval: !cur_frm.is_new()",
    "fieldname": "assessment_of_counter_balance_valve_section",
    "fieldtype": "Section Break",
    "label": "ASSESSMENT OF COUNTER BALANCE VALVE"
@@ -785,6 +795,7 @@
   },
   {
    "collapsible": 1,
+   "depends_on": "eval: !cur_frm.is_new()",
    "fieldname": "assessment_of_maniforl_block_section",
    "fieldtype": "Section Break",
    "label": "ASSESSMENT OF MANIFORL BLOCK"
@@ -817,6 +828,7 @@
   },
   {
    "collapsible": 1,
+   "depends_on": "eval: !cur_frm.is_new()",
    "fieldname": "assessment_of_piston_rod_thread_section",
    "fieldtype": "Section Break",
    "label": "ASSESSMENT OF PISTON ROD THREAD"
@@ -849,6 +861,7 @@
   },
   {
    "collapsible": 1,
+   "depends_on": "eval: !cur_frm.is_new()",
    "fieldname": "assessment_of_clevis_bush_section",
    "fieldtype": "Section Break",
    "label": "ASSESSMENT OF CLEVIS BUSH"
@@ -881,6 +894,7 @@
   },
   {
    "collapsible": 1,
+   "depends_on": "eval: !cur_frm.is_new()",
    "fieldname": "assessment_of_o_ring_grove_on_piston_rod_section",
    "fieldtype": "Section Break",
    "label": "ASSESSMENT OF O RING GROVE ON PISTON ROD"
@@ -1208,7 +1222,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-08-30 07:43:28.845974",
+ "modified": "2020-09-22 19:18:08.588238",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inspection",

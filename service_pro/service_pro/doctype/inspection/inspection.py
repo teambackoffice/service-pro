@@ -5,6 +5,10 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
+from PIL import Image
+import os
+from os.path import dirname
+
 
 class Inspection(Document):
 	def on_submit(self):
@@ -25,3 +29,22 @@ class Inspection(Document):
 	def change_status(self, status):
 		frappe.db.sql(""" UPDATE `tabInspection` SET status=%s WHERE name=%s """,(status, self.name))
 		frappe.db.commit()
+
+	def validate(self):
+		self.crop_images()
+
+	def crop_images(self):
+		settings = frappe.get_single("Production Settings").__dict__
+		for i in range(1,41):
+			if eval("self.attach_" + str(i)):
+				im = Image.open(frappe.get_site_path() + "/public" + eval("self.attach_" + str(i)))
+
+				width, height = im.size
+				if width > settings['image_width'] and height > settings['image_height']:
+					left = 50
+					top = 50
+					width = settings['image_width']
+					height = settings['image_height']
+					box = (left, top, left + width, top + height)
+					area = im.crop(box)
+					area.save(frappe.get_site_path() + "/public" + eval("self.attach_" + str(i)), quality=95)

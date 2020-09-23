@@ -204,6 +204,7 @@ cur_frm.cscript.refresh = function (frm) {
                     cur_frm.set_df_property("end_date", "read_only", 0)
         } else {
                     cur_frm.set_df_property("end_date", "read_only", 1)
+                    cur_frm.set_df_property("team_members", "read_only", 1)
         }
     if(cur_frm.doc.docstatus && cur_frm.doc.sjr_status === "Completed" && !cur_frm.doc.permanent_submit){
         frappe.confirm('Permanently Complete ' + cur_frm.doc.name + '?',

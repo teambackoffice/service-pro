@@ -30,10 +30,6 @@
   "tube_size_road_condition",
   "section_break_24",
   "parts_inspection",
-  "status1",
-  "column_break_27",
-  "material",
-  "remarks",
   "other_componentd_section",
   "counter_balance_valve",
   "column_break_30",
@@ -284,27 +280,6 @@
    "fieldname": "section_break_24",
    "fieldtype": "Section Break",
    "label": "Parts Inspection"
-  },
-  {
-   "fieldname": "status1",
-   "fieldtype": "Section Break",
-   "label": "Status",
-   "options": "\nGood\nDamaged"
-  },
-  {
-   "fieldname": "column_break_27",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "material",
-   "fieldtype": "Link",
-   "label": "Material",
-   "options": "Material"
-  },
-  {
-   "fieldname": "remarks",
-   "fieldtype": "Text",
-   "label": "Remarks"
   },
   {
    "fieldname": "other_componentd_section",
@@ -1222,7 +1197,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-22 19:18:08.588238",
+ "modified": "2020-09-23 12:16:37.352421",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inspection",

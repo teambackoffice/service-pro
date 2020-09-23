@@ -41,10 +41,7 @@ class Inspection(Document):
 
 				width, height = im.size
 				if width > settings['image_width'] and height > settings['image_height']:
-					left = 50
-					top = 50
 					width = settings['image_width']
 					height = settings['image_height']
-					box = (left, top, left + width, top + height)
-					area = im.crop(box)
+					area = im.resize((width, height))
 					area.save(frappe.get_site_path() + "/public" + eval("self.attach_" + str(i)), quality=95)

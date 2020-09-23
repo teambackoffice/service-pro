@@ -20,7 +20,14 @@ frappe.ui.form.on('Sales Invoice', {
     customer: function(frm){
 
                 filter_link_field(cur_frm)
+        if(cur_frm.doc.customer){
+                        frappe.db.get_doc("Customer", cur_frm.doc.customer)
+                            .then(customer => {
+                                cur_frm.doc.sales_man = customer.sales_man
+                                cur_frm.refresh_field("sales_man")
+                        })
 
+        }
 
 }
 })

@@ -105,7 +105,8 @@
          <td style="width: 10%;"></td>
 
          <td class="text-left" style="width: 15%;font-size: 100%">
-             {%if doc.items[0].delivery_note %}
+                          {%if doc.items[0].delivery_note or frappe.db.get_value("Delivery Note Item", {"against_sales_invoice": doc.name}, "parent")%}
+
                                   <b>DN NUMBER:</b>
                     <b> مذكرة تسليم</b>
 

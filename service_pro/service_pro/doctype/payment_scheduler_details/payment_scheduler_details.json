@@ -9,15 +9,17 @@
   "employee_name",
   "supplier_name",
   "doc1",
-  "outstanding"
+  "outstanding",
+  "name_link",
+  "doc_link"
  ],
  "fields": [
   {
    "fieldname": "name1",
-   "fieldtype": "Link",
+   "fieldtype": "Dynamic Link",
    "in_list_view": 1,
    "label": "Name",
-   "options": "Supplier"
+   "options": "name_link"
   },
   {
    "depends_on": "eval: parent.type == \"Expense Claim\"",
@@ -28,10 +30,10 @@
   },
   {
    "fieldname": "doc1",
-   "fieldtype": "Link",
+   "fieldtype": "Dynamic Link",
    "in_list_view": 1,
    "label": "Doc",
-   "options": "Sales Invoice"
+   "options": "doc_link"
   },
   {
    "fieldname": "outstanding",
@@ -44,11 +46,25 @@
    "fieldtype": "Data",
    "label": "Supplier Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "name_link",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Name Link",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "doc_link",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Doc Link",
+   "options": "DocType"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2020-09-22 17:12:46.273293",
+ "modified": "2020-09-24 18:12:08.788923",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Payment Scheduler Details",

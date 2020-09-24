@@ -25,30 +25,26 @@ frappe.ui.form.on('Payment Scheduler','refresh', function(frm) {
 
 });
 
+cur_frm.cscript.details_add = function (frm, cdt, cdn) {
+    var d = locals[cdt][cdn]
+    if(cur_frm.doc.type === "Supplier"){
+        d.name_link = "Supplier"
+        d.doc_link = "Purchase Invoice"
+    } else if(cur_frm.doc.type === "Expense Claim"){
+        d.name_link = "Employee"
+                d.doc_link = "Expense Claim"
 
+    } else if(cur_frm.doc.type === "Agent"){
+        d.name_link = "Sales Person"
+                d.doc_link = "Sales Invoice"
+
+    }
+    cur_frm.refresh_field("details")
+}
 cur_frm.cscript.type = function (frm, cdt, cdn) {
-    var row = locals[cdt][cdn]
-
     cur_frm.clear_table("details")
     cur_frm.refresh_field("details")
-    var name1 = frappe.meta.get_docfield("Payment Scheduler Details", "name1", cur_frm.doc.name);
-    var doc1 = frappe.meta.get_docfield("Payment Scheduler Details", "doc1", cur_frm.doc.name);
-    var oustanding = frappe.meta.get_docfield("Payment Scheduler Details", "outsanding", cur_frm.doc.name);
-    name1.options = cur_frm.doc.type === "Supplier" ? cur_frm.doc.type : cur_frm.doc.type === "Expense Claim" ? "Employee" : cur_frm.doc.type === "Agent" ?  "Sales Person" : ""
 
-    if(cur_frm.doc.type === "Supplier" ){
-
-        doc1.options = "Purchase Invoice"
-        cur_frm.trigger("refresh")
-
-
-    } else if (cur_frm.doc.type === "Expense Claim"){
-        doc1.options = "Expense Claim"
-        cur_frm.trigger("refresh")
-    } else if (cur_frm.doc.type === "Agent"){
-        doc1.options = "Sales Invoice"
-        cur_frm.trigger("refresh")
-    }
 
 }
 

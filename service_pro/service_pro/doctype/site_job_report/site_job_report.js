@@ -2,12 +2,6 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Site Job Report', {
-    onload_post_render: function(frm) {
-        if(!cur_frm.is_new()) {
-            document.querySelectorAll("[data-doctype='Production']")[1].style.display = "none";
-        }
-
-        },
 	onload: function(frm) {
 
  if(cur_frm.is_new()){

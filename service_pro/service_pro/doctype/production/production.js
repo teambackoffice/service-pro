@@ -222,7 +222,6 @@ frappe.ui.form.on('Production', {
 
         },
     onload: function (frm) {
-        navigator.geolocation.getCurrentPosition(showPosition);
         if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
             filter_link_field(cur_frm)
             frm.set_df_property('series', 'options', ['CS-'])
@@ -256,7 +255,7 @@ frappe.ui.form.on('Production', {
             cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
         }
         if(cur_frm.is_new()){
-            if(cur_frm.doc.estimation){
+            if(cur_frm.doc.estimation || cur_frm.doc.site_job_report){
                 cur_frm.doc.type = "Service"
                  frm.set_df_property('series', 'options', ['CS-'])
                 cur_frm.doc.series = "CS-"

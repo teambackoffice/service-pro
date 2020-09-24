@@ -53,6 +53,5 @@ cur_frm.cscript.svrj_status = function (frm, cdt, cdn) {
     var row = locals[cdt][cdn]
     if(row.rework && row.svrj_status === "Troubleshooting"){
             cur_frm.trigger("refresh")
-
     }
 }

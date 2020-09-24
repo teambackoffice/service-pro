@@ -7,7 +7,7 @@ def get_data():
 		'transactions': [
 			{
 				'label': _('Linked Forms'),
-				'items': ["Site Job Report"]
+				'items': ["Site Job Report", "Quotation", "Material Request"]
 			}
 		]
 	}

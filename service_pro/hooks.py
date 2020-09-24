@@ -192,6 +192,7 @@ fixtures = [
                     "Journal Entry-petty_cash_request",
                     "Employee-petty_cash_account",
                     "Sales Invoice Item-si_discount",
+                    "Material Request-site_visit_report",
                 ]
             ]
         ]

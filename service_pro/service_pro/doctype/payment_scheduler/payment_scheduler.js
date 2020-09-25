@@ -20,6 +20,8 @@ frappe.ui.form.on('Payment Scheduler','refresh', function(frm) {
             ]
             if (cur_frm.doc.type === "Supplier"){
                 filters.push(["supplier", "=", child.name1])
+            } else if (cur_frm.doc.type === "Agent"){
+                filters.push(["sales_person", "=", child.name1])
             }
             return {
                 filters: filters

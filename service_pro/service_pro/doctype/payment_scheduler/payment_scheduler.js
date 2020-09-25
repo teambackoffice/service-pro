@@ -14,10 +14,15 @@ frappe.ui.form.on('Payment Scheduler','refresh', function(frm) {
         }
     } else if (cur_frm.doc.type === "Supplier" || cur_frm.doc.type === "Agent") {
         frm.fields_dict['details'].grid.get_field("doc1").get_query = function (doc, cdt, cdn) {
+            var child = locals[cdt][cdn];
+            var filters = [
+                ["status", "in", ["Overdue", "Unpaid"]]
+            ]
+            if (cur_frm.doc.type === "Supplier"){
+                filters.push(["supplier", "=", child.name1])
+            }
             return {
-                filters: [
-                    ["status", "in", ["Overdue", "Unpaid"]]
-                ]
+                filters: filters
             }
         }
     }
@@ -30,21 +35,21 @@ cur_frm.cscript.details_add = function (frm, cdt, cdn) {
     if(cur_frm.doc.type === "Supplier"){
         d.name_link = "Supplier"
         d.doc_link = "Purchase Invoice"
+        cur_frm.trigger("refresh")
     } else if(cur_frm.doc.type === "Expense Claim"){
         d.name_link = "Employee"
-                d.doc_link = "Expense Claim"
-
+        d.doc_link = "Expense Claim"
+        cur_frm.trigger("refresh")
     } else if(cur_frm.doc.type === "Agent"){
         d.name_link = "Sales Person"
-                d.doc_link = "Sales Invoice"
-
+        d.doc_link = "Sales Invoice"
+        cur_frm.trigger("refresh")
     }
     cur_frm.refresh_field("details")
 }
 cur_frm.cscript.type = function (frm, cdt, cdn) {
     cur_frm.clear_table("details")
     cur_frm.refresh_field("details")
-
 
 }
 

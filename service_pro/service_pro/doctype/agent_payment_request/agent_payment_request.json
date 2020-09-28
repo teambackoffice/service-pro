@@ -104,15 +104,6 @@
    "reqd": 1
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Agent Payment Request",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
    "fieldname": "column_break_18",
    "fieldtype": "Column Break"
   },
@@ -122,15 +113,6 @@
    "label": "Mode of Payment",
    "options": "Mode of Payment",
    "reqd": 1
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Agent Payment Request",
-   "print_hide": 1,
-   "read_only": 1
   },
   {
    "default": "0",
@@ -155,11 +137,17 @@
    "fieldtype": "Data",
    "label": "Liabilities Account",
    "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "options": "Agent Payment Request"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-24 18:37:37.570498",
+ "modified": "2020-09-28 10:22:38.948645",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Agent Payment Request",

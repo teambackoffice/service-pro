@@ -74,9 +74,8 @@
   },
   {
    "fieldname": "contact_person",
-   "fieldtype": "Link",
-   "label": "Contact Person",
-   "options": "Contact"
+   "fieldtype": "Data",
+   "label": "Contact Person"
   },
   {
    "fieldname": "contact_number",
@@ -238,7 +237,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-23 13:14:33.116437",
+ "modified": "2020-09-29 09:05:55.359972",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Site Job Report",

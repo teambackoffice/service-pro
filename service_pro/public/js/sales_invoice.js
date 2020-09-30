@@ -170,3 +170,12 @@ cur_frm.cscript.reference = function (frm,cdt,cdn) {
             })
     }
 }
+
+cur_frm.cscript.onload = function () {
+    if(cur_frm.is_new() && cur_frm.doc.is_return){
+        for(var i =0; i < cur_frm.doc.production.length;i+=1){
+            cur_frm.doc.production[i].qty = 0 - cur_frm.doc.production[i].qty
+            cur_frm.refresh_field("production")
+        }
+    }
+}

@@ -4,7 +4,12 @@ cur_frm.cscript.customer = function(frm){
 }
 cur_frm.cscript.onload = function(frm){
     filter_link_field(cur_frm)
-
+    if(cur_frm.is_new() && cur_frm.doc.is_return){
+        for(var i =0; i < cur_frm.doc.production.length;i+=1){
+            cur_frm.doc.production[i].qty = 0 - cur_frm.doc.production[i].qty
+            cur_frm.refresh_field("production")
+        }
+    }
 }
 
 function filter_link_field(cur_frm) {

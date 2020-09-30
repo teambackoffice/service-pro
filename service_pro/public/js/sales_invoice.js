@@ -63,7 +63,14 @@ cur_frm.cscript.unpaid = function(frm){
 
 }
 cur_frm.cscript.onload = function(frm){
+    if(cur_frm.is_new() && cur_frm.doc.is_return){
+        for(var i =0; i < cur_frm.doc.production.length;i+=1){
+            cur_frm.doc.production[i].qty = 0 - cur_frm.doc.production[i].qty
+            cur_frm.refresh_field("production")
+        }
+    }
     filter_link_field(cur_frm)
+
     cur_frm.set_query('expense_cost_center', () => {
         return {
             filters: {
@@ -71,18 +78,24 @@ cur_frm.cscript.onload = function(frm){
             }
         }
     });
+    console.log("NAA MAN")
     frappe.db.get_single_value('Production Settings', 'expense_account')
             .then(expense_account => {
+                console.log(expense_account)
                 cur_frm.doc.expense_account = expense_account
                 cur_frm.refresh_field("expense_account")
             })
     frappe.db.get_single_value('Production Settings', 'showroom_cash')
             .then(showroom_cash => {
+                    console.log("NAA MAN1111")
+
                 cur_frm.doc.showroom_cash = showroom_cash
                 cur_frm.refresh_field("showroom_cash")
             })
     frappe.db.get_single_value('Production Settings', 'showroom_card')
             .then(showroom_card => {
+                    console.log("NAA MAN222")
+
                 cur_frm.doc.showroom_card = showroom_card
                 cur_frm.refresh_field("showroom_card")
             })
@@ -168,14 +181,5 @@ cur_frm.cscript.reference = function (frm,cdt,cdn) {
         }
 
             })
-    }
-}
-
-cur_frm.cscript.onload = function () {
-    if(cur_frm.is_new() && cur_frm.doc.is_return){
-        for(var i =0; i < cur_frm.doc.production.length;i+=1){
-            cur_frm.doc.production[i].qty = 0 - cur_frm.doc.production[i].qty
-            cur_frm.refresh_field("production")
-        }
     }
 }

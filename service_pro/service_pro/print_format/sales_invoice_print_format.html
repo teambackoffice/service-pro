@@ -224,12 +224,7 @@
              {%endif%}
         </td>
         <td class="text-left" style="width: 6%;font-size: 100%">
-            {%if i.include_discount %}
-                   <b>{{ "{:,.2f}".format(i.amount - i.si_discount) }}</b>
-            {%else%}
-                 <b>{{ "{:,.2f}".format(i.amount) }}</b>
-             {%endif%}
-
+               <b>{{ "{:,.2f}".format(i.amount) }}</b>
         </td>
     </tr>
     {%endfor%}
@@ -247,11 +242,8 @@
             <b>مجموع</b>
         </td>
         <td class="text-right" style="width: 13%;font-size: 100%">
-            {%if new_item_array | sum(attribute='si_discount') > 0 %}
-                <b>{{ "{:,.2f}".format(doc.items | sum(attribute='amount') - new_item_array | sum(attribute='si_discount')) }}</b>
-            {% else %}
+
                 <b>{{ "{:,.2f}".format(doc.items | sum(attribute='amount')) }}</b>
-            {%endif%}
         </td>
     </tr>
     <tr>
@@ -325,7 +317,7 @@
                 {% if doc.discount_amount | abs > 0 %}
                     <b>{{ "{:,.2f}".format((doc.items | sum(attribute='amount') - doc.discount_amount) | abs)}}</b>
                 {% else %}
-                    <b>{{ "{:,.2f}".format(doc.items|sum(attribute='amount'))}}</b>
+                    <b>{{ "{:,.2f}".format((doc.items|sum(attribute='amount')) | abs)}}</b>
                 {% endif %}
             {%endif%}
 

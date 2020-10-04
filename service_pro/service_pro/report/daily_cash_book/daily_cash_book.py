@@ -200,7 +200,6 @@ def jv_add_not_advance(filters, new_data):
 					SELECT JE.name, JE.posting_date, JEI.party, JEI.credit_in_account_currency, JE.mode_of_payment FROM `tabJournal Entry`AS JE 
 					INNER JOIN `tabJournal Entry Account` AS JEI ON JEI.parent = JE.name 
 					WHERE JEI.is_advance = 'No'
-						and JEI.party_type = 'Customer'
 						and JE.docstatus=1 {0}""".format(condition_jv)
 
 	jv = frappe.db.sql(jv_query, as_dict=1)

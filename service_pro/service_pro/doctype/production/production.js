@@ -1048,7 +1048,7 @@ cur_frm.cscript.editable_total = function (frm,cdt, cdn) {
     set_rate_and_amount(cur_frm)
 }
 function set_rate_and_amount(cur_frm) {
-    cur_frm.doc.rate = cur_frm.doc.raw_material_total + cur_frm.doc.editable_total + cur_frm.doc.additional_cost_total
+    cur_frm.doc.rate = cur_frm.doc.raw_material_total + cur_frm.doc.editable_total
     cur_frm.doc.amount = cur_frm.doc.invoice_rate * cur_frm.doc.qty
     cur_frm.refresh_field("amount")
     cur_frm.refresh_field("rate")

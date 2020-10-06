@@ -5,6 +5,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "mandatory_additional_cost_in_production",
   "finished_good_defaults_section",
   "finish_good_warehouse",
   "income_account",
@@ -160,11 +161,17 @@
    "fieldname": "image_height",
    "fieldtype": "Int",
    "label": "Image Height"
+  },
+  {
+   "default": "0",
+   "fieldname": "mandatory_additional_cost_in_production",
+   "fieldtype": "Check",
+   "label": "Mandatory Additional Cost in Production"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2020-09-22 18:33:32.796005",
+ "modified": "2020-10-06 07:48:53.317543",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

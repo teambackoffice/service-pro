@@ -261,6 +261,8 @@ frappe.ui.form.on('Production', {
                 cur_frm.doc.series = "CS-"
                 cur_frm.refresh_field("series")
                 cur_frm.refresh_field("type")
+                                    cur_frm.trigger("type")
+
             }
              frappe.db.get_single_value('Production Settings', 'finish_good_warehouse')
             .then(warehouse => {

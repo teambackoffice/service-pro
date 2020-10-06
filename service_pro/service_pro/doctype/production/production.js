@@ -703,7 +703,8 @@ cur_frm.refresh_field("item_selling_price_list")
         }
     },
     type: function(frm) {
-        frappe.db.get_single_value('Production Settings', 'mandatory_additional_cost_in_quick_service')
+
+        frappe.db.get_single_value('Production Settings', 'mandatory_additional_cost_in_production')
             .then(acqs => {
                 if(cur_frm.doc.type === "Service"){
                    cur_frm.toggle_reqd('additional_cost', acqs)

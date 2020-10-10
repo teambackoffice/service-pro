@@ -172,21 +172,22 @@ def jv_add(filters, new_data):
 
 	jv = frappe.db.sql(jv_query, as_dict=1)
 	for ii in jv:
-		new_data.append({
-            "date": ii.posting_date,
-            "customer_name": ii.party,
-            "si_no": ii.name,
-            "advance": ii.credit_in_account_currency,
-            "net_amount": ii.credit_in_account_currency,
-        })
+		if not check_jv_in_data(new_data, ii.name):
+			new_data.append({
+				"date": ii.posting_date,
+				"customer_name": ii.party,
+				"si_no": ii.name,
+				"advance": ii.credit_in_account_currency,
+				"net_amount": ii.credit_in_account_currency,
+			})
 
 def jv_add_not_advance(filters, new_data):
 	condition_jv = ""
 	if filters.get("to_date"):
 		condition_jv += " and JE.posting_date ='{0}' ".format(filters.get("to_date"))
-
-	if filters.get("customer"):
-		condition_jv += " and party='{0}' ".format(filters.get("customer"))
+    #
+	# if filters.get("customer"):
+	# 	condition_jv += " and party='{0}' ".format(filters.get("customer"))
 
 	if len(filters.get("mop")) > 1:
 		mop_array = []
@@ -205,7 +206,7 @@ def jv_add_not_advance(filters, new_data):
 
 	jv = frappe.db.sql(jv_query, as_dict=1)
 	for ii in jv:
-		if ii.mode_of_payment:
+		if ii.mode_of_payment and check_jv_in_data(new_data, ii.name):
 			new_data.append({
 				"date": ii.posting_date,
 				"customer_name": ii.party,
@@ -216,7 +217,7 @@ def jv_add_not_advance(filters, new_data):
 			})
 def check_jv_in_data(new_data, jv):
 	for i in new_data:
-		if i["si_no"] == jv[0].parent:
+		if i["si_no"] == jv:
 			return False
 	return True
 

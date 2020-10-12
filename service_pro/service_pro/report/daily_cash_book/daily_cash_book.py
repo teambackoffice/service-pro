@@ -165,12 +165,31 @@ def jv_add(filters, new_data):
 
 	if len(filters.get("mop")) > 1:
 		mop_array = []
+		mop_name = "or JE.title like "
 		for i in filters.get("mop"):
 			mop_array.append(i)
-		condition_jv += " and JE.mode_of_payment in {0} ".format(tuple(mop_array))
+
+		if "Showroom Cash" in mop_array:
+			mop_name += "'%Showroom Accrual - Cash%'"
+
+		if "Showroom Card" in mop_array:
+			if "Showroom Accrual - Cash" in mop_name:
+				mop_name += " or JE.title like '%Showroom Accrual - Card%'"
+			else:
+				mop_name += " JE.title like '%Showroom Accrual - Card%'"
+
+		condition_jv += " and (JE.mode_of_payment in {0} {1})".format(tuple(mop_array), mop_name)
 
 	elif len(filters.get("mop")) == 1:
-		condition_jv += " and JE.mode_of_payment = '{0}' ".format(filters.get("mop")[0])
+		mop_name = "or JE.title like "
+		if filters.get("mop")[0] == "Showroom Cash":
+			print("WHAAAAT")
+			mop_name += "'%Showroom Accrual - Cash%'"
+
+		if filters.get("mop")[0] == "Showroom Card":
+			mop_name += "'%Showroom Accrual - Card%'"
+
+		condition_jv += " and (JE.mode_of_payment = '{0}' {1})".format(filters.get("mop")[0], mop_name)
 
 	jv_query = """ 
 					SELECT JE.name, JE.posting_date, JEI.party, JEI.credit_in_account_currency FROM `tabJournal Entry`AS JE 
@@ -178,7 +197,8 @@ def jv_add(filters, new_data):
 					WHERE JEI.is_advance = 'Yes'
 						and JEI.party_type = 'Customer'
 						and JE.docstatus=1 {0}""".format(condition_jv)
-
+	print("======================================================")
+	print(jv_query)
 	jv = frappe.db.sql(jv_query, as_dict=1)
 	for ii in jv:
 		if not check_jv_in_data(new_data, ii.name):
@@ -200,12 +220,35 @@ def jv_add_not_advance(filters, new_data):
 
 	if len(filters.get("mop")) > 1:
 		mop_array = []
+		mop_name = "or JE.title like "
 		for i in filters.get("mop"):
 			mop_array.append(i)
-		condition_jv += " and JE.mode_of_payment in {0} ".format(tuple(mop_array))
+
+		if "Showroom Cash" in mop_array:
+			mop_name += "'%Showroom Accrual - Cash%'"
+
+		if "Showroom Card" in mop_array:
+			if "Showroom Accrual - Cash" in  mop_name:
+				mop_name += " or JE.title like '%Showroom Accrual - Card%'"
+			else:
+				mop_name += " JE.title like '%Showroom Accrual - Card%'"
+
+		condition_jv += " and (JE.mode_of_payment in {0} {1})".format(tuple(mop_array), mop_name)
+
 
 	elif len(filters.get("mop")) == 1:
-		condition_jv += " and JE.mode_of_payment = '{0}' ".format(filters.get("mop")[0])
+
+		mop_name = "or JE.title like "
+
+		if filters.get("mop")[0] == "Showroom Cash":
+			print("WHAAAAT")
+
+			mop_name += "'%Showroom Accrual - Cash%'"
+
+		if filters.get("mop")[0] == "Showroom Card":
+			mop_name += "'%Showroom Accrual - Card%'"
+
+		condition_jv += " and (JE.mode_of_payment = '{0}' {1})".format(filters.get("mop")[0], mop_name)
 
 	jv_query = """ 
 					SELECT JE.name, JE.posting_date, JEI.party, JEI.credit_in_account_currency, JE.mode_of_payment FROM `tabJournal Entry`AS JE 

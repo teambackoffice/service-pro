@@ -163,6 +163,15 @@ def jv_add(filters, new_data):
 	if filters.get("customer"):
 		condition_jv += " and party='{0}' ".format(filters.get("customer"))
 
+	if len(filters.get("mop")) > 1:
+		mop_array = []
+		for i in filters.get("mop"):
+			mop_array.append(i)
+		condition_jv += " and JE.mode_of_payment in {0} ".format(tuple(mop_array))
+
+	elif len(filters.get("mop")) == 1:
+		condition_jv += " and JE.mode_of_payment = '{0}' ".format(filters.get("mop")[0])
+
 	jv_query = """ 
 					SELECT JE.name, JE.posting_date, JEI.party, JEI.credit_in_account_currency FROM `tabJournal Entry`AS JE 
 					INNER JOIN `tabJournal Entry Account` AS JEI ON JEI.parent = JE.name 

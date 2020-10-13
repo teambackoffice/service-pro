@@ -165,7 +165,7 @@ def jv_add(filters, new_data):
 
 	if len(filters.get("mop")) > 1:
 		mop_array = []
-		mop_name = "or JE.title like "
+		mop_name = "or JEI.account like "
 		for i in filters.get("mop"):
 			mop_array.append(i)
 
@@ -174,14 +174,14 @@ def jv_add(filters, new_data):
 
 		if "Showroom Card" in mop_array:
 			if "Showroom Accrual - Cash" in mop_name:
-				mop_name += " or JE.title like '%Showroom Accrual - Card%'"
+				mop_name += " or JEI.account like '%Showroom Accrual - Card%'"
 			else:
-				mop_name += " JE.title like '%Showroom Accrual - Card%'"
+				mop_name += " JEI.account like '%Showroom Accrual - Card%'"
 
 		condition_jv += " and (JE.mode_of_payment in {0} {1})".format(tuple(mop_array), mop_name)
 
 	elif len(filters.get("mop")) == 1:
-		mop_name = "or JE.title like "
+		mop_name = "or JEI.account like "
 		if filters.get("mop")[0] == "Showroom Cash":
 			print("WHAAAAT")
 			mop_name += "'%Showroom Accrual - Cash%'"
@@ -220,7 +220,7 @@ def jv_add_not_advance(filters, new_data):
 
 	if len(filters.get("mop")) > 1:
 		mop_array = []
-		mop_name = "or JE.title like "
+		mop_name = "or JEI.account like "
 		for i in filters.get("mop"):
 			mop_array.append(i)
 
@@ -229,16 +229,16 @@ def jv_add_not_advance(filters, new_data):
 
 		if "Showroom Card" in mop_array:
 			if "Showroom Accrual - Cash" in  mop_name:
-				mop_name += " or JE.title like '%Showroom Accrual - Card%'"
+				mop_name += " or JEI.account like '%Showroom Accrual - Card%'"
 			else:
-				mop_name += " JE.title like '%Showroom Accrual - Card%'"
+				mop_name += " JEI.account like '%Showroom Accrual - Card%'"
 
 		condition_jv += " and (JE.mode_of_payment in {0} {1})".format(tuple(mop_array), mop_name)
 
 
 	elif len(filters.get("mop")) == 1:
 
-		mop_name = "or JE.title like "
+		mop_name = "or JEI.account like "
 
 		if filters.get("mop")[0] == "Showroom Cash":
 			print("WHAAAAT")

@@ -192,11 +192,9 @@ def jv_add(filters, new_data):
 		condition_jv += " and (JE.mode_of_payment = '{0}' {1})".format(filters.get("mop")[0], mop_name)
 
 	jv_query = """ 
-					SELECT JE.name, JE.posting_date, JEI.party, JEI.credit_in_account_currency FROM `tabJournal Entry`AS JE 
+					SELECT JE.name, JE.posting_date, JEI.party, JEI.debit_in_account_currency FROM `tabJournal Entry`AS JE 
 					INNER JOIN `tabJournal Entry Account` AS JEI ON JEI.parent = JE.name 
-					WHERE JEI.is_advance = 'Yes'
-						and JEI.party_type = 'Customer'
-						and JE.docstatus=1 {0}""".format(condition_jv)
+					WHERE JEI.is_advance = 'Yes' and JEI.debit_in_account_currency > 0 and JE.docstatus=1 {0}""".format(condition_jv)
 	print("======================================================")
 	print(jv_query)
 	jv = frappe.db.sql(jv_query, as_dict=1)
@@ -206,8 +204,8 @@ def jv_add(filters, new_data):
 				"date": ii.posting_date,
 				"customer_name": ii.party,
 				"si_no": ii.name,
-				"advance": ii.credit_in_account_currency,
-				"net_amount": ii.credit_in_account_currency,
+				"advance": ii.debit_in_account_currency,
+				"net_amount": ii.debit_in_account_currency,
 			})
 
 def jv_add_not_advance(filters, new_data):

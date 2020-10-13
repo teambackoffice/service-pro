@@ -258,7 +258,7 @@ def jv_add_not_advance(filters, new_data):
 
 	jv = frappe.db.sql(jv_query, as_dict=1)
 	for ii in jv:
-		if ii.mode_of_payment and not check_jv_in_data(new_data, ii.name):
+		if not check_jv_in_data(new_data, ii.name):
 			new_data.append({
 				"date": ii.posting_date,
 				"customer_name": ii.party,

@@ -271,7 +271,14 @@
 
             </td>
         {% else %}
-            {% if doc.discount_amount | abs > 0 %}
+            {%if doc.is_return%}
+             <td class="text-right" style="width: 13%;font-size: 100%">
+
+                    <b>{{ "{:,.2f}".format(doc.discount_amount) }}</b>
+
+                </td>
+            {%else%}
+                {% if doc.discount_amount | abs > 0 %}
                 <td class="text-right" style="width: 13%;font-size: 100%">
 
                     <b>{{ "{:,.2f}".format(doc.discount_amount | abs) }}</b>
@@ -279,6 +286,7 @@
                 </td>
 
                 {% endif %}
+            {% endif %}
         {%endif%}
 
     </tr>
@@ -309,26 +317,59 @@
         <td class="text-right" style="width: 13%;font-size: 100%">
 
             {% if  new_item_array|sum(attribute='si_discount') > 0%}
-                <b>{{ "{:,.2f}".format((doc.items | sum(attribute='amount') - doc.items | sum(attribute='si_discount')))}}</b>
+                        {%if doc.is_return%}
+                            <b>-{{ "{:,.2f}".format((doc.items | sum(attribute='amount') - doc.items | sum(attribute='si_discount')))}}</b>
+
+                                    {%else%}
+                            <b>{{ "{:,.2f}".format((doc.items | sum(attribute='amount') - doc.items | sum(attribute='si_discount')))}}</b>
+
+                        {%endif%}
+
             {% else %}
-                {% if doc.discount_amount | abs > 0 %}
-                    <b>{{ "{:,.2f}".format((doc.items | sum(attribute='amount') - doc.discount_amount) | abs)}}</b>
-                {% else %}
-                    <b>{{ "{:,.2f}".format((doc.items|sum(attribute='amount')) | abs)}}</b>
-                {% endif %}
+                {%if doc.is_return%}
+                        {% if doc.discount_amount | abs > 0 %}
+                            <b>-{{ "{:,.2f}".format((doc.items | sum(attribute='amount') - doc.discount_amount) | abs)}}</b>
+                        {% else %}
+                            <b>-{{ "{:,.2f}".format((doc.items|sum(attribute='amount')))}}</b>
+                        {% endif %}
+                {%else%}
+                     {% if doc.discount_amount | abs > 0 %}
+                            <b>{{ "{:,.2f}".format((doc.items | sum(attribute='amount') - doc.discount_amount) | abs)}}</b>
+                        {% else %}
+                            <b>{{ "{:,.2f}".format((doc.items|sum(attribute='amount')))}}</b>
+                        {% endif %}
+                {%endif%}
+
             {%endif%}
 
                 <br><br><br><br>
                 <b>{{ "{:,.2f}".format(doc.total_taxes_and_charges) }}</b>
                 <br><br>
+
                 {% if  new_item_array|sum(attribute='si_discount') > 0%}
-                    <b>{{ "{:,.2f}".format(((doc.items | sum(attribute='amount') - doc.items | sum(attribute='si_discount')) ) + doc.total_taxes_and_charges)}}</b>
+                        {%if doc.is_return%}
+                                    <b>-{{ "{:,.2f}".format(((doc.items | sum(attribute='amount') - doc.items | sum(attribute='si_discount')) ) + doc.total_taxes_and_charges)}}</b>
+
+                        {%else%}
+                                    <b>{{ "{:,.2f}".format(((doc.items | sum(attribute='amount') - doc.items | sum(attribute='si_discount')) ) + doc.total_taxes_and_charges)}}</b>
+
+                        {%endif%}
                 {% else %}
-                    {% if doc.discount_amount | abs > 0 %}
-                        <b>{{ "{:,.2f}".format(((doc.items | sum(attribute='amount') - doc.discount_amount) | abs) + doc.total_taxes_and_charges)}}</b>
-                    {% else %}
-                        <b>{{ "{:,.2f}".format((doc.items | sum(attribute='amount')) + doc.total_taxes_and_charges)}}</b>
-                    {% endif %}
+                    {%if doc.is_return%}
+                            {% if doc.discount_amount | abs > 0 %}
+                                <b>-{{ "{:,.2f}".format(((doc.items | sum(attribute='amount') - doc.discount_amount) | abs) - doc.total_taxes_and_charges)}}</b>
+                            {% else %}
+                                <b>-{{ "{:,.2f}".format((doc.items | sum(attribute='amount')) + doc.total_taxes_and_charges)}}</b>
+                            {% endif %}
+                    {%else%}
+                        {% if doc.discount_amount | abs > 0 %}
+                            <b>{{ "{:,.2f}".format(((doc.items | sum(attribute='amount') - doc.discount_amount) | abs) + doc.total_taxes_and_charges)}}</b>
+                        {% else %}
+                            <b>{{ "{:,.2f}".format((doc.items | sum(attribute='amount')) + doc.total_taxes_and_charges)}}</b>
+                        {% endif %}
+                    {%endif%}
+
+
                 {%endif%}
 
         </td>

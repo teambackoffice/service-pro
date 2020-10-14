@@ -18,11 +18,18 @@
 </div>
 <table style="width: 100%">
     <tr>
-        <td >
+        {%if doc.is_return%}
+         <td >
+            <span style="margin-left: 3.4in !important;">Credit Note </span><br>
+            </td>
+        {%else%}
+         <td >
             <span style="margin-left: 3.4in !important;">VAT INVOICE </span><br>
             <span style="margin-left: 3.1in !important;">
             فاتورة ضريبة القيمة المضافة
         </span></td>
+        {%endif%}
+
     </tr>
 </table>
 <div style="width: 100%;border-bottom: 2px solid black">

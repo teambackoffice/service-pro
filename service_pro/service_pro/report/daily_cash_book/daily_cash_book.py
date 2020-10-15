@@ -67,6 +67,7 @@ def execute(filters=None):
  					SI.net_total as net_total,
  					SI.grand_total as grand_total,
  					SI.is_pos,
+ 					SI.journal_entry,
  					(SELECT incentives FROM `tabSales Team` AS ST WHERE ST.parent = SI.name LIMIT 1) as insentive,
  					SI.status as status
 				FROM `tabSales Invoice` AS SI WHERE SI.docstatus = 1 {0}""".format(condition)
@@ -86,7 +87,7 @@ def execute(filters=None):
 		if not filters.get("mop") or (filters.get("mop") and i.mop in filters.get("mop")):
 			new_data.append(i)
 
-		if (not filters.get("mop") or (i.paid and i.showroom_cash in filters.get("mop"))) and i.incentive > 0 :
+		if (not filters.get("mop") or (i.paid and i.showroom_cash in filters.get("mop"))) and i.incentive > 0 and not i.journal_entry:
 			new_data.append({
 				"date": i.date,
 				"si_no": i.name,
@@ -95,7 +96,6 @@ def execute(filters=None):
 				"mop": i.showroom_cash if i.cash else "",
 				"incentive_paid": 0 - i.incentive,
 				"net_amount": 0 - i.incentive
-
 			})
 		# pe = get_pe(i.name, filters.get("to_date"))
 		# if pe:

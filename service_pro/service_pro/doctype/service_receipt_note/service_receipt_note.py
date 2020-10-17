@@ -56,9 +56,9 @@ class ServiceReceiptNote(Document):
 	def get_items(self):
 		items = []
 		for item in self.materials:
-			inspection_values = frappe.db.get_value('Inspection',
-													{"service_receipt_note": self.name, "item_code": item.materials},
-													['rate', 'amount'], as_dict=1)
+			inspection_values = frappe.db.get_value('Estimation',
+													{"receipt_note": self.name, "item_code": item.materials},
+													['rate','amount'], as_dict=1)
 			item_record = frappe.db.sql(""" SELECT * FROM `tabItem` WHERE name=%s""", item.materials, as_dict=1)
 			print("ITEEEEEEEEEEEEM")
 			print(item_record)

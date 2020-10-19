@@ -292,6 +292,7 @@
    "options": "Additional Cost"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "additional_cost_total",
    "fieldtype": "Currency",
@@ -493,7 +494,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-22 14:08:17.513314",
+ "modified": "2020-10-19 04:08:55.264475",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

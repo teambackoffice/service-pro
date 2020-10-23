@@ -158,6 +158,7 @@ cur_frm.cscript.reference = function (frm,cdt,cdn) {
                         item_code: doc.item_code_prod,
                         qty: qty_1,
                         uom: doc.umo,
+                     stock_uom: doc.umo,
                         rate: doc.invoice_rate,
                         amount: doc.invoice_rate * qty_1,
                         item_name: doc1.item_name,

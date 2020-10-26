@@ -204,8 +204,8 @@ def jv_add(filters, new_data):
 				"date": ii.posting_date,
 				"customer_name": ii.party,
 				"si_no": ii.name,
-				"advance": ii.debit_in_account_currency,
-				"net_amount": ii.debit_in_account_currency,
+				"advance": ii.credit_in_account_currency,
+				"net_amount": ii.credit_in_account_currency,
 			})
 
 def jv_add_not_advance(filters, new_data):
@@ -274,7 +274,7 @@ def check_jv_in_data(new_data, jv):
 def get_columns():
 	columns = [
 		{"label": "Date", "fieldname": "date", "fieldtype": "Date","width": "100"},
-		{"label": "SI No", "fieldname": "si_no", "fieldtype": "Link","options": "Sales Invoice","width": "150"},
+		{"label": "SI No", "fieldname": "si_no", "fieldtype": "Data","width": "150"},
 		{"label": "Customer Name", "fieldname": "customer_name", "fieldtype": "Data", "width": "150"},
 		{"label": "Sales Man/Agent", "fieldname": "sales_man_agent", "fieldtype": "Data", "width": "150"},
 		{"label": "MOP", "fieldname": "mop", "fieldtype": "Data", "width": "120"},

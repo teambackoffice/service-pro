@@ -317,7 +317,7 @@ def get_rate(item_code, warehouse, based_on,price_list):
 	if price_list == "Standard Buying":
 		condition += " and buying = 1 "
 	elif price_list == "Standard Selling":
-		condition += " and selling = 1 "
+		condition += " and selling = 1 and price_list='{0}'".format('Standard Selling')
 
 	query = """ SELECT * FROM `tabItem Price` WHERE item_code=%s {0} ORDER BY valid_from DESC LIMIT 1""".format(condition)
 

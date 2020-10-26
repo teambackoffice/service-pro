@@ -194,7 +194,7 @@ def jv_add(filters, new_data):
 	jv_query = """ 
 					SELECT JE.name, JE.posting_date, JEI.party, JEI.debit_in_account_currency FROM `tabJournal Entry`AS JE 
 					INNER JOIN `tabJournal Entry Account` AS JEI ON JEI.parent = JE.name 
-					WHERE JEI.is_advance = 'Yes' and JEI.debit_in_account_currency > 0 and JE.docstatus=1 {0}""".format(condition_jv)
+					WHERE JEI.is_advance = 'Yes' and JE.docstatus=1 {0}""".format(condition_jv)
 	print("======================================================")
 	print(jv_query)
 	jv = frappe.db.sql(jv_query, as_dict=1)

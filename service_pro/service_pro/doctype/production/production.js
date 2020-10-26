@@ -190,11 +190,6 @@ cur_frm.cscript.cylinder_service = function (frm, cdt, cdn) {
         })
     }
 }
-function showPosition(position) {
-  console.log("Latitude: " + position.coords.latitude)
-    console.log("Longitude: " + position.coords.longitude)
-    console.log(position)
-}
 frappe.ui.form.on('Production', {
     site_job_report: function () {
         if(cur_frm.doc.site_job_report){
@@ -792,7 +787,7 @@ cur_frm.refresh_field("item_selling_price_list")
 			function() {
 				return {
 					 filters: [
-                    ["status", "=", "Completed"],
+                    ["status", "in", ["Completed", "To Bill"]],
                     ["docstatus", "=", 1],
                     ["series", "in", ["CS-"]],
                 ]

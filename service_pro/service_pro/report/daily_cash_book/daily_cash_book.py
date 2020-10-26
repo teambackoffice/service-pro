@@ -170,7 +170,7 @@ def jv_add(filters, new_data):
 			mop_array.append(i)
 
 		if "Showroom Cash" in mop_array:
-			mop_name += "'%Showroom Accrual - Cash%'"
+			mop_name += "'%Debtors%'"
 
 		if "Showroom Card" in mop_array:
 			if "Showroom Accrual - Cash" in mop_name:
@@ -184,7 +184,7 @@ def jv_add(filters, new_data):
 		mop_name = "or JEI.account like "
 		if filters.get("mop")[0] == "Showroom Cash":
 			print("WHAAAAT")
-			mop_name += "'%Showroom Accrual - Cash%'"
+			mop_name += "'%Debtors%'"
 
 		if filters.get("mop")[0] == "Showroom Card":
 			mop_name += "'%Showroom Accrual - Card%'"
@@ -223,7 +223,7 @@ def jv_add_not_advance(filters, new_data):
 			mop_array.append(i)
 
 		if "Showroom Cash" in mop_array:
-			mop_name += "'%Showroom Accrual - Cash%'"
+			mop_name += "'%Debtors%'"
 
 		if "Showroom Card" in mop_array:
 			if "Showroom Accrual - Cash" in  mop_name:
@@ -241,7 +241,7 @@ def jv_add_not_advance(filters, new_data):
 		if filters.get("mop")[0] == "Showroom Cash":
 			print("WHAAAAT")
 
-			mop_name += "'%Showroom Accrual - Cash%'"
+			mop_name += "'%Debtors%'"
 
 		if filters.get("mop")[0] == "Showroom Card":
 			mop_name += "'%Showroom Accrual - Card%'"

@@ -152,7 +152,9 @@ cur_frm.cscript.reference = function (frm,cdt,cdn) {
                 cur_frm.refresh_field("production")
 
         if(add){
-             frappe.db.get_doc('Item', doc.item_code_prod)
+        frappe.db.get_single_value('Production Settings', 'income_account')
+            .then(income_account => {
+                frappe.db.get_doc('Item', doc.item_code_prod)
                 .then(doc1 => {
                      cur_frm.add_child('items', {
                         item_code: doc.item_code_prod,
@@ -163,17 +165,20 @@ cur_frm.cscript.reference = function (frm,cdt,cdn) {
                         amount: doc.invoice_rate * qty_1,
                         item_name: doc1.item_name,
                         description: doc1.description,
+                        income_account: income_account,
+
                     });
 
                 cur_frm.refresh_field('items');
+                })
             })
-            if(doc.sales_man){
-                  cur_frm.add_child('sales_man', {
-                sales_man: doc.sales_man,
-                reference: d.reference,
-            });
-         cur_frm.refresh_field('sales_man');
 
+            if(doc.sales_man){
+                cur_frm.add_child('sales_man', {
+                    sales_man: doc.sales_man,
+                    reference: d.reference,
+                });
+                cur_frm.refresh_field('sales_man');
 
             }
 

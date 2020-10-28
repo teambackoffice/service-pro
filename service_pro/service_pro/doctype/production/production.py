@@ -152,13 +152,16 @@ class Production(Document):
 	def generate_si(self):
 		if self.input_qty > self.qty_for_sidn:
 			frappe.throw("Maximum qty that can be generated is " + str(self.qty))
-
+		default_tax = frappe.db.sql(""" SELECT * FROM `tabSales Taxes and Charges Template` WHERE is_default = 1""",as_dict=1)
 		doc_si = {
 			"doctype": "Sales Invoice",
 			"customer": self.customer,
 			"items": self.get_si_items("SI", self.input_qty),
 			"production": self.get_production_items(self.input_qty),
 		}
+		if len(default_tax) > 0:
+			doc_si['taxes_and_charges'] = default_tax[0].name
+
 		si = frappe.get_doc(doc_si)
 		si.insert(ignore_permissions=1)
 		return si.name

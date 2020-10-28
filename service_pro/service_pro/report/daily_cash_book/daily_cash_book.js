@@ -47,9 +47,10 @@ frappe.query_reports["Daily Cash Book"] = {
 			"label": __("MOP"),
 			"fieldtype": "MultiSelectList",
 			get_data: function(txt) {
-				if (!frappe.query_report.filters) return;
-				return frappe.db.get_link_options("Mode of Payment", txt);
-			},
+                if (!frappe.query_report.filters) return;
+
+                return [{value: "Showroom Cash", description: ""}, {value: "Showroom Card", description: ""}]
+            }
 		},
 		{
 			fieldname: "paid_disabled",
@@ -58,3 +59,4 @@ frappe.query_reports["Daily Cash Book"] = {
 		},
 	]
 };
+

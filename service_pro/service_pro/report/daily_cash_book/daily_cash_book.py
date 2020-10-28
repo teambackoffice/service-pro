@@ -115,17 +115,21 @@ def execute(filters=None):
 	jv_add_not_advance(filters, new_data)
 	return columns, new_data
 def get_pe(name, date):
-	condition = ""
+	condition = " WHERE PE.mode_of_payment='{0}' or PE.mode_of_payment='{1}'".format("Showroom Cash","Showroom Card")
 	if date:
-		condition = "WHERE PE.posting_date = '{0}'".format(date)
+		condition = " and PE.posting_date = '{0}'".format(date)
 
 	query = """ SELECT * FROM `tabPayment Entry` AS PE INNER JOIN `tabPayment Entry Reference` AS PER ON  PER.parent = PE.name and PER.reference_name='{0}' {1}""".format(name, condition)
 	pe = frappe.db.sql(query, as_dict=1)
 	if len(pe) > 0:
 		return pe
 	return None
+
 def pe_add(filters, new_data):
 	condition_pe = ""
+	if len(filters.get("mop")) == 0:
+		condition_pe += "and (PE.mode_of_payment='{0}' or PE.mode_of_payment='{1}')".format("Showroom Cash","Showroom Card")
+
 	if filters.get("to_date"):
 		condition_pe += " and PE.posting_date = '{0}'".format(filters.get("to_date"))
 
@@ -140,6 +144,7 @@ def pe_add(filters, new_data):
 
 	elif len(filters.get("mop")) == 1:
 		condition_pe += " and PE.mode_of_payment = '{0}' ".format(filters.get("mop")[0])
+
 
 	payment_entry_query = """
 					SELECT * FROM `tabPayment Entry`AS PE 

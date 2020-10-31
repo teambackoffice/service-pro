@@ -34,8 +34,8 @@ class Estimation(Document):
 
 		frappe.db.commit()
 	def set_available_qty(self):
-		time = datetime.now().time()
-		date = datetime.now().date()
+		time = frappe.utils.now_datetime().time()
+		date = frappe.utils.now_datetime().date()
 		for d in self.get('raw_material'):
 			previous_sle = get_previous_sle({
 				"item_code": d.item_code,
@@ -69,8 +69,8 @@ def get_dimensions():
 
 @frappe.whitelist()
 def get_rate(item_code, warehouse, based_on,price_list):
-	time = datetime.now().time()
-	date = datetime.now().date()
+	time = frappe.utils.now_datetime().time()
+	date = frappe.utils.now_datetime().date()
 	balance = 0
 	if warehouse:
 		previous_sle = get_previous_sle({

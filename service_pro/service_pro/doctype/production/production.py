@@ -18,6 +18,31 @@ class Production(Document):
 		elif status == "Open":
 			frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s """, (self.last_status, self.name))
 			frappe.db.commit()
+
+		if status == "Completed":
+			self.get_service_records()
+
+	def get_service_records(self):
+		estimation_ = ""
+		estimation = frappe.db.sql(""" SELECT * FROM `tabProduction` WHERE name= %s""", self.name, as_dict=1)
+		if len(estimation) > 0:
+			estimation_ = estimation[0].estimation
+			frappe.db.sql(""" UPDATE `tabEstimation` SET status=%s WHERE name=%s""",
+						  ("Completed", estimation_))
+
+		inspections = frappe.db.sql(""" SELECT * FROM `tabInspection Table` WHERE parent=%s """, estimation_,
+									as_dict=1)
+		for i in inspections:
+			frappe.db.sql(""" UPDATE `tabInspection` SET status=%s WHERE name=%s""",
+						  ("Completed", i.inspection))
+
+		srn = frappe.db.sql(""" SELECT * FROM `tabEstimation` WHERE name=%s """, estimation_, as_dict=1)
+		if len(srn) > 0:
+			srn_ = srn[0].service_receipt_note
+			frappe.db.sql(""" UPDATE `tabService Receipt Note` SET status=%s WHERE name=%s""",
+						  ("Completed", srn_))
+		frappe.db.commit()
+
 	def on_update_after_submit(self):
 		for i in self.raw_material:
 			if i.production:

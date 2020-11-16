@@ -7,11 +7,13 @@ import frappe
 def execute(filters=None):
 	columns, data = [], []
 	columns = [
+		{"label": "Series", "fieldname": "name", "fieldtype": "Link", "options": "Production", "width": "120"},
 		{"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Date","width": "100"},
 		{"label": "Delivery Date", "fieldname": "delivery_date", "fieldtype": "Data","width": "150"},
 		{"label": "Customer Name", "fieldname": "customer_name", "fieldtype": "Data", "width": "150"},
 		{"label": "Finished Good", "fieldname": "item_name", "fieldtype": "Data", "width": "150"},
-		{"label": "QTY", "fieldname": "qty", "fieldtype": "Data", "width": "120"},
+		{"label": "Qty", "fieldname": "qty", "fieldtype": "Data", "width": "120"},
+		{"label": "Sales Man Name", "fieldname": "sales_man_name", "fieldtype": "Data", "width": "120"},
 
 	]
 

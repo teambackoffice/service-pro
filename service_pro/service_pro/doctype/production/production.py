@@ -111,7 +111,7 @@ class Production(Document):
 	def generate_se(self):
 		check,item_code = self.check_raw_materials()
 		allow_negative_stock = cint(frappe.db.get_value("Stock Settings", None, "allow_negative_stock"))
-		if check or (not check and allow_negative_stock):
+		if check or (not check and allow_negative_stock) or self.type == "Disassemble":
 			doc_se = {
 				"doctype": "Stock Entry",
 				"stock_entry_type": "Manufacture" if self.type == "Assemble" or self.type == "Service"  else "Material Issue" if self.type == "Re-Service" else"Repack",

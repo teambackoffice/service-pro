@@ -265,7 +265,7 @@ class Production(Document):
 		items = []
 
 		for item in self.raw_material:
-			if item.available_qty > 0:
+			if item.available_qty > 0 or self.type == "Disassemble":
 				items.append({
 					'item_code': item.item_code,
 					't_warehouse': item.warehouse,

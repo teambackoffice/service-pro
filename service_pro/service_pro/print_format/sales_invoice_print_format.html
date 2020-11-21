@@ -330,13 +330,13 @@
                 <b>{{ "{:,.2f}".format((doc.items | sum(attribute='amount') - doc.items | sum(attribute='si_discount') )| abs)}}</b>
             {% else %}
                 {%if doc.is_return%}
-                        {% if doc.discount_amount | abs > 0 %}
+                        {% if doc.discount_amount | abs > 0 and doc.apply_discount_on == "Net Total"%}
                             <b>{{ "{:,.2f}".format((doc.items | sum(attribute='amount') - doc.discount_amount) | abs)}}</b>
                         {% else %}
                             <b>{{ "{:,.2f}".format((doc.items|sum(attribute='amount')| abs)  )}}</b>
                         {% endif %}
                 {%else%}
-                     {% if doc.discount_amount | abs > 0 %}
+                     {% if doc.discount_amount | abs > 0 and doc.apply_discount_on == "Net Total"%}
                             <b>{{ "{:,.2f}".format((doc.items | sum(attribute='amount') - doc.discount_amount) | abs)}}</b>
                         {% else %}
                             <b>{{ "{:,.2f}".format((doc.items|sum(attribute='amount')| abs) )}}</b>
@@ -345,9 +345,9 @@
 
             {%endif%}
 
-                <br><br><br><br>
+                <br><br><br>
                 <b>{{ "{:,.2f}".format(doc.total_taxes_and_charges | abs) }}</b>
-                <br><br>
+                <br><br><br><br>
 
                 {% if  new_item_array|sum(attribute='si_discount') > 0%}
                         {%if doc.is_return%}
@@ -359,16 +359,26 @@
                         {%endif%}
                 {% else %}
                     {%if doc.is_return%}
-                            {% if doc.discount_amount | abs > 0 %}
+                            {% if doc.discount_amount | abs > 0 and doc.apply_discount_on == "Net Total" %}
                                 <b>{{ "{:,.2f}".format((((doc.items | sum(attribute='amount') - doc.discount_amount) | abs) - doc.total_taxes_and_charges) | abs)}}</b>
                             {% else %}
-                                <b>{{ "{:,.2f}".format(((doc.items | sum(attribute='amount')) + doc.total_taxes_and_charges) | abs)}}</b>
+                                    {% if doc.discount_amount | abs > 0 and doc.apply_discount_on == "Grand Total" %}
+                                            <b>{{ "{:,.2f}".format((doc.net_total + doc.total_taxes_and_charges) | abs)}}</b>
+                                    {%else%}
+                                            <b>{{ "{:,.2f}".format(((doc.items | sum(attribute='amount')) + doc.total_taxes_and_charges) | abs)}}</b>
+
+                                    {%endif%}
                             {% endif %}
                     {%else%}
-                        {% if doc.discount_amount | abs > 0 %}
+                        {% if doc.discount_amount | abs > 0 and doc.apply_discount_on == "Net Total" %}
                             <b>{{ "{:,.2f}".format((((doc.items | sum(attribute='amount') - doc.discount_amount) | abs) + doc.total_taxes_and_charges) | abs)}}</b>
                         {% else %}
-                            <b>{{ "{:,.2f}".format(((doc.items | sum(attribute='amount')) + doc.total_taxes_and_charges) | abs)}}</b>
+                             {% if doc.discount_amount | abs > 0 and doc.apply_discount_on == "Grand Total" %}
+                                            <b>{{ "{:,.2f}".format((doc.net_total + doc.total_taxes_and_charges) | abs)}}</b>
+                                    {%else%}
+                                            <b>{{ "{:,.2f}".format(((doc.items | sum(attribute='amount')) + doc.total_taxes_and_charges) | abs)}}</b>
+
+                                    {%endif%}
                         {% endif %}
                     {%endif%}
 

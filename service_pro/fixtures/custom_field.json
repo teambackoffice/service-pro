@@ -1145,7 +1145,7 @@
  },
  {
   "allow_in_quick_entry": 0,
-  "allow_on_submit": 0,
+  "allow_on_submit": 1,
   "bold": 0,
   "collapsible": 0,
   "collapsible_depends_on": null,
@@ -1174,7 +1174,7 @@
   "label": "Amount in Arabic Words ",
   "length": 0,
   "mandatory_depends_on": null,
-  "modified": "2020-08-08 18:03:04.261933",
+  "modified": "2020-11-24 03:40:07.552781",
   "name": "Sales Invoice-amount_in_arabic_words_",
   "no_copy": 0,
   "options": null,

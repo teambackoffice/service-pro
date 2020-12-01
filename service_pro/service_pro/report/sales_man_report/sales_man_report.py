@@ -26,8 +26,11 @@ def execute(filters=None):
 		{"label": "VAT", "fieldname": "total_taxes_and_charges", "fieldtype": "Data", "width": "100"},
 		{"label": "Grand Total", "fieldname": "grand_total", "fieldtype": "Data", "width": "100"},
 		{"label": "Agent Commission", "fieldname": "incentive", "fieldtype": "Data", "width": "150"},
+		{"label": "Net Amount", "fieldname": "net_amount", "fieldtype": "Data", "width": "150"},
 	]
 	query = """ SELECT * FROM `tabSales Invoice` WHERE docstatus=1 {0}""".format(conditions)
 	data = frappe.db.sql(query, as_dict=1)
+	for i in data:
+		i['net_amount'] = i.total - i.incentive if i.incentive > 0 else i.total
 
 	return columns, data

@@ -1,5 +1,5 @@
 {
- "add_total_row": 0,
+ "add_total_row": 1,
  "columns": [],
  "creation": "2020-11-17 10:17:50.261862",
  "disable_prepared_report": 0,
@@ -10,7 +10,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "letter_head": "Hydrotech",
- "modified": "2020-11-17 10:17:50.261862",
+ "modified": "2020-12-03 08:56:05.416345",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Sales Man Report",

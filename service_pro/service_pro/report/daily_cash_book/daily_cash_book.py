@@ -85,10 +85,12 @@ def execute(filters=None):
 			i['incentive_unpaid'] = i.incentive
 
 		if not filters.get("mop") or (filters.get("mop") and i.mop in filters.get("mop")):
+			i['name'] = ""
 			new_data.append(i)
 
 		if ((i.paid and not filters.get("mop")) or (i.paid and i.showroom_cash in filters.get("mop"))) and i.incentive > 0:
 			new_data.append({
+				"name": "",
 				"date": i.date,
 				"si_no": i.journal_entry,
 				"customer_name": i.customer_name,
@@ -153,6 +155,7 @@ def pe_add(filters, new_data):
 	for iii in pe:
 		# if iii.name not in list_of_pe:
 		new_data.append({
+			"name": "",
 			"date": iii.posting_date,
 			"customer_name": iii.party_name,
 			"si_no": iii.name,
@@ -197,18 +200,19 @@ def jv_add(filters, new_data):
 		condition_jv += " and (JE.mode_of_payment = '{0}' {1})".format(filters.get("mop")[0], mop_name)
 
 	jv_query = """ 
-					SELECT JE.name, JE.posting_date, JEI.party, JEI.credit_in_account_currency FROM `tabJournal Entry`AS JE 
+					SELECT JEI.parent, JEI.name, JE.posting_date, JEI.party, JEI.credit_in_account_currency FROM `tabJournal Entry`AS JE 
 					INNER JOIN `tabJournal Entry Account` AS JEI ON JEI.parent = JE.name 
 					WHERE JEI.is_advance = 'Yes' and JE.docstatus=1 {0}""".format(condition_jv)
 	print("======================================================")
 	print(jv_query)
 	jv = frappe.db.sql(jv_query, as_dict=1)
 	for ii in jv:
-		if not check_jv_in_data(new_data, ii.name):
+		if not check_jv_in_data(new_data, ii.parent, ii.name):
 			new_data.append({
+				"name": ii.name,
 				"date": ii.posting_date,
 				"customer_name": ii.party,
-				"si_no": ii.name,
+				"si_no": ii.parent,
 				"advance": ii.credit_in_account_currency,
 				"net_amount": ii.credit_in_account_currency,
 			})
@@ -254,25 +258,26 @@ def jv_add_not_advance(filters, new_data):
 		condition_jv += " and (JE.mode_of_payment = '{0}' {1})".format(filters.get("mop")[0], mop_name)
 
 	jv_query = """ 
-					SELECT JE.name, JE.posting_date, JEI.party, JEI.credit_in_account_currency, JE.mode_of_payment FROM `tabJournal Entry`AS JE 
+					SELECT JEI.parent, JEI.name, JE.posting_date, JEI.party, JEI.credit_in_account_currency, JE.mode_of_payment FROM `tabJournal Entry`AS JE 
 					INNER JOIN `tabJournal Entry Account` AS JEI ON JEI.parent = JE.name 
 					WHERE JEI.is_advance = 'No' and JEI.credit_in_account_currency > 0
 						and JE.docstatus=1 {0}""".format(condition_jv)
 
 	jv = frappe.db.sql(jv_query, as_dict=1)
 	for ii in jv:
-		if not check_jv_in_data(new_data, ii.name):
+		if not check_jv_in_data(new_data, ii.parent, ii.name):
 			new_data.append({
+				"name": ii.name,
 				"date": ii.posting_date,
 				"customer_name": ii.party,
-				"si_no": ii.name,
+				"si_no": ii.parent,
 				"incentive_paid": 0 - ii.credit_in_account_currency,
 				"net_amount": 0 - ii.credit_in_account_currency,
 				"mop": ii.mode_of_payment,
 			})
-def check_jv_in_data(new_data, jv):
+def check_jv_in_data(new_data, jv, jve_account):
 	for i in new_data:
-		if i["si_no"] == jv:
+		if i["si_no"] == jv and jve_account == i['name']:
 			return True
 	return False
 

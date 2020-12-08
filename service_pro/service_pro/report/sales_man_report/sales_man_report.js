@@ -30,7 +30,7 @@ frappe.query_reports["Sales Man Report"] = {
 			fieldname: "Status",
             label: __("Status"),
             fieldtype: "Select",
-            options: "Paid\nUnpaid",
+            options: "\nPaid\nUnpaid\nOverdue",
 		}
 	]
 };

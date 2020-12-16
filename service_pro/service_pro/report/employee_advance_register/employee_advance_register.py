@@ -33,7 +33,7 @@ def execute(filters=None):
 	query = """ SELECT * FROM `tabEmployee Advance` WHERE docstatus=1 {0}""".format(conditions)
 	data = frappe.db.sql(query, as_dict=1)
 	for i in data:
-		i["balance"] = i.advance_amount - i.return_amount - i.claimed_amount if i.return_amount or i.claimed_amount > 0 else i.advance_amount
+		i["balance"] = i.paid_amount - i.return_amount - i.claimed_amount if i.return_amount or i.claimed_amount > 0 else i.paid_amount
 
 	return columns, data
 

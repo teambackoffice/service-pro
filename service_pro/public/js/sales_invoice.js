@@ -63,7 +63,7 @@ cur_frm.cscript.unpaid = function(frm){
 
 }
 cur_frm.cscript.onload = function(frm){
-    if(cur_frm.doc.production.length > 0 && cur_frm.doc.taxes_and_charges){
+    if(cur_frm.doc.docstatus === 0 && cur_frm.doc.production.length > 0 && cur_frm.doc.taxes_and_charges){
         cur_frm.trigger("taxes_and_charges")
         cur_frm.save()
     }

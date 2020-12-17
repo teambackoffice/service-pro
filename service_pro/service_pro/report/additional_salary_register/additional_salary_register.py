@@ -20,6 +20,7 @@ def execute(filters=None):
 	columns = [
 		{"label": "Payroll Date", "fieldname": "payroll_date", "fieldtype": "Data", "width": "100"},
 		{"label": "Name", "fieldname": "name", "fieldtype": "Link", "options": "Additional Salary", "width": "150"},
+		{"label": "Advance Reference", "fieldname": "ref_docname", "fieldtype": "Dynamic Link", "options": "Employee Advance", "width": "150"},
 		{"label": "Employee Name", "fieldname": "employee_name", "fieldtype": "Link", "options": "Employee", "width": "250"},
 		{"label": "Additional", "fieldname": "salary_component", "fieldtype": "Link", "options": "Salary Component", "width": "200"},
 		{"label": "Type", "fieldname": "type", "fieldtype": "Data", "width": "100"},

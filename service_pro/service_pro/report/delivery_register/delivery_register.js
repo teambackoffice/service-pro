@@ -30,7 +30,7 @@ frappe.query_reports["Delivery Register"] = {
 			"fieldname": "status",
 			"label":__("Status"),
 			"fieldtype": "Select",
-			"options": "\nTo Bill\nCompleted\nClosed",
+			"options": "\nTo Bill\nCompleted\nClosed\nDraft",
 		}
 	]
 };

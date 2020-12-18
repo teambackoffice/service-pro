@@ -23,6 +23,7 @@ def execute(filters=None):
 	columns = [
 		{"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Data", "width": "100"},
 		{"label": "Estimated Date", "fieldname": "estimated_date", "fieldtype": "Data", "width": "100"},
+		{"label": "Serial No", "fieldname": "name", "fieldtype": "Link", "options": "Service Receipt Note", "width": "120"},
 		{"label": "Sales Man Name", "fieldname": "sales_man_name", "fieldtype": "Data", "width": "200"},
 		{"label": "Customer Name", "fieldname": "customer_name", "fieldtype": "Link", "options": "Customer", "width": "280"},
 		{"label": "Item Name", "fieldname": "item_name", "fieldtype": "Link", "options": "Item", "width": "120"},
@@ -32,6 +33,7 @@ def execute(filters=None):
 	query = """ SELECT 
  					A.posting_date, 
  					A.estimated_date,
+					A.name,
  					A.customer_name,
 					A.sales_man_name,
 					A.status,

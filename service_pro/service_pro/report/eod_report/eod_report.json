@@ -1,0 +1,42 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2020-12-11 10:28:30.897974",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Hydrotech",
+ "modified": "2020-12-11 10:28:30.897974",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "EOD Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Sales Invoice",
+ "report_name": "EOD Report",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Counter1"
+  },
+  {
+   "role": "Counter2"
+  },
+  {
+   "role": "Service"
+  },
+  {
+   "role": "Sales User"
+  }
+ ]
+}

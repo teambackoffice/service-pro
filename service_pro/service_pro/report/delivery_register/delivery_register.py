@@ -30,7 +30,7 @@ def execute(filters=None):
 		{"label": "Status", "fieldname": "status", "fieldtype": "Data", "width": "100"},
 
 	]
-	query = """ SELECT * FROM `tabDelivery Note` WHERE docstatus=1 {0}""".format(conditions)
+	query = """ SELECT * FROM `tabDelivery Note` WHERE status=0 {0}""".format(conditions)
 	data = frappe.db.sql(query, as_dict=1)
 
 	return columns, data

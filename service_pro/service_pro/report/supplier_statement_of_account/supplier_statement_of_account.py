@@ -15,21 +15,28 @@ def execute(filters=None):
 		conditions += " and party='{0}' ".format(filters.get("party"))
 
 	if filters.get("show_foreign_currency"):
-		conditions += " and PI.grand_total='{0}'".format(filters.get("grand_total"))
+		conditions += " and B.grand_total='{0}'".format(filters.get("grand_total"))
 	
 	columns = [
 		{"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Data", "width": "120"},
 		{"label": "Voucher No", "fieldname": "voucher_no", "fieldtype": "Link", "options": "Purchase Invoice", "width": "200"},
-		{"label": "Debit (SAR)", "fieldname": "debit", "fieldtype": "Float", "width": "110"},
-		{"label": "Credit (SAR)", "fieldname": "credit", "fieldtype": "Float", "width": "110"},
-		{"label": "Balance (SAR)", "fieldname": "balances", "fieldtype": "Float", "width": "110"},
-		{"label": "Foreign Currency", "fieldname": "grand_total", "fieldtype": "Float", "width": "130"},
+		{"label": "Debit (SAR)", "fieldname": "debit", "fieldtype": "Currency", "width": "110"},
+		{"label": "Credit (SAR)", "fieldname": "credit", "fieldtype": "Currency", "width": "110"},
+		{"label": "Balance (SAR)", "fieldname": "balance", "fieldtype": "Currency", "width": "110"},
+		{"label": "Foreign Currency", "fieldname": "grand_total", "fieldtype": "Currency", "width": "130"},
 	]
-	query = """ SELECT * FROM `tabGL Entry`  WHERE docstatus= 1 {0}""".format(conditions)
+	query = """ SELECT 
+ 					A.posting_date, 
+ 					A.voucher_no,
+ 					A.debit,
+					A.credit,
+					B.grand_total
+				FROM 
+					`tabGL Entry` AS A,
+					`tabPurchase Invoice` AS B 
+				WHERE A.docstatus = 1 {0}""".format(conditions)
 	data = frappe.db.sql(query, as_dict=1)
 	for i in data:
-		i["debit_balances"] = i.debit
-		i["credit_balances"] = -i.credit
-		i["balances"] = i.credit_balances + i.debit_balances
-
+    		i["balance"] = -i.credit + i.debit	
+	
 	return columns, data

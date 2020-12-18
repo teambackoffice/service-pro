@@ -2,7 +2,7 @@
 // For license information, please see license.txt
 /* eslint-disable */
 
-frappe.query_reports["Delivery Register"] = {
+frappe.query_reports["SRN Register"] = {
 	"filters": [
 		{
 			"fieldname": "from_date",
@@ -10,19 +10,19 @@ frappe.query_reports["Delivery Register"] = {
 			"fieldtype": "Date",
 		},
 		{
-			"fieldname": "to_date",
-			"label":__("To Date"),
-			"fieldtype":"Date",
+			"fieldname":"to_date",
+			"label": __ ("To Date"),
+			"fieldtype": "Date",
 		},
 		{
-			"fieldname": "customer",
-			"label":__("Customer Name"),
+			"fieldname":"customer",
+			"label": __ ("Customer Name"),
 			"fieldtype": "Link",
 			"options": "Customer",
 		},
 		{
-			"fieldname": "sales_man",
-			"label":__("Sales Man Name"),
+			"fieldname":"sales_man",
+			"label": __ ("Sales Man Name"),
 			"fieldtype": "Link",
 			"options": "Employee",
 		},
@@ -30,7 +30,8 @@ frappe.query_reports["Delivery Register"] = {
 			"fieldname": "status",
 			"label":__("Status"),
 			"fieldtype": "Select",
-			"options": "\nTo Bill\nCompleted\nClosed\nDraft",
+			"options": "\nClosed\nTo Inspection\nTo Production",
 		}
+
 	]
 };

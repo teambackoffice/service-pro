@@ -22,10 +22,10 @@ frappe.query_reports["Supplier Statement of Account"] = {
 			"reqd": 1
 		},
 		{
-			"fieldname": "show_foreign_currency",
+			"fieldname": "with_details",
 			"label":__("Show Foreign Currency"),
 			"fieldtype": "Check",
 		}
-
+		
 	]
 };

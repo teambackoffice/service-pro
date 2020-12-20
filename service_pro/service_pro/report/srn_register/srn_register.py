@@ -45,5 +45,5 @@ def execute(filters=None):
 				WHERE A.docstatus = 1 {0}""".format(conditions)
 	
 	data = frappe.db.sql(query,as_dict=1)
-
+	
 	return columns, data

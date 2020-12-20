@@ -22,7 +22,7 @@ def execute(filters=None):
 
 	columns = [
 		{"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Data", "width": "100"},
-		{"label": "Serial No", "fieldname": "name", "fieldtype": "Data", "width": "150"},
+		{"label": "Serial No", "fieldname": "name", "fieldtype": "Link", "options": "Delivery Note", "width": "150"},
 		{"label": "Customer Name", "fieldname": "customer_name", "fieldtype": "Link", "options": "Customer", "width": "300"},
 		{"label": "Sales Man", "fieldname": "sales_man_name", "fieldtype": "Data", "width": "200"},
 		{"label": "VAT Amount", "fieldname": "total_taxes_and_charges", "fieldtype": "Data", "width": "100"},

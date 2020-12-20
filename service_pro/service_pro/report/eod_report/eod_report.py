@@ -32,7 +32,7 @@ def execute(filters=None):
 		if i.showroom_cash in filters.get("mop") or not filters.get("mop"):
 
 			i['agent_paid' if i.paid and not i.unpaid else 'agent_unpaid' if not i.paid and i.unpaid else ""] = i.incentive
-			i['net_amount'] = i.grand_total - i['agent_paid'] if  i.paid and not i.unpaid else i.grand_total
+			i['net_amount'] = i.grand_total - i['agent_paid'] if  i.paid and not i.unpaid and i.status != "Paid" else i.grand_total if not i.paid and i.unpaid and i.status != "Paid" else 0
 			i['status'] = i.status if i.status == "Paid" else ""
 			new_data.append(i)
 

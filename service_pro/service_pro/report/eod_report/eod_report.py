@@ -14,7 +14,7 @@ def execute(filters=None):
 		{"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Date", "width": "100"},
 		{"label": "SI No", "fieldname": "name", "fieldtype": "Data","width": "130"},
 		{"label": "Customer Name", "fieldname": "customer_name", "fieldtype": "Data", "width": "260"},
-		{"label": "Sales Agent", "fieldname": "sales_man_name", "fieldtype": "Data", "width": "200"},
+		{"label": "Sales Agent", "fieldname": "sales_man_agent", "fieldtype": "Data", "width": "200"},
 		{"label": "Advance", "fieldname": "advance", "fieldtype": "Float", "precision": "2","width": "100"},
 		{"label": "PE Received", "fieldname": "pe_received", "fieldtype": "Float", "precision": "2", "width": "100"},
 		{"label": "JV Received (Cr)", "fieldname": "jv_received", "fieldtype": "Float", "precision": "2", "width": "120"},
@@ -24,9 +24,8 @@ def execute(filters=None):
 		{"label": "Agent Unpaid", "fieldname": "agent_unpaid", "fieldtype": "Float", "precision": "2", "width": "100"},
 		{"label": "Net Amount", "fieldname": "net_amount", "fieldtype": "Float", "precision": "2", "width": "100"},
 		{"label": "Status ", "fieldname": "status", "fieldtype": "Data", "options": "Sales Invoice", "width": "80"},
-		{"label": "MOP ", "fieldname": "mop", "fieldtype": "Data", "options": "Sales Invoice", "width": "80"},
 	]
-	query = """ SELECT * FROM `tabSales Invoice` WHERE docstatus=1 {0} ORDER BY customer_name ASC""".format(condition)
+	query = """ SELECT SI.*, (SELECT sales_person FROM `tabSales Team` AS ST WHERE ST.parent = SI.name LIMIT 1) as sales_man_agent FROM `tabSales Invoice` AS SI WHERE SI.docstatus=1 {0} ORDER BY customer_name ASC""".format(condition)
 	data = frappe.db.sql(query,as_dict=1)
 	new_data = []
 	for i in data:
@@ -34,6 +33,7 @@ def execute(filters=None):
 
 			i['agent_paid' if i.paid and not i.unpaid else 'agent_unpaid' if not i.paid and i.unpaid else ""] = i.incentive
 			i['net_amount'] = i.grand_total - i['agent_paid'] if  i.paid and not i.unpaid else i.grand_total
+			i['status'] = i.status if i.status == "Paid" else ""
 			new_data.append(i)
 
 	pe_add(filters, new_data)

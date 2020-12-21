@@ -12,16 +12,16 @@ def execute(filters=None):
 
 	columns = [
 		{"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Date", "width": "100"},
-		{"label": "SI No", "fieldname": "name", "fieldtype": "Data","width": "130"},
+		{"label": "SI No", "fieldname": "name", "fieldtype": "Data","width": "150"},
 		{"label": "Customer Name", "fieldname": "customer_name", "fieldtype": "Data", "width": "260"},
-		{"label": "Sales Agent", "fieldname": "sales_man_agent", "fieldtype": "Data", "width": "200"},
-		{"label": "Advance", "fieldname": "advance", "fieldtype": "Float", "precision": "2","width": "100"},
+		{"label": "Sales Agent", "fieldname": "sales_man_agent", "fieldtype": "Data", "width": "120"},
+		{"label": "Advance", "fieldname": "advance", "fieldtype": "Float", "precision": "2","width": "80"},
 		{"label": "PE Received", "fieldname": "pe_received", "fieldtype": "Float", "precision": "2", "width": "100"},
-		{"label": "JV Received (Cr)", "fieldname": "jv_received", "fieldtype": "Float", "precision": "2", "width": "120"},
-		{"label": "JV Paid (Dr)", "fieldname": "jv_paid", "fieldtype": "Float", "precision": "2", "width": "110"},
+		{"label": "JV Received", "fieldname": "jv_received", "fieldtype": "Float", "precision": "2", "width": "100"},
+		{"label": "JV Paid (Dr)", "fieldname": "jv_paid", "fieldtype": "Float", "precision": "2", "width": "100"},
 		{"label": "Grand Total", "fieldname": "grand_total", "fieldtype": "Float", "precision": "2", "width": "100"},
 		{"label": "Agent Paid", "fieldname": "agent_paid", "fieldtype": "Float", "precision": "2", "width": "100"},
-		{"label": "Agent Unpaid", "fieldname": "agent_unpaid", "fieldtype": "Float", "precision": "2", "width": "100"},
+		{"label": "Agent Unpaid", "fieldname": "agent_unpaid", "fieldtype": "Float", "precision": "2", "width": "110"},
 		{"label": "Net Amount", "fieldname": "net_amount", "fieldtype": "Float", "precision": "2", "width": "100"},
 		{"label": "Status ", "fieldname": "status", "fieldtype": "Data", "options": "Sales Invoice", "width": "80"},
 	]

@@ -11,6 +11,9 @@ def execute(filters=None):
 	if filters.get("from_date") and filters.get("to_date"):
 		conditions += " and posting_date BETWEEN '{0}' and '{1}'".format(filters.get("from_date"),filters.get("to_date"))
 
+	if filters.get("paid_disabled"):
+		conditions += " and status!='{0}'".format("Paid")
+	
 	if filters.get("customer"):
 		conditions += " and customer='{0}' ".format(filters.get("customer"))
 

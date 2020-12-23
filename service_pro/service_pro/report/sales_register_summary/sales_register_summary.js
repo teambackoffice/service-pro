@@ -33,6 +33,11 @@ frappe.query_reports["Sales Register Summary"] = {
 			"label":__("Satatus"),
 			"fieldtype": "Select",
 			"options": "\nPaid\nUnpaid\nOverdue",
+		},
+		{
+			"fieldname": "paid_disabled",
+            "label": __("Paid Disabled"),
+            "fieldtype": "Check",
 		}
 	]
 };

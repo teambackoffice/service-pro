@@ -53,6 +53,12 @@ cur_frm.cscript.unpaid = function(frm){
             cur_frm.doc.expense_cost_center = expense_cost_center
             cur_frm.refresh_field("expense_cost_center")
         })
+    frappe.db.get_single_value('Production Settings', 'expense_account')
+            .then(expense_account => {
+                console.log(expense_account)
+                cur_frm.doc.expense_account = expense_account
+                cur_frm.refresh_field("expense_account")
+            })
    if(cur_frm.doc.unpaid){
         cur_frm.doc.paid = 0
         cur_frm.doc.cash = 0

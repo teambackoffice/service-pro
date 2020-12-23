@@ -11,6 +11,9 @@ def execute(filters=None):
 	if filters.get("from_date") and filters.get("to_date"):
 		conditions += " and posting_date BETWEEN '{0}' and '{1}'".format(filters.get("from_date"),filters.get("to_date"))
 
+	if filters.get("paid_disabled"):
+		conditions += " and status!='{0}'".format("Paid")
+	
 	if filters.get("customer"):
 		conditions += " and customer='{0}' ".format(filters.get("customer"))
 
@@ -24,11 +27,11 @@ def execute(filters=None):
 		{"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Date", "width": "100"},
 		{"label": "Name", "fieldname": "name", "fieldtype": "Link", "options": "Sales Invoice", "width": "150"},
         {"label": "Customer Name", "fieldname": "customer_name", "fieldtype": "Link", "options": "Customer", "width": "250"},
-        {"label": "Net Total", "fieldname": "net_total", "fieldtype": "currency", "width": "80"},
-        {"label": "VAT ", "fieldname": "total_taxes_and_charges", "fieldtype": "currency", "width": "80"},
-        {"label": "Grand Total", "fieldname": "grand_total", "fieldtype": "currency", "width": "100"},
-		{"label": "Paid Amount", "fieldname": "paid_amount", "fieldtype": "Data", "width": "100"},
-		{"label": "Outstanding", "fieldname": "outstanding_amount", "fieldtype": "party_account_currency", "width": "100"},
+        {"label": "Net Total", "fieldname": "net_total", "fieldtype": "Currency", "width": "100"},
+        {"label": "VAT ", "fieldname": "total_taxes_and_charges", "fieldtype": "Currency", "width": "100"},
+        {"label": "Grand Total", "fieldname": "grand_total", "fieldtype": "Currency", "width": "100"},
+		{"label": "Paid Amount", "fieldname": "paid_amount", "fieldtype": "Currency", "width": "100"},
+		{"label": "Outstanding", "fieldname": "outstanding_amount", "fieldtype": "Currency", "width": "100"},
 		{"label": "Status", "fieldname": "status", "fieldtype": "Data", "width": "100"},
 	]
 	query = """ SELECT * FROM `tabSales Invoice` WHERE docstatus=1 {0}""".format(conditions)

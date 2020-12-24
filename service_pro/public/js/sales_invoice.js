@@ -37,6 +37,19 @@ cur_frm.cscript.paid = function(frm){
             cur_frm.doc.expense_cost_center = expense_cost_center
             cur_frm.refresh_field("expense_cost_center")
         })
+     frappe.db.get_single_value('Production Settings', 'expense_account')
+            .then(expense_account => {
+                console.log(expense_account)
+                cur_frm.doc.expense_account = expense_account
+                cur_frm.refresh_field("expense_account")
+            })
+    frappe.db.get_single_value('Production Settings', 'showroom_cash')
+            .then(showroom_cash => {
+                    console.log("NAA MAN1111")
+
+                cur_frm.doc.showroom_cash = showroom_cash
+                cur_frm.refresh_field("showroom_cash")
+            })
     if(cur_frm.doc.paid){
         cur_frm.doc.unpaid = 0
         cur_frm.doc.cash = 1

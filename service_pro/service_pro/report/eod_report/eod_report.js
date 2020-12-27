@@ -8,8 +8,9 @@ frappe.query_reports["EOD Report"] = {
 			fieldname: "date",
             label: __("Date"),
             fieldtype: "Date",
-            reqd: 1,
-		},{
+			reqd: 1
+		},
+		{
 			"fieldname":"mop",
 			"label": __("MOP"),
 			"fieldtype": "MultiSelectList",
@@ -17,6 +18,9 @@ frappe.query_reports["EOD Report"] = {
                 if (!frappe.query_report.filters) return;
 
                 return [{value: "Showroom Cash", description: ""}, {value: "Showroom Card", description: ""}]
+            },
+			"on_change": function (txt) {
+				frappe.query_report.refresh()
             }
 		}
 	]

@@ -27,8 +27,8 @@ def execute(filters=None):
 		{"label": "Sales Agent", "fieldname": "sales_man_agent", "fieldtype": "Data", "width": "120"},
 		{"label": "Advance", "fieldname": "advance", "fieldtype": "Float", "precision": "2","width": "80"},
 		{"label": "PE Received", "fieldname": "pe_received", "fieldtype": "Float", "precision": "2", "width": "100"},
-		{"label": "JV Received", "fieldname": "jv_received", "fieldtype": "Float", "precision": "2", "width": "100"},
-		{"label": "JV Paid (Dr)", "fieldname": "jv_paid", "fieldtype": "Float", "precision": "2", "width": "100"},
+		{"label": "JV Credit", "fieldname": "jv_received", "fieldtype": "Float", "precision": "2", "width": "100"},
+		{"label": "JV Debit", "fieldname": "jv_paid", "fieldtype": "Float", "precision": "2", "width": "100"},
 		{"label": "Grand Total", "fieldname": "grand_total", "fieldtype": "Float", "precision": "2", "width": "100"},
 		{"label": "Agent Paid", "fieldname": "agent_paid", "fieldtype": "Float", "precision": "2", "width": "100"},
 		{"label": "Agent Unpaid", "fieldname": "agent_unpaid", "fieldtype": "Float", "precision": "2", "width": "110"},
@@ -133,14 +133,15 @@ def jv_add(filters, new_data):
 	print(jv_query)
 	jv = frappe.db.sql(jv_query, as_dict=1)
 	for ii in jv:
-		new_data.append({
-			"name": ii.parent,
-			"posting_date": ii.posting_date,
-			"customer_name": frappe.db.get_value("Customer", ii.party, "customer_name") if ii.party else "",
-			"si_no": ii.parent,
-			"advance": ii.credit_in_account_currency,
-			"net_amount": ii.credit_in_account_currency,
-		})
+		if check_jv_existing(ii.parent):
+			new_data.append({
+				"name": ii.parent,
+				"posting_date": ii.posting_date,
+				"customer_name": frappe.db.get_value("Customer", ii.party, "customer_name") if ii.party else "",
+				"si_no": ii.parent,
+				"advance": ii.credit_in_account_currency,
+				"net_amount": ii.credit_in_account_currency,
+			})
 
 def jv_add_received(filters, new_data):
 	condition_jv = ""
@@ -185,19 +186,18 @@ def jv_add_received(filters, new_data):
 	print(jv_query)
 	jv = frappe.db.sql(jv_query, as_dict=1)
 	for ii in jv:
+		if check_jv_existing(ii.parent):
+			if ii.credit_in_account_currency > 0:
+				new_data_object = {
+					"name": ii.parent,
+					"posting_date": ii.posting_date,
+					"customer_name": frappe.db.get_value("Customer", ii.party, "customer_name") if ii.party else "",
+					"si_no": ii.parent,
+				}
+				new_data_object['jv_received'] = ii.credit_in_account_currency
+				new_data_object['net_amount'] = ii.credit_in_account_currency
 
-
-		if ii.credit_in_account_currency > 0:
-			new_data_object = {
-				"name": ii.parent,
-				"posting_date": ii.posting_date,
-				"customer_name": frappe.db.get_value("Customer", ii.party, "customer_name") if ii.party else "",
-				"si_no": ii.parent,
-			}
-			new_data_object['jv_received'] = ii.credit_in_account_currency
-			new_data_object['net_amount'] = ii.credit_in_account_currency
-
-			new_data.append(new_data_object)
+				new_data.append(new_data_object)
 
 def jv_add_paid(filters, new_data):
 	condition_jv = ""
@@ -250,14 +250,22 @@ def jv_add_paid(filters, new_data):
 	jv = frappe.db.sql(jv_query, as_dict=1)
 	print("JV PAAAAAAAAAAAAAAAAAAAAID")
 	for ii in jv:
-		new_data_object = {
-			"name": ii.parent,
-			"posting_date": ii.posting_date,
-			"customer_name": frappe.db.get_value("Customer", ii.party, "customer_name") if ii.party else "",
-			"si_no": ii.parent,
-		}
+		if check_jv_existing(ii.parent):
+			new_data_object = {
+				"name": ii.parent,
+				"posting_date": ii.posting_date,
+				"customer_name": frappe.db.get_value("Customer", ii.party, "customer_name") if ii.party else "",
+				"si_no": ii.parent,
+			}
 
-		new_data_object['jv_paid'] = ii.debit_in_account_currency
-		new_data_object['net_amount'] = ii.debit_in_account_currency
+			new_data_object['jv_paid'] = ii.debit_in_account_currency
+			new_data_object['net_amount'] = ii.debit_in_account_currency
 
-		new_data.append(new_data_object)
+			new_data.append(new_data_object)
+
+
+def check_jv_existing(jv_name):
+	si = frappe.db.sql(""" SELECT Count(*) as count FROM `tabSales Invoice` WHERE journal_entry = %s """, jv_name, as_dict=1)
+
+	return si[0].count == 0
+

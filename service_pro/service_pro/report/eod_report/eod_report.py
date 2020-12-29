@@ -86,7 +86,7 @@ def pe_add(filters, new_data):
 			"posting_date": iii.posting_date,
 			"customer_name": iii.party_name,
 			"name": iii.name,
-			"pe_received":iii.paid_amount,
+			"advance":iii.paid_amount,
 			"net_amount":iii.paid_amount,
 		})
 
@@ -195,7 +195,7 @@ def jv_add_received(filters, new_data):
 					"si_no": ii.parent,
 				}
 				new_data_object['jv_received'] = ii.credit_in_account_currency
-				new_data_object['net_amount'] = ii.credit_in_account_currency
+				new_data_object['net_amount'] = 0 - ii.credit_in_account_currency
 
 				new_data.append(new_data_object)
 
@@ -246,9 +246,7 @@ def jv_add_paid(filters, new_data):
 					FROM `tabJournal Entry`AS JE 
 					INNER JOIN `tabJournal Entry Account` AS JEI ON JEI.parent = JE.name 
 					WHERE JEI.is_advance = 'No' and JE.docstatus=1 {0} and JEI.party="" and JEI.debit_in_account_currency > 0""".format(condition_jv)
-	print(jv_query)
 	jv = frappe.db.sql(jv_query, as_dict=1)
-	print("JV PAAAAAAAAAAAAAAAAAAAAID")
 	for ii in jv:
 		if check_jv_existing(ii.parent):
 			new_data_object = {

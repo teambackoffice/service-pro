@@ -11,14 +11,15 @@ def execute(filters=None):
 	if filters.get("date"):
 		condition += " and posting_date = '{0}'".format(filters.get("date"))
 
-	if len(filters.get("mop")) > 1:
-		mop_array = []
-		for i in filters.get("mop"):
-			mop_array.append(i)
-		condition_si = " INNER JOIN `tabSales Invoice Payment` AS SIP ON  SIP.parent = SI.name and SIP.mode_of_payment in {0}".format(tuple(mop_array))
-
-	elif len(filters.get("mop")) == 1:
-		condition_si = " INNER JOIN `tabSales Invoice Payment` AS SIP ON  SIP.parent = SI.name and SIP.mode_of_payment = '{0}'".format(filters.get("mop")[0])
+	# if len(filters.get("mop")) > 1:
+	# 	mop_array = []
+	# 	for i in filters.get("mop"):
+	# 		mop_array.append(i)
+	#
+	# 	condition_si = " INNER JOIN `tabSales Invoice Payment` AS SIP ON  SIP.parent = SI.name and SIP.mode_of_payment in {0}".format(tuple(mop_array))
+    #
+	# elif len(filters.get("mop")) == 1:
+	# 	condition_si = " INNER JOIN `tabSales Invoice Payment` AS SIP ON  SIP.parent = SI.name and SIP.mode_of_payment = '{0}'".format(filters.get("mop")[0])
 
 	columns = [
 		{"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Date", "width": "100"},
@@ -45,12 +46,36 @@ def execute(filters=None):
 	data = frappe.db.sql(query,as_dict=1)
 	new_data = []
 	for i in data:
+
 		i['agent_paid' if i.paid and not i.unpaid else 'agent_unpaid' if not i.paid and i.unpaid else ""] = i.incentive
 		i['net_amount'] = 0 - i.incentive if i.status == "Unpaid" and i.paid else i.grand_total - i.incentive if i.status == "Paid" and i.paid else i.grand_total if i.status == "Paid" and i.is_pos else 0
 		i['status'] = i.status if i.status == "Paid" else ""
-		new_data.append(i)
+		if len(filters.get("mop")) > 1:
+			if i.paid and i.showroom_cash in filters.get("mop"):
+				new_data.append(i)
+			elif not i.paid:
+				sip = frappe.db.sql(""" SELECT * FROM `tabSales Invoice Payment` WHERE parent=%s""", i.name, as_dict=1)
+				add = False
+				for iii in sip:
+					if iii.mode_of_payment in filters.get("mop"):
+						new_data.append(i)
+						break
+
+		elif len(filters.get("mop")) == 1:
+			if i.paid and i.showroom_cash == filters.get("mop")[0]:
+				new_data.append(i)
+			elif not i.paid:
+				sip = frappe.db.sql(""" SELECT * FROM `tabSales Invoice Payment` WHERE parent=%s""", i.name, as_dict=1)
+				add = False
+				for iii in sip:
+					if iii.mode_of_payment == filters.get("mop")[0]:
+						new_data.append(i)
+						break
+		else:
+			new_data.append(i)
 
 	pe_add(filters, new_data)
+	pe_as_advance(filters, new_data)
 	jv_add(filters, new_data)
 	jv_add_received(filters, new_data)
 	jv_add_paid(filters, new_data)
@@ -82,23 +107,51 @@ def pe_add(filters, new_data):
 	pe = frappe.db.sql(payment_entry_query, as_dict=1)
 	for iii in pe:
 		# if iii.name not in list_of_pe:
-		new_data.append({
-			"posting_date": iii.posting_date,
-			"customer_name": iii.party_name,
-			"name": iii.name,
-			"advance":iii.paid_amount,
-			"net_amount":iii.paid_amount,
-		})
+		check_references = frappe.db.sql(""" SELECT count(*) as count FROM `tabPayment Entry Reference` WHERE parent=%s """, iii.name, as_dict=1)
+		if check_references[0].count > 0:
+			new_data.append({
+				"posting_date": iii.posting_date,
+				"customer_name": iii.party_name,
+				"name": iii.name,
+				"pe_receive":iii.paid_amount,
+				"net_amount":iii.paid_amount,
+			})
+def pe_as_advance(filters, new_data):
+	condition_pe = ""
+	if filters.get("date"):
+		condition_pe += " and PE.posting_date = '{0}'".format(filters.get("date"))
 
+	if len(filters.get("mop")) > 1:
+		mop_array = []
+		for i in filters.get("mop"):
+			mop_array.append(i)
+		condition_pe += " and PE.mode_of_payment in {0} ".format(tuple(mop_array))
+
+	elif len(filters.get("mop")) == 1:
+		condition_pe += " and PE.mode_of_payment = '{0}' ".format(filters.get("mop")[0])
+
+	if len(filters.get("mop")) == 0:
+		condition_pe += " and (PE.mode_of_payment = '{0}' or PE.mode_of_payment = '{1}')".format("Showroom Cash", "Showroom Card")
+
+	payment_entry_query = """
+					SELECT * FROM `tabPayment Entry`AS PE 
+					WHERE PE.docstatus= 1 {0}""".format(condition_pe)
+	pe = frappe.db.sql(payment_entry_query, as_dict=1)
+	for iii in pe:
+		# if iii.name not in list_of_pe:
+		check_references = frappe.db.sql(""" SELECT count(*) as count FROM `tabPayment Entry Reference` WHERE parent=%s """, iii.name, as_dict=1)
+		if check_references[0].count == 0:
+			new_data.append({
+				"posting_date": iii.posting_date,
+				"customer_name": iii.party_name,
+				"name": iii.name,
+				"advance":iii.paid_amount,
+				"net_amount":iii.paid_amount,
+			})
 def jv_add(filters, new_data):
 	condition_jv = ""
 	if filters.get("date"):
 		condition_jv += " and JE.posting_date ='{0}' ".format(filters.get("date"))
-
-	if len(filters.get("mop")) == 0:
-		mop_name = " or JEI.account like '%Showroom Accrual - Card%' or JEI.account like '%Showroom Accrual - Cash%'"
-		condition_jv += "and (JE.mode_of_payment in {0} {1})".format(('Showroom Cash', 'Showroom Card'), mop_name)
-
 	if len(filters.get("mop")) > 1:
 		mop_array = []
 		mop_name = "or JEI.account like "
@@ -248,7 +301,7 @@ def jv_add_paid(filters, new_data):
 					WHERE JEI.is_advance = 'No' and JE.docstatus=1 {0} and JEI.party="" and JEI.debit_in_account_currency > 0""".format(condition_jv)
 	jv = frappe.db.sql(jv_query, as_dict=1)
 	for ii in jv:
-		if check_jv_existing(ii.parent):
+		if check_jv_existing(ii.parent) and not check_jv_existing_in_new_data(ii.parent, new_data):
 			new_data_object = {
 				"name": ii.parent,
 				"posting_date": ii.posting_date,
@@ -266,4 +319,11 @@ def check_jv_existing(jv_name):
 	si = frappe.db.sql(""" SELECT Count(*) as count FROM `tabSales Invoice` WHERE journal_entry = %s """, jv_name, as_dict=1)
 
 	return si[0].count == 0
+
+def check_jv_existing_in_new_data(jv_name, new_data):
+	for i in new_data:
+		if i['name'] == jv_name:
+			return True
+	return False
+
 

@@ -103,7 +103,7 @@ def pe_add(filters, new_data):
 
 	payment_entry_query = """
 					SELECT * FROM `tabPayment Entry`AS PE 
-					WHERE PE.docstatus= 1 {0}""".format(condition_pe)
+					WHERE PE.docstatus= 1 and PE.payment_type='Receive'{0}""".format(condition_pe)
 	pe = frappe.db.sql(payment_entry_query, as_dict=1)
 	for iii in pe:
 		# if iii.name not in list_of_pe:
@@ -135,7 +135,7 @@ def pe_as_advance(filters, new_data):
 
 	payment_entry_query = """
 					SELECT * FROM `tabPayment Entry`AS PE 
-					WHERE PE.docstatus= 1 {0}""".format(condition_pe)
+					WHERE PE.docstatus= 1 and PE.payment_type='Receive' {0}""".format(condition_pe)
 	pe = frappe.db.sql(payment_entry_query, as_dict=1)
 	for iii in pe:
 		# if iii.name not in list_of_pe:
@@ -148,6 +148,42 @@ def pe_as_advance(filters, new_data):
 				"advance":iii.paid_amount,
 				"net_amount":iii.paid_amount,
 			})
+
+def pe_internal(filters, new_data):
+	condition_pe = ""
+	if filters.get("date"):
+		condition_pe += " and PE.posting_date = '{0}'".format(filters.get("date"))
+
+	if len(filters.get("mop")) > 1:
+		mop_array = []
+		for i in filters.get("mop"):
+			mop_array.append(i)
+		condition_pe += " and PE.mode_of_payment in {0} ".format(tuple(mop_array))
+
+	elif len(filters.get("mop")) == 1:
+		condition_pe += " and PE.mode_of_payment = '{0}' ".format(filters.get("mop")[0])
+
+	if len(filters.get("mop")) == 0:
+		condition_pe += " and (PE.mode_of_payment = '{0}' or PE.mode_of_payment = '{1}')".format("Showroom Cash", "Showroom Card")
+
+	payment_entry_query = """
+					SELECT * FROM `tabPayment Entry`AS PE 
+					WHERE PE.docstatus= 1 and PE.payment_type='Internal Transfer' {0}""".format(condition_pe)
+	pe = frappe.db.sql(payment_entry_query, as_dict=1)
+	for iii in pe:
+		new_data.append({
+			"posting_date": iii.posting_date,
+			"customer_name": iii.party_name,
+			"name": iii.name,
+			"net_amount":0 - iii.paid_amount,
+		})
+		new_data.append({
+			"posting_date": iii.posting_date,
+			"customer_name": iii.party_name,
+			"name": iii.name,
+			"net_amount": iii.received_amount,
+		})
+
 def jv_add(filters, new_data):
 	condition_jv = ""
 	if filters.get("date"):

@@ -164,9 +164,6 @@ def pe_internal(filters, new_data):
 	elif len(filters.get("mop")) == 1:
 		condition_pe += " and PE.mode_of_payment = '{0}' ".format(filters.get("mop")[0])
 
-	if len(filters.get("mop")) == 0:
-		condition_pe += " and (PE.mode_of_payment = '{0}' or PE.mode_of_payment = '{1}')".format("Showroom Cash", "Showroom Card")
-
 	payment_entry_query = """
 					SELECT * FROM `tabPayment Entry`AS PE 
 					WHERE PE.docstatus= 1 and PE.payment_type='Internal Transfer' {0}""".format(condition_pe)

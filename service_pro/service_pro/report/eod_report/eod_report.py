@@ -113,7 +113,7 @@ def pe_add(filters, new_data):
 				"posting_date": iii.posting_date,
 				"customer_name": iii.party_name,
 				"name": iii.name,
-				"pe_receive":iii.paid_amount,
+				"pe_received":iii.paid_amount,
 				"net_amount":iii.paid_amount,
 			})
 def pe_as_advance(filters, new_data):

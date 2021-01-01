@@ -48,7 +48,7 @@ def execute(filters=None):
 	for i in data:
 
 		i['agent_paid' if i.paid and not i.unpaid else 'agent_unpaid' if not i.paid and i.unpaid else ""] = i.incentive
-		i['net_amount'] = 0 - i.incentive if i.status == "Unpaid" and i.paid else i.grand_total - i.incentive if i.status == "Paid" and i.paid else i.grand_total if i.status == "Paid" and i.is_pos else 0
+		i['net_amount'] = 0 - i.incentive if (i.status == "Unpaid" and i.paid) or (i.status == "Paid" and i.paid and not i.is_pos) else i.grand_total - i.incentive if i.status == "Paid" and i.paid else i.grand_total if i.status == "Paid" and i.is_pos else 0
 		i['status'] = i.status if i.status == "Paid" else ""
 		if len(filters.get("mop")) > 1:
 			if i.paid and i.showroom_cash in filters.get("mop"):

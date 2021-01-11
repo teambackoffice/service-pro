@@ -22,6 +22,7 @@ frappe.query_reports["Statement of Account"] = {
             label: __("Customer"),
             fieldtype: "Link",
             options: "Customer",
+				reqd: 1,
 		}
 
 	]

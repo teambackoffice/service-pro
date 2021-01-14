@@ -55,7 +55,8 @@ def execute(filters=None):
 				data.append(obj)
 		else:
 			data.append(obj)
-
+	print(columns)
+	print(data)
 	return columns, data
 
 def get_previous_stock(item_code, warehouse, date):
@@ -65,7 +66,7 @@ def get_previous_stock(item_code, warehouse, date):
 		"posting_date": date,
 		"posting_time": "11:59:59"
 	})
-	return previous_sle.get("qty_after_transaction")
+	return previous_sle.get("qty_after_transaction") or 0
 
 def get_last_purchase_rate(item_code):
 		if item_code:

@@ -19,17 +19,13 @@ def execute(filters=None):
 	condition = ""
 
 	if filters.get("from_date") and filters.get("to_date"):
-		condition += " WHERE posting_date BETWEEN '{0}' and '{1}' ".format(filters.get("from_date"),filters.get("to_date"))
+		condition += " and posting_date BETWEEN '{0}' and '{1}' ".format(filters.get("from_date"),filters.get("to_date"))
 
 	if filters.get("customer"):
-		if not condition:
-			condition += " WHERE "
-		else:
-			condition += " and "
-		condition += " against='{0}'".format(filters.get("customer"))
+		condition += " and party='{0}'".format(filters.get("customer"))
 
 	print(condition)
-	query = """ SELECT * FROM `tabGL Entry` {0}""".format(condition)
+	query = """ SELECT * FROM `tabGL Entry` WHERE account like '%Debtors%' {0}""".format(condition)
 	print(query)
 	gl_entries = frappe.db.sql(query,as_dict=1)
 	for i in gl_entries:

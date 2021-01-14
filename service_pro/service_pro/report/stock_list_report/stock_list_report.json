@@ -1,5 +1,5 @@
 {
- "add_total_row": 0,
+ "add_total_row": 1,
  "columns": [],
  "creation": "2021-01-05 10:39:08.655364",
  "disable_prepared_report": 1,
@@ -10,7 +10,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "letter_head": "Hydrotech",
- "modified": "2021-01-14 11:46:46.243248",
+ "modified": "2021-01-14 12:57:01.246407",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Stock List Report",

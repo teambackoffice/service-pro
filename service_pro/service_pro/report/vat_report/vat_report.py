@@ -32,7 +32,7 @@ def execute(filters=None):
 
 	for i in si_or_pi:
 		c_or_s = "Customer" if filters.get("sales_or_purchase") == "Sales" else "Supplier"
-		i['party'] = i.customer if c_or_s == "Customer" else i.supploer
+		i['party'] = i.customer if c_or_s == "Customer" else i.supplier
 
 		i['vat_number'] = frappe.db.get_value("Customer", i['party'], "tax_id")
 		i['total_amount'] = i.total - i.discount_amount

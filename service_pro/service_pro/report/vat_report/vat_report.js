@@ -18,11 +18,18 @@ frappe.query_reports["VAT Report"] = {
 
 		},
 		{
-			fieldname: "sales_or_purchase",
-            label: __("Sales or Purchase"),
-            fieldtype: "Select",
-            options: ['Sales', 'Purchase'],
-			reqd: 1
+			fieldname:"sales_or_purchase",
+			label: __("Sales or Purchase"),
+			fieldtype: "MultiSelectList",
+			get_data: function(txt) {
+                if (!frappe.query_report.filters) return;
+
+                return [{value: "Sales", description: ""}, {value: "Purchase", description: ""}]
+            },
+			on_change: function (txt) {
+				console.log("teeeest")
+				frappe.query_report.refresh()
+            }
 		},
 		{
 			fieldname: "summery",

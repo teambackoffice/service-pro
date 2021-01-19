@@ -26,11 +26,21 @@ frappe.query_reports["Sales Man Report"] = {
             fieldtype: "Link",
             options: "Employee",
 		},
-		{
-			fieldname: "Status",
-            label: __("Status"),
-            fieldtype: "Select",
-            options: "\nPaid\nUnpaid\nOverdue",
-		}
+        {
+            "fieldname": "status",
+            "label": __("Status"),
+            "fieldtype": "MultiSelectList",
+            get_data: function (txt) {
+                if (!frappe.query_report.filters) return;
+
+                return [{value: "Paid", description: ""}, {value: "Unpaid", description: ""}, {
+                    value: "Overdue",
+                    description: ""
+                }]
+            },
+            "on_change": function (txt) {
+                frappe.query_report.refresh()
+            }
+        }
 	]
 };

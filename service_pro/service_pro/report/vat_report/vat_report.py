@@ -45,8 +45,8 @@ def execute(filters=None):
 		query_si = """ SELECT SUM(total) as total,SUM(discount_amount) as discount_amount,SUM(total_taxes_and_charges) as total_taxes_and_charges  FROM `tabSales Invoice` AS SI WHERE SI.docstatus = 1  {0}""".format(condition)
 		query_pi = """ SELECT SUM(total) as total,SUM(discount_amount) as discount_amount,SUM(total_taxes_and_charges) as total_taxes_and_charges  FROM `tabPurchase Invoice` AS SI WHERE SI.docstatus = 1  {0}""".format(condition)
 
-		si = frappe.db.sql(query_pi, as_dict=1)
-		pi = frappe.db.sql(query_si, as_dict=1)
+		si = frappe.db.sql(query_si, as_dict=1)
+		pi = frappe.db.sql(query_pi, as_dict=1)
 
 		data.append({
 			"name": "Sales Total",

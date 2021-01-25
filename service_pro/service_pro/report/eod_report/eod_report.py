@@ -212,7 +212,9 @@ def jv_add(filters, new_data):
 			mop_name += "'%Showroom Accrual - Card%'"
 
 		condition_jv += " and ({0})".format( mop_name)
-
+	if len(filters.get("mop")) == 0:
+		mop_name = " JEI.account like '%Showroom Accrual - Card%' or JEI.account like '%Showroom Accrual - Cash%'"
+		condition_jv += "and ({0})".format(mop_name)
 	jv_query = """ 
     					SELECT JEI.parent, JEI.name, JE.posting_date, JEI.party, JEI.credit_in_account_currency FROM `tabJournal Entry`AS JE 
     					INNER JOIN `tabJournal Entry Account` AS JEI ON JEI.parent = JE.name 

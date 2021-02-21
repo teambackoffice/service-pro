@@ -20,9 +20,9 @@ frappe.query_reports["Simple EOD"] = {
 		{
 			"fieldname":"account",
 			"label": __("Account"),
-			"fieldtype": "Link",
-			"options": "Account",
-			reqd: 1
+			"fieldtype": "Select",
+			"options" : "\n1351 - Showroom Accrual - Cash - HT\n1352 - Showroom Accrual - Card - HT",
+			"reqd": 1
 		}
 	]
 };

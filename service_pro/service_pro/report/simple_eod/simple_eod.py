@@ -15,13 +15,16 @@ def execute(filters=None):
 		condition += " and account='{0}'".format(filters.get("account"))
 
 	columns = [
-		{"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Data", "width": "120"},
-		{"label": "Voucher No", "fieldname": "voucher_no", "fieldtype": "Data", "width": "200"},
-		{"label": "Voucher Type", "fieldname": "voucher_type", "fieldtype": "Data", "width": "200"},
-		{"label": "Debit (SAR)", "fieldname": "debit", "fieldtype": "Currency", "width": "110"},
-		{"label": "Credit (SAR)", "fieldname": "credit", "fieldtype": "Currency", "width": "110"},
+		{"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Data", "width": "110"},
+		{"label": "Voucher No", "fieldname": "voucher_no", "fieldtype": "Data", "width": "180"},
+		{"label": "Voucher Type", "fieldname": "voucher_type", "fieldtype": "Data", "width": "180"},
+		{"label": "Debit", "fieldname": "debit", "fieldtype": "Currency", "width": "110"},
+		{"label": "Credit", "fieldname": "credit", "fieldtype": "Currency", "width": "110"},
+		{"label": "Balance", "fieldname": "balance", "fieldtype": "Currency", "width": "110"},
 	]
 	query = """ SELECT * FROM `tabGL Entry` WHERE docstatus= 1 {0}""".format(condition)
 	data = frappe.db.sql(query, as_dict=1)
+	for i in data:
+    		i["balance"] = i.debit - i.credit
 
 	return columns, data

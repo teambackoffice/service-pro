@@ -439,7 +439,7 @@ def get_columns(filters):
 			"fieldname": "account",
 			"fieldtype": "Link",
 			"options": "Account",
-			"width": 250
+			"width": 200
 		},
 		{
 			"label": _("Debit ({0})").format(currency),

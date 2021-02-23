@@ -1,8 +1,8 @@
-// Copyright (c) 2016, jan and contributors
+// Copyright (c) 2016, Sammish Thundiyil and contributors
 // For license information, please see license.txt
 /* eslint-disable */
 
-frappe.query_reports["Simple EOD"] = {
+frappe.query_reports["PC Report"] = {
 	"filters": [
 		{
 			"fieldname":"company",
@@ -40,7 +40,7 @@ frappe.query_reports["Simple EOD"] = {
 			"fieldname":"account",
 			"label": __("Account"),
 			"fieldtype": "Select",
-			"options" : "\n1351 - Showroom Accrual - Cash - HT\n1352 - Showroom Accrual - Card - HT",
+			"options" : "\n1110 - Petty Cash Basheer - HT\n1111 - Petty Cash Jude - HT",
 			"reqd": 1
 		},
 		{

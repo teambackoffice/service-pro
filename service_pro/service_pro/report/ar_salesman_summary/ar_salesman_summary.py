@@ -97,6 +97,7 @@ class AccountsReceivableSummary(ReceivablePayableReport):
 
 	def get_columns(self):
 		self.columns = []
+		self.add_column(_('Salesman'), fieldname='sales_man_name')
 		self.add_column(label=_(self.party_type), fieldname='party',
 			fieldtype='Link', options=self.party_type, width=180)
 
@@ -111,7 +112,7 @@ class AccountsReceivableSummary(ReceivablePayableReport):
 		self.add_column(_('Paid Amount'), fieldname='paid')
 		self.add_column(_(credit_debit_label), fieldname='credit_note')
 		self.add_column(_('Outstanding Amount'), fieldname='outstanding')
-		self.add_column(_('Salesman'), fieldname='sales_man')
+		
 
 		self.setup_ageing_columns()
 

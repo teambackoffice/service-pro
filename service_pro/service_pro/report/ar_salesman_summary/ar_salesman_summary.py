@@ -36,6 +36,8 @@ class AccountsReceivableSummary(ReceivablePayableReport):
 			self.filters.report_date, self.filters.show_future_payments, self.filters.company) or {}
 
 		for party, party_dict in iteritems(self.party_total):
+			print("================================")
+			print(party_dict)
 			if party_dict.outstanding == 0:
 				continue
 
@@ -58,15 +60,16 @@ class AccountsReceivableSummary(ReceivablePayableReport):
 
 	def get_party_total(self, args):
 		self.party_total = frappe._dict()
-
+		print(self.receivables)
 		for d in self.receivables:
+			d.sales_man_name = frappe.get_value("Sales Invoice", d.voucher_no, "sales_man_name")
 			self.init_party_total(d)
 
 			# Add all amount columns
 			for k in list(self.party_total[d.party]):
-				if k not in ["currency", "sales_person"]:
-
-					self.party_total[d.party][k] += d.get(k, 0.0)
+				if k not in  ["currency", "sales_person"]:
+					if d.get(k):
+						self.party_total[d.party][k] += d.get(k, 0.0)
 
 			# set territory, customer_group, sales person etc
 			self.set_party_details(d)
@@ -86,9 +89,11 @@ class AccountsReceivableSummary(ReceivablePayableReport):
 		}))
 
 	def set_party_details(self, row):
+		print("ROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW")
+		print(row)
 		self.party_total[row.party].currency = row.currency
 
-		for key in ('territory', 'customer_group', 'supplier_group'):
+		for key in ('territory', 'customer_group', 'supplier_group', "sales_man_name"):
 			if row.get(key):
 				self.party_total[row.party][key] = row.get(key)
 
@@ -97,7 +102,7 @@ class AccountsReceivableSummary(ReceivablePayableReport):
 
 	def get_columns(self):
 		self.columns = []
-		self.add_column(_('Salesman'), fieldname='sales_man_name')
+		self.add_column(_('Salesman'), fieldname='sales_man_name',fieldtype='Data')
 		self.add_column(label=_(self.party_type), fieldname='party',
 			fieldtype='Link', options=self.party_type, width=180)
 

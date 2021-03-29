@@ -17,6 +17,7 @@
   "purpose",
   "column_break_11",
   "agent_outstanding_amount",
+  "claim_amount",
   "section_break_7",
   "status",
   "company",
@@ -88,6 +89,7 @@
    "in_list_view": 1,
    "label": "Employee Outstanding Amount",
    "options": "Company:company:default_currency",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -140,11 +142,19 @@
    "options": "Account",
    "read_only": 1,
    "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "claim_amount",
+   "fieldtype": "Currency",
+   "label": "Claim Amount",
+   "reqd": 1
   }
  ],
+ "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-22 17:57:32.089681",
+ "modified": "2021-03-29 19:05:37.786668",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Petty Cash Request",

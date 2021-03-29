@@ -303,7 +303,7 @@
    "fieldname": "rate_of_materials_based_on",
    "fieldtype": "Select",
    "label": "Rate Of Materials Based On",
-   "options": "\nValuation Rate\nPrice List"
+   "options": "\nValuation Rate\nPrice List\nLast Purchase Rate"
   },
   {
    "depends_on": "eval:doc.rate_of_materials_based_on == \"Price List\"",
@@ -492,9 +492,10 @@
    "options": "Site Job Report"
   }
  ],
+ "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2020-10-19 04:08:55.264475",
+ "modified": "2021-03-29 19:30:10.317318",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

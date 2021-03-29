@@ -2,6 +2,10 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Petty Cash Request', {
+    claim_amount: function(frm) {
+	    cur_frm.doc.agent_outstanding_amount = cur_frm.doc.claim_amount
+        cur_frm.refresh_field("agent_outstanding_amount")
+    },
 	refresh: function(frm) {
         document.querySelectorAll("[data-doctype='Journal Entry']")[1].style.display ="none";
 

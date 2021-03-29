@@ -17,6 +17,7 @@
   "purpose",
   "column_break_11",
   "agent_outstanding_amount",
+  "claim_amount",
   "section_break_7",
   "status",
   "company",
@@ -24,6 +25,9 @@
   "agent_name",
   "liabilities_account",
   "mode_of_payment",
+  "section_break_18",
+  "sales_invoice",
+  "total_incentive",
   "amended_from"
  ],
  "fields": [
@@ -121,6 +125,7 @@
    "in_list_view": 1,
    "label": "Agent Outstanding Amount",
    "options": "Company:company:default_currency",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -143,11 +148,36 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "options": "Agent Payment Request"
+  },
+  {
+   "fieldname": "section_break_18",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "sales_invoice",
+   "fieldtype": "Table",
+   "label": "Sales Invoice",
+   "options": "Agent Payment Request Table"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_incentive",
+   "fieldtype": "Currency",
+   "label": "Total Incentive",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "claim_amount",
+   "fieldtype": "Currency",
+   "label": "Claim Amount",
+   "reqd": 1
   }
  ],
+ "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-28 14:11:44.152675",
+ "modified": "2021-03-29 19:01:19.260106",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Agent Payment Request",

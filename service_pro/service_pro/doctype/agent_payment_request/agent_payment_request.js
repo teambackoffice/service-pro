@@ -2,6 +2,10 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Agent Payment Request', {
+	claim_amount: function(frm) {
+	    cur_frm.doc.agent_outstanding_amount = cur_frm.doc.claim_amount
+        cur_frm.refresh_field("agent_outstanding_amount")
+    },
 	refresh: function(frm) {
         document.querySelectorAll("[data-doctype='Journal Entry']")[1].style.display ="none";
 
@@ -36,3 +40,12 @@ frappe.ui.form.on('Agent Payment Request', {
 
 	}
 });
+
+cur_frm.cscript.sales_invoice = function () {
+    cur_frm.doc.total_incentive = cur_frm.get_sum("sales_invoice","incentive")
+    cur_frm.refresh_field("total_incentive")
+}
+cur_frm.cscript.incentive = function () {
+   cur_frm.doc.total_incentive = cur_frm.get_sum("sales_invoice","incentive")
+    cur_frm.refresh_field("total_incentive")
+}

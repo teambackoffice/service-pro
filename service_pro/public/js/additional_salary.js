@@ -1,0 +1,40 @@
+
+
+cur_frm.cscript.salary_component = function () {
+    if(cur_frm.doc.salary_component){
+        frappe.db.get_doc('Salary Component', cur_frm.doc.salary_component)
+            .then(sc => {
+                cur_frm.doc.is_hour_based = sc.is_hour_based
+                cur_frm.refresh_field("is_hour_based")
+                cur_frm.set_df_property("amount", "reqd", !cur_frm.doc.is_hour_based)
+                cur_frm.set_df_property("amount", "read_only", cur_frm.doc.is_hour_based)
+                cur_frm.set_df_property("total_working_hour", "hidden", !cur_frm.doc.is_hour_based)
+                if(sc.is_hour_based && cur_frm.doc.employee){
+                    compute_total_working_hrs(cur_frm)
+                } else {
+                    cur_frm.doc.amount = 0
+                    cur_frm.doc.total_working_hour = 0
+                    cur_frm.refresh_field("amount")
+                    cur_frm.refresh_field("total_working_hour")
+
+                }
+            })
+    }
+}
+
+function compute_total_working_hrs(cur_frm) {
+
+    frappe.call({
+        method: "service_pro.doc_events.additional_salary.get_salary_structure",
+        args: {
+            employee: cur_frm.doc.employee
+        },
+        callback: function (r) {
+                cur_frm.doc.amount = r.message[1]
+                cur_frm.doc.total_working_hour = r.message[0]
+                cur_frm.refresh_field("amount")
+                cur_frm.refresh_field("total_working_hour")
+
+        }
+    })
+}

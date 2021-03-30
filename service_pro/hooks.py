@@ -194,6 +194,10 @@ fixtures = [
                     "Employee-petty_cash_account",
                     "Sales Invoice Item-si_discount",
                     "Material Request-site_visit_report",
+
+                    "Salary Component-is_hour_based",
+                    "Additional Salary-total_working_hour",
+                    "Additional Salary-is_hour_based",
                 ]
             ]
         ]

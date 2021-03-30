@@ -138,7 +138,7 @@
    "fieldname": "rate_of_materials_based_on_sjr",
    "fieldtype": "Select",
    "label": "Rate of Materials Based On",
-   "options": "\nValuation Rate\nPrice List"
+   "options": "\nValuation Rate\nPrice List\nLast Purchase Rate"
   },
   {
    "depends_on": "eval: doc.rate_of_materials_based_on_sjr == \"Price List\"",
@@ -169,9 +169,10 @@
    "label": "Mandatory Additional Cost in Production"
   }
  ],
+ "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2020-10-06 07:48:53.317543",
+ "modified": "2021-03-30 10:46:27.278783",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

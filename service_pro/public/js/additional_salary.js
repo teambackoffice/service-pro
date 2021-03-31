@@ -24,7 +24,7 @@ function compute_total_working_hrs(cur_frm) {
             method: "service_pro.doc_events.additional_salary.get_salary_structure",
             args: {
                 employee: cur_frm.doc.employee,
-                total_working_hours: cur_frm.doc.total_working_hour
+                total_working_hours: cur_frm.doc.total_working_hour ? cur_frm.doc.total_working_hour : 0
             },
             callback: function (r) {
                 console.log("MESSAGE")

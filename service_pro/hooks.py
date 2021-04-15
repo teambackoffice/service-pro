@@ -198,6 +198,10 @@ fixtures = [
                     "Salary Component-is_hour_based",
                     "Additional Salary-total_working_hour",
                     "Additional Salary-is_hour_based",
+
+
+                    "Journal Entry-sales_invoice",
+                    "Sales Invoice-agent_commision_record"
                 ]
             ]
         ]

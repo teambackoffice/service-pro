@@ -7,6 +7,11 @@ frappe.ui.form.on('Agent Payment Request', {
         cur_frm.refresh_field("agent_outstanding_amount")
     },
 	refresh: function(frm) {
+	    cur_frm.set_query('agent_name', () => {
+            return {
+                query: 'service_pro.doc_events.events.get_sales_person',
+            }
+        })
         document.querySelectorAll("[data-doctype='Journal Entry']")[1].style.display ="none";
 
 	    var show = false
@@ -37,7 +42,6 @@ frappe.ui.form.on('Agent Payment Request', {
             }, "Generate")
         }
 
-
 	}
 });
 
@@ -48,4 +52,23 @@ cur_frm.cscript.sales_invoice = function () {
 cur_frm.cscript.incentive = function () {
    cur_frm.doc.total_incentive = cur_frm.get_sum("sales_invoice","incentive")
     cur_frm.refresh_field("total_incentive")
+}
+cur_frm.cscript.agent_name = function () {
+    cur_frm.clear_table("sales_invoice")
+    cur_frm.refresh_field("sales_invoice")
+    cur_frm.call({
+        doc: cur_frm.doc,
+        method: 'get_sales_invoices',
+        args: {},
+        freeze: true,
+        freeze_message: "Fetching Sales Invoices...",
+        callback: (r) => {
+            console.log(r.message)
+            for (var i=0; i<r.message.length;i += 1){
+
+                cur_frm.add_child("sales_invoice", r.message[i])
+                cur_frm.refresh_field("sales_invoice")
+            }
+        }
+    })
 }

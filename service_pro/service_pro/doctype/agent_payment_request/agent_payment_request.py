@@ -7,6 +7,22 @@ import frappe
 from frappe.model.document import Document
 
 class AgentPaymentRequest(Document):
+	def get_sales_invoices(self):
+		if self.agent_name:
+			sales_invoices = frappe.db.sql(""" SELECT SI.name as sales_invoice, SI.posting_date, SI.status, SI.incentive, SI.net_total FROM `tabSales Invoice` SI 
+ 					INNER JOIN `tabSales Team` ST ON ST.parent=SI.name 
+ 					WHERE SI.docstatus = 1 and ST.sales_person = %s and SI.agent_commision_record = 0 """, self.agent_name, as_dict=1)
+			return sales_invoices
+		return []
+	def on_submit(self):
+		for i in self.sales_invoice:
+			frappe.db.sql(""" UPDATE `tabSales Invoice` SET agent_commision_record=1 WHERE name=%s""", i.sales_invoice)
+			frappe.db.commit()
+	def on_cancel(self):
+		for i in self.sales_invoice:
+			frappe.db.sql(""" UPDATE `tabSales Invoice` SET agent_commision_record=0 WHERE name=%s""", i.sales_invoice)
+			frappe.db.commit()
+
 	def validate(self):
 		if not self.liabilities_account:
 			frappe.throw("Please select liablities account for Sales Person " + self.agent_name)

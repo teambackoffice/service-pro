@@ -6,6 +6,8 @@ def generate_jv(doc):
 			"doctype": "Journal Entry",
 			"voucher_type": "Journal Entry",
 			"posting_date": doc.posting_date,
+			"sales_invoice": doc.name,
+
 			"accounts": jv_accounts_paid(doc),
 		}
 
@@ -20,6 +22,7 @@ def generate_jv(doc):
 			"doctype": "Journal Entry",
 			"voucher_type": "Journal Entry",
 			"posting_date": doc.posting_date,
+			"sales_invoice": doc.name,
 			"accounts": jv_accounts_unpaid(doc),
 		}
 
@@ -159,6 +162,9 @@ def on_cancel_si(doc, method):
 				frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""",
 							  ("Partially Delivered", prod.reference))
 				frappe.db.commit()
+	if doc.journal_entry:
+		frappe.db.sql(""" UPDATE `tabJournal Entry` SET sales_invoice='' WHERE name=%s """, doc.journal_entry)
+		frappe.db.commit()
 
 def get_lengths(name):
 	si_query = """ 

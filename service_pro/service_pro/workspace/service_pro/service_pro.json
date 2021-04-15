@@ -255,7 +255,7 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Stock Balance",
    "link_to": "Stock Balance",
    "link_type": "Report",
@@ -264,7 +264,7 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Stock Ledger",
    "link_to": "Stock Ledger",
    "link_type": "Report",
@@ -273,7 +273,7 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Stock List Report",
    "link_to": "Stock List Report",
    "link_type": "Report",
@@ -396,7 +396,7 @@
    "type": "Link"
   }
  ],
- "modified": "2021-04-03 12:26:56.222054",
+ "modified": "2021-04-15 13:16:17.155138",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Pro",

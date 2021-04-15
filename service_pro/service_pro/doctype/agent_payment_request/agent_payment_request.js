@@ -65,10 +65,13 @@ cur_frm.cscript.agent_name = function () {
         callback: (r) => {
             console.log(r.message)
             for (var i=0; i<r.message.length;i += 1){
-
                 cur_frm.add_child("sales_invoice", r.message[i])
                 cur_frm.refresh_field("sales_invoice")
-            }
+                cur_frm.doc.total_incentive = cur_frm.get_sum("sales_invoice","incentive")
+            cur_frm.refresh_field("total_incentive")
+                    }
+
         }
     })
+
 }

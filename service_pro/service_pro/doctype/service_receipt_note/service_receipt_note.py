@@ -73,8 +73,8 @@ class ServiceReceiptNote(Document):
 				"item_name": item_record[0].item_name,
 				"description": item_record[0].description,
 				"qty": item.qty,
-				"rate": inspection_values.rate,
-				"amount": inspection_values.amount,
+				"rate": inspection_values.rate if inspection_values.rate else 0,
+				"amount": inspection_values.amount if inspection_values.amount else 0,
 				"uom": item_record[0].default_unit_of_measure,
 
 			})

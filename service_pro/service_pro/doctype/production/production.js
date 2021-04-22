@@ -209,10 +209,10 @@ frappe.ui.form.on('Production', {
     },
     onload_post_render: function(frm) {
         if(!cur_frm.is_new()) {
-            document.querySelectorAll("[data-doctype='Sales Invoice']")[1].style.display = "none";
-            document.querySelectorAll("[data-doctype='Delivery Note']")[1].style.display = "none";
-            document.querySelectorAll("[data-doctype='Stock Entry']")[1].style.display = "none";
-            document.querySelectorAll("[data-doctype='Job Completion Report']")[1].style.display = "none";
+            document.querySelectorAll("[data-doctype='Sales Invoice']")[2].style.display = "none";
+            document.querySelectorAll("[data-doctype='Delivery Note']")[2].style.display = "none";
+            document.querySelectorAll("[data-doctype='Stock Entry']")[2].style.display = "none";
+            document.querySelectorAll("[data-doctype='Job Completion Report']")[2].style.display = "none";
         }
 
         },

@@ -10,6 +10,7 @@ from erpnext.stock.stock_ledger import get_previous_sle
 from frappe.utils import cint, flt
 from datetime import datetime
 class Production(Document):
+	@frappe.whitelist()
 	def change_status(self, status):
 		if status == "Closed" or status == "Completed":
 			frappe.db.sql(""" UPDATE `tabProduction` SET last_status=%s WHERE name=%s """,(self.status, self.name))
@@ -22,6 +23,7 @@ class Production(Document):
 		if status == "Completed":
 			self.get_service_records()
 
+	@frappe.whitelist()
 	def get_service_records(self):
 		estimation_ = ""
 		estimation = frappe.db.sql(""" SELECT * FROM `tabProduction` WHERE name= %s""", self.name, as_dict=1)
@@ -43,6 +45,7 @@ class Production(Document):
 						  ("Completed", srn_))
 		frappe.db.commit()
 
+	@frappe.whitelist()
 	def on_update_after_submit(self):
 		for i in self.raw_material:
 			if i.production:
@@ -54,12 +57,15 @@ class Production(Document):
 				else:
 					frappe.db.sql(""" UPDATE `tabProduction` SET status=%s, last_status=%s WHERE name=%s""", ("Linked",get_qty[0].status,i.production))
 					frappe.db.commit()
+
+	@frappe.whitelist()
 	def change_production_status(self, production):
 		raw_material = frappe.db.sql(""" SELECT * FROM `tabRaw Material` WHERE name=%s""",production, as_dict=1)
 		if len(raw_material) > 0 and raw_material[0].production:
 
 			frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""", ("To Deliver and Bill", raw_material[0].production))
 			frappe.db.commit()
+
 	def on_cancel(self):
 		for i in self.raw_material:
 			if i.production:
@@ -71,6 +77,7 @@ class Production(Document):
 			for i in se:
 				se_record = frappe.get_doc("Stock Entry", i.name)
 				se_record.cancel()
+
 	def on_submit(self):
 		for i in self.raw_material:
 			if i.production:
@@ -82,6 +89,8 @@ class Production(Document):
 				else:
 					frappe.db.sql(""" UPDATE `tabProduction` SET status=%s, last_status=%s WHERE name=%s""", ("Linked",get_qty[0].status,i.production))
 					frappe.db.commit()
+
+	@frappe.whitelist()
 	def set_available_qty(self):
 		time = frappe.utils.now_datetime().time()
 		date = frappe.utils.now_datetime().date()
@@ -95,6 +104,7 @@ class Production(Document):
 			# get actual stock at source warehouse
 			d.available_qty = previous_sle.get("qty_after_transaction") or 0
 
+	@frappe.whitelist()
 	def validate(self):
 		if self.type == "Assemble":
 			self.series = "SK-"
@@ -103,15 +113,20 @@ class Production(Document):
 		elif self.type == "Service":
 			self.series = "CS-"
 
+	@frappe.whitelist()
 	def check_raw_materials(self):
 		for i in self.raw_material:
 			if i.available_qty == 0:
 				return False, i.item_code
 		return True, ""
+
+	@frappe.whitelist()
 	def generate_se(self):
+		print("SULOD SA METHOOOOOOOOOOOOOOD")
 		check,item_code = self.check_raw_materials()
 		allow_negative_stock = cint(frappe.db.get_value("Stock Settings", None, "allow_negative_stock"))
 		if check or (not check and allow_negative_stock) or self.type == "Disassemble":
+			print("STOCK ENTRRRRRRRRYYYYYYYYYYYYYYYYYYY")
 			doc_se = {
 				"doctype": "Stock Entry",
 				"stock_entry_type": "Manufacture" if self.type == "Assemble" or self.type == "Service"  else "Material Issue" if self.type == "Re-Service" else"Repack",
@@ -133,6 +148,8 @@ class Production(Document):
 			return ""
 		else:
 			frappe.throw("Item " + item_code + " Has no available stock")
+
+	@frappe.whitelist()
 	def generate_finish_good_se(self):
 		doc_se1 = {
 			"doctype": "Stock Entry",
@@ -150,6 +167,7 @@ class Production(Document):
 		}
 		frappe.get_doc(doc_se1).insert(ignore_permissions=1).submit()
 
+	@frappe.whitelist()
 	def get_additional_costs(self):
 		costs = []
 		for i in self.additional_cost:
@@ -159,6 +177,8 @@ class Production(Document):
 				"amount": i.additional_cost_amount
 			})
 		return costs
+
+	@frappe.whitelist()
 	def generate_dn(self):
 		if self.input_qty > self.qty_for_sidn:
 			frappe.throw("Maximum qty that can be generated is " + str(self.qty))
@@ -174,6 +194,7 @@ class Production(Document):
 
 		return dn.name
 
+	@frappe.whitelist()
 	def generate_si(self):
 		if self.input_qty > self.qty_for_sidn:
 			frappe.throw("Maximum qty that can be generated is " + str(self.qty))
@@ -190,6 +211,8 @@ class Production(Document):
 		si = frappe.get_doc(doc_si)
 		si.insert(ignore_permissions=1)
 		return si.name
+
+	@frappe.whitelist()
 	def generate_jv(self):
 		doc_jv = {
 			"doctype": "Journal Entry",
@@ -202,6 +225,8 @@ class Production(Document):
 		jv = frappe.get_doc(doc_jv)
 		jv.insert(ignore_permissions=1)
 		jv.submit()
+
+	@frappe.whitelist()
 	def jv_accounts(self):
 		accounts = []
 		amount = 0
@@ -224,6 +249,8 @@ class Production(Document):
 			})
 		print(accounts)
 		return accounts
+
+	@frappe.whitelist()
 	def get_manufacture_se_items(self):
 		items = []
 
@@ -248,6 +275,7 @@ class Production(Document):
 		})
 		return items
 
+	@frappe.whitelist()
 	def get_material_issue_se_items(self):
 		items = []
 
@@ -262,6 +290,7 @@ class Production(Document):
 			})
 		return items
 
+	@frappe.whitelist()
 	def get_repack_se_items(self):
 		items = []
 
@@ -285,6 +314,8 @@ class Production(Document):
 			'cost_center': self.cost_center
 		})
 		return items
+
+	@frappe.whitelist()
 	def get_si_items(self, type, qty):
 
 		obj = {
@@ -301,6 +332,7 @@ class Production(Document):
 			obj["warehouse"] = self.warehouse
 		return [obj]
 
+	@frappe.whitelist()
 	def get_production_items(self, qty):
 		return [{
 			'reference': self.name,
@@ -309,12 +341,15 @@ class Production(Document):
 			'amount': self.invoice_rate * qty,
 
 		}]
+
+	@frappe.whitelist()
 	def get_sales_man(self):
 		return [{
 			'sales_man': self.sales_man,
 			'reference': self.name,
 		}]
 
+	@frappe.whitelist()
 	def get_item_value(self, field):
 		items = frappe.db.sql(""" SELECT * FROM `tabItem` WHERE name=%s """, self.item_code_prod, as_dict=1)
 		return items[0][field]

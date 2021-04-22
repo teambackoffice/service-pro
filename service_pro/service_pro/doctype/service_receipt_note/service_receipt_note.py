@@ -7,6 +7,7 @@ import frappe
 from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
 class ServiceReceiptNote(Document):
+	@frappe.whitelist()
 	def change_status(self, status):
 		frappe.db.sql(""" UPDATE `tabService Receipt Note` SET status=%s WHERE name=%s """,(status, self.name))
 		frappe.db.commit()
@@ -26,6 +27,8 @@ class ServiceReceiptNote(Document):
 				}
 
 				frappe.get_doc(doc).insert()
+
+	@frappe.whitelist()
 	def submit_inspections(self):
 		inspections = frappe.db.sql(""" SELECT * FROM `tabInspection` WHERE service_receipt_note=%s""",self.name, as_dict=1)
 		for inspection in inspections:
@@ -33,6 +36,7 @@ class ServiceReceiptNote(Document):
 			record.submit()
 		frappe.msgprint("Done Submitting Inspections")
 
+	@frappe.whitelist()
 	def submit_estimations(self):
 			estimations = frappe.db.sql(""" SELECT * FROM `tabEstimation` WHERE receipt_note=%s""",self.name, as_dict=1)
 			for estimation in estimations:
@@ -40,7 +44,7 @@ class ServiceReceiptNote(Document):
 				record.submit()
 			frappe.msgprint("Done Submitting Estimation")
 
-
+	@frappe.whitelist()
 	def create_quotation(self):
 		doc = {
 			"doctype": "Quotation",
@@ -53,6 +57,8 @@ class ServiceReceiptNote(Document):
 		frappe.db.sql(""" UPDATE `tabService Receipt Note` SET quotation=%s WHERE name=%s""",(doc_q.name,self.name), as_dict=1)
 		frappe.db.commit()
 		return doc_q.name
+
+	@frappe.whitelist()
 	def get_items(self):
 		items = []
 		for item in self.materials:

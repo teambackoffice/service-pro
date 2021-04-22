@@ -21,6 +21,7 @@ class SiteJobReport(Document):
 			frappe.db.sql(""" UPDATE `tabSite Visit Report Jobs` SET job_card_number=%s WHERE name=%s""",("", self.svrj_row_name))
 			frappe.db.commit()
 
+	@frappe.whitelist()
 	def set_available_qty(self):
 		time = datetime.now().time()
 		date = datetime.now().date()

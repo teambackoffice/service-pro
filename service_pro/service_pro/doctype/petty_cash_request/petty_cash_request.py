@@ -7,6 +7,7 @@ import frappe
 from frappe.model.document import Document
 
 class PettyCashRequest(Document):
+	@frappe.whitelist()
 	def generate_journal_entry(self):
 		doc_jv = {
 			"doctype": "Journal Entry",
@@ -20,6 +21,8 @@ class PettyCashRequest(Document):
 		jv.insert(ignore_permissions=1)
 		# jv.submit()
 		return jv.name
+
+	@frappe.whitelist()
 	def jv_accounts(self):
 		accounts = []
 		amount = 0

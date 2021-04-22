@@ -21,11 +21,13 @@ class Inspection(Document):
 	def on_cancel(self):
 		self.check_status("To Inspection")
 
+	@frappe.whitelist()
 	def check_status(self, status):
 		frappe.db.sql(""" UPDATE `tabService Receipt Note` SET status=%s WHERE name=%s """,
 					  (status,self.service_receipt_note))
 		frappe.db.commit()
 
+	@frappe.whitelist()
 	def change_status(self, status):
 		frappe.db.sql(""" UPDATE `tabInspection` SET status=%s WHERE name=%s """,(status, self.name))
 		frappe.db.commit()
@@ -33,6 +35,7 @@ class Inspection(Document):
 	def validate(self):
 		self.crop_images()
 
+	@frappe.whitelist()
 	def crop_images(self):
 		settings = frappe.get_single("Production Settings").__dict__
 		for i in range(1,41):

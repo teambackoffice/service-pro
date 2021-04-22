@@ -7,6 +7,7 @@ import frappe
 from frappe.model.document import Document
 
 class AgentPaymentRequest(Document):
+	@frappe.whitelist()
 	def get_sales_invoices(self):
 		if self.agent_name:
 			sales_invoices = frappe.db.sql(""" SELECT SI.name as sales_invoice, SI.posting_date, SI.status, SI.incentive, SI.net_total as net_amount FROM `tabSales Invoice` SI 
@@ -27,7 +28,7 @@ class AgentPaymentRequest(Document):
 		if not self.liabilities_account:
 			frappe.throw("Please select liablities account for Sales Person " + self.agent_name)
 
-
+	@frappe.whitelist()
 	def generate_journal_entry(self):
 		doc_jv = {
 			"doctype": "Journal Entry",
@@ -41,6 +42,8 @@ class AgentPaymentRequest(Document):
 		jv.insert(ignore_permissions=1)
 		# jv.submit()
 		return jv.name
+
+	@frappe.whitelist()
 	def jv_accounts(self):
 		accounts = []
 		amount = 0

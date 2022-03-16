@@ -4,7 +4,13 @@
 frappe.ui.form.on('Service Receipt Note', {
 
 	refresh: function(frm) {
-
+cur_frm.set_query("customer", () => {
+            return {
+                filters: {
+                    disabled: 0
+                }
+            }
+        })
 	    frm.set_query("contact_person", function(){
             if(frm.doc.customer) {
                 return {

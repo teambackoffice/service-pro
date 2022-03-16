@@ -314,6 +314,13 @@ frappe.ui.form.on('Production', {
 
     },
 	refresh: function(frm) {
+        cur_frm.set_query("customer", () => {
+            return {
+                filters: {
+                    disabled: 0
+                }
+            }
+        })
         cur_frm.get_field("item_selling_price_list").grid.cannot_add_rows = true;
 cur_frm.get_field("item_selling_price_list").grid.only_sortable();
 cur_frm.refresh_field("item_selling_price_list")

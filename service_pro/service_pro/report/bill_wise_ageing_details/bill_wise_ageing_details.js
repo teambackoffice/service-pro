@@ -21,26 +21,7 @@ frappe.query_reports["Bill Wise Ageing Details"] = {
 			"fieldtype": "Date",
 			"default": frappe.datetime.get_today()
 		},
-		{
-			"fieldname": "finance_book",
-			"label": __("Finance Book"),
-			"fieldtype": "Link",
-			"options": "Finance Book"
-		},
-		{
-			"fieldname": "cost_center",
-			"label": __("Cost Center"),
-			"fieldtype": "Link",
-			"options": "Cost Center",
-			get_query: () => {
-				var company = frappe.query_report.get_filter_value('company');
-				return {
-					filters: {
-						'company': company
-					}
-				};
-			}
-		},
+
 		{
 			"fieldname": "customer",
 			"label": __("Customer"),
@@ -116,78 +97,6 @@ frappe.query_reports["Bill Wise Ageing Details"] = {
 			"label": __("Payment Terms Template"),
 			"fieldtype": "Link",
 			"options": "Payment Terms Template"
-		},
-		{
-			"fieldname": "sales_partner",
-			"label": __("Sales Partner"),
-			"fieldtype": "Link",
-			"options": "Sales Partner"
-		},
-		{
-			"fieldname": "sales_person",
-			"label": __("Sales Person"),
-			"fieldtype": "Link",
-			"options": "Sales Person"
-		},
-		{
-			"fieldname": "territory",
-			"label": __("Territory"),
-			"fieldtype": "Link",
-			"options": "Territory"
-		},
-		{
-			"fieldname": "group_by_party",
-			"label": __("Group By Customer"),
-			"fieldtype": "Check"
-		},
-		{
-			"fieldname": "based_on_payment_terms",
-			"label": __("Based On Payment Terms"),
-			"fieldtype": "Check",
-		},
-		{
-			"fieldname": "show_future_payments",
-			"label": __("Show Future Payments"),
-			"fieldtype": "Check",
-		},
-		{
-			"fieldname": "show_delivery_notes",
-			"label": __("Show Linked Delivery Notes"),
-			"fieldtype": "Check",
-		},
-		{
-			"fieldname": "show_sales_person",
-			"label": __("Show Sales Person"),
-			"fieldtype": "Check",
-		},
-		{
-			"fieldname": "show_remarks",
-			"label": __("Show Remarks"),
-			"fieldtype": "Check",
-		},
-		{
-			"fieldname": "tax_id",
-			"label": __("Tax Id"),
-			"fieldtype": "Data",
-			"hidden": 1
-		},
-		{
-			"fieldname": "customer_name",
-			"label": __("Customer Name"),
-			"fieldtype": "Data",
-			"hidden": 1
-		},
-		{
-			"fieldname": "payment_terms",
-			"label": __("Payment Tems"),
-			"fieldtype": "Data",
-			"hidden": 1
-		},
-		{
-			"fieldname": "credit_limit",
-			"label": __("Credit Limit"),
-			"fieldtype": "Currency",
-			"hidden": 1
 		}
 	],
 

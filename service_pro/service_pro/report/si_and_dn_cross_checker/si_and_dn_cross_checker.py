@@ -40,17 +40,28 @@ def execute(filters=None):
 	 							SII.rate,
 	 							SII.name as si_detail,
 	 							SII.amount,
-	 							SII.qty as invoiced_qty
+	 							SII.qty as invoiced_qty,
+	 							SII.delivery_note
 	 						FROM `tabSales Invoice` SI 
  							INNER JOIN `tabSales Invoice Item` SII ON SII.parent = SI.name
  							WHERE SI.docstatus = 1 {0}
  							""".format(conditions), as_dict=1)
 	for i in data:
-		dn = frappe.db.sql(""" SELECT * FROM `tabDelivery Note Item` WHERE si_detail=%s and against_sales_invoice=%s """, (i.si_detail, i.sales_invoice),as_dict=1)
-		i.balance_qty = 0
-		if len(dn) > 0:
-			i.delivery_note = dn[0].parent
-			i.delivery_qty = dn[0].qty
-			i.balance_qty = i.invoiced_qty - i.delivery_qty
-
+		print("======================================")
+		print(i.delivery_note)
+		if not i.delivery_note:
+			dn = frappe.db.sql(""" SELECT * FROM `tabDelivery Note Item` WHERE si_detail=%s and against_sales_invoice=%s """, (i.si_detail, i.sales_invoice),as_dict=1)
+			i.balance_qty = 0
+			if len(dn) > 0:
+				i.delivery_note = dn[0].parent
+				i.delivery_qty = dn[0].qty
+				i.balance_qty = i.invoiced_qty - i.delivery_qty
+		else:
+			dn = frappe.db.sql(
+				""" SELECT * FROM `tabDelivery Note Item` WHERE parent=%s and item_code=%s """,
+				(i.delivery_note, i.item_code), as_dict=1)
+			i.balance_qty = 0
+			if len(dn) > 0:
+				i.delivery_qty = dn[0].qty
+				i.balance_qty = i.invoiced_qty - i.delivery_qty
 	return columns, data

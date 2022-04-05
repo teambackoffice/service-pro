@@ -783,6 +783,7 @@ class ReceivablePayableReport(object):
 		self.add_column(label=_('Voucher Type'), fieldname='voucher_type', fieldtype='Data')
 		self.add_column(label=_('Voucher No'), fieldname='voucher_no', fieldtype='Dynamic Link',
 			options='voucher_type', width=180)
+		self.add_column(label=_('PO No'), fieldname='po_no', fieldtype='Data')
 
 		# if self.filters.show_remarks:
 		# 	self.add_column(label=_('Remarks'), fieldname='remarks', fieldtype='Text', width=200),
@@ -816,8 +817,6 @@ class ReceivablePayableReport(object):
 		# 	self.add_column(label=_('Remaining Balance'), fieldname='remaining_balance')
         #
         # if self.filters.party_type == 'Customer':
-			# self.add_column(label=_('Customer LPO'), fieldname='po_no', fieldtype='Data')
-            #
 			# comma separated list of linked delivery notes
 			# if self.filters.show_delivery_notes:
 			# 	self.add_column(label=_('Delivery Notes'), fieldname='delivery_notes', fieldtype='Data')
@@ -855,6 +854,7 @@ class ReceivablePayableReport(object):
 			"{range2}-{range3}".format(range2=cint(self.filters["range2"])+ 1, range3=self.filters["range3"]),
 			"{range3}-{range4}".format(range3=cint(self.filters["range3"])+ 1, range4=self.filters["range4"]),
 			"{range4}-{above}".format(range4=cint(self.filters["range4"])+ 1, above=_("Above"))]):
+				print(str(i+1))
 				self.add_column(label=label, fieldname='range' + str(i+1))
 				self.ageing_column_labels.append(label)
 

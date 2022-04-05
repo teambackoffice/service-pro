@@ -83,7 +83,32 @@ frappe.query_reports["Ledger Report"] = {
 			"fieldtype": "Data",
 			"hidden": 1
 		},
-
+		{
+			"fieldname":"group_by",
+			"label": __("Group by"),
+			"fieldtype": "Select",
+			"hidden": 1,
+			"options": [
+				"",
+				{
+					label: __("Group by Voucher"),
+					value: "Group by Voucher",
+				},
+				{
+					label: __("Group by Voucher (Consolidated)"),
+					value: "Group by Voucher (Consolidated)",
+				},
+				{
+					label: __("Group by Account"),
+					value: "Group by Account",
+				},
+				{
+					label: __("Group by Party"),
+					value: "Group by Party",
+				},
+			],
+			"default": "Group by Voucher (Consolidated)"
+		},
 		{
 			"fieldname":"tax_id",
 			"label": __("Tax Id"),

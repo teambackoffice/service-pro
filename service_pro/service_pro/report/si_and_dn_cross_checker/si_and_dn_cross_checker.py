@@ -47,8 +47,6 @@ def execute(filters=None):
  							WHERE SI.docstatus = 1 {0}
  							""".format(conditions), as_dict=1)
 	for i in data:
-		print("======================================")
-		print(i.delivery_note)
 		if not i.delivery_note:
 			dn = frappe.db.sql(""" SELECT * FROM `tabDelivery Note Item` WHERE si_detail=%s and against_sales_invoice=%s """, (i.si_detail, i.sales_invoice),as_dict=1)
 			i.balance_qty = 0

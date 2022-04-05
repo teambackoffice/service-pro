@@ -31,23 +31,15 @@ frappe.query_reports["Bill Wise Ageing Details"] = {
 				var customer = frappe.query_report.get_filter_value('customer');
 				var company = frappe.query_report.get_filter_value('company');
 				if (customer) {
-					frappe.db.get_value('Customer', customer, ["tax_id", "customer_name", "payment_terms"], function(value) {
+					frappe.db.get_value('Customer', customer, ["tax_id", "customer_name"], function(value) {
 						frappe.query_report.set_filter_value('tax_id', value["tax_id"]);
 						frappe.query_report.set_filter_value('customer_name', value["customer_name"]);
-						frappe.query_report.set_filter_value('payment_terms', value["payment_terms"]);
 					});
 
-					frappe.db.get_value('Customer Credit Limit', {'parent': customer, 'company': company},
-						["credit_limit"], function(value) {
-						if (value) {
-							frappe.query_report.set_filter_value('credit_limit', value["credit_limit"]);
-						}
-					}, "Customer");
+
 				} else {
 					frappe.query_report.set_filter_value('tax_id', "");
 					frappe.query_report.set_filter_value('customer_name', "");
-					frappe.query_report.set_filter_value('credit_limit', "");
-					frappe.query_report.set_filter_value('payment_terms', "");
 				}
 			}
 		},
@@ -86,17 +78,17 @@ frappe.query_reports["Bill Wise Ageing Details"] = {
 			"default": "120",
 			"reqd": 1
 		},
-		{
-			"fieldname": "customer_group",
-			"label": __("Customer Group"),
-			"fieldtype": "Link",
-			"options": "Customer Group"
+        {
+			"fieldname": "tax_id",
+			"label": __("Tax Id"),
+			"fieldtype": "Data",
+			"hidden": 1
 		},
 		{
-			"fieldname": "payment_terms_template",
-			"label": __("Payment Terms Template"),
-			"fieldtype": "Link",
-			"options": "Payment Terms Template"
+			"fieldname": "customer_name",
+			"label": __("Customer Name"),
+			"fieldtype": "Data",
+			"hidden": 1
 		}
 	],
 

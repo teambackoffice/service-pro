@@ -8,16 +8,16 @@
 	}
 	</style>
 
-	<div><i>Ledger Report of Precision Valves Ltd.  for the Period   From 01/Jan/2019 To 12/02/2022</i></div>
+	<div><i>{%= filters.party_name %}  for the Period   From {%= filters.from_date %} To {%= filters.to_date %}</i></div>
 	<table class="table table-bordered">
 		<thead>
 			<tr>
-				<th style="width: 20%">{%= __("Date") %}</th>
-				<th style="width: 4%">{%= __("Voucher") %}</th>
-				<th style="width: 10%">{%= __("Particulars") %}</th>
-				<th style="width: 10%">{%= __("Debit") %}</th>
-				<th style="width: 24%">{%= __("Credit") %}</th>
-				<th style="width: 20%">{%= __("Balance") %}</th>
+				<th style="width: 10%">{%= __("Date") %}</th>
+				<th style="width: 15%">{%= __("Voucher") %}</th>
+				<th style="width: 30%">{%= __("Particulars") %}</th>
+				<th style="width: 15%">{%= __("Debit") %}</th>
+				<th style="width: 15%">{%= __("Credit") %}</th>
+				<th style="width: 15%">{%= __("Balance") %}</th>
 				<th style="width: 10%">{%= __("Narration") %}</th>
 			</tr>
 		</thead>
@@ -36,3 +36,10 @@
 		</tbody>
 	</table>
 	<p class="text-right text-muted">{{ __("Printed On ") }}{%= frappe.datetime.str_to_user(frappe.datetime.get_datetime_as_string()) %}</p>
+<div>
+    <div id="footer-html" class="visible-pdf">
+       <br>
+       <br>
+       <br>
+    </div>
+</div>

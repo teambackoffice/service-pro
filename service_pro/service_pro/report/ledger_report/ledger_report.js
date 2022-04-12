@@ -81,7 +81,6 @@ frappe.query_reports["Ledger Report"] = {
 			"fieldname":"party_name",
 			"label": __("Party Name"),
 			"fieldtype": "Data",
-			"hidden": 1
 		},
 		{
 			"fieldname":"group_by",

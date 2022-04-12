@@ -482,7 +482,9 @@ def get_result_as_list(data, filters):
 			balance, balance_in_account_currency = 0, 0
 
 		balance = get_balance(d, balance, 'debit', 'credit')
-		d['balance'] = balance
+		d['balance'] = round(abs(balance),2)
+		d['credit'] = round(abs(d['credit']),2)
+		d['debit'] = round(abs(d['debit']),2)
 
 		d['account_currency'] = filters.account_currency
 		d['bill_no'] = inv_details.get(d.get('against_voucher'), '')

@@ -15,20 +15,19 @@
 	</tr>
 </table>
 
-	<div><i>Bill wise ageing Details of  FUTURE PIPE INDUSTRIES LLC as on 28/03/2022</i></div>
+	<div><i>Bill wise ageing Details of  {%= filters.customer_name %} as on {%= filters.tax_id %}</i></div>
 	<table class="table table-bordered">
 		<thead>
 			<tr>
-				<th style="width: 20%">{%= __("Voucher No") %}</th>
-				<th style="width: 4%">{%= __("PO Number") %}</th>
-				<th style="width: 10%">{%= __("Total") %}</th>
+				<th style="width: 15%">{%= __("Voucher No") %}</th>
+				<th style="width: 10%">{%= __("PO Number") %}</th>
+				<th style="width: 15%">{%= __("Total") %}</th>
 				<th style="width: 10%">{%= __("Date") %}</th>
-				<th style="width: 24%">{%= __("Days") %}</th>
-				<th style="width: 20%">{%= __("< 30Days ") %}</th>
+				<th style="width: 5%">{%= __("Days") %}</th>
+				<th style="width: 10%">{%= __("< 30Days ") %}</th>
 				<th style="width: 10%">{%= __("< 60Days ") %}</th>
-				<th style="width: 40%">{%= __("< 90Days ")%}</th>
+				<th style="width: 10%">{%= __("< 90Days ")%}</th>
 				<th style="width: 15%">{%= __("< 120Days") %}</th>
-				<th style="width: 15%">{%= __(">= 120Days") %}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -43,7 +42,6 @@
 					<td>{%= data[i]["range2"] %}</td>
 					<td>{%= data[i]["range3"] %}</td>
 					<td>{%= data[i]["range4"] %}</td>
-					<td>{%= data[i]["range5"] %}</td>
 				</tr>
 			{% } %}
 		</tbody>

@@ -51,8 +51,24 @@ class ReceivablePayableReport(object):
 		self.get_columns()
 		self.get_data()
 		self.get_chart_data()
+		self.fetch_totals()
 		return self.columns, self.data, None, self.chart, None, self.skip_total_row
+	def fetch_totals(self):
+		range1 = range2 = range3 = range4 = 0
 
+		for i in self.data:
+			range1 += i.range1
+			range2 += i.range2
+			range3 += i.range3
+			range4 += i.range4
+
+		self.data.append({
+			"paid": "Total",
+			"range1": range1,
+			"range2": range2,
+			"range3": range3,
+			"range4": range4,
+		})
 	def set_defaults(self):
 		if not self.filters.get("company"):
 			self.filters.company = frappe.db.get_single_value('Global Defaults', 'default_company')

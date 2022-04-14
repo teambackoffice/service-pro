@@ -21,9 +21,9 @@
 			<tr>
 				<th style="width: 15%">{%= __("Voucher No") %}</th>
 				<th style="width: 10%">{%= __("PO Number") %}</th>
-				<th style="width: 15%">{%= __("Total") %}</th>
 				<th style="width: 10%">{%= __("Date") %}</th>
 				<th style="width: 5%">{%= __("Days") %}</th>
+				<th style="width: 15%">{%= __("Total") %}</th>
 				<th style="width: 10%">{%= __("< 30Days ") %}</th>
 				<th style="width: 10%">{%= __("< 60Days ") %}</th>
 				<th style="width: 10%">{%= __("< 90Days ")%}</th>
@@ -35,9 +35,10 @@
 				<tr>
 					<td>{%= data[i]["voucher_no"] %}</td>
 					<td>{%= data[i]["po_no"] %}</td>
-					<td>{%= data[i]["paid"] %}</td>
+
 					<td>{%= frappe.datetime.str_to_user(data[i]["posting_date"]) %}</td>
 					<td>{%= data[i]["age"]%}</td>
+					<td>{%= data[i]["paid"] %}</td>
 					<td>{%= data[i]["range1"] %}</td>
 					<td>{%= data[i]["range2"] %}</td>
 					<td>{%= data[i]["range3"] %}</td>

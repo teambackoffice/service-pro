@@ -33,6 +33,7 @@ frappe.query_reports["Bill Wise Ageing Details"] = {
 				if (customer) {
 					frappe.db.get_value('Customer', customer, ["tax_id", "customer_name"], function(value) {
 						frappe.query_report.set_filter_value('tax_id', value["tax_id"]);
+						frappe.query_report.set_filter_value('vendor_id', value["vendor_id"]);
 						frappe.query_report.set_filter_value('customer_name', value["customer_name"]);
 					});
 
@@ -81,6 +82,12 @@ frappe.query_reports["Bill Wise Ageing Details"] = {
         {
 			"fieldname": "tax_id",
 			"label": __("Tax Id"),
+			"fieldtype": "Data",
+			"hidden": 1
+		},
+		{
+			"fieldname": "vendor_id",
+			"label": __("Vendor Id"),
 			"fieldtype": "Data",
 			"hidden": 1
 		},

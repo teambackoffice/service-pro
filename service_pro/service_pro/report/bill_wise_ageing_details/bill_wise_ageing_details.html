@@ -27,7 +27,7 @@
 				<th style="width: 10%">{%= __("< 30Days ") %}</th>
 				<th style="width: 10%">{%= __("< 60Days ") %}</th>
 				<th style="width: 10%">{%= __("< 90Days ")%}</th>
-				<th style="width: 15%">{%= __("< 120Days") %}</th>
+				<th style="width: 15%">{%= __(">= 90Days") %}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -38,11 +38,11 @@
 
 					<td>{%= frappe.datetime.str_to_user(data[i]["posting_date"]) %}</td>
 					<td>{%= data[i]["age"]%}</td>
-					<td>{%= data[i]["paid"] %}</td>
-					<td>{%= data[i]["range1"] %}</td>
-					<td>{%= data[i]["range2"] %}</td>
-					<td>{%= data[i]["range3"] %}</td>
-					<td>{%= data[i]["range4"] %}</td>
+					<td>{%= format_currency(data[i].paid, frappe.defaults.get_default("currency"))%}</td>
+					<td>{%= format_currency(data[i].range1, frappe.defaults.get_default("currency")) %}</td>
+					<td>{%= format_currency(data[i].range2, frappe.defaults.get_default("currency")) %}</td>
+					<td>{%= format_currency(data[i].range3, frappe.defaults.get_default("currency")) %}</td>
+					<td>{%=format_currency(data[i].range4, frappe.defaults.get_default("currency")) %}</td>
 
 				</tr>
 			{% } %}

@@ -588,7 +588,7 @@ class ReceivablePayableReport(object):
 		index = None
 
 		if not (self.filters.range1 and self.filters.range2 and self.filters.range3 and self.filters.range4):
-			self.filters.range1, self.filters.range2, self.filters.range3, self.filters.range4 = 30, 60, 90, 120
+			self.filters.range1, self.filters.range2, self.filters.range3, self.filters.range4 = 30, 60, 90, 366
 
 		for i, days in enumerate([self.filters.range1, self.filters.range2, self.filters.range3, self.filters.range4]):
 			if cint(row.age) <= cint(days):

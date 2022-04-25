@@ -8,13 +8,13 @@
 	}
 	</style>
 
-	<div><i>{%= filters.party_name %}  for the Period   From {%= filters.from_date %} To {%= filters.to_date %}</i></div>
+<div><i><b>{%= filters.party_name %}  for the Period   From {%= filters.from_date %} To {%= filters.to_date %}</b></i></div>
 	<table class="table table-bordered">
 		<thead>
 			<tr>
 				<th style="width: 10%">{%= __("Date") %}</th>
 				<th style="width: 20%">{%= __("Voucher") %}</th>
-				<th style="width: 15%">{%= __("Particulars") %}</th>
+				<th style="width: 15%"><b>{%= __("Particulars") %}</b></th>
 				<th style="width: 15%">{%= __("Debit") %}</th>
 				<th style="width: 15%">{%= __("Credit") %}</th>
 				<th style="width: 15%">{%= __("Balance") %}</th>
@@ -26,7 +26,7 @@
 				<tr>
 					<td>{%= frappe.datetime.str_to_user(data[i]["posting_date"]) %}</td>
 					<td>{%= data[i]["voucher_no"] %}</td>
-					<td>{%= data[i]["account"] %}</td>
+					<td><b>{%= data[i]["account"] %}</b></td>
 					<td>{%= format_currency(data[i].debit, frappe.defaults.get_default("currency")) %}</td>
 					<td>{%= format_currency(data[i].credit, frappe.defaults.get_default("currency")) %}</td>
 					<td>{%= format_currency(data[i].balance, frappe.defaults.get_default("currency")) %}</td>

@@ -52,6 +52,8 @@ class ReceivablePayableReport(object):
 		self.get_data()
 		self.get_chart_data()
 		self.fetch_totals()
+		print("dataaaaaaaaaaaaa=")
+		print(self.data)
 		return self.columns, self.data, None, self.chart, None, self.skip_total_row
 	def fetch_totals(self):
 		range1 = range2 = range3 = range4 = 0
@@ -266,8 +268,11 @@ class ReceivablePayableReport(object):
 						# if there is overpayment, add another row
 						self.allocate_extra_payments_or_credits(row)
 					else:
+						print(row)
+
 						self.append_row(row)
 				else:
+					print(row)
 					self.append_row(row)
 
 		if self.filters.get('group_by_party'):
@@ -588,7 +593,7 @@ class ReceivablePayableReport(object):
 		index = None
 
 		if not (self.filters.range1 and self.filters.range2 and self.filters.range3 and self.filters.range4):
-			self.filters.range1, self.filters.range2, self.filters.range3, self.filters.range4 = 30, 60, 90, 366
+			self.filters.range1, self.filters.range2, self.filters.range3, self.filters.range4 = 30, 60, 90,120
 
 		for i, days in enumerate([self.filters.range1, self.filters.range2, self.filters.range3, self.filters.range4]):
 			if cint(row.age) <= cint(days):

@@ -13,9 +13,10 @@ def get_columns():
 		{"label": "Item Name", "fieldname": "item_name", "fieldtype": "Data","width": "300"},
 		{"label": "Available Stock", "fieldname": "available_stock", "fieldtype": "Float", "width": "150"},
 		{"label": "Valuation Rate", "fieldname": "valuation_rate", "fieldtype": "Float", "width": "120"},
-		{"label": "Last Purchase Rate", "fieldname": "last_purchase_rate", "fieldtype": "Float","width": "150"},
+		# {"label": "Last Purchase Rate", "fieldname": "last_purchase_rate", "fieldtype": "Float","width": "150"},
 		{"label": "Landed Cost Rate", "fieldname": "landed_cost_rate", "fieldtype": "Float","width": "150"},
 		{"label": "Selling Rate", "fieldname": "selling_rate", "fieldtype": "Float", "width": "100"},
+		{"label": "Price List", "fieldname": "price_list", "fieldtype": "Data", "width": "150"},
 	]
 
 def execute(filters=None):
@@ -26,6 +27,9 @@ def execute(filters=None):
 	condition = ""
 	if filters.get("item_group"):
 		condition += " and item_group='{0}' ".format(filters.get("item_group"))
+
+	if filters.get("item"):
+		condition += " and name='{0}' ".format(filters.get("item"))
 	query = """ SELECT * FROM `tabItem` WHERE disabled=0 {0}""".format(condition)
 	items = frappe.db.sql(query, as_dict=1)
 
@@ -43,6 +47,7 @@ def execute(filters=None):
 			"last_purchase_rate": get_last_purchase_rate(item.item_code) ,
 			"landed_cost_rate": get_last_purchase_rate(item.item_code) + (lcr[0].applicable_charges / lcr[0].qty) if len(lcr) > 0 and lcr[0].applicable_charges else get_last_purchase_rate(item.item_code) ,
 			"available_stock": get_previous_stock(item.item_code, item_defaults[0].default_warehouse if len(item_defaults) > 0 else "", date),
+			"price_list": item_price[0].price_list if len(item_price) > 0 else "",
 		}
 		if filters.get("ignore_zero_stock") and not filters.get("ignore_negative_stock"):
 			if get_previous_stock(item.item_code, item_defaults[0].default_warehouse if len(item_defaults) > 0 else "", date) != 0:

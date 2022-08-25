@@ -40,7 +40,10 @@ class Inspection(Document):
 		settings = frappe.get_single("Production Settings").__dict__
 		for i in range(1,41):
 			if eval("self.attach_" + str(i)):
-				im = Image.open(frappe.get_site_path() + "/public" + eval("self.attach_" + str(i)))
+				if 'private' not in eval("self.attach_" + str(i)):
+					im = Image.open(frappe.get_site_path() + "/public" + eval("self.attach_" + str(i)))
+				else:
+					im = Image.open(frappe.get_site_path() + eval("self.attach_" + str(i)))
 
 				width, height = im.size
 				if width > settings['image_width'] and height > settings['image_height']:

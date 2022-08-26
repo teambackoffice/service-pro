@@ -50,4 +50,7 @@ class Inspection(Document):
 					width = settings['image_width']
 					height = settings['image_height']
 					area = im.resize((width, height))
-					area.save(frappe.get_site_path() + "/public" + eval("self.attach_" + str(i)), quality=95)
+					if 'private' not in eval("self.attach_" + str(i)):
+						area.save(frappe.get_site_path() + "/public" + eval("self.attach_" + str(i)), quality=95)
+					else
+						area.save(frappe.get_site_path()  + eval("self.attach_" + str(i)), quality=95)

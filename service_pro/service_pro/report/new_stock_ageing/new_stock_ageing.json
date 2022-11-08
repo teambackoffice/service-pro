@@ -1,0 +1,48 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2022-11-08 08:40:30.423587",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Hydrotech",
+ "modified": "2022-11-08 08:40:30.423587",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "New Stock Ageing",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Item",
+ "report_name": "New Stock Ageing",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "Item Manager"
+  },
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "Stock User"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Purchase User"
+  },
+  {
+   "role": "Maintenance User"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Manufacturing User"
+  }
+ ]
+}

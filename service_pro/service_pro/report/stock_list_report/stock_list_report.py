@@ -7,6 +7,9 @@ from erpnext.stock.doctype.item.item import get_last_purchase_details
 from frappe.utils import flt
 from erpnext.stock.stock_ledger import get_previous_sle
 from datetime import *
+from frappe.query_builder.functions import CombineDatetime
+from frappe.query_builder import Order
+
 def get_columns():
 	return [
 		{"label": "Item Code", "fieldname": "item_code", "fieldtype": "Data", "width": "100"},
@@ -47,6 +50,8 @@ def execute(filters=None):
 	print(data)
 	return columns, data
 def add_item_with_price_list(item, item_price,lcr,item_defaults,filters,data):
+	date = filters.get("date")
+	
 	for i in item_price:
 		obj = {
 			"item_code": item.item_code,
@@ -58,26 +63,27 @@ def add_item_with_price_list(item, item_price,lcr,item_defaults,filters,data):
 				lcr) > 0 and lcr[0].applicable_charges else get_last_purchase_rate(item.item_code),
 			"available_stock": get_previous_stock(item.item_code,
 												  item_defaults[0].default_warehouse if len(item_defaults) > 0 else "",
-												  date),
+												  date,filters),
 			"price_list": i.price_list,
 		}
 		if filters.get("ignore_zero_stock") and not filters.get("ignore_negative_stock"):
 			if get_previous_stock(item.item_code, item_defaults[0].default_warehouse if len(item_defaults) > 0 else "",
-								  date) != 0:
+								  date,filters) != 0:
 				data.append(obj)
 
 		elif filters.get("ignore_negative_stock") and not filters.get("ignore_zero_stock"):
 			if get_previous_stock(item.item_code, item_defaults[0].default_warehouse if len(item_defaults) > 0 else "",
-								  date) >= 0:
+								  date,filters) >= 0:
 				data.append(obj)
 
 		elif filters.get("ignore_negative_stock") and filters.get("ignore_zero_stock"):
 			if get_previous_stock(item.item_code, item_defaults[0].default_warehouse if len(item_defaults) > 0 else "",
-								  date) > 0:
+								  date,filters) > 0:
 				data.append(obj)
 		else:
 			data.append(obj)
 def add_item_without_price_list(item, item_price,lcr,item_defaults,filters,data):
+	date = filters.get("date")
 	obj = {
 		"item_code": item.item_code,
 		"item_name": item.item_name,
@@ -88,33 +94,41 @@ def add_item_without_price_list(item, item_price,lcr,item_defaults,filters,data)
 			lcr) > 0 and lcr[0].applicable_charges else get_last_purchase_rate(item.item_code),
 		"available_stock": get_previous_stock(item.item_code,
 											  item_defaults[0].default_warehouse if len(item_defaults) > 0 else "",
-											  date),
+											  date,filters),
 		"price_list": item_price[0].price_list if len(item_price) > 0 else "",
 	}
 	if filters.get("ignore_zero_stock") and not filters.get("ignore_negative_stock"):
 		if get_previous_stock(item.item_code, item_defaults[0].default_warehouse if len(item_defaults) > 0 else "",
-							  date) != 0:
+							  date,filters) != 0:
 			data.append(obj)
 
 	elif filters.get("ignore_negative_stock") and not filters.get("ignore_zero_stock"):
 		if get_previous_stock(item.item_code, item_defaults[0].default_warehouse if len(item_defaults) > 0 else "",
-							  date) >= 0:
+							  date,filters) >= 0:
 			data.append(obj)
 
 	elif filters.get("ignore_negative_stock") and filters.get("ignore_zero_stock"):
 		if get_previous_stock(item.item_code, item_defaults[0].default_warehouse if len(item_defaults) > 0 else "",
-							  date) > 0:
+							  date,filters) > 0:
 			data.append(obj)
 	else:
 		data.append(obj)
-def get_previous_stock(item_code, warehouse, date):
-	previous_sle = get_previous_sle({
-		"item_code": item_code,
-		"warehouse": warehouse,
-		"posting_date": date,
-		"posting_time": "11:59:59"
-	})
-	return previous_sle.get("qty_after_transaction") or 0
+
+def get_previous_stock(item_code, warehouse, date,filters):
+	warehouse=filters.get("warehouse")
+	posting_time= "11:59:59"
+	sle = frappe.qb.DocType("Stock Ledger Entry")
+	c  = (
+    frappe.qb.from_(sle)
+	.select(sle.name,sle.qty_after_transaction)
+	.where(sle.item_code == item_code)
+	.where(sle.warehouse == warehouse)
+	.where (CombineDatetime(sle.posting_date,sle.posting_time) <= CombineDatetime(date, posting_time))
+    .orderby(CombineDatetime(sle.posting_date, sle.posting_time), order=Order.desc)
+	.orderby(sle.creation, order=Order.desc)
+	.run(as_dict=True)
+    )
+	return c[0].get("qty_after_transaction") if c else 0
 
 def get_last_purchase_rate(item_code):
 		if item_code:

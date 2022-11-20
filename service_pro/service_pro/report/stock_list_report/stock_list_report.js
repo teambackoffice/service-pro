@@ -32,6 +32,13 @@ frappe.query_reports["Stock List Report"] = {
             }
 		},
 		{
+			fieldname: "warehouse",
+            label: __("Warehouse"),
+            fieldtype: "Link",
+            options: "Warehouse",
+			reqd: 1
+		},
+		{
 			fieldname: "ignore_zero_stock",
             label: __("Ignore Zero Stock"),
             fieldtype: "Check"

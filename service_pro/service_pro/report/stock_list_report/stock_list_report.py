@@ -123,6 +123,7 @@ def get_previous_stock(item_code, warehouse, date,filters):
 	.select(sle.name,sle.qty_after_transaction)
 	.where(sle.item_code == item_code)
 	.where(sle.warehouse == warehouse)
+	.where(sle.is_cancelled == 0)
 	.where (CombineDatetime(sle.posting_date,sle.posting_time) <= CombineDatetime(date, posting_time))
     .orderby(CombineDatetime(sle.posting_date, sle.posting_time), order=Order.desc)
 	.orderby(sle.creation, order=Order.desc)

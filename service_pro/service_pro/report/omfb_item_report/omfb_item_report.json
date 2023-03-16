@@ -1,5 +1,5 @@
 {
- "add_total_row": 0,
+ "add_total_row": 1,
  "columns": [],
  "creation": "2023-03-15 21:48:53.244365",
  "disable_prepared_report": 0,
@@ -9,7 +9,7 @@
  "filters": [],
  "idx": 0,
  "is_standard": "Yes",
- "modified": "2023-03-15 21:48:53.244365",
+ "modified": "2023-03-16 22:17:33.357926",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "OMFB Item Report",

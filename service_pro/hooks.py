@@ -201,7 +201,8 @@ fixtures = [
 
 
                     "Journal Entry-sales_invoice",
-                    "Sales Invoice-agent_commision_record"
+                    "Sales Invoice-agent_commision_record",
+                    "Item-is_omfb_item",
                 ]
             ]
         ]

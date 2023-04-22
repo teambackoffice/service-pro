@@ -95,9 +95,9 @@ doc_events = {
 		"on_submit": "service_pro.doc_events.sales_invoice.on_submit_si",
 		"on_cancel": "service_pro.doc_events.sales_invoice.on_cancel_si",
 	},
-    "File": {
-		"on_trash": "service_pro.doc_events.file.on_trash_f",
-	},
+    #"File": {
+		#"on_trash": "service_pro.doc_events.file.on_trash_f",
+	#},
     "Delivery Note": {
 		"on_submit": "service_pro.doc_events.delivery_note.change_status",
 		"on_cancel": "service_pro.doc_events.delivery_note.change_status_cancel",

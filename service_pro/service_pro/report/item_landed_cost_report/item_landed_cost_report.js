@@ -40,6 +40,14 @@ frappe.query_reports["Item Landed Cost Report"] = {
 			}
 		
 		},
+		{			
+			"fieldname": "supplier",
+			"fieldtype": "Link",
+			"label": "Supplier",
+			"options": "Supplier",
+			// "reqd":1,		
+		},
+
 
 		{			
 			"fieldname": "item_group",

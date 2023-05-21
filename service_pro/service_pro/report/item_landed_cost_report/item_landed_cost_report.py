@@ -11,6 +11,7 @@ def execute(filters=None):
 	lists=get_lists(filters)
 	for li in lists:
 		row=frappe._dict({
+				'posting_date':li.posting_date,
 				'voucher_type':li.voucher_type,
 				'reference':li.reference,
 				'item_code':li.item_code,
@@ -26,6 +27,12 @@ def execute(filters=None):
 
 def get_columns():
 	return[
+		{
+			"label": _("Date"), 
+			"fieldname": "posting_date",
+			"fieldtype":"Date", 
+			"width": 120
+		},
 		
 		{
 			"label": _("Voucher Type"), 
@@ -53,7 +60,7 @@ def get_columns():
    			"fieldtype": "Data",
    			"label": "Item Name",
 			"width":180,
-			# "hidden":1
+			"hidden":1
 			
  		},
 		
@@ -93,9 +100,10 @@ def get_lists(filters):
 	conditions=get_conditions(filters)
 	p_conditions = get_p_conditions(filters)
 	data=[]
-	if filters.get("item_code") or filters.get("from_date") and filters.get("to_date") or filters.get("item_group") or filters.get("price_list"):
+	if filters.get("item_code") or filters.get("from_date") and filters.get("to_date") or filters.get("item_group") or filters.get("price_list") or filters.get("supplier"):
 		parent=frappe.db.sql("""SELECT
 		p.name as reference,
+		p.posting_date,
 		pi.item_code,
 		pi.item_name,
 		pi.qty as purchase_qty,
@@ -148,6 +156,7 @@ def get_lists(filters):
 	else:
 		parent=frappe.db.sql("""SELECT
 		p.name as reference,
+		p.posting_date,
 		pi.item_code,
 		pi.item_name,
 		pi.qty as purchase_qty,
@@ -175,6 +184,8 @@ def get_conditions(filters):
 	conditions=""
 	if filters.get("from_date") and filters.get("to_date"):
 		conditions += "and p.posting_date BETWEEN '{0}' and '{1}' ".format(filters.get("from_date"),filters.get("to_date"))
+	if filters.get("supplier"):
+		conditions += "and p.supplier ='{0}' ".format(filters.get("supplier"))
 	if filters.get("item_code"):
 		conditions += "and pi.item_code='{0}' ".format(filters.get("item_code"))
 	if filters.get("item_group"):

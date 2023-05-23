@@ -8,6 +8,7 @@ def execute(filters=None):
 	columns=get_columns()
 	conditions=get_conditions(filters)
 	p_conditions = get_p_conditions(filters)
+	date_conditions = get_date_conditions(filters)
 	lists=get_lists(filters)
 	for li in lists:
 		row=frappe._dict({
@@ -99,6 +100,7 @@ def get_columns():
 def get_lists(filters):
 	conditions=get_conditions(filters)
 	p_conditions = get_p_conditions(filters)
+	date_conditions = get_date_conditions(filters)
 	data=[]
 	if filters.get("item_code") or filters.get("from_date") and filters.get("to_date") or filters.get("item_group") or filters.get("price_list") or filters.get("supplier"):
 		parent=frappe.db.sql("""SELECT
@@ -107,15 +109,11 @@ def get_lists(filters):
 		pi.item_code,
 		pi.item_name,
 		pi.qty as purchase_qty,
-		pi.rate as purchase_rate,
-		sle.name as stock_ref,
-		sle.qty_after_transaction as avail_qty,
-		sle.incoming_rate as lc_rate 
+		pi.rate as purchase_rate
 		from `tabPurchase Invoice` as p
 		inner join `tabPurchase Invoice Item` as pi 
 		on p.name=pi.parent 
-		inner join `tabStock Ledger Entry` as sle 
-		on p.name=sle.voucher_no inner join `tabItem` as i on i.name=pi.item_code where pi.item_code=sle.item_code and p.docstatus=1 and sle.is_cancelled=0 {0}""".format(conditions),as_dict=1)
+		inner join `tabItem` as i on i.name=pi.item_code where p.docstatus=1 {0}""".format(conditions),as_dict=1)
 		if filters.get("price_list"):
 			for dic_p in parent:
 				dic_p["indent"] = 0
@@ -134,7 +132,27 @@ def get_lists(filters):
 				else:
 					sr = {"selling_rate":0}
 					dic_p.update(sr)
-					
+				sf=frappe.db.sql("""select qty_after_transaction,incoming_rate from `tabStock Ledger Entry` where item_code=%s and is_cancelled=0 and {0} ORDER BY posting_date desc,posting_time desc limit 1""".format(date_conditions),dic_p.item_code,as_dict=1)
+				print(sf)
+				print("ssssssssssssssssssssssfffffffffffffffffffffff")
+				if sf:
+					if sf[0].qty_after_transaction:
+						q = {'avail_qty':sf[0].qty_after_transaction}
+						dic_p.update(q)
+					else:
+						q = {'avail_qty':0.00}
+						dic_p.update(q)
+					if sf[0].incoming_rate:
+						i = {'lc_rate':sf[0].incoming_rate}
+						dic_p.update(i)
+					else:
+						i = {'lc_rate':0.00}
+						dic_p.update(i)
+				else:
+					q = {'avail_qty':0.00}
+					dic_p.update(q)
+					i = {'lc_rate':0.00}
+					dic_p.update(i)
 
 				name = {'voucher_type':'Purchase Invoice'}
 				dic_p.update(name)
@@ -146,6 +164,29 @@ def get_lists(filters):
 		else:
 			for dic_p in parent:
 				dic_p["indent"] = 0
+				sf=frappe.db.sql("""select qty_after_transaction,incoming_rate from `tabStock Ledger Entry` where item_code=%s and is_cancelled=0 and {0} ORDER BY posting_date desc,posting_time desc limit 1""".format(date_conditions),dic_p.item_code,as_dict=1)
+				print(sf)
+				print("ssssssssssssssssssssssfffffffffffffffffffffff")
+				if sf:
+					if sf[0].qty_after_transaction:
+						q = {'avail_qty':sf[0].qty_after_transaction}
+						dic_p.update(q)
+					else:
+						q = {'avail_qty':0.00}
+						dic_p.update(q)
+
+					if sf[0].incoming_rate:
+						i = {'lc_rate':sf[0].incoming_rate}
+						dic_p.update(i)
+					else:
+						i = {'lc_rate':0.00}
+						dic_p.update(i)
+				else:
+					q = {'avail_qty':0.00}
+					dic_p.update(q)
+					i = {'lc_rate':0.00}
+					dic_p.update(i)
+
 				name = {'voucher_type':'Purchase Invoice'}
 				dic_p.update(name)
 				filters=conditions
@@ -160,20 +201,41 @@ def get_lists(filters):
 		pi.item_code,
 		pi.item_name,
 		pi.qty as purchase_qty,
-		pi.rate as purchase_rate,
-		sle.name as stock_ref,
-		sle.qty_after_transaction as avail_qty,
-		sle.incoming_rate as lc_rate 
+		pi.rate as purchase_rate
 		from `tabPurchase Invoice` as p
 		inner join `tabPurchase Invoice Item` as pi 
 		on p.name=pi.parent 
-		inner join `tabStock Ledger Entry` as sle 
-		on p.name=sle.voucher_no inner join `tabItem` as i on i.name=pi.item_code where pi.item_code=sle.item_code and p.docstatus=1 and sle.is_cancelled=0 """,as_dict=1)
+		inner join `tabItem` as i on i.name=pi.item_code where p.docstatus=1""",as_dict=1)
 		print("ayeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
 		print(parent)
 		for dic_p in parent:
 			dic_p["indent"] = 0
-			
+			sf=frappe.db.sql("""select qty_after_transaction,incoming_rate from `tabStock Ledger Entry` where item_code=%s 
+			and is_cancelled=0 ORDER BY posting_date desc,posting_time desc limit 1""",dic_p.item_code,as_dict=1)
+			print(sf)
+			print("ssssssssssssssssssssssfffffffffffffffffffffff")
+			if sf:
+				if sf[0].qty_after_transaction:
+					q = {'avail_qty':sf[0].qty_after_transaction}
+					dic_p.update(q)
+				else:
+					q = {'avail_qty':0.00}
+					dic_p.update(q)
+
+				if sf[0].incoming_rate:
+					i = {'lc_rate':sf[0].incoming_rate}
+					dic_p.update(i)
+				else:
+					i = {'lc_rate':0.00}
+					dic_p.update(i)
+			else:
+				q = {'avail_qty':0.00}
+				dic_p.update(q)
+				i = {'lc_rate':0.00}
+				dic_p.update(i)
+
+				
+
 			name = {'voucher_type':'Purchase Invoice'}
 			dic_p.update(name)
 			filters=conditions
@@ -198,3 +260,9 @@ def get_p_conditions(filters):
 	if filters.get("price_list"):
 		p_conditions = "price_list='{0}' ".format(filters.get("price_list"))
 	return p_conditions
+
+def get_date_conditions(filters):
+	date_conditions =""
+	if filters.get("from_date") and filters.get("to_date"):
+		date_conditions += "posting_date BETWEEN '{0}' and '{1}' ".format(filters.get("from_date"),filters.get("to_date"))
+	return date_conditions

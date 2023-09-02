@@ -1,0 +1,200 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2023-09-01 17:28:05.124376",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "details_tab",
+  "company",
+  "type",
+  "column_break_phhq8",
+  "naming_series",
+  "status",
+  "posting_date",
+  "return_date",
+  "section_break_dzuyp",
+  "related_party_account",
+  "column_break_tyqfw",
+  "account_for_payments",
+  "returned_from",
+  "section_break_6zbzu",
+  "related_party_entry_expanse_list",
+  "section_break_kmugh",
+  "remarks",
+  "column_break_kz0gq",
+  "amount",
+  "returned_amount",
+  "pending_amount",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Details"
+  },
+  {
+   "description": "<p>If the <strong><span style=\"color: rgb(251, 160, 38);\">Type</span></strong> Is <strong>&quot;<span style=\"color: rgb(0, 168, 133);\">Credit To</span>&quot;</strong> the Related Party Account will be debited, and the expense ledger will recive a credit. Conversely, if the <span style=\"color: rgb(251, 160, 38);\"><strong>Type</strong> </span>is &quot;<span style=\"color: rgb(0, 168, 133);\"><strong>Debit To</strong></span>&quot; the Related Party Account will be credited, and the expense ledger will be debited.</p>",
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Type",
+   "options": "\nCredit To\nDebit To",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_phhq8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "RPE.YY.###",
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "return_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Return Date"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_dzuyp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "related_party_account",
+   "fieldtype": "Link",
+   "label": "Related Party Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_6zbzu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "related_party_entry_expanse_list",
+   "fieldtype": "Table",
+   "label": "Expanse List",
+   "options": "Related Party Entry Expanse List"
+  },
+  {
+   "fieldname": "section_break_kmugh",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "column_break_kz0gq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Related Party Entry",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "\nUnpaid\nPaid\nPartially Returned\nReturned",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "returned_amount",
+   "fieldtype": "Currency",
+   "label": "Returned Amount",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "pending_amount",
+   "fieldtype": "Currency",
+   "label": "Pending Amount",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "column_break_tyqfw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "returned_from",
+   "fieldtype": "Link",
+   "label": "Returned From ( Cash / Bank )",
+   "options": "Account"
+  },
+  {
+   "fieldname": "account_for_payments",
+   "fieldtype": "Link",
+   "label": "Account for Payments ( Cash / Bank )",
+   "options": "Account",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-09-02 11:39:10.024279",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Related Party Entry",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1
+}

@@ -2,6 +2,7 @@
  "charts": [],
  "content": "[{\"id\":\"CEZNmuFvIS\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Service Pro</span>\",\"col\":12}},{\"id\":\"PJv00ZAXu4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Receipt Note\",\"col\":3}},{\"id\":\"d1X_o5nILw\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Estimation\",\"col\":3}},{\"id\":\"yt-2LFOOCO\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Inspection\",\"col\":3}},{\"id\":\"uIBFXxf7E4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Production\",\"col\":3}},{\"id\":\"UjN6Q55QgN\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Material Request\",\"col\":3}},{\"id\":\"eXHM803PHx\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Invoice\",\"col\":3}},{\"id\":\"koTARpeBRL\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"IZH2WKrbor\",\"type\":\"card\",\"data\":{\"card_name\":\"Showroom Masters\",\"col\":4}},{\"id\":\"OkNdx7Fgfd\",\"type\":\"card\",\"data\":{\"card_name\":\"Workshop Masters\",\"col\":4}},{\"id\":\"W8irLy14s7\",\"type\":\"card\",\"data\":{\"card_name\":\"Site Service Masters\",\"col\":4}},{\"id\":\"Du-RosDfCy\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"OX_vc14X_f\",\"type\":\"card\",\"data\":{\"card_name\":\"Masters\",\"col\":4}},{\"id\":\"2E5lRsVECs\",\"type\":\"card\",\"data\":{\"card_name\":\"Others\",\"col\":4}}]",
  "creation": "2023-04-22 11:28:23.611529",
+ "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
  "for_user": "",
@@ -385,7 +386,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Others",
-   "link_count": 3,
+   "link_count": 4,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -418,9 +419,19 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Related Party Entry",
+   "link_count": 0,
+   "link_to": "Related Party Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-04-22 18:10:59.860110",
+ "modified": "2023-09-02 11:57:43.464317",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Pro",

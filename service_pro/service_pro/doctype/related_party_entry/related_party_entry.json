@@ -67,11 +67,13 @@
    "label": "Posting Date"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "return_date",
    "fieldtype": "Date",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Return Date"
+   "label": "Return Date",
+   "read_only": 1
   },
   {
    "fieldname": "company",
@@ -124,6 +126,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "status",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -137,29 +140,36 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Amount",
-   "options": "Currency"
+   "options": "Currency",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "returned_amount",
    "fieldtype": "Currency",
    "label": "Returned Amount",
-   "options": "Currency"
+   "options": "Currency",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "pending_amount",
    "fieldtype": "Currency",
    "label": "Pending Amount",
-   "options": "Currency"
+   "options": "Currency",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_tyqfw",
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "returned_from",
    "fieldtype": "Link",
    "label": "Returned From ( Cash / Bank )",
-   "options": "Account"
+   "options": "Account",
+   "read_only": 1
   },
   {
    "fieldname": "account_for_payments",
@@ -172,7 +182,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-02 11:39:10.024279",
+ "modified": "2023-09-04 21:41:52.241628",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Related Party Entry",
@@ -194,7 +204,24 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
+ "states": [
+  {
+   "color": "Red",
+   "title": "Unpaid"
+  },
+  {
+   "color": "Green",
+   "title": "Paid"
+  },
+  {
+   "color": "Gray",
+   "title": "Partially Returned"
+  },
+  {
+   "color": "Gray",
+   "title": "Returned"
+  }
+ ],
  "track_changes": 1,
  "track_seen": 1
 }

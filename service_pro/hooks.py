@@ -37,6 +37,7 @@ doctype_js = {
     "Material Request" : "public/js/material_request.js",
     "Delivery Note" : "public/js/delivery_note.js",
     "Additional Salary" : "public/js/additional_salary.js",
+    "Landed Cost Voucher": "public/js/landed_cost_voucher.js"
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -104,6 +105,7 @@ doc_events = {
 	},
     "Journal Entry": {
 		"on_submit": "service_pro.doc_events.journal_entry.submit_jv",
+        "on_cancel": "service_pro.doc_events.journal_entry.cancel_related_party_entry"
 	}
 }
 
@@ -203,6 +205,14 @@ fixtures = [
                     "Journal Entry-sales_invoice",
                     "Sales Invoice-agent_commision_record",
                     "Item-is_omfb_item",
+
+                    "Journal Entry-related_party_entry",
+                    "Journal Entry-is_related_party_entry_return",
+                    "Landed Cost Item-avail_qty",
+                    "Landed Cost Voucher-column_break_ahjhe",
+                    "Landed Cost Voucher-column_break_62gb2",
+                    "Landed Cost Voucher-refresh_avail_qty",
+                    "Landed Cost Voucher-section_break_vraqz"
                 ]
             ]
         ]

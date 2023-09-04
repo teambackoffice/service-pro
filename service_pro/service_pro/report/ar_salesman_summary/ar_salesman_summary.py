@@ -11,6 +11,7 @@ from six import iteritems
 
 def execute(filters=None):
 	args = {
+		"account_type": "Receivable",
 		"party_type": "Customer",
 		"naming_by": ["Selling Settings", "cust_master_name"],
 	}
@@ -32,9 +33,23 @@ class AccountsReceivableSummary(ReceivablePayableReport):
 
 		self.get_party_total(args)
 
-		party_advance_amount = get_partywise_advanced_payment_amount(self.party_type,
-			self.filters.report_date, self.filters.show_future_payments, self.filters.company) or {}
+		party = None
+		for party_type in [self.party_type]:
+			if self.filters.get(scrub(party_type)):
+				party = self.filters.get(scrub(party_type))
 
+		# party_advance_amount = get_partywise_advanced_payment_amount(self.party_type,
+		# 	self.filters.report_date, self.filters.show_future_payments, self.filters.company, party=party) or {}
+		party_advance_amount = (
+			get_partywise_advanced_payment_amount(
+				[self.party_type],
+				self.filters.report_date,
+				self.filters.show_future_payments,
+				self.filters.company,
+				party=party,
+			)
+			or {}
+		)
 		for party, party_dict in iteritems(self.party_total):
 			print("================================")
 			print(party_dict)

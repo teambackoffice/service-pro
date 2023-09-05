@@ -93,7 +93,7 @@ def create_return_entry(related_party_entry=None, return_date=None, returned_fro
 	if doc.status == "Paid" or "Partially Returned":
 		je = frappe.new_doc("Journal Entry")
 		je.company = doc.company
-		je.posting_date = doc.posting_date
+		je.posting_date = return_date
 		je.cheque_no = "Against Related Party Entry: {0}".format(doc.name)
 		je.cheque_date = doc.posting_date
 		je.user_remark = doc.remarks

@@ -19,10 +19,9 @@
   "section_break_dzuyp",
   "related_party_account",
   "column_break_tyqfw",
-  "account_for_payments",
   "returned_from",
   "section_break_6zbzu",
-  "related_party_entry_expanse_list",
+  "related_entry_account",
   "section_break_kmugh",
   "remarks",
   "column_break_kz0gq",
@@ -98,12 +97,6 @@
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "related_party_entry_expanse_list",
-   "fieldtype": "Table",
-   "label": "Expanse List",
-   "options": "Related Party Entry Expanse List"
-  },
-  {
    "fieldname": "section_break_kmugh",
    "fieldtype": "Section Break"
   },
@@ -172,17 +165,16 @@
    "read_only": 1
   },
   {
-   "fieldname": "account_for_payments",
-   "fieldtype": "Link",
-   "label": "Account for Payments ( Cash / Bank )",
-   "options": "Account",
-   "reqd": 1
+   "fieldname": "related_entry_account",
+   "fieldtype": "Table",
+   "label": "Entries",
+   "options": "Related Entry Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-04 21:41:52.241628",
+ "modified": "2023-10-20 10:50:37.624552",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Related Party Entry",

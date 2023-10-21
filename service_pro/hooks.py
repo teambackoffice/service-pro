@@ -37,7 +37,8 @@ doctype_js = {
     "Material Request" : "public/js/material_request.js",
     "Delivery Note" : "public/js/delivery_note.js",
     "Additional Salary" : "public/js/additional_salary.js",
-    "Landed Cost Voucher": "public/js/landed_cost_voucher.js"
+    "Landed Cost Voucher": "public/js/landed_cost_voucher.js",
+    "Item": "public/js/item.js"
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -212,7 +213,11 @@ fixtures = [
                     "Landed Cost Voucher-column_break_ahjhe",
                     "Landed Cost Voucher-column_break_62gb2",
                     "Landed Cost Voucher-refresh_avail_qty",
-                    "Landed Cost Voucher-section_break_vraqz"
+                    "Landed Cost Voucher-section_break_vraqz",
+
+                    "Item-custom_size_specification",
+                    "Item-custom_item_description",
+                    "Item-custom_item_specification"
                 ]
             ]
         ]

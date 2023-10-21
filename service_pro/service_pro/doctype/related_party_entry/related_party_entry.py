@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
+import json
 from frappe.model.document import Document
 
 class RelatedPartyEntry(Document):
@@ -17,34 +18,44 @@ class RelatedPartyEntry(Document):
 		doc.cheque_date = self.posting_date
 		doc.user_remark = self.remarks
 		doc.related_party_entry = self.name
+		account_list = []
 		if self.type == "Credit To":
-			doc.set("accounts", 
-			[
+			account_list.append(
 				{
 					"account":self.related_party_account,
 					"debit_in_account_currency": self.amount,
-					"credit_in_account_currency":0
-				},
-				{
-					"account":self.account_for_payments,
-					"debit_in_account_currency":0,
-					"credit_in_account_currency": self.amount
+					"credit_in_account_currency": 0
 				}
-			])
+			)
+			for acc in self.related_entry_account:
+				account_list.append({
+					"account": acc.account,
+					"debit_in_account_currency": 0,
+					"credit_in_account_currency": acc.amount,
+					"party_type": acc.party_type,
+					"party": acc.party,
+					"is_advance": acc.is_advance
+				})
+			doc.set("accounts", account_list)
+			
 		elif self.type == "Debit To":
-			doc.set("accounts", 
-			[
-				{
-					"account":self.account_for_payments,
-					"debit_in_account_currency": self.amount,
-					"credit_in_account_currency":0
-				},
+			account_list.append(
 				{
 					"account":self.related_party_account,
-					"debit_in_account_currency":0,
+					"debit_in_account_currency": 0,
 					"credit_in_account_currency": self.amount
 				}
-			])
+			)
+			for acc in self.related_entry_account:
+				account_list.append({
+					"account": acc.account,
+					"debit_in_account_currency": acc.amount,
+					"credit_in_account_currency": 0,
+					"party_type": acc.party_type,
+					"party": acc.party,
+					"is_advance": acc.is_advance
+				})
+			doc.set("accounts", account_list)
 		doc.save(ignore_permissions=True)
 		doc.submit()
 

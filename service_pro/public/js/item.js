@@ -10,7 +10,7 @@ frappe.ui.form.on('Item', {
     item_group:function(frm){
         frm.trigger('makeItemname')
     },
-    brand:function(frm){
+    custom_brand_name:function(frm){
         frm.trigger('makeItemname')
     },
     custom_item_specification:function(frm){
@@ -25,16 +25,36 @@ frappe.ui.form.on('Item', {
     makeItemname:function(frm){
         if(frm.doc.is_stock_item){
             if(frm.doc.item_group){
-                frm.set_value('item_name', `${frm.doc.item_group}`)
-            }
-            if(frm.doc.brand){
-                frm.set_value('item_name', frm.doc.item_name + ` ${frm.doc.brand}`)
+                console.log(frm.doc.item_group)
+                frm.set_value('item_name', `${frm.doc.item_group || ""}`)
+            }if(frm.doc.custom_brand_name){
+                if(frm.doc.item_name){
+                    frm.set_value('item_name', frm.doc.item_name + ` ${frm.doc.custom_brand_name}`)
+                }else{
+                    frm.set_value('item_name', `${frm.doc.custom_brand_name}`)
+                }
             }if(frm.doc.custom_item_specification){
-                frm.set_value('item_name', frm.doc.item_name + ` ${frm.doc.custom_item_specification}`)
+                if(frm.doc.item_name){
+                    frm.set_value('item_name', frm.doc.item_name + ` ${frm.doc.custom_item_specification}`)
+                }else{
+                    frm.doc.item_name = ""
+                    frm.set_value('item_name', `${frm.doc.custom_item_specification}`)
+                }
             }if(frm.doc.custom_size_specification){
-                frm.set_value('item_name', frm.doc.item_name + ` ${frm.doc.custom_size_specification}`)
+                if(frm.doc.item_name){
+                    frm.set_value('item_name', frm.doc.item_name + ` ${frm.doc.custom_size_specification}`)
+                }else{
+                    frm.doc.item_name = ""
+                    frm.set_value('item_name', `${frm.doc.custom_size_specification}`)
+                    
+                }
             }if(frm.doc.custom_item_description){
-                frm.set_value('item_name', frm.doc.item_name + ` ${frm.doc.custom_item_description}`)
+                if(frm.doc.item_name){
+                    frm.set_value('item_name', frm.doc.item_name + ` ${frm.doc.custom_item_description}`)
+                }else{
+                    frm.doc.item_name = ""
+                    frm.set_value('item_name', `${frm.doc.custom_item_description}`)
+                }
             }
         }
     },

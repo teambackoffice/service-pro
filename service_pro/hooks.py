@@ -217,7 +217,8 @@ fixtures = [
 
                     "Item-custom_size_specification",
                     "Item-custom_item_description",
-                    "Item-custom_item_specification"
+                    "Item-custom_item_specification",
+                    "Item-custom_brand_name"
                 ]
             ]
         ]

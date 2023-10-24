@@ -25,7 +25,6 @@ frappe.ui.form.on('Item', {
     makeItemname:function(frm){
         if(frm.doc.is_stock_item){
             if(frm.doc.item_group){
-                console.log(frm.doc.item_group)
                 frm.set_value('item_name', `${frm.doc.item_group || ""}`)
             }if(frm.doc.custom_brand_name){
                 if(frm.doc.item_name){

@@ -107,7 +107,16 @@ doc_events = {
     "Journal Entry": {
 		"on_submit": "service_pro.doc_events.journal_entry.submit_jv",
         "on_cancel": "service_pro.doc_events.journal_entry.cancel_related_party_entry"
-	}
+	},
+    "Stock Ledger Entry":{
+        "on_submit": "service_pro.doc_events.stock_ledger_entry.update_item_valuation_rate"
+    },
+    "Sales Order":{
+        "on_submit": "service_pro.doc_events.sales_order.on_so_submit"
+    },
+    "Quotation":{
+        "on_submit": "service_pro.doc_events.quotation.on_submit_quotation"
+    }
 }
 
 # Scheduled Tasks
@@ -218,7 +227,24 @@ fixtures = [
                     "Item-custom_size_specification",
                     "Item-custom_item_description",
                     "Item-custom_item_specification",
-                    "Item-custom_brand_name"
+                    "Item-custom_brand_name",
+                    "Item-custom_edit_valuation_rate",
+
+                    "Price List-custom_section_break_a0uow",
+                    "Price List-custom_maximum_user_discount"
+                ]
+            ]
+        ]
+    },
+    {
+        "doctype": "Property Setter",
+        "filters": [
+            [
+                "name",
+                "in",
+                [
+                    "Item-valuation_rate-read_only_depends_on",
+                    "Item-main-field_order"
                 ]
             ]
         ]

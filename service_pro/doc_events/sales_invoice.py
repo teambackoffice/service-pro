@@ -66,6 +66,13 @@ def jv_accounts_paid(doc):
 	return accounts
 @frappe.whitelist()
 def on_submit_si(doc, method):
+	if doc.selling_price_list:
+		if frappe.db.exists("Maximum User Discount", {"parent":doc.selling_price_list, "user": frappe.session.user}):
+			max_disc = frappe.db.get_value("Maximum User Discount", {"parent":doc.selling_price_list, "user": frappe.session.user}, ["max_discount"])
+			over_disc = frappe.db.exists("Sales Invoice Item", {"parent":doc.name, "discount_percentage": [">", max_disc]}, ['item_code'])
+			if max_disc and over_disc:
+				frappe.throw(" Maximum allowed discount is {0} for item {1}".format(max_disc, frappe.db.get_value("Sales Invoice Item", over_disc, ['item_code'])))
+
 	if len(doc.sales_team) > 0 and not doc.paid and not doc.unpaid:
 		frappe.throw("Please select Paid or Unpaid for Sales Person")
 

@@ -1,0 +1,68 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-10-24 17:18:32.244465",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item_group",
+  "brand",
+  "item_specification",
+  "price_list",
+  "item_price_percentage"
+ ],
+ "fields": [
+  {
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Group",
+   "options": "Item Group",
+   "reqd": 1
+  },
+  {
+   "fieldname": "brand",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Brand",
+   "options": "Brand",
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_specification",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Specification",
+   "options": "Item Specification",
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_price_percentage",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Item Price Percentage",
+   "reqd": 1
+  },
+  {
+   "fieldname": "price_list",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Price List",
+   "options": "Price List",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-10-24 19:44:42.548280",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Pricing Item Group",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

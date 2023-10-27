@@ -11,7 +11,6 @@ frappe.ui.form.on('Item', {
         frm.trigger('makeItemname')
         if(frm.doc.item_group){
             frappe.db.get_value("Item Group", frm.doc.item_group, 'naming_series_for_item').then(data=>{
-                console.log(data.message.naming_series_for_item)
                 frm.set_value("naming_series", data.message.naming_series_for_item)
             })
         }

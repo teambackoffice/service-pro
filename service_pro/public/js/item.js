@@ -9,6 +9,12 @@ frappe.ui.form.on('Item', {
     },
     item_group:function(frm){
         frm.trigger('makeItemname')
+        if(frm.doc.item_group){
+            frappe.db.get_value("Item Group", frm.doc.item_group, 'naming_series_for_item').then(data=>{
+                console.log(data.message.naming_series_for_item)
+                frm.set_value("naming_series", data.message.naming_series_for_item)
+            })
+        }
     },
     custom_brand_name:function(frm){
         frm.trigger('makeItemname')
@@ -25,7 +31,7 @@ frappe.ui.form.on('Item', {
     makeItemname:function(frm){
         if(frm.doc.is_stock_item){
             if(frm.doc.item_group){
-                frm.set_value('item_name', `${frm.doc.item_group || ""}`)
+                frm.set_value('item_name', `${frm.doc.item_group}`)
             }if(frm.doc.custom_brand_name){
                 if(frm.doc.item_name){
                     frm.set_value('item_name', frm.doc.item_name + ` ${frm.doc.custom_brand_name}`)

@@ -244,7 +244,8 @@ fixtures = [
                 "in",
                 [
                     "Item-valuation_rate-read_only_depends_on",
-                    "Item-main-field_order"
+                    "Item-main-field_order",
+                    "Item-naming_series-options"
                 ]
             ]
         ]

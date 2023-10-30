@@ -10,6 +10,8 @@
   "finish_good_warehouse",
   "income_account",
   "finish_good_cost_center",
+  "column_break_gmkpj",
+  "automatically_create_jv",
   "raw_material_defaults_section",
   "raw_material_warehouse",
   "raw_material_cost_center",
@@ -167,12 +169,23 @@
    "fieldname": "mandatory_additional_cost_in_production",
    "fieldtype": "Check",
    "label": "Mandatory Additional Cost in Production"
+  },
+  {
+   "fieldname": "column_break_gmkpj",
+   "fieldtype": "Section Break",
+   "label": "Related Party Entry"
+  },
+  {
+   "default": "0",
+   "fieldname": "automatically_create_jv",
+   "fieldtype": "Check",
+   "label": "Automatically Create JV"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-03-30 10:46:27.278783",
+ "modified": "2023-10-30 19:42:18.082223",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",
@@ -192,5 +205,6 @@
  "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

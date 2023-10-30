@@ -3,7 +3,7 @@
 
 frappe.ui.form.on('Related Party Entry', {
 	refresh:function(frm){
-		frappe.db.get_single_value("Service Pro Settings", "automatically_create_jv").then(data=>{
+		frappe.db.get_single_value("Production Settings", "automatically_create_jv").then(data=>{
 			if(frm.doc.docstatus == 1 && !data){
 				if(frm.doc.status == "Unpaid"){
 					frm.add_custom_button(__("Journal Entry"), function(){
@@ -84,7 +84,7 @@ frappe.ui.form.on('Related Party Entry', {
 		});
 	},
 	on_submit:function(frm){
-		frappe.db.get_single_value("Service Pro Settings", "automatically_create_jv").then(data=>{
+		frappe.db.get_single_value("Production Settings", "automatically_create_jv").then(data=>{
 			if(data){
 				frappe.call({
 					method:"create_journal_entry",

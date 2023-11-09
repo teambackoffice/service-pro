@@ -63,6 +63,7 @@ frappe.ui.form.on('Item', {
         }
     },
     before_save:function(frm){
+        frm.set_value("custom_edit_naming_fields", false)
         frm.trigger('makeItemname')
     }
 })

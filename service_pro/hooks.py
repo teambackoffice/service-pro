@@ -229,6 +229,7 @@ fixtures = [
                     "Item-custom_item_specification",
                     "Item-custom_brand_name",
                     "Item-custom_edit_valuation_rate",
+                    "Item-custom_edit_naming_fields",
 
                     "Price List-custom_section_break_a0uow",
                     "Price List-custom_maximum_user_discount"
@@ -245,7 +246,8 @@ fixtures = [
                 [
                     "Item-valuation_rate-read_only_depends_on",
                     "Item-main-field_order",
-                    "Item-naming_series-options"
+                    "Item-naming_series-options",
+                    "Item-item_group-read_only_depends_on"
                 ]
             ]
         ]

@@ -23,15 +23,15 @@ class RelatedPartyEntry(Document):
 			account_list.append(
 				{
 					"account":self.related_party_account,
-					"debit_in_account_currency": self.amount,
-					"credit_in_account_currency": 0
+					"debit_in_account_currency": 0,
+					"credit_in_account_currency": self.amount
 				}
 			)
 			for acc in self.related_entry_account:
 				account_list.append({
 					"account": acc.account,
-					"debit_in_account_currency": 0,
-					"credit_in_account_currency": acc.amount,
+					"debit_in_account_currency": acc.amount,
+					"credit_in_account_currency": 0,
 					"party_type": acc.party_type,
 					"party": acc.party,
 					"is_advance": acc.is_advance
@@ -42,15 +42,15 @@ class RelatedPartyEntry(Document):
 			account_list.append(
 				{
 					"account":self.related_party_account,
-					"debit_in_account_currency": 0,
-					"credit_in_account_currency": self.amount
+					"debit_in_account_currency": self.amount,
+					"credit_in_account_currency": 0
 				}
 			)
 			for acc in self.related_entry_account:
 				account_list.append({
 					"account": acc.account,
-					"debit_in_account_currency": acc.amount,
-					"credit_in_account_currency": 0,
+					"debit_in_account_currency": 0,
+					"credit_in_account_currency":  acc.amount,
 					"party_type": acc.party_type,
 					"party": acc.party,
 					"is_advance": acc.is_advance

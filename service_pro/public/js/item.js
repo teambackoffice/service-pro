@@ -9,7 +9,7 @@ frappe.ui.form.on('Item', {
     },
     item_group:function(frm){
         frm.trigger('makeItemname')
-        if(frm.doc.item_group){
+        if(frm.doc.item_group && frm.is_new()){
             frappe.db.get_value("Item Group", frm.doc.item_group, 'naming_series_for_item').then(data=>{
                 frm.set_value("naming_series", data.message.naming_series_for_item)
             })

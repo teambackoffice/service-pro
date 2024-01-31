@@ -1,0 +1,268 @@
+<style>
+	.print-format {
+		padding: 4mm;
+		font-size: 8.0pt !important;
+	}
+	.print-format td {
+		vertical-align:middle !important;
+	}
+	.border {
+		border: 1px solid black;
+		border-radius: 10px;
+	}
+</style>
+
+
+    <div class="row">
+		<div class="col-xs-12">
+			<img src="/files/sp_image.png" width="100%">
+		</div>
+    </div>
+
+	<h2 class="text-center"><b>STATEMENT OF ACCOUNTS</b></h2>
+	<div class="row">
+		<div class="col-xs-12">
+        <div class="col-xs-5 border">
+            <table class="">
+                <tr>
+                    <td style="border-bottom: none !important; border-right: none !important;"><b>{% if (filters.customer_name) { %}
+					{%= filters.customer_name %}<br>
+						{%= filters.customer_address %}
+					{% } else { %}
+						{%= filters.customer || filters.supplier %}
+					{% } %}</b></td>
+                </tr>
+            </table>
+        </div>
+		<div class="col-xs-2"></div>
+        <div class="col-xs-5 border" style="padding-left: 0mm !important;">
+            <table style="width:103.5%;">
+                <tr>
+                    <td style="width:50%; line-height: 2px; border-right: 1px solid black; border-bottom: 1px solid black;"><b style="line-height: 2px;">Date</b></td>
+                    <td style="line-height: 2px; border-bottom: 1px solid black;">{%= frappe.datetime.str_to_user(filters.report_date) %}</td>
+                </tr>
+                <tr>
+                    <td style="line-height: 2px; border-right: 1px solid black;"><b>Account Ref</b></td>
+                    <td style="line-height: 2px;">{%= filters.customer || filters.supplier %}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+	</div>
+	<h5><b style="margin-top:-2mm; margin-bottom: 4mm !important;">All values are shown in {%=  data[0]["currency"] %}</b></h5>
+	<div class="border" style="margin-top: 4mm !important; padding-left:1mm; padding-right: 1mm;">
+	<table class="table" style="margin-right:3mm; margin-top:1mm; margin-bottom:1mm; border:hidden;">
+		<thead>
+			<tr>
+				{% if(report.report_name === "Accounts Receivable" || report.report_name === "Accounts Payable") { %}
+					<td style="width: 20%;text-align: center; border-bottom:1px solid black; border-right:1px solid black;"><b>{%= __("Inv Ref") %}</b></th>
+					<td style="width: 10%;text-align: center;border-bottom:1px solid black; border-right:1px solid black;"><b>{%= __("Date") %}</b></th>
+					<td style="width: 10%;text-align: center;border-bottom:1px solid black; border-right:1px solid black;"><b>{%= __("Due On") %}</b></th>
+					<th style="width: 4%;text-align: center; border-bottom:1px solid black; border-right:1px solid black; color:black;"><b>{%= __("Age") %}</b></th>
+					<td style="width: 14%;text-align: center; border-right:1px solid black;border-bottom:1px solid black;"><b>{%= __("Details") %}</b></td>
+					<td style="width: 10%;text-align: center;border-bottom:1px solid black; border-right:1px solid black;"><b>{%= __("Debit") %}</b></th>
+					<td style="width: 14%;text-align: center;border-bottom:1px solid black; border-right:1px solid black;"><b>{%= __("Credit") %}</b></th>
+					<!-- {% if(!filters.show_future_payments) { %}
+						<td style="width: 10%; text-align: right;text-align: center;">{%= report.report_name === "Accounts Receivable" ? __('Credit Note') : __('Debit Note') %}</th>
+					{% } %} -->
+					<td style="width: 10%; text-align: right;text-align: center;border-bottom:1px solid black; border-right:1px solid black;"><nobr><b>{%= __("Balance") %}</b></nobr></th>
+				{% } else { %}
+					<td style="width: 40%;border-bottom:1px solid black; border-right:1px solid black;">{%= (filters.customer || filters.supplier) ? __("Remarks"): __("Party") %}</th>
+					<td style="width: 15%;border-bottom:1px solid black; border-right:1px solid black;">{%= __("Total Invoiced Amount") %}</th>
+					<td style="width: 15%;border-bottom:1px solid black; border-right:1px solid black;">{%= __("Total Paid Amount") %}</th>
+					<td style="width: 15%;border-bottom:1px solid black; border-right:1px solid black;">{%= report.report_name === "Accounts Receivable Summary" ? __('Credit Note Amount') : __('Debit Note Amount') %}</th>
+					<td style="width: 15%;border-bottom:1px solid black;">{%= __("Total Outstanding Amount") %}</th>
+				{% } %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for(var i=0, l=data.length; i<l; i++) { %}
+				<tr>
+				{% if(report.report_name === "Accounts Receivable" || report.report_name === "Accounts Payable") { %}
+					{% if(data[i]["party"]) { %}
+						<td style="border-bottom:1px solid black; border-right:1px solid black;">{%= data[i]["voucher_no"] %}</td>
+						<td style="text-align: center; border-bottom:1px solid black; border-right:1px solid black;">{%= frappe.datetime.str_to_user(data[i]["posting_date"]) %}</td>
+						<td style="text-align: center; border-bottom:1px solid black; border-right:1px solid black;">{%= frappe.datetime.str_to_user(data[i]["due_date"]) %}</td>
+						<td style="text-align: right; border-bottom:1px solid black; border-right:1px solid black;">{%= data[i]["age"] %}</td>
+						<td style=" border-right:1px solid black; border-bottom:1px solid black;">{%= data[i]["notes"] %}</td>
+						<td style="text-align: right; border-bottom:1px solid black; border-right:1px solid black;">{%= format_number(data[i]["invoiced"], null, 2) %}</td>
+						<td style="text-align: right; border-bottom:1px solid black; border-right:1px solid black;">{%= format_number(data[i]["paid"], null, 2) %}</td>
+						<td style="text-align: right;border-right: none !important; border-bottom:1px solid black;">{%= format_number(data[i]["outstanding"], null, 2) %}</td>
+
+					{% } else { %}
+						<td style="border-bottom: none !important; border-right:1px solid black;"></td>
+						{% if(!filters.show_future_payments) { %}
+							<td style="border-bottom: none !important; border-right:1px solid black;"></td>
+						{% } %}
+						{% if(report.report_name === "Accounts Receivable" && filters.show_sales_person) { %}
+							<td style="border-bottom: none !important; border-right:1px solid black;"></td>
+						{% } %}
+						<td style="border-bottom: none !important; border-right:1px solid black;"></td>
+						<td style="text-align: right; border-bottom: none !important; border-right:1px solid black;"><b>{%= __("Total") %}</b></td>
+						<td style="text-align: right; border-bottom: none !important; border-right:1px solid black;"></td>
+						<td style="text-align: right; border-bottom: none !important; border-right:1px solid black;"></td>
+						<td style="text-align: right; border-bottom: none !important; border-right:1px solid black;">{%= format_number(data[i]["invoiced"], null, 2 ) %}</td>
+						<td style="text-align: right;border-bottom: none !important; border-right:1px solid black;">{%= format_number(data[i]["paid"], null, 2) %}</td>
+						<td style="text-align: right;border-bottom: none !important; border-right:1px solid black;">{%= format_number(data[i]["outstanding"], null, 2) %}</td>
+				
+					{% } %}
+				{% } else { %}
+				{% if(data[i]["party"]|| "&nbsp;") { %}
+					{% if(!data[i]["is_total_row"]) { %}
+						<td style="border-bottom:1px solid black; border-right:1px solid black;">
+							{% if(!(filters.customer || filters.supplier)) { %}
+								{%= data[i]["party"] %}
+								{% if(data[i]["customer_name"] && data[i]["customer_name"] != data[i]["party"]) { %}
+									<br> {%= data[i]["customer_name"] %}
+								{% } else if(data[i]["supplier_name"] != data[i]["party"]) { %}
+									<br> {%= data[i]["supplier_name"] %}
+								{% } %}
+							{% } %}
+							<br>{%= __("Remarks") %}:
+							{%= data[i]["remarks"] %}
+						</td>
+					{% } else { %}
+							<td style="border-bottom:1px solid black; border-right:1px solid black;"><b>{%= __("Total") %}</b></td>
+						{% } %}
+						<td style="text-align: right; border-bottom:1px solid black; border-right:1px solid black;">{%= format_number(data[i]["invoiced"], null, 2) %}</td>
+						<td style="text-align: right; border-bottom:1px solid black; border-right:1px solid black;">{%= format_number(data[i]["paid"], null, 2) %}</td>
+						<td style="text-align: right; border-bottom:1px solid black; border-right:1px solid black;">{%= format_number(data[i]["credit_note"], null, 2) %}</td>
+						<td style="text-align: right; border-bottom:1px solid black; border-right:1px solid black;">{%= format_number(data[i]["outstanding"], null, 2) %}</td>
+					{% } %}
+				{% } %}
+				</tr>
+			{% } %}
+		</tbody>
+	</table>
+	</div>
+	{% if(filters.show_future_payments) { %}
+		{% var balance_row = data.slice(-1).pop();
+			var start = report.columns.findIndex((elem) => (elem.fieldname == 'age'));
+			var range1 = report.columns[start].label;
+			var range2 = report.columns[start+1].label;
+			var range3 = report.columns[start+2].label;
+			var range4 = report.columns[start+3].label;
+			var range5 = report.columns[start+4].label;
+			var range6 = report.columns[start+5].label;
+		%}
+		{% if(balance_row) { %}
+	<div class="row">
+	<div class="col-xs-12">
+	<div class="col-xs-9 border" style="padding-left: 1mm; padding-right: 1mm;">
+		<table class="table table-condensed" style="margin-top:1mm; margin-bottom:1mm;">
+			<!-- <caption class="text-right">(Amount in {%= data[0]["currency"] || "" %})</caption> -->
+				<colgroup>
+					<col style="width: 30mm;">
+					<!-- <col style="width: 18mm;"> -->
+					<col style="width: 18mm;">
+					<col style="width: 18mm;">
+					<col style="width: 18mm;">
+					<col style="width: 18mm;">
+					<col style="width: 18mm;">
+					<col style="width: 18mm;">
+				</colgroup>
+
+			<thead>
+				<tr>
+					<td style="text-align: center; border-bottom:1px solid black; border-right:1px solid black;">{%= __(" ") %}</th>
+					<!-- <td style="text-align: center;">{%= __(range1) %}</th> -->
+					<td style="text-align: center; border-bottom:1px solid black; border-right:1px solid black;">{%= __(range2) %}</th>
+					<td style="text-align: center; border-bottom:1px solid black; border-right:1px solid black;">{%= __(range3) %}</th>
+					<td style="text-align: center; border-bottom:1px solid black; border-right:1px solid black;">{%= __(range4) %}</th>
+					<td style="text-align: center; border-bottom:1px solid black; border-right:1px solid black;">{%= __(range5) %}</th>
+					<td style="text-align: center; border-bottom:1px solid black; border-right:1px solid black;">{%= __(range6) %}</th>
+					<td style="text-align: center; border-right: none !important; border-bottom:1px solid black;">{%= __("Total") %}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td style="border-bottom: none !important; border-right:1px solid black;">{%= __("Total Outstanding") %}</td>
+					<!-- <td class="text-right">
+						{%= format_number(balance_row["age"], null, 2) %}
+					</td> -->
+					<td class="text-right" style=" border-bottom: none !important; border-right:1px solid black;">
+						{%= format_number(balance_row["range1"], null, 2) %}
+					</td>
+					<td class="text-right" style="border-bottom: none !important; border-right:1px solid black;">
+						{%= format_number(balance_row["range2"], null, 2) %}
+					</td>
+					<td class="text-right" style="border-bottom: none !important; border-right:1px solid black;">
+						{%= format_number(balance_row["range3"], null, 2) %}
+					</td>
+					<td class="text-right" style="border-bottom: none !important; border-right:1px solid black;">
+						{%= format_number(balance_row["range4"], null, 2) %}
+					</td>
+					<td class="text-right" style="border-bottom: none !important; border-right:1px solid black;">
+						{%= format_number(balance_row["range5"], null, 2) %}
+					</td>
+					<td class="text-right" style="border-bottom: none !important; border-right: none !important;">
+						{%= format_number(flt(balance_row["outstanding"]), null, 2) %}
+					</td>
+				</tr>
+					<!-- <td>{%= __("PDC Payment") %}</td> -->
+					<!-- <td></td> -->
+					<!-- <td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td class="text-right">
+						{%= format_currency(flt(balance_row[("future_amount")]), data[0]["currency"]) %}
+					</td> -->
+
+			</tbody>
+		</table>
+	</div>
+	<div class="col-xs-3 border" style="margin-left: 2mm; margin-right:-3mm; padding-left:1mm; padding-right:1mm;">
+		<table class="table" style="margin-top:1mm; margin-bottom:1mm; border:hidden;">
+			<tr>
+				<td class="text-center" style="border-right: none !important;border-bottom: 1px solid black !important;"><b>Invoice Value Overdue</b></td>
+			</tr>
+			<tr>
+				<td class="text-center" style="border-bottom: hidden !important; border-right: none !important;"><b>
+					{% for(var i=0, l=data.length; i<l; i++) { %}
+						{% if(!data[i]["voucher_no"]) { %}
+						{%= format_number(data[i]["invoiced"], null, 2 ) %}
+						{% } %}
+						{% } %}</b></l>
+				</td>
+			</tr>
+		</table>
+	</div>
+	</div>
+</div>
+		{% } %}
+	{% } %}
+
+	<div class="row">
+	<div class="col-xs-12">
+		<div class="col-xs-9 border" style="padding-left:1mm; padding-right:1mm;">
+			<table class="table table-condensed" style="margin-top:1mm; margin-bottom:1mm; border:hidden;">
+				<tr>
+
+					<td style=" border-bottom: none !important; border-right: none !important;"><b>Bank Details: </b>{%= filters.company_address %}</td>
+				</tr>
+			</table>
+		</div>
+		<div class="col-xs-3 border" style="margin-left: 2mm; margin-right:-3mm; padding-left:1mm; padding-right:1mm;">
+			<table class="table table-condensed" style="margin-top:1mm; margin-bottom:1mm; border:hidden;">
+				<tr>
+					<td class="text-center" style="border-right: none !important; border-bottom: 1px solid black !important;">
+						<b>Total Amount Due :</b>
+					</td>
+				</tr>
+				<tr>
+					<td class="text-center" style="border-bottom: none !important; border-right: none !important;">
+					<b>
+						{% for(var i=0, l=data.length; i<l; i++) { %}
+						{% if(!data[i]["voucher_no"]) { %}
+						{%= format_number(data[i]["outstanding"], null, 2 ) %}
+						{% } %}
+						{% } %}</b>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	</div>
+	<p class="text-right text-muted">{{ __("Printed On ") }}{%= frappe.datetime.str_to_user(frappe.datetime.get_datetime_as_string()) %}</p>

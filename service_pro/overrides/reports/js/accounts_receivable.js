@@ -65,7 +65,7 @@ frappe.query_reports["Accounts Receivable"] = {
 				if (customer) {
 					a = []
 					frappe.call({
-						method: "biosme.crud_events.party.get_party_details",
+						method: "service_pro.crud_events.party.get_party_details",
 						args: {
 							"party": customer,
 							"party_type": "Customer"

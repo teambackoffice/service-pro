@@ -5,7 +5,7 @@ frappe.query_reports["Accounts Receivable"] = {
 	"filters": [
 		{
 			"fieldname": "company",
-			"label": __("Companyss"),
+			"label": __("Company"),
 			"fieldtype": "Link",
 			"options": "Company",
 			"reqd": 1,
@@ -13,9 +13,9 @@ frappe.query_reports["Accounts Receivable"] = {
 			on_change: () => {
 				var company = frappe.query_report.get_filter_value('company');
 				if (company) {
-					frappe.db.get_value('Company', company, ["company_description"], function(value) {
+					frappe.db.get_value('Company', company, ["custom_bank_details_for_report"], function(value) {
 
-						frappe.query_report.set_filter_value('company_address', value["company_description"]);
+						frappe.query_report.set_filter_value('company_address', value["custom_bank_details_for_report"]);
 					});
 
 
@@ -55,20 +55,40 @@ frappe.query_reports["Accounts Receivable"] = {
 			}
 		},
 		{
-			"fieldname": "customer",
-			"label": __("Customer"),
-			"fieldtype": "Link",
-			"options": "Customer",
+			"fieldname":"party_type",
+			"label": __("Party Type"),
+			"fieldtype": "Autocomplete",
+			options: get_party_type_options(),
+			on_change: function() {
+				frappe.query_report.set_filter_value('party', "");
+				frappe.query_report.toggle_filter_display('customer_group', frappe.query_report.get_filter_value('party_type') !== "Customer");
+			}
+		},
+		{
+			"fieldname":"party",
+			"label": __("Party"),
+			"fieldtype": "MultiSelectList",
+			get_data: function(txt) {
+				if (!frappe.query_report.filters) return;
+
+				let party_type = frappe.query_report.get_filter_value('party_type');
+				if (!party_type) return;
+
+				return frappe.db.get_link_options(party_type, txt);
+			},
 			on_change: () => {
-				var customer = frappe.query_report.get_filter_value('customer');
+				var customer = frappe.query_report.get_filter_value('party')[0];
+				var party_type = frappe.query_report.get_filter_value('party_type');
+				console.log("PARRTY TYPE")
+				console.log(party_type)
 				var company = frappe.query_report.get_filter_value('company');
-				if (customer) {
+				if (customer && party_type === 'Customer') {
 					a = []
 					frappe.call({
-						method: "service_pro.crud_events.party.get_party_details",
+						method: "biosme.crud_events.party.get_party_details",
 						args: {
 							"party": customer,
-							"party_type": "Customer"
+							"party_type": party_type
 						},
 						callback: function (r) {
 							$.each(r.message, function(k, v) {
@@ -79,18 +99,21 @@ frappe.query_reports["Accounts Receivable"] = {
 							});
 						}
 					});
-					frappe.db.get_value('Customer', customer, ["tax_id", "customer_name", "payment_terms"], function(value) {
+					if(party_type === 'Customer'){
+						frappe.db.get_value('Customer', customer, ["tax_id", "customer_name", "payment_terms"], function(value) {
 						frappe.query_report.set_filter_value('tax_id', value["tax_id"]);
 						frappe.query_report.set_filter_value('customer_name', value["customer_name"]);
 						frappe.query_report.set_filter_value('payment_terms', value["payment_terms"]);
-					});
+						});
 
-					frappe.db.get_value('Customer Credit Limit', {'parent': customer, 'company': company},
-						["credit_limit"], function(value) {
-						if (value) {
-							frappe.query_report.set_filter_value('credit_limit', value["credit_limit"]);
-						}
-					}, "Customer");
+						frappe.db.get_value('Customer Credit Limit', {'parent': customer, 'company': company},
+							["credit_limit"], function(value) {
+							if (value) {
+								frappe.query_report.set_filter_value('credit_limit', value["credit_limit"]);
+							}
+						}, "Customer");
+					}
+
 				} else {
 					frappe.query_report.set_filter_value('tax_id', "");
 					frappe.query_report.set_filter_value('customer_name', "");
@@ -261,3 +284,15 @@ frappe.query_reports["Accounts Receivable"] = {
 }
 
 erpnext.utils.add_dimensions('Accounts Receivable', 9);
+
+function get_party_type_options() {
+	let options = [];
+	frappe.db.get_list(
+		"Party Type", {filters:{"account_type": "Receivable"}, fields:['name']}
+	).then((res) => {
+		res.forEach((party_type) => {
+			options.push(party_type.name);
+		});
+	});
+	return options;
+}

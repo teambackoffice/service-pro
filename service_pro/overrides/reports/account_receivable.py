@@ -9,6 +9,7 @@ from erpnext.accounts.report.accounts_receivable.accounts_receivable import (
 def execute(filters=None):
 	args = {
 		"party_type": "Customer",
+		"party": filters.get("customer"),
 		"account_type": "Receivable",
 		"naming_by": ["Selling Settings", "cust_master_name"],
 	}

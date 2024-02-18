@@ -23,8 +23,10 @@ class CustomReceivableReport(ReceivablePayableReport):
 
 	def set_notes(self, row):
 		note = frappe.db.get_value("Sales Invoice", row.voucher_no, "notes")
+		customers_po = frappe.db.get_value("Sales Invoice", row.voucher_no, "po_no")
 		if note:
 			row["notes"] = note
+			row["po_no"] = customers_po
 
 	def get_columns(self):
 		super().get_columns()

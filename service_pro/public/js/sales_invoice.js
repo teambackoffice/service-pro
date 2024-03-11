@@ -33,6 +33,10 @@ frappe.ui.form.on('Sales Invoice', {
     },
     is_pos: function(frm) {
         frm.toggle_display("update_stock", frm.doc.is_pos)
+        frm.doc.update_stock = 1
+        if (!frm.doc.is_pos){
+            frm.doc.update_stock = 0
+        }
     },
 
     customer: function(frm){

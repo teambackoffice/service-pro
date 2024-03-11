@@ -234,3 +234,10 @@ def get_dn_qty(name):
 			total_qty += d.qty
 
 	return float(total_qty)
+
+
+def validate_so(doc, method):
+	if not doc.is_pos:
+		for it in doc.get("items"):
+			if not it.sales_order:
+				frappe.throw("The Item {0}-{1} Does not have Sales Order".format(it.item_code,it.item_name))

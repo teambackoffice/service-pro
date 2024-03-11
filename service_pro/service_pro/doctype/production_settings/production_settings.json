@@ -10,6 +10,9 @@
   "finish_good_warehouse",
   "income_account",
   "finish_good_cost_center",
+  "column_break_lmvsc",
+  "credit_note_user_role",
+  "debit_note_user_role",
   "column_break_gmkpj",
   "automatically_create_jv",
   "raw_material_defaults_section",
@@ -180,12 +183,28 @@
    "fieldname": "automatically_create_jv",
    "fieldtype": "Check",
    "label": "Automatically Create JV"
+  },
+  {
+   "fieldname": "column_break_lmvsc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "credit_note_user_role",
+   "fieldtype": "Link",
+   "label": "Credit Note User Role",
+   "options": "Role"
+  },
+  {
+   "fieldname": "debit_note_user_role",
+   "fieldtype": "Link",
+   "label": "Debit Note User Role",
+   "options": "Role"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-10-30 19:42:18.082223",
+ "modified": "2024-03-11 15:18:53.543570",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",
@@ -198,6 +217,14 @@
    "print": 1,
    "read": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "All",
    "share": 1,
    "write": 1
   }

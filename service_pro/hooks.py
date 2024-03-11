@@ -38,7 +38,8 @@ doctype_js = {
     "Delivery Note" : "public/js/delivery_note.js",
     "Additional Salary" : "public/js/additional_salary.js",
     "Landed Cost Voucher": "public/js/landed_cost_voucher.js",
-    "Item": "public/js/item.js"
+    "Item": "public/js/item.js",
+    "Purchase Invoice" : "public/js/purchase_invoice.js",
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -96,6 +97,7 @@ doc_events = {
 	"Sales Invoice": {
 		"on_submit": "service_pro.doc_events.sales_invoice.on_submit_si",
 		"on_cancel": "service_pro.doc_events.sales_invoice.on_cancel_si",
+        "validate":"service_pro.doc_events.sales_invoice.validate_so",
 	},
     #"File": {
 		#"on_trash": "service_pro.doc_events.file.on_trash_f",

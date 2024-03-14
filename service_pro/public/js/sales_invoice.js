@@ -19,7 +19,7 @@ cur_frm.cscript.sales_person = function(frm,cdt, cdn){
 frappe.ui.form.on('Sales Invoice', {
     
     refresh: function(frm) {
-        frm.toggle_display("update_stock", frm.doc.is_pos)
+        // frm.toggle_display("update_stock", frm.doc.is_pos)
         frappe.db.get_single_value("Production Settings", "credit_note_user_role").then((value) => {
             if(value) {
                 if (!frappe.user_roles.includes(value)) {
@@ -32,7 +32,7 @@ frappe.ui.form.on('Sales Invoice', {
         });  
     },
     is_pos: function(frm) {
-        frm.toggle_display("update_stock", frm.doc.is_pos)
+        // frm.toggle_display("update_stock", frm.doc.is_pos)
         frm.doc.update_stock = 1
         if (!frm.doc.is_pos){
             frm.doc.update_stock = 0

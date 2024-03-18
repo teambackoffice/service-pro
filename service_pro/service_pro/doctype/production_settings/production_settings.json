@@ -13,6 +13,7 @@
   "column_break_lmvsc",
   "credit_note_user_role",
   "debit_note_user_role",
+  "enable_sales_order_validation",
   "column_break_gmkpj",
   "automatically_create_jv",
   "raw_material_defaults_section",
@@ -199,12 +200,18 @@
    "fieldtype": "Link",
    "label": "Debit Note User Role",
    "options": "Role"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable_sales_order_validation",
+   "fieldtype": "Check",
+   "label": "Enable Sales Order Validation"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-03-11 15:18:53.543570",
+ "modified": "2024-03-18 18:02:20.631679",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

@@ -234,7 +234,8 @@ fixtures = [
                     "Item-custom_edit_naming_fields",
 
                     "Price List-custom_section_break_a0uow",
-                    "Price List-custom_maximum_user_discount"
+                    "Price List-custom_maximum_user_discount",
+                    "Sales Order-custom_production",
                 ]
             ]
         ]

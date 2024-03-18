@@ -211,6 +211,25 @@ class Production(Document):
 		si = frappe.get_doc(doc_si)
 		si.insert(ignore_permissions=1)
 		return si.name
+	
+	@frappe.whitelist()
+	def generate_so(self):
+		if self.input_qty > self.qty_for_sidn:
+			frappe.throw("Maximum qty that can be generated is " + str(self.qty))
+		default_tax = frappe.db.sql(""" SELECT * FROM `tabSales Taxes and Charges Template` WHERE is_default = 1""",as_dict=1)
+		doc_so = {
+			"doctype": "Sales Order",
+			"customer": self.customer,
+			"delivery_date":self.delivery_date,
+			"items": self.get_si_items("SI", self.input_qty),
+			"custom_production": self.get_production_items(self.input_qty),
+		}
+		if len(default_tax) > 0:
+			doc_so['taxes_and_charges'] = default_tax[0].name
+
+		so = frappe.get_doc(doc_so)
+		so.insert(ignore_permissions=1)
+		return so.name
 
 	@frappe.whitelist()
 	def generate_jv(self):

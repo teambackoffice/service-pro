@@ -555,6 +555,45 @@ cur_frm.refresh_field("item_selling_price_list")
                                 doctype: "Sales Invoice"
                             },
                             callback: function (r) {
+
+
+                                if (cur_frm.doc.qty_for_sidn > 0) {
+
+                                    cur_frm.add_custom_button(__("Sales Order"), () => {
+                                        let d = new frappe.ui.Dialog({
+                                        title: "Enter Qty",
+                                        fields: [
+                                            {
+                                                label: 'Qty',
+                                                fieldname: 'qty',
+                                                fieldtype: 'Float',
+                                                default: cur_frm.doc.qty_for_sidn
+                                            }
+                                        ],
+                                        primary_action_label: 'Generate',
+                                        primary_action(values) {
+
+                                            cur_frm.doc.input_qty = values.qty
+                                            cur_frm.call({
+                                            doc: cur_frm.doc,
+                                            method: 'generate_so',
+                                            freeze: true,
+                                            freeze_message: "Generating Sales Order ...",
+                                            callback: (r) => {
+                                                        cur_frm.reload_doc()
+
+                                                frappe.set_route("Form", "Sales Order", r.message);
+                                            }
+                                        })
+                                        }
+                                    });
+
+                                    d.show();
+
+                                    },"Generate");
+
+                                }
+
                                 if (cur_frm.doc.qty_for_sidn > 0) {
 
                                     cur_frm.add_custom_button(__("Sales Invoice"), () => {

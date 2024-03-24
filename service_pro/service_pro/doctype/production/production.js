@@ -544,7 +544,7 @@ cur_frm.refresh_field("item_selling_price_list")
                         }, "Generate");
                         }
 
-                    } else if(r.message && generate_button && ["In Progress", "Partially Completed", "Partially Delivered", "To Deliver", "To Bill", "To Deliver and Bill"].includes(cur_frm.doc.status) && cur_frm.doc.docstatus && cur_frm.doc.type !== "Re-Service"){
+                    } else if(r.message && generate_button && ["In Progress", "Partially Completed", "Partially Delivered", "To Deliver", "To Bill", "To Deliver and Bill","Partially Sales Order"].includes(cur_frm.doc.status) && cur_frm.doc.docstatus && cur_frm.doc.type !== "Re-Service"){
                         cur_frm.set_df_property('raw_material', 'read_only', 1);
                         cur_frm.set_df_property('scoop_of_work', 'read_only', 1);
 

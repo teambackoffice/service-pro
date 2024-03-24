@@ -96,8 +96,8 @@ doctype_js = {
 doc_events = {
 	"Sales Invoice": {
 		"on_submit": "service_pro.doc_events.sales_invoice.on_submit_si",
+        "before_submit":"service_pro.doc_events.sales_invoice.validate_so",
 		"on_cancel": "service_pro.doc_events.sales_invoice.on_cancel_si",
-        "validate":"service_pro.doc_events.sales_invoice.validate_so",
 	},
     #"File": {
 		#"on_trash": "service_pro.doc_events.file.on_trash_f",

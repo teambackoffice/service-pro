@@ -468,6 +468,13 @@ def get_dn_or_si(name):
 
 @frappe.whitelist()
 def get_dn_si_qty(item_code, qty, name):
+
+	so_query = """ 
+		SELECT SIP.qty as qty, SO.status FROM `tabSales Order` AS SO 
+		INNER JOIN `tabSales Invoice Production` AS SIP ON SO.name = SIP.parent 
+		WHERE SIP.reference=%s and SIP.parenttype=%s and SO.docstatus = 1 and SO.status!='Cancelled'
+		"""
+	so = frappe.db.sql(so_query, (name, "Sales Order"), as_dict=1)
 	si_query = """ 
 		SELECT SIP.qty as qty, SI.status FROM `tabSales Invoice` AS SI 
 		INNER JOIN `tabSales Invoice Production` AS SIP ON SI.name = SIP.parent 
@@ -482,7 +489,10 @@ def get_dn_si_qty(item_code, qty, name):
 	dn = frappe.db.sql(dn_query, (name, "Delivery Note"), as_dict=1)
 
 	total_qty = 0
-
+	if len(so)> 0:
+		for k in so:
+			total_qty += k.qty
+		return float(qty) - float(total_qty)
 	if len(si) > len(dn):
 		for i in si:
 			total_qty += i.qty
@@ -493,8 +503,8 @@ def get_dn_si_qty(item_code, qty, name):
 	elif len(dn) == len(si):
 		for d in dn:
 			total_qty += d.qty
-	print("TOTALALLL")
-	print(total_qty)
+	# print("TOTALALLL")
+	# print(total_qty)
 	return float(qty) - float(total_qty)
 
 

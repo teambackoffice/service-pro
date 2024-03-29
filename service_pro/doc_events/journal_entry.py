@@ -10,6 +10,10 @@ def submit_jv(doc, method):
         frappe.db.commit()
 
 def cancel_related_party_entry(doc, method=None):
+    if doc.sales_invoice:
+        frappe.db.sql(""" UPDATE `tabSales Invoice` SET journal_entry='' WHERE name=%s """, doc.sales_invoice)
+        frappe.db.commit()
+
     if doc.related_party_entry and frappe.db.exists("Related Party Entry", doc.related_party_entry):
         #Find journal type and related payment entry
         rpe = frappe.get_doc("Related Party Entry", doc.related_party_entry)

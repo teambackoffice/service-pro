@@ -8,3 +8,16 @@ def on_so_submit(doc, method=None):
 			if max_disc and over_disc:
 				frappe.throw("Maximum allowed discount is {0} for item {1}".format(max_disc, frappe.db.get_value("Sales Order Item", over_disc, ['item_code'])))
 	
+	if doc.custom_production:
+		for prod in doc.custom_production:
+			if prod.reference:
+				pd = frappe.get_doc("Production",prod.reference)
+				if prod.qty <= pd.qty:
+					frappe.db.set_value("Production", prod.reference, "status", "Partially Sales Order")
+					frappe.db.commit()
+
+				else:
+					frappe.db.set_value("Production", prod.reference, "status", "Completed")
+					frappe.db.commit()
+
+		

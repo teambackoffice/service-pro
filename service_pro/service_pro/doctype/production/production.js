@@ -544,7 +544,7 @@ cur_frm.refresh_field("item_selling_price_list")
                         }, "Generate");
                         }
 
-                    } else if(r.message && generate_button && ["In Progress", "Partially Completed", "Partially Delivered", "To Deliver", "To Bill", "To Deliver and Bill"].includes(cur_frm.doc.status) && cur_frm.doc.docstatus && cur_frm.doc.type !== "Re-Service"){
+                    } else if(r.message && generate_button && ["In Progress", "Partially Completed", "Partially Delivered", "To Deliver", "To Bill", "To Deliver and Bill","Partially Sales Order"].includes(cur_frm.doc.status) && cur_frm.doc.docstatus && cur_frm.doc.type !== "Re-Service"){
                         cur_frm.set_df_property('raw_material', 'read_only', 1);
                         cur_frm.set_df_property('scoop_of_work', 'read_only', 1);
 
@@ -555,6 +555,45 @@ cur_frm.refresh_field("item_selling_price_list")
                                 doctype: "Sales Invoice"
                             },
                             callback: function (r) {
+
+
+                                if (cur_frm.doc.qty_for_sidn > 0) {
+
+                                    cur_frm.add_custom_button(__("Sales Order"), () => {
+                                        let d = new frappe.ui.Dialog({
+                                        title: "Enter Qty",
+                                        fields: [
+                                            {
+                                                label: 'Qty',
+                                                fieldname: 'qty',
+                                                fieldtype: 'Float',
+                                                default: cur_frm.doc.qty_for_sidn
+                                            }
+                                        ],
+                                        primary_action_label: 'Generate',
+                                        primary_action(values) {
+
+                                            cur_frm.doc.input_qty = values.qty
+                                            cur_frm.call({
+                                            doc: cur_frm.doc,
+                                            method: 'generate_so',
+                                            freeze: true,
+                                            freeze_message: "Generating Sales Order ...",
+                                            callback: (r) => {
+                                                        cur_frm.reload_doc()
+
+                                                frappe.set_route("Form", "Sales Order", r.message);
+                                            }
+                                        })
+                                        }
+                                    });
+
+                                    d.show();
+
+                                    },"Generate");
+
+                                }
+
                                 if (cur_frm.doc.qty_for_sidn > 0) {
 
                                     cur_frm.add_custom_button(__("Sales Invoice"), () => {

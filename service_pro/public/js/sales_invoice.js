@@ -17,19 +17,39 @@ cur_frm.cscript.sales_person = function(frm,cdt, cdn){
     }
 }
 frappe.ui.form.on('Sales Invoice', {
+    
+    refresh: function(frm) {
+        // frm.toggle_display("update_stock", frm.doc.is_pos)
+        frappe.db.get_single_value("Production Settings", "credit_note_user_role").then((value) => {
+            if(value) {
+                if (!frappe.user_roles.includes(value)) {
+                    frm.toggle_display("is_return", false)
+                    setTimeout(() => {
+                            frm.remove_custom_button('Return / Credit Note', "Create");
+                    }, 500);
+                }
+            }                           
+        });  
+    },
+    is_pos: function(frm) {
+        // frm.toggle_display("update_stock", frm.doc.is_pos)
+        frm.doc.update_stock = 1
+        if (!frm.doc.is_pos){
+            frm.doc.update_stock = 0
+        }
+    },
+
     customer: function(frm){
 
-                filter_link_field(cur_frm)
+        filter_link_field(cur_frm)
         if(cur_frm.doc.customer){
-                        frappe.db.get_doc("Customer", cur_frm.doc.customer)
-                            .then(customer => {
-                                cur_frm.doc.sales_man = customer.sales_man
-                                cur_frm.refresh_field("sales_man")
-                        })
-
+            frappe.db.get_doc("Customer", cur_frm.doc.customer)
+                .then(customer => {
+                    cur_frm.doc.sales_man = customer.sales_man
+                    cur_frm.refresh_field("sales_man")
+            })
         }
-
-}
+    }
 })
 cur_frm.cscript.paid = function(frm){
     frappe.db.get_single_value('Production Settings', 'expense_cost_center')

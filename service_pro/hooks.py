@@ -38,7 +38,8 @@ doctype_js = {
     "Delivery Note" : "public/js/delivery_note.js",
     "Additional Salary" : "public/js/additional_salary.js",
     "Landed Cost Voucher": "public/js/landed_cost_voucher.js",
-    "Item": "public/js/item.js"
+    "Item": "public/js/item.js",
+    "Purchase Invoice" : "public/js/purchase_invoice.js",
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -95,6 +96,7 @@ doctype_js = {
 doc_events = {
 	"Sales Invoice": {
 		"on_submit": "service_pro.doc_events.sales_invoice.on_submit_si",
+        "before_submit":"service_pro.doc_events.sales_invoice.validate_so",
 		"on_cancel": "service_pro.doc_events.sales_invoice.on_cancel_si",
 	},
     #"File": {
@@ -232,7 +234,8 @@ fixtures = [
                     "Item-custom_edit_naming_fields",
 
                     "Price List-custom_section_break_a0uow",
-                    "Price List-custom_maximum_user_discount"
+                    "Price List-custom_maximum_user_discount",
+                    "Sales Order-custom_production",
                 ]
             ]
         ]

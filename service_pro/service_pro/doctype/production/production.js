@@ -191,6 +191,18 @@ cur_frm.cscript.cylinder_service = function (frm, cdt, cdn) {
     }
 }
 frappe.ui.form.on('Production', {
+    generate_item: function(){
+      cur_frm.call({
+          doc: cur_frm.doc,
+          method: "generate_item",
+          freeze: true,
+          freeze_message: "Generating Item....",
+          callback: function(r){
+              // cur_frm.doc.item_code_prod = r.message
+              // cur_frm.refresh_field("item_code_prod")
+          }
+      })
+    },
     site_job_report: function () {
         if(cur_frm.doc.site_job_report){
             frappe.db.get_doc("Site Job Report", cur_frm.doc.site_job_report)

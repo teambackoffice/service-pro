@@ -3,6 +3,17 @@
 
 frappe.ui.form.on('Production Settings', {
 	refresh: function(frm) {
+	     cur_frm.call({
+              doc: cur_frm.doc,
+              method: "get_series",
+              freeze: true,
+              freeze_message: "Generating Item....",
+              callback: function(r){
+                  cur_frm.set_df_property("item_naming_series","options",r.message)
+                  // cur_frm.doc.item_code_prod = r.message
+                  // cur_frm.refresh_field("item_code_prod")
+              }
+          })
          cur_frm.set_query('income_account', () => {
         return {
             filters: {
@@ -31,5 +42,7 @@ frappe.ui.form.on('Production Settings', {
             }
         }
         })
-	}
+	},
+
+
 });

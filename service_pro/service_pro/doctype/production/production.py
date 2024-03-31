@@ -10,6 +10,32 @@ from erpnext.stock.stock_ledger import get_previous_sle
 from frappe.utils import cint, flt
 from datetime import datetime
 class Production(Document):
+
+	@frappe.whitelist()
+	def generate_item(self):
+		if not self.item_name:
+			frappe.throw("Please add valid item name")
+		if not self.umo:
+			frappe.throw("Please add valid UOM")
+
+		item_group = frappe.db.get_value("Production Settings", None, "item_group")
+		item_naming_series = frappe.db.get_value("Production Settings", None, "item_naming_series")
+		if not item_group:
+			frappe.throw("Please set default item group in Production Settings")
+		if not item_naming_series:
+			frappe.throw("Please set default Naming Series in Production Settings")
+
+
+		doctype = {
+			"doctype": "Item",
+			"item_code": self.item_name,
+			"generate_item": self.umo,
+			"item_group": item_group,
+			"naming_series": item_naming_series,
+		}
+		item = frappe.get_doc(doctype).insert()
+		frappe.db.commit()
+		self.item_code_prod = item.name
 	@frappe.whitelist()
 	def change_status(self, status):
 		if status == "Closed" or status == "Completed":

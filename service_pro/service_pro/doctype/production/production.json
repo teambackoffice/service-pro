@@ -28,6 +28,7 @@
   "old_sk_number",
   "production_status",
   "finished_item_section",
+  "generate_item",
   "item_code_prod",
   "item_name",
   "qty",
@@ -130,9 +131,9 @@
   {
    "fieldname": "umo",
    "fieldtype": "Link",
-   "label": "UMO",
+   "label": "UOM",
    "options": "UOM",
-   "read_only": 1
+   "reqd": 1
   },
   {
    "fieldname": "column_break_17",
@@ -222,7 +223,7 @@
    "fieldtype": "Select",
    "hidden": 1,
    "label": "Status",
-   "options": "In Progress\nPartially Delivered\nPartially Sales Order\nCompleted\nTo Deliver and Bill\nTo Deliver\nTo Bill\nClosed\nLinked"
+   "options": "In Progress\nPartially Delivered\nCompleted\nTo Deliver and Bill\nTo Deliver\nTo Bill\nClosed\nLinked"
   },
   {
    "fieldname": "cost_center",
@@ -271,6 +272,7 @@
    "fieldtype": "Link",
    "label": "Item Code",
    "options": "Item",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -344,13 +346,14 @@
    "depends_on": "eval: doc.docstatus == 1",
    "fieldname": "qty_for_sidn",
    "fieldtype": "Float",
-   "label": "Qty for SO/SI/DN",
+   "label": "Qty for SI/DN",
    "read_only": 1
   },
   {
    "fieldname": "item_name",
    "fieldtype": "Data",
-   "label": "Item Name"
+   "label": "Item Name",
+   "reqd": 1
   },
   {
    "fieldname": "customer_number",
@@ -490,12 +493,18 @@
    "fieldtype": "Link",
    "label": "Site Job Report",
    "options": "Site Job Report"
+  },
+  {
+   "depends_on": "eval: !doc.item_code_prod",
+   "fieldname": "generate_item",
+   "fieldtype": "Button",
+   "label": "Generate Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-03-24 15:53:00.570304",
+ "modified": "2024-03-31 09:51:58.729009",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

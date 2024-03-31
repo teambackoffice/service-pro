@@ -7,13 +7,11 @@
  "field_order": [
   "mandatory_additional_cost_in_production",
   "finished_good_defaults_section",
+  "item_naming_series",
+  "item_group",
   "finish_good_warehouse",
   "income_account",
   "finish_good_cost_center",
-  "column_break_lmvsc",
-  "credit_note_user_role",
-  "debit_note_user_role",
-  "enable_sales_order_validation",
   "column_break_gmkpj",
   "automatically_create_jv",
   "raw_material_defaults_section",
@@ -186,32 +184,21 @@
    "label": "Automatically Create JV"
   },
   {
-   "fieldname": "column_break_lmvsc",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "credit_note_user_role",
+   "fieldname": "item_group",
    "fieldtype": "Link",
-   "label": "Credit Note User Role",
-   "options": "Role"
+   "label": "Item Group",
+   "options": "Item Group"
   },
   {
-   "fieldname": "debit_note_user_role",
-   "fieldtype": "Link",
-   "label": "Debit Note User Role",
-   "options": "Role"
-  },
-  {
-   "default": "0",
-   "fieldname": "enable_sales_order_validation",
-   "fieldtype": "Check",
-   "label": "Enable Sales Order Validation"
+   "fieldname": "item_naming_series",
+   "fieldtype": "Select",
+   "label": "Item Naming Series"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-03-18 18:02:20.631679",
+ "modified": "2024-03-31 10:39:33.430308",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",
@@ -224,14 +211,6 @@
    "print": 1,
    "read": 1,
    "role": "System Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "email": 1,
-   "print": 1,
-   "read": 1,
-   "role": "All",
    "share": 1,
    "write": 1
   }

@@ -12,6 +12,10 @@
   "finish_good_warehouse",
   "income_account",
   "finish_good_cost_center",
+  "column_break_lmvsc",
+  "credit_note_user_role",
+  "debit_note_user_role",
+  "enable_sales_order_validation",
   "column_break_gmkpj",
   "automatically_create_jv",
   "raw_material_defaults_section",
@@ -183,6 +187,29 @@
    "fieldtype": "Check",
    "label": "Automatically Create JV"
   },
+  {
+   "fieldname": "column_break_lmvsc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "credit_note_user_role",
+   "fieldtype": "Link",
+   "label": "Credit Note User Role",
+   "options": "Role"
+  },
+  {
+   "fieldname": "debit_note_user_role",
+   "fieldtype": "Link",
+   "label": "Debit Note User Role",
+   "options": "Role"
+   
+  },
+  {
+    "default": "0",
+    "fieldname": "enable_sales_order_validation",
+    "fieldtype": "Check",
+    "label": "Enable Sales Order Validation"
+   },
   {
    "fieldname": "item_group",
    "fieldtype": "Link",

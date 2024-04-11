@@ -28,7 +28,7 @@ class Production(Document):
 
 		doctype = {
 			"doctype": "Item",
-			"item_code": self.item_name,
+			"item_name": self.item_name,
 			"stock_uom": self.umo,
 			"item_group": item_group,
 			"naming_series": item_naming_series,

@@ -8,10 +8,12 @@
   "materials",
   "item_name",
   "qty",
+  "column_break_fqfe",
   "description"
  ],
  "fields": [
   {
+   "columns": 2,
    "fieldname": "materials",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -20,6 +22,7 @@
    "reqd": 1
   },
   {
+   "columns": 1,
    "default": "1",
    "fieldname": "qty",
    "fieldtype": "Float",
@@ -27,21 +30,27 @@
    "label": "Qty"
   },
   {
+   "columns": 5,
    "fieldname": "description",
-   "fieldtype": "Data",
+   "fieldtype": "Text Editor",
    "in_list_view": 1,
    "label": "Description"
   },
   {
+   "columns": 2,
    "fieldname": "item_name",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Item Name"
+  },
+  {
+   "fieldname": "column_break_fqfe",
+   "fieldtype": "Column Break"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2020-08-05 10:29:46.016151",
+ "modified": "2024-07-25 07:28:11.661245",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Receipt Note Item",
@@ -50,5 +59,6 @@
  "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

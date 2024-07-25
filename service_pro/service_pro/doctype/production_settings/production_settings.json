@@ -5,38 +5,51 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "details_section",
   "mandatory_additional_cost_in_production",
+  "column_break_kkcy",
+  "enable_sales_order_validation",
+  "column_break_ajia",
+  "automatically_create_jv",
   "finished_good_defaults_section",
   "item_naming_series",
   "item_group",
-  "finish_good_warehouse",
-  "income_account",
   "finish_good_cost_center",
   "column_break_lmvsc",
   "credit_note_user_role",
   "debit_note_user_role",
-  "enable_sales_order_validation",
-  "column_break_gmkpj",
-  "automatically_create_jv",
+  "column_break_ezez",
+  "income_account",
+  "finish_good_warehouse",
   "raw_material_defaults_section",
   "raw_material_warehouse",
-  "raw_material_cost_center",
   "rate_of_materials_based_on",
+  "column_break_buan",
+  "raw_material_cost_center",
   "price_list",
+  "site_job_report_section",
+  "warehouse_sjr",
+  "rate_of_materials_based_on_sjr",
+  "column_break_ofcb",
+  "cost_center_sjr",
+  "price_list_sjr",
+  "inspection_settings_section",
+  "image_width",
+  "column_break_vmpu",
+  "image_height",
+  "other_tab",
   "incentive_journal_section",
   "expense_account",
   "expense_cost_center",
   "column_break_13",
   "showroom_cash",
   "showroom_card",
-  "site_job_report_section",
-  "warehouse_sjr",
-  "cost_center_sjr",
-  "rate_of_materials_based_on_sjr",
-  "price_list_sjr",
-  "inspection_settings_section",
-  "image_width",
-  "image_height"
+  "sales_partner_payments_section",
+  "payable_account",
+  "column_break_lbjw",
+  "expense_accounts",
+  "column_break_xqfs",
+  "cost_center"
  ],
  "fields": [
   {
@@ -177,11 +190,6 @@
    "label": "Mandatory Additional Cost in Production"
   },
   {
-   "fieldname": "column_break_gmkpj",
-   "fieldtype": "Section Break",
-   "label": "Related Party Entry"
-  },
-  {
    "default": "0",
    "fieldname": "automatically_create_jv",
    "fieldtype": "Check",
@@ -202,14 +210,13 @@
    "fieldtype": "Link",
    "label": "Debit Note User Role",
    "options": "Role"
-   
   },
   {
-    "default": "0",
-    "fieldname": "enable_sales_order_validation",
-    "fieldtype": "Check",
-    "label": "Enable Sales Order Validation"
-   },
+   "default": "0",
+   "fieldname": "enable_sales_order_validation",
+   "fieldtype": "Check",
+   "label": "Enable Sales Order Validation"
+  },
   {
    "fieldname": "item_group",
    "fieldtype": "Link",
@@ -220,12 +227,77 @@
    "fieldname": "item_naming_series",
    "fieldtype": "Select",
    "label": "Item Naming Series"
+  },
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "other_tab",
+   "fieldtype": "Tab Break",
+   "label": "Other Details"
+  },
+  {
+   "fieldname": "column_break_buan",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ofcb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_vmpu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ezez",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_kkcy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sales_partner_payments_section",
+   "fieldtype": "Section Break",
+   "label": "Sales Partner Payments"
+  },
+  {
+   "fieldname": "payable_account",
+   "fieldtype": "Link",
+   "label": "Payable Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_lbjw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "expense_accounts",
+   "fieldtype": "Link",
+   "label": "Expense Accounts",
+   "options": "Account"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "column_break_ajia",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_xqfs",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-03-31 10:39:33.430308",
+ "modified": "2024-07-25 07:18:23.344894",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

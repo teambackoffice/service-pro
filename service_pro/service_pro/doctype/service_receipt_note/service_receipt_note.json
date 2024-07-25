@@ -6,24 +6,31 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "details_section",
+  "company",
+  "column_break_oqqz",
   "status",
   "series",
   "column_break_2",
-  "posting_date",
   "customer",
   "customer_name",
   "contact_person",
-  "contact_number",
   "column_break_8",
-  "estimated_date",
   "customer_contact_number",
   "customer_ref",
-  "sales_man",
-  "sales_man_name",
-  "section_break_12",
+  "contact_number",
+  "column_break_ifcr",
+  "posting_date",
+  "estimated_date",
+  "section_break_jyhw",
+  "sales_team",
+  "section_break_ehqv",
+  "remarks",
+  "materials_tab",
   "materials",
-  "amended_from",
-  "letter_head"
+  "section_break_vvts",
+  "letter_head",
+  "amended_from"
  ],
  "fields": [
   {
@@ -79,36 +86,11 @@
    "label": "Estimated Date"
   },
   {
-   "fetch_from": "customer.sales_man",
-   "fieldname": "sales_man",
-   "fieldtype": "Link",
-   "label": "Sales Man",
-   "options": "Employee"
-  },
-  {
-   "fieldname": "section_break_12",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "materials",
    "fieldtype": "Table",
    "label": "Materials",
-   "options": "Service Receipt Note Item"
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Service Receipt Note",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
-   "fieldname": "sales_man_name",
-   "fieldtype": "Data",
-   "label": "Sales Man Name",
-   "read_only": 1
+   "options": "Service Receipt Note Item",
+   "reqd": 1
   },
   {
    "fieldname": "customer_contact_number",
@@ -126,7 +108,7 @@
    "fieldname": "series",
    "fieldtype": "Select",
    "label": "Series",
-   "options": "RN-"
+   "options": "SRN.YY.####"
   },
   {
    "allow_on_submit": 1,
@@ -136,14 +118,72 @@
    "hidden": 1,
    "label": "Status",
    "options": "\nClosed\nTo Inspection\nTo Estimation\nTo Production"
+  },
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_oqqz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ifcr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "materials_tab",
+   "fieldtype": "Tab Break",
+   "label": "Materials"
+  },
+  {
+   "fieldname": "section_break_vvts",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_jyhw",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Service Receipt Note",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "sales_team",
+   "fieldtype": "Table",
+   "label": "Sales Team",
+   "options": "Sales Team"
+  },
+  {
+   "fieldname": "section_break_ehqv",
+   "fieldtype": "Section Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-23 12:15:27.458211",
+ "modified": "2024-07-25 07:29:48.366573",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Receipt Note",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -161,5 +201,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

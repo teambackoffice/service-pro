@@ -7,10 +7,11 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "naming_series",
+  "company",
   "employee",
   "employee_name",
   "column_break_4",
+  "naming_series",
   "posting_date",
   "department",
   "section_break_8",
@@ -20,7 +21,6 @@
   "claim_amount",
   "section_break_7",
   "status",
-  "company",
   "column_break_18",
   "employee_account",
   "mode_of_payment",
@@ -31,7 +31,7 @@
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Series",
-   "options": "PCR-.YYYY.-"
+   "options": "PCR.YY.####"
   },
   {
    "fieldname": "employee",
@@ -154,10 +154,11 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-03-29 19:05:37.786668",
+ "modified": "2024-07-25 08:18:32.873731",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Petty Cash Request",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
@@ -190,5 +191,6 @@
  "search_fields": "employee,employee_name",
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

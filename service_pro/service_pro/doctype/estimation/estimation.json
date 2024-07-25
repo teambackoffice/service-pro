@@ -6,17 +6,18 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "status",
-  "series",
-  "posting_date",
-  "receipt_note",
+  "company",
   "customer",
   "customer_name",
   "contact_person",
   "column_break_7",
+  "status",
+  "receipt_note",
   "customer_reference",
-  "date_of_receipt",
   "estimated_date",
+  "column_break_jgag",
+  "posting_date",
+  "date_of_receipt",
   "delivered_date",
   "inspections_section",
   "inspections",
@@ -28,17 +29,20 @@
   "t_length",
   "finished_good",
   "item_code_est",
-  "item_name",
-  "rate",
   "column_break_22",
+  "item_name",
+  "section_break_mwxv",
   "qty",
+  "total_cost",
+  "column_break_rqjh",
+  "rate",
+  "scoop_of_work_total",
+  "column_break_cdqc",
   "amount",
+  "series",
+  "materials_tab",
   "scoop_of_works_section",
   "scoop_of_work",
-  "section_break_28",
-  "scoop_of_work_total",
-  "column_break_29",
-  "total_cost",
   "raw_material_section",
   "rate_of_materials_based_on",
   "price_list",
@@ -66,7 +70,8 @@
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Customer",
-   "options": "Customer"
+   "options": "Customer",
+   "reqd": 1
   },
   {
    "fieldname": "customer_name",
@@ -188,6 +193,7 @@
   {
    "fieldname": "scoop_of_work",
    "fieldtype": "Table",
+   "label": "Scoop of Works Details ",
    "options": "Scoop of Work"
   },
   {
@@ -239,7 +245,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Series",
-   "options": "ER-",
+   "options": "ER.YY.####",
    "reqd": 1
   },
   {
@@ -254,20 +260,12 @@
    "options": "Item"
   },
   {
-   "fieldname": "column_break_29",
-   "fieldtype": "Column Break"
-  },
-  {
    "allow_on_submit": 1,
    "default": "0",
    "fieldname": "total_cost",
    "fieldtype": "Currency",
    "label": "Total Cost",
    "read_only": 1
-  },
-  {
-   "fieldname": "section_break_28",
-   "fieldtype": "Section Break"
   },
   {
    "depends_on": "eval: doc.receipt_note != undefined",
@@ -288,14 +286,43 @@
    "hidden": 1,
    "label": "Status",
    "options": "\nClosed\nTo Production\nCompleted"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_jgag",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "materials_tab",
+   "fieldtype": "Tab Break",
+   "label": "Materials"
+  },
+  {
+   "fieldname": "section_break_mwxv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_rqjh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_cdqc",
+   "fieldtype": "Column Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-08-30 09:08:59.786985",
+ "modified": "2024-07-25 07:40:51.548826",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -313,5 +340,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

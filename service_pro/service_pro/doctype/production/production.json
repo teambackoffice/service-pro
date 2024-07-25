@@ -6,9 +6,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "series",
-  "customer_and_workshop",
-  "linked_productions",
+  "company",
   "last_status",
   "status",
   "customer",
@@ -16,40 +14,51 @@
   "address",
   "address_name",
   "customer_number",
-  "sales_man",
-  "sales_man_name",
   "column_break_4",
+  "type",
+  "series",
+  "customer_and_workshop",
+  "linked_productions",
+  "sales_man",
+  "column_break_slki",
   "posting_date",
   "posting_time",
   "delivery_date",
-  "type",
   "estimation",
   "site_job_report",
   "old_sk_number",
   "production_status",
-  "finished_item_section",
+  "section_break_vylf",
   "generate_item",
+  "column_break_fknz",
+  "finished_item_section",
   "item_code_prod",
   "item_name",
-  "qty",
-  "qty_for_sidn",
-  "rate",
   "invoice_rate",
-  "column_break_17",
-  "warehouse",
-  "umo",
   "amount",
+  "column_break_17",
+  "umo",
+  "qty",
+  "rate",
+  "column_break_gyrd",
+  "warehouse",
   "income_account",
   "cost_center",
+  "qty_for_sidn",
+  "printing_settings_section",
+  "letter_head",
+  "scoop_of_work_tab",
   "section_break_21",
   "scoop_of_work",
   "section_break111",
   "editable_total",
   "column_break111",
   "scoop_of_work_total",
-  "section_break_24",
+  "raw_materials_tab",
   "rate_of_materials_based_on",
+  "column_break_yaew",
   "price_list",
+  "section_break_24",
   "raw_material",
   "section_break_44",
   "item_selling_price_list",
@@ -61,17 +70,17 @@
   "material_request",
   "total_selling_price",
   "total_selling_price__qty",
+  "advance_tab",
   "section_break_26",
   "advance_payment",
   "journal_entry",
   "advance",
+  "additional_cost_tab",
   "section_break_27",
   "additional_cost",
   "additional_cost_total",
   "amended_from",
-  "remarks",
-  "printing_settings_section",
-  "letter_head"
+  "remarks"
  ],
  "fields": [
   {
@@ -120,7 +129,7 @@
   {
    "fieldname": "finished_item_section",
    "fieldtype": "Section Break",
-   "label": "Finished Item"
+   "label": "Finished Item Details"
   },
   {
    "fieldname": "warehouse",
@@ -169,7 +178,7 @@
    "allow_on_submit": 1,
    "fieldname": "raw_material",
    "fieldtype": "Table",
-   "label": "Raw Material",
+   "label": "Raw Material Details",
    "options": "Raw Material"
   },
   {
@@ -183,7 +192,7 @@
    "allow_on_submit": 1,
    "fieldname": "scoop_of_work",
    "fieldtype": "Table",
-   "label": "Scoop of Work",
+   "label": "Scoop of Work Details",
    "options": "Scoop of Work"
   },
   {
@@ -321,6 +330,7 @@
    "options": "set_available_qty"
   },
   {
+   "default": "Now",
    "fieldname": "posting_time",
    "fieldtype": "Time",
    "label": "Posting Time",
@@ -376,20 +386,13 @@
    "fetch_from": "customer.sales_man",
    "fieldname": "sales_man",
    "fieldtype": "Link",
-   "label": "Sales Man",
-   "options": "Employee"
+   "label": "Sales Peson",
+   "options": "Sales Person"
   },
   {
    "fieldname": "old_sk_number",
    "fieldtype": "Data",
-   "label": "Old SK Number"
-  },
-  {
-   "fetch_from": "sales_man.employee_name",
-   "fieldname": "sales_man_name",
-   "fieldtype": "Data",
-   "label": "Sales Man Name",
-   "read_only": 1
+   "label": "Manual SK No."
   },
   {
    "allow_on_submit": 1,
@@ -453,7 +456,8 @@
    "fieldname": "customer_and_workshop",
    "fieldtype": "Select",
    "label": "Customer and Workshop",
-   "options": "\nCustomer\nWorkshop"
+   "options": "\nCustomer\nWorkshop",
+   "reqd": 1
   },
   {
    "allow_on_submit": 1,
@@ -499,12 +503,59 @@
    "fieldname": "generate_item",
    "fieldtype": "Button",
    "label": "Generate Item"
+  },
+  {
+   "fieldname": "column_break_slki",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_gyrd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_vylf",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_fknz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "raw_materials_tab",
+   "fieldtype": "Tab Break",
+   "label": "Raw Materials"
+  },
+  {
+   "fieldname": "column_break_yaew",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "advance_tab",
+   "fieldtype": "Tab Break",
+   "label": "Advance"
+  },
+  {
+   "fieldname": "additional_cost_tab",
+   "fieldtype": "Tab Break",
+   "label": "Additional Cost"
+  },
+  {
+   "fieldname": "scoop_of_work_tab",
+   "fieldtype": "Tab Break",
+   "label": "Scoop of Work"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-03-31 09:51:58.729009",
+ "modified": "2024-07-25 08:14:42.519564",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

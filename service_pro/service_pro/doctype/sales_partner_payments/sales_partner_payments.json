@@ -1,0 +1,198 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2024-07-25 06:53:39.372405",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_weia",
+  "company",
+  "sales_partner_name",
+  "incentive",
+  "paid_amount",
+  "balance_amount",
+  "column_break_frni",
+  "status",
+  "naming_series",
+  "posting_date",
+  "section_break_yndb",
+  "remarks",
+  "payable_account",
+  "expense_account",
+  "cost_center",
+  "column_break_vrcn",
+  "sales_invoice_reference",
+  "invoice_net_amount",
+  "customer_id",
+  "customer_name",
+  "is_opening",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_weia",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "SPP.YY.####"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_frni",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "sales_partner_name",
+   "fieldtype": "Link",
+   "label": "Sales Partner Name",
+   "options": "Sales Partner"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Unpaid\nPaid\nPartly Paid"
+  },
+  {
+   "fieldname": "section_break_yndb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_vrcn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "paid_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Paid Amount"
+  },
+  {
+   "fieldname": "balance_amount",
+   "fieldtype": "Currency",
+   "label": "Balance Amount"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "payable_account",
+   "fieldtype": "Link",
+   "label": "Payable Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "expense_account",
+   "fieldtype": "Link",
+   "label": "Expense Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "incentive",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Incentive"
+  },
+  {
+   "fieldname": "sales_invoice_reference",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Sales Invoice Reference ",
+   "options": "Sales Invoice"
+  },
+  {
+   "fetch_from": "sales_invoice_reference.customer",
+   "fieldname": "customer_id",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Customer ID"
+  },
+  {
+   "fetch_from": "sales_invoice_reference.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Customer Name"
+  },
+  {
+   "fieldname": "invoice_net_amount",
+   "fieldtype": "Currency",
+   "label": "Invoice Net Amount "
+  },
+  {
+   "default": "No",
+   "fieldname": "is_opening",
+   "fieldtype": "Select",
+   "label": "Is Opening",
+   "options": "No\nYes"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Sales Partner Payments",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-07-25 07:08:09.563353",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Sales Partner Payments",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -6,12 +6,14 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "status",
-  "naming_series",
+  "company",
   "employee",
-  "employee_name",
   "column_break_3",
   "posting_date",
+  "employee_name",
+  "column_break_fltx",
+  "status",
+  "naming_series",
   "section_break_6",
   "site_visit_report_jobs",
   "section_break_7",
@@ -87,14 +89,26 @@
    "hidden": 1,
    "label": "Status",
    "options": "Completed"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_fltx",
+   "fieldtype": "Column Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-17 08:49:59.571387",
+ "modified": "2024-07-26 12:09:09.423793",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Site Visit Report",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
@@ -112,5 +126,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

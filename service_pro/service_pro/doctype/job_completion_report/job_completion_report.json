@@ -6,23 +6,29 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "naming_series",
+  "company",
   "customer",
   "customer_name",
   "column_break_3",
   "location",
-  "posting_date",
   "site_job_report",
+  "column_break_oefo",
+  "naming_series",
+  "posting_date",
   "production",
+  "concern_tab",
   "section_break_8",
   "to_whom_it_may_concern",
   "to_whom_it_may_concern_text",
+  "amended_from",
+  "project_tab",
   "project",
   "project_description",
-  "project_description_text",
+  "column_break_krpw",
   "project_start_date",
   "project_end_date",
-  "amended_from"
+  "section_break_umqo",
+  "project_description_text"
  ],
  "fields": [
   {
@@ -127,14 +133,44 @@
    "fieldtype": "Link",
    "label": "Production",
    "options": "Production"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company ",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_oefo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "concern_tab",
+   "fieldtype": "Tab Break",
+   "label": "Concern"
+  },
+  {
+   "fieldname": "project_tab",
+   "fieldtype": "Tab Break",
+   "label": "Project"
+  },
+  {
+   "fieldname": "column_break_krpw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_umqo",
+   "fieldtype": "Section Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-22 16:45:41.672751",
+ "modified": "2024-07-26 12:07:58.983111",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Job Completion Report",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
@@ -152,5 +188,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

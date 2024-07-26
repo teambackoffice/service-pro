@@ -6,37 +6,42 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "naming_series",
-  "sjr_status",
-  "status",
+  "company",
   "customer",
   "customer_name",
   "column_break_4",
+  "sjr_status",
   "site_visit_report",
+  "contact_person",
+  "contact_number",
+  "column_break_anxj",
+  "status",
+  "naming_series",
   "start_date",
   "end_date",
   "visit_time",
-  "contact_person",
-  "contact_number",
   "section_break_9",
   "team_members",
-  "section_break_11",
-  "scoop_of_work",
-  "section_break_13",
-  "rate_of_materials_based_on",
-  "price_list",
-  "raw_material",
-  "update_available_stock",
-  "total",
-  "svrj_row_name",
-  "permanent_submit",
-  "amended_from",
   "images_section",
   "attach_1",
   "image_1",
   "column_break_28",
   "attach_2",
-  "image_2"
+  "image_2",
+  "scoop_of_work_tab",
+  "section_break_11",
+  "scoop_of_work",
+  "raw_material_tab",
+  "rate_of_materials_based_on",
+  "column_break_qhqs",
+  "price_list",
+  "section_break_13",
+  "raw_material",
+  "update_available_stock",
+  "total",
+  "svrj_row_name",
+  "permanent_submit",
+  "amended_from"
  ],
  "fields": [
   {
@@ -233,14 +238,40 @@
    "fieldtype": "Date",
    "label": "End Date",
    "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company ",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_anxj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "scoop_of_work_tab",
+   "fieldtype": "Tab Break",
+   "label": "Scoop of Work"
+  },
+  {
+   "fieldname": "raw_material_tab",
+   "fieldtype": "Tab Break",
+   "label": "Raw Material"
+  },
+  {
+   "fieldname": "column_break_qhqs",
+   "fieldtype": "Column Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-29 09:05:55.359972",
+ "modified": "2024-07-26 12:12:03.403697",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Site Job Report",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
@@ -258,5 +289,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

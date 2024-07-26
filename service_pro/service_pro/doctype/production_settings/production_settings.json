@@ -45,11 +45,10 @@
   "showroom_cash",
   "showroom_card",
   "sales_partner_payments_section",
-  "payable_account",
-  "column_break_lbjw",
-  "expense_accounts",
-  "column_break_xqfs",
-  "cost_center"
+  "sales_partner_payments_details",
+  "inter_company_stock_transfer_section",
+  "from_companies",
+  "to_companies"
  ],
  "fields": [
   {
@@ -264,40 +263,37 @@
    "label": "Sales Partner Payments"
   },
   {
-   "fieldname": "payable_account",
-   "fieldtype": "Link",
-   "label": "Payable Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "column_break_lbjw",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "expense_accounts",
-   "fieldtype": "Link",
-   "label": "Expense Accounts",
-   "options": "Account"
-  },
-  {
-   "fieldname": "cost_center",
-   "fieldtype": "Link",
-   "label": "Cost Center",
-   "options": "Cost Center"
-  },
-  {
    "fieldname": "column_break_ajia",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "column_break_xqfs",
-   "fieldtype": "Column Break"
+   "fieldname": "sales_partner_payments_details",
+   "fieldtype": "Table",
+   "label": "Sales Partner Payments Details",
+   "options": "Sales Partner Payments Details"
+  },
+  {
+   "fieldname": "inter_company_stock_transfer_section",
+   "fieldtype": "Section Break",
+   "label": "Inter Company Stock Transfer"
+  },
+  {
+   "fieldname": "from_companies",
+   "fieldtype": "Table",
+   "label": "From Companies",
+   "options": "Inter Company Stock Transfer From"
+  },
+  {
+   "fieldname": "to_companies",
+   "fieldtype": "Table",
+   "label": "To Companies ",
+   "options": "Inter Company Stock Transfer To"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-07-25 07:18:23.344894",
+ "modified": "2024-07-26 06:43:56.706797",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

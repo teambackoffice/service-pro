@@ -45,8 +45,6 @@
   "income_account",
   "cost_center",
   "qty_for_sidn",
-  "printing_settings_section",
-  "letter_head",
   "scoop_of_work_tab",
   "section_break_21",
   "scoop_of_work",
@@ -79,8 +77,10 @@
   "section_break_27",
   "additional_cost",
   "additional_cost_total",
-  "amended_from",
-  "remarks"
+  "printing_settings_section",
+  "remarks",
+  "column_break_kwuq",
+  "letter_head"
  ],
  "fields": [
   {
@@ -215,15 +215,6 @@
    "fieldname": "advance",
    "fieldtype": "Button",
    "label": "Advance"
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Production",
-   "print_hide": 1,
-   "read_only": 1
   },
   {
    "allow_on_submit": 1,
@@ -550,12 +541,16 @@
    "fieldname": "scoop_of_work_tab",
    "fieldtype": "Tab Break",
    "label": "Scoop of Work"
+  },
+  {
+   "fieldname": "column_break_kwuq",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-25 08:14:42.519564",
+ "modified": "2024-07-26 06:48:42.975231",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

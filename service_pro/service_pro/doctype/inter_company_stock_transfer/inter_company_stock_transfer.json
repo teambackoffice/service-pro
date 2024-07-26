@@ -1,0 +1,154 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2024-07-26 06:23:21.973302",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_j2j1",
+  "column_break_obub",
+  "from_company",
+  "from_warehouse",
+  "from_company_debit_account",
+  "to_company",
+  "to_warehouse",
+  "to_company_credit_account",
+  "column_break_ulbp",
+  "status",
+  "naming_series",
+  "posting_date",
+  "time",
+  "section_break_rkyp",
+  "auto_fill_credit_value",
+  "item_details",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_j2j1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_obub",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ulbp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "default": "Now",
+   "fieldname": "time",
+   "fieldtype": "Time",
+   "label": "Time"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "ICST.YY.####"
+  },
+  {
+   "fieldname": "from_company",
+   "fieldtype": "Link",
+   "label": "From Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "from_warehouse",
+   "fieldtype": "Link",
+   "label": "From Warehouse ",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "to_company",
+   "fieldtype": "Link",
+   "label": "To Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "to_warehouse",
+   "fieldtype": "Link",
+   "label": "To Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "section_break_rkyp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "item_details",
+   "fieldtype": "Table",
+   "label": "Item Details",
+   "options": "Inter Company Stock Transfer Item"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Inter Company Stock Transfer",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "from_company_debit_account",
+   "fieldtype": "Link",
+   "label": "From Company Debit Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "to_company_credit_account",
+   "fieldtype": "Link",
+   "label": "To Company Credit Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "auto_fill_credit_value",
+   "fieldtype": "Button",
+   "label": "Auto Fill Credit Value"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Draft\nCompleted",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-07-26 06:39:47.716721",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Inter Company Stock Transfer",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

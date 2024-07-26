@@ -19,6 +19,8 @@
   "naming_series",
   "posting_date",
   "time",
+  "from_cost_center",
+  "to_cost_center",
   "section_break_rkyp",
   "auto_fill_credit_value",
   "item_details",
@@ -122,12 +124,24 @@
    "label": "Status",
    "options": "Draft\nCompleted",
    "read_only": 1
+  },
+  {
+   "fieldname": "from_cost_center",
+   "fieldtype": "Link",
+   "label": "From Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "to_cost_center",
+   "fieldtype": "Link",
+   "label": "To Cost Center",
+   "options": "Cost Center"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-26 06:39:47.716721",
+ "modified": "2024-07-26 07:17:21.920440",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Stock Transfer",

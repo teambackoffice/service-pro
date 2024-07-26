@@ -21,9 +21,17 @@
   "time",
   "from_cost_center",
   "to_cost_center",
+  "item_details_tab",
   "section_break_rkyp",
   "auto_fill_credit_value",
   "item_details",
+  "section_break_mwhs",
+  "total_qty",
+  "column_break_vhpq",
+  "debit_value",
+  "column_break_gpyj",
+  "credit_value",
+  "deference_value",
   "amended_from"
  ],
  "fields": [
@@ -92,16 +100,6 @@
    "options": "Inter Company Stock Transfer Item"
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Inter Company Stock Transfer",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
-  },
-  {
    "fieldname": "from_company_debit_account",
    "fieldtype": "Link",
    "label": "From Company Debit Account",
@@ -136,12 +134,59 @@
    "fieldtype": "Link",
    "label": "To Cost Center",
    "options": "Cost Center"
+  },
+  {
+   "fieldname": "item_details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Item Details"
+  },
+  {
+   "fieldname": "section_break_mwhs",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_qty",
+   "fieldtype": "Float",
+   "label": "Total Qty"
+  },
+  {
+   "fieldname": "column_break_vhpq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "debit_value",
+   "fieldtype": "Currency",
+   "label": "Debit Value"
+  },
+  {
+   "fieldname": "column_break_gpyj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "credit_value",
+   "fieldtype": "Currency",
+   "label": "Credit Value"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Inter Company Stock Transfer",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "deference_value",
+   "fieldtype": "Currency",
+   "label": "Deference Value"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-26 07:17:21.920440",
+ "modified": "2024-07-26 09:32:10.889630",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Stock Transfer",

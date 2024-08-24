@@ -170,73 +170,9 @@ fixtures = [
         "doctype": "Custom Field",
         "filters": [
             [
-                "name",
+                "module",
                 "in",
-                [
-                    "Quotation-service_receipt_note",
-                    "Sales Invoice-production",
-                    "Journal Entry-production",
-                    "Stock Entry-production",
-                    "Delivery Note-production",
-                    "Sales Invoice-amount_in_arabic_words_",
-                    "Sales Invoice-sales_man",
-                    "Sales Invoice-sales_man_name",
-                    "Sales Invoice-paid",
-                    "Sales Invoice Item-include_discount",
-                    "Purchase Receipt-production",
-                    "Material Request-production",
-                    "Delivery Note-location",
-                    "Delivery Note-sales_man_name",
-                    "Delivery Note-sales_man",
-                    "Sales Invoice-showroom_card",
-                    "Sales Invoice-showroom_cash",
-                    "Sales Invoice-cash",
-                    "Sales Invoice-unpaid",
-                    "Sales Invoice-liabilities_account",
-                    "Sales Invoice-expense_account",
-                    "Sales Invoice-expense_cost_center",
-                    "Sales Invoice-incentive",
-                    "Sales Invoice-incentive_journal",
-                    "Sales Invoice-column_break_181",
-                    "Sales Invoice-journal_entry",
-                    "Sales Person-liabilities_account",
-                    "Customer-sales_man",
-                    "Customer-sales_man_name",
-                    "Journal Entry-agent_payment_request",
-                    "Quotation-site_visit_report",
-                    "Journal Entry-petty_cash_request",
-                    "Employee-petty_cash_account",
-                    "Sales Invoice Item-si_discount",
-                    "Material Request-site_visit_report",
-
-                    "Salary Component-is_hour_based",
-                    "Additional Salary-total_working_hour",
-                    "Additional Salary-is_hour_based",
-
-
-                    "Journal Entry-sales_invoice",
-                    "Sales Invoice-agent_commision_record",
-                    "Item-is_omfb_item",
-
-                    "Journal Entry-related_party_entry",
-                    "Journal Entry-is_related_party_entry_return",
-                    "Landed Cost Item-avail_qty",
-                    "Landed Cost Voucher-column_break_ahjhe",
-                    "Landed Cost Voucher-column_break_62gb2",
-                    "Landed Cost Voucher-refresh_avail_qty",
-                    "Landed Cost Voucher-section_break_vraqz",
-
-                    "Item-custom_size_specification",
-                    "Item-custom_item_description",
-                    "Item-custom_item_specification",
-                    "Item-custom_brand_name",
-                    "Item-custom_edit_valuation_rate",
-                    "Item-custom_edit_naming_fields",
-
-                    "Price List-custom_section_break_a0uow",
-                    "Price List-custom_maximum_user_discount",
-                    "Sales Order-custom_production",
-                ]
+                "Service Pro"
             ]
         ]
     },
@@ -244,14 +180,9 @@ fixtures = [
         "doctype": "Property Setter",
         "filters": [
             [
-                "name",
+                "module",
                 "in",
-                [
-                    "Item-valuation_rate-read_only_depends_on",
-                    "Item-main-field_order",
-                    "Item-naming_series-options",
-                    "Item-item_group-read_only_depends_on"
-                ]
+                "Service Pro"
             ]
         ]
     }

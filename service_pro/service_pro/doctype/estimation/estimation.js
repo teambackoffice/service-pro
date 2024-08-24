@@ -1,5 +1,6 @@
 // Copyright (c) 2020, jan and contributors
 // For license information, please see license.txt
+var defaults = {}
 cur_frm.cscript.inspection = function (frm, cdt, cdn) {
     var d = locals[cdt][cdn]
     if(d.inspection){
@@ -106,17 +107,44 @@ frappe.ui.form.on('Estimation', {
                  frappe.set_route('Form', 'Material Request', "New Material Request 1")
             });
     },
+    company: function () {
+       if(cur_frm.doc.company){
+            cur_frm.call({
+                doc: cur_frm.doc,
+                method: "get_defaults",
+                freeze: true,
+                freeze_message: "Getting Company Defaults....",
+                callback: function (r) {
+                    defaults = r.message
+
+                }
+            })
+        }
+    },
 	onload: function(frm) {
-         frappe.db.get_single_value('Production Settings', 'rate_of_materials_based_on')
-            .then(rate => {
-                cur_frm.doc.rate_of_materials_based_on = rate
-                cur_frm.refresh_field("rate_of_materials_based_on")
+        if(cur_frm.doc.company){
+            cur_frm.call({
+                doc: cur_frm.doc,
+                method: "get_defaults",
+                freeze: true,
+                freeze_message: "Getting Company Defaults....",
+                callback: function (r) {
+                    defaults = r.message
+
+                }
             })
-            frappe.db.get_single_value('Production Settings', 'price_list')
-            .then(price_list => {
-                cur_frm.doc.price_list = price_list
-                cur_frm.refresh_field("price_list")
-            })
+        }
+
+         // frappe.db.get_single_value('Production Settings', 'rate_of_materials_based_on')
+         //    .then(rate => {
+         //        cur_frm.doc.rate_of_materials_based_on = rate
+         //        cur_frm.refresh_field("rate_of_materials_based_on")
+         //    })
+         //    frappe.db.get_single_value('Production Settings', 'price_list')
+         //    .then(price_list => {
+         //        cur_frm.doc.price_list = price_list
+         //        cur_frm.refresh_field("price_list")
+         //    })
 	    var df = frappe.meta.get_docfield("Scoop of Work", "status", cur_frm.doc.name);
 	    var df0 = frappe.meta.get_docfield("Scoop of Work", "value_of_good_solid", cur_frm.doc.name);
 	    var df1 = frappe.meta.get_docfield("Raw Material", "production", cur_frm.doc.name);
@@ -267,11 +295,11 @@ cur_frm.cscript.raw_material_remove = function (frm,cdt,cdn) {
 }
 cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
     var d = locals[cdt][cdn]
-    frappe.db.get_single_value('Production Settings', 'raw_material_warehouse')
-        .then(warehouse => {
-            d.warehouse = warehouse
-            cur_frm.refresh_field("raw_material")
-        })
+    // frappe.db.get_single_value('Production Settings', 'raw_material_warehouse')
+    //     .then(warehouse => {
+    d.warehouse = defaults['raw_material_defaults'].warehouse
+    cur_frm.refresh_field("raw_material")
+        // })
 }
 cur_frm.cscript.scoop_of_work_total = function (frm,cdt,cdn) {
    set_rate_and_amount(cur_frm)

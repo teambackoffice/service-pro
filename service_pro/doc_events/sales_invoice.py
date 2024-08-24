@@ -18,20 +18,30 @@ def generate_jv(doc):
 		frappe.db.commit()
 
 	elif doc.unpaid:
-		doc_jv = {
-			"doctype": "Journal Entry",
-			"voucher_type": "Journal Entry",
-			"posting_date": doc.posting_date,
-			"sales_invoice": doc.name,
-			"accounts": jv_accounts_unpaid(doc),
-		}
+		data = frappe.db.sql(""" SELECT * FROM `tabSales Partner Payments Details` WHERE company=%s """,doc.company, as_dict=1)
 
+		doc_jv = {
+			"doctype": "Sales Partner Payments",
+			"sales_partner_name": doc.sales_partner,
+			"incentive": doc.total_commission,
+			"balance_amount": doc.total_commission,
+			"posting_date": doc.posting_date,
+			"status": "Unpaid",
+			"sales_invoice_reference": doc.name,
+			"invoice_net_amount": doc.total,
+			"customer_id": doc.customer,
+			"customer_name": doc.customer_name,
+			"cost_center": doc.cost_center,
+		}
+		if len(data) > 0:
+			doc_jv['payable_account'] = data[0].payable_account
+			doc_jv['expense_account'] = data[0].expense_accounts
 		jv = frappe.get_doc(doc_jv)
 		jv.insert(ignore_permissions=1)
 		jv.submit()
-		doc.journal_entry = jv.name
-		frappe.db.sql(""" UPDATE `tabSales Invoice` SET journal_entry=%s WHERE name=%s""", (jv.name, doc.name))
-		frappe.db.commit()
+		# doc.journal_entry = jv.name
+		# frappe.db.sql(""" UPDATE `tabSales Invoice` SET journal_entry=%s WHERE name=%s""", (jv.name, doc.name))
+		# frappe.db.commit()
 def jv_accounts_unpaid(doc):
 	accounts = []
 	accounts.append({
@@ -51,7 +61,7 @@ def jv_accounts_paid(doc):
 	accounts = []
 	accounts.append({
 		'account': doc.expense_account,
-		'debit_in_account_currency': doc.incentive,
+		'debit_in_account_currency': doc.total_commission,
 		'credit_in_account_currency': 0,
 		'cost_center': doc.expense_cost_center,
 	})
@@ -61,7 +71,7 @@ def jv_accounts_paid(doc):
 			accounts.append({
 				'account': mop_cash[0].default_account,
 				'debit_in_account_currency': 0,
-				'credit_in_account_currency': doc.incentive
+				'credit_in_account_currency': doc.total_commission
 			})
 	return accounts
 @frappe.whitelist()

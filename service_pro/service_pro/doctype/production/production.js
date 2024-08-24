@@ -1,5 +1,6 @@
 // Copyright (c) 2020, jan and contributors
 // For license information, please see license.txt
+var defaults ={}
 cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
     frappe.db.get_single_value('Stock Settings', 'allow_negative_stock')
         .then(ans => {
@@ -70,24 +71,24 @@ cur_frm.cscript.rate_raw_material = function (frm,cdt,cdn) {
 }
 cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
     var d = locals[cdt][cdn]
-   frappe.db.get_single_value('Production Settings', 'raw_material_warehouse')
-        .then(warehouse => {
-            if(warehouse){
-                d.warehouse = warehouse
-                cur_frm.refresh_field("raw_material")
-            }
-        })
-    frappe.db.get_single_value('Production Settings', 'raw_material_cost_center')
-        .then(cost_center => {
-            if(cost_center){
-                 d.cost_center = cost_center
+   // frappe.db.get_single_value('Production Settings', 'raw_material_warehouse')
+   //      .then(warehouse => {
+   //          if(warehouse){
+    d.warehouse = defaults['raw_material_defaults'].warehouse
+    cur_frm.refresh_field("raw_material")
+            // }
+        // })
+    // frappe.db.get_single_value('Production Settings', 'raw_material_cost_center')
+    //     .then(cost_center => {
+            if(defaults['raw_material_defaults'].cost_center){
+                 d.cost_center =  defaults['raw_material_defaults'].cost_center
                 cur_frm.refresh_field("raw_material")
             } else {
                 d.cost_center = cur_frm.doc.cost_center
                 cur_frm.refresh_field("raw_material")
             }
 
-        })
+        // })
 }
 cur_frm.cscript.raw_material_remove = function (frm,cdt,cdn) {
     var d = frappe.get_doc(cdt, cdn);
@@ -228,7 +229,34 @@ frappe.ui.form.on('Production', {
         }
 
         },
+    company: function () {
+       if(cur_frm.doc.company){
+            cur_frm.call({
+                doc: cur_frm.doc,
+                method: "get_defaults",
+                freeze: true,
+                freeze_message: "Getting Company Defaults....",
+                callback: function (r) {
+                    defaults = r.message
+
+                }
+            })
+        }
+    },
     onload: function (frm) {
+        if(cur_frm.doc.company){
+            cur_frm.call({
+                doc: cur_frm.doc,
+                method: "get_defaults",
+                freeze: true,
+                freeze_message: "Getting Company Defaults....",
+                callback: function (r) {
+                    defaults = r.message
+                    
+                }
+            })
+        }
+        
         if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
             filter_link_field(cur_frm)
             frm.set_df_property('series', 'options', ['CS-'])
@@ -271,31 +299,31 @@ frappe.ui.form.on('Production', {
                                     cur_frm.trigger("type")
 
             }
-             frappe.db.get_single_value('Production Settings', 'finish_good_warehouse')
-            .then(warehouse => {
-                cur_frm.doc.warehouse = warehouse
-                cur_frm.refresh_field("warehouse")
-            })
-            frappe.db.get_single_value('Production Settings', 'finish_good_cost_center')
-            .then(cost_center => {
-                cur_frm.doc.cost_center = cost_center
-                cur_frm.refresh_field("cost_center")
-            })
-            frappe.db.get_single_value('Production Settings', 'income_account')
-            .then(income_account => {
-                cur_frm.doc.income_account = income_account
-                cur_frm.refresh_field("income_account")
-            })
-            frappe.db.get_single_value('Production Settings', 'rate_of_materials_based_on')
-            .then(rate => {
-                cur_frm.doc.rate_of_materials_based_on = rate
-                cur_frm.refresh_field("rate_of_materials_based_on")
-            })
-            frappe.db.get_single_value('Production Settings', 'price_list')
-            .then(price_list => {
-                cur_frm.doc.price_list = price_list
-                cur_frm.refresh_field("price_list")
-            })
+            //  frappe.db.get_single_value('Production Settings', 'finish_good_warehouse')
+            // .then(warehouse => {
+            //     cur_frm.doc.warehouse = warehouse
+            //     cur_frm.refresh_field("warehouse")
+            // })
+            // frappe.db.get_single_value('Production Settings', 'finish_good_cost_center')
+            // .then(cost_center => {
+            //     cur_frm.doc.cost_center = cost_center
+            //     cur_frm.refresh_field("cost_center")
+            // })
+            // frappe.db.get_single_value('Production Settings', 'income_account')
+            // .then(income_account => {
+            //     cur_frm.doc.income_account = income_account
+            //     cur_frm.refresh_field("income_account")
+            // })
+            // frappe.db.get_single_value('Production Settings', 'rate_of_materials_based_on')
+            // .then(rate => {
+            //     cur_frm.doc.rate_of_materials_based_on = rate
+            //     cur_frm.refresh_field("rate_of_materials_based_on")
+            // })
+            // frappe.db.get_single_value('Production Settings', 'price_list')
+            // .then(price_list => {
+            //     cur_frm.doc.price_list = price_list
+            //     cur_frm.refresh_field("price_list")
+            // })
         }
 
         var status = frappe.meta.get_docfield("Scoop of Work", "status", cur_frm.doc.name);
@@ -382,7 +410,6 @@ cur_frm.refresh_field("item_selling_price_list")
                 })
             })
          }
-                console.log("NA MAN")
          if(cur_frm.doc.docstatus){
          frappe.call({
             method: "service_pro.service_pro.doctype.production.production.get_dn_si_qty",
@@ -393,22 +420,11 @@ cur_frm.refresh_field("item_selling_price_list")
             },
              async: false,
             callback: function (r) {
-                console.log("ASDJALKSD")
-                console.log(r.message)
                 cur_frm.doc.qty_for_sidn = r.message
                 cur_frm.refresh_field("qty_for_sidn")
             }
         })}
-    // if(parseFloat(cur_frm.doc.qty_for_sidn) > 0 && parseFloat(cur_frm.doc.qty_for_sidn) < cur_frm.doc.qty && cur_frm.doc.docstatus){
-    //     console.log("NA MAN")
-    //     frappe.call({
-    //         method: "service_pro.service_pro.doctype.production.production.change_status",
-    //         args: {
-    //             name: cur_frm.doc.name
-    //         },
-    //         callback: function () {}
-    //     })
-    // }
+
      cur_frm.set_df_property("scoop_of_work", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
         cur_frm.set_df_property("scoop_of_work_total", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
 
@@ -461,7 +477,6 @@ cur_frm.refresh_field("item_selling_price_list")
                     production: cur_frm.doc.name
                 },
                 callback: function (r) {
-                    console.log(r.message)
                     if(r.message){
                         cur_frm.set_df_property('advance_payment', 'read_only', 1);
                         cur_frm.set_df_property('journal_entry', 'hidden', 0);
@@ -476,7 +491,6 @@ cur_frm.refresh_field("item_selling_price_list")
         } else if (cur_frm.is_new()){
             cur_frm.doc.status = "In Progress"
             cur_frm.refresh_field("status")
-            console.log("NEW")
             cur_frm.set_df_property('journal_entry', 'hidden', 1);
             cur_frm.set_df_property('advance', 'hidden', 1);
         }
@@ -690,10 +704,8 @@ cur_frm.refresh_field("item_selling_price_list")
             filter_link_field(cur_frm)
         }
         if(cur_frm.doc.customer){
-	        console.log("HAHA")
 	         frappe.db.get_doc("Customer", cur_frm.doc.customer)
             .then(doc => {
-                console.log("NAA MAN")
                 cur_frm.doc.customer_name = doc.customer_name
                 cur_frm.refresh_field("customer_name")
             })
@@ -759,15 +771,14 @@ cur_frm.refresh_field("item_selling_price_list")
     },
     type: function(frm) {
 
-        frappe.db.get_single_value('Production Settings', 'mandatory_additional_cost_in_production')
-            .then(acqs => {
-                if(cur_frm.doc.type === "Service"){
-                   cur_frm.toggle_reqd('additional_cost', acqs)
-                } else {
-                       cur_frm.toggle_reqd('additional_cost', 0)
-
-                    }
-            })
+        // frappe.db.get_single_value('Production Settings', 'mandatory_additional_cost_in_production')
+        //     .then(acqs => {
+            if(cur_frm.doc.type === "Service"){
+               cur_frm.toggle_reqd('additional_cost', defaults.mandatory_additional_cost_in_production)
+            } else {
+               cur_frm.toggle_reqd('additional_cost', 0)
+            }
+            // })
 	    if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
             filter_link_field(cur_frm)
 
@@ -876,7 +887,6 @@ cur_frm.refresh_field("item_selling_price_list")
         if(cur_frm.doc.address){
             frappe.db.get_doc("Address", cur_frm.doc.address)
             .then(doc => {
-                console.log(doc)
                 var address = ""
                 if(doc.address_line1){
                     address += doc.address_line1
@@ -927,7 +937,6 @@ function get_items_from_estimation(frm,cur_frm) {
     .then(doc => {
         set_scoop_of_work(doc,frm)
         set_raw_material(doc,frm)
-            console.log("asaaaaaa")
         cur_frm.doc.customer = doc.customer
         cur_frm.trigger('customer');
         cur_frm.doc.item_code_prod = doc.item_code_est
@@ -935,10 +944,6 @@ function get_items_from_estimation(frm,cur_frm) {
         cur_frm.doc.qty = doc.qty
         cur_frm.doc.qty_for_sidn = doc.qty
         cur_frm.doc.rate = doc.rate
-    console.log("QTY")
-    console.log(doc.qty)
-    console.log("INVOICE RATE")
-    console.log("QTY")
         cur_frm.doc.amount = doc.qty * cur_frm.doc.invoice_rate
         cur_frm.refresh_field("item_code_prod")
         cur_frm.refresh_field("customer")
@@ -1032,7 +1037,6 @@ cur_frm.cscript.item_code = function (frm,cdt, cdn) {
             callback: function (r) {
                  frappe.db.get_doc("Item", d.item_code)
                     .then(doc => {
-                        console.log("NAA MAN")
                         d.item_name= doc.item_name
                        d.umo = doc.stock_uom
 
@@ -1099,7 +1103,6 @@ cur_frm.cscript.journal_entry = function (frm,cdt, cdn) {
                 production: cur_frm.doc.name
             },
             callback: function (r) {
-                console.log(r.message)
                 if(r.message){
                      frappe.set_route("Form", "Journal Entry", r.message);
                 }
@@ -1177,9 +1180,6 @@ cur_frm.cscript.material_request = function () {
 }
 
 function set_item_selling_price(cur_frm) {
-    console.log(cur_frm.doc.raw_material)
-
-
     if(cur_frm.doc.raw_material.length > 0){
         cur_frm.clear_table("item_selling_price_list")
         cur_frm.refresh_field("item_selling_price_list")
@@ -1210,5 +1210,4 @@ function set_item_selling_price(cur_frm) {
         cur_frm.refresh_field("item_selling_price_list")
     }
 
-    console.log("HUMAN")
 }

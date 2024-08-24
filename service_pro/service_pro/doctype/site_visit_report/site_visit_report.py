@@ -15,8 +15,10 @@ class SiteVisitReport(Document):
 	def on_submit(self):
 		for i in self.site_visit_report_jobs:
 			if i.svrj_status == "Troubleshooting" and not i.rework:
-				settings_value = frappe.get_single("Production Settings").__dict__
-				print(settings_value)
+				# settings_value = frappe.get_single("Production Settings").__dict__
+				data = frappe.db.sql(""" SELECT * FROM `tabSite Job Report Settings` WHERE company=%s """,self.company,as_dict=1)
+
+				# print(settings_value)
 				doc_site_job = {
 					"doctype": "Site Job Report",
 					"customer": i.customer,
@@ -25,8 +27,8 @@ class SiteVisitReport(Document):
 					"contact_number": i.contact_number,
 					"site_visit_report": self.name,
 					"svrj_row_name": i.name,
-					"rate_of_materials_based_on": settings_value['rate_of_materials_based_on_sjr'],
-					"price_list": settings_value['price_list_sjr'],
+					"rate_of_materials_based_on": data[0].rate_of_materials_based_on if len(data) > 0 else "",
+					"price_list": data[0].price_list if len(data) > 0 else "",
 				}
 				site_job_name = frappe.get_doc(doc_site_job).insert()
 				frappe.db.sql(""" UPDATE `tabSite Visit Report Jobs` SET job_card_number=%s WHERE name=%s""",
@@ -40,7 +42,10 @@ class SiteVisitReport(Document):
 def generate_sjr(name):
 	get_job = frappe.db.sql(""" SELECT * FROM `tabSite Visit Report Jobs` WHERE name=%s""", name, as_dict=1)
 	if len(get_job) > 0:
-		settings_value = frappe.get_single("Production Settings").__dict__
+		data = frappe.db.sql(""" SELECT * FROM `tabSite Job Report Settings` WHERE company=%s """, self.company,
+							 as_dict=1)
+
+		# settings_value = frappe.get_single("Production Settings").__dict__
 
 		doc_site_job = {
 			"doctype": "Site Job Report",
@@ -50,8 +55,8 @@ def generate_sjr(name):
 			"contact_number": get_job[0].contact_number,
 			"site_visit_report": get_job[0].parent,
 			"svrj_row_name": get_job[0].name,
-			"rate_of_materials_based_on": settings_value['rate_of_materials_based_on_sjr'],
-			"price_list": settings_value['price_list_sjr'],
+			"rate_of_materials_based_on": data[0].rate_of_materials_based_on if len(data) > 0 else "",
+					"price_list": data[0].price_list if len(data) > 0 else "",
 		}
 		site_job_name = frappe.get_doc(doc_site_job).insert()
 		frappe.db.sql(""" UPDATE `tabSite Visit Report Jobs` SET job_card_number=%s WHERE name=%s""", (site_job_name.name,name))

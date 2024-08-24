@@ -16,8 +16,41 @@ cur_frm.cscript.sales_person = function(frm,cdt, cdn){
         })
     }
 }
+var defaults = {}
 frappe.ui.form.on('Sales Invoice', {
-    
+    company: function () {
+       if(cur_frm.doc.company){
+            frappe.call({
+                method: "service_pro.doc_events.utils.get_production_settings_defaults",
+                args: {
+                    company: cur_frm.doc.company
+                },
+                freeze: true,
+                freeze_message: "Getting Company Defaults....",
+                callback: function (r) {
+                    defaults = r.message
+
+                }
+            })
+        }
+    },
+    onload: function (frm) {
+        console.log("ONLOAD")
+        if(cur_frm.doc.company) {
+            frappe.call({
+                method: "service_pro.doc_events.utils.get_production_settings_defaults",
+                args: {
+                    company: cur_frm.doc.company
+                },
+                freeze: true,
+                freeze_message: "Getting Company Defaults....",
+                callback: function (r) {
+                    defaults = r.message
+
+                }
+            })
+        }
+    },
     refresh: function(frm) {
         // frm.toggle_display("update_stock", frm.doc.is_pos)
         frappe.db.get_single_value("Production Settings", "credit_note_user_role").then((value) => {
@@ -52,24 +85,22 @@ frappe.ui.form.on('Sales Invoice', {
     }
 })
 cur_frm.cscript.paid = function(frm){
-    frappe.db.get_single_value('Production Settings', 'expense_cost_center')
-        .then(expense_cost_center => {
-            cur_frm.doc.expense_cost_center = expense_cost_center
-            cur_frm.refresh_field("expense_cost_center")
-        })
-     frappe.db.get_single_value('Production Settings', 'expense_account')
-            .then(expense_account => {
-                console.log(expense_account)
-                cur_frm.doc.expense_account = expense_account
-                cur_frm.refresh_field("expense_account")
-            })
-    frappe.db.get_single_value('Production Settings', 'showroom_cash')
-            .then(showroom_cash => {
-                    console.log("NAA MAN1111")
-
-                cur_frm.doc.showroom_cash = showroom_cash
-                cur_frm.refresh_field("showroom_cash")
-            })
+    // frappe.db.get_single_value('Production Settings', 'expense_cost_center')
+    //     .then(expense_cost_center => {
+    cur_frm.doc.expense_cost_center = defaults['incentive_journal_defaults'].cost_center
+    cur_frm.refresh_field("expense_cost_center")
+        // })
+     // frappe.db.get_single_value('Production Settings', 'expense_account')
+     //        .then(expense_account => {
+     //            console.log(expense_account)
+    cur_frm.doc.expense_account = defaults['incentive_journal_defaults'].expense_account
+    cur_frm.refresh_field("expense_account")
+            // })
+    // frappe.db.get_single_value('Production Settings', 'showroom_cash')
+    //         .then(showroom_cash => {
+    cur_frm.doc.showroom_cash = defaults['incentive_journal_defaults'].showroom_cash
+    cur_frm.refresh_field("showroom_cash")
+            // })
     if(cur_frm.doc.paid){
         cur_frm.doc.unpaid = 0
         cur_frm.doc.cash = 1
@@ -81,17 +112,17 @@ cur_frm.cscript.paid = function(frm){
 
 }
 cur_frm.cscript.unpaid = function(frm){
-    frappe.db.get_single_value('Production Settings', 'expense_cost_center')
-        .then(expense_cost_center => {
-            cur_frm.doc.expense_cost_center = expense_cost_center
-            cur_frm.refresh_field("expense_cost_center")
-        })
-    frappe.db.get_single_value('Production Settings', 'expense_account')
-            .then(expense_account => {
-                console.log(expense_account)
-                cur_frm.doc.expense_account = expense_account
-                cur_frm.refresh_field("expense_account")
-            })
+    // frappe.db.get_single_value('Production Settings', 'expense_cost_center')
+    //     .then(expense_cost_center => {
+    cur_frm.doc.expense_cost_center = defaults['incentive_journal_defaults'].cost_center
+    cur_frm.refresh_field("expense_cost_center")
+        // })
+    // frappe.db.get_single_value('Production Settings', 'expense_account')
+    //         .then(expense_account => {
+    //             console.log(expense_account)
+    cur_frm.doc.expense_account = defaults['incentive_journal_defaults'].expense_account
+    cur_frm.refresh_field("expense_account")
+        // })
    if(cur_frm.doc.unpaid){
         cur_frm.doc.paid = 0
         cur_frm.doc.cash = 0
@@ -121,27 +152,27 @@ cur_frm.cscript.onload = function(frm){
             }
         }
     });
-    console.log("NAA MAN")
-    frappe.db.get_single_value('Production Settings', 'expense_account')
-            .then(expense_account => {
-                console.log(expense_account)
-                cur_frm.doc.expense_account = expense_account
-                cur_frm.refresh_field("expense_account")
-            })
-    frappe.db.get_single_value('Production Settings', 'showroom_cash')
-            .then(showroom_cash => {
-                    console.log("NAA MAN1111")
+    // console.log("NAA MAN")
+    // frappe.db.get_single_value('Production Settings', 'expense_account')
+    //         .then(expense_account => {
+    //             console.log(expense_account)
+    cur_frm.doc.expense_account = defaults['incentive_journal_defaults'].expense_account
+    cur_frm.refresh_field("expense_account")
+            // })
+    // frappe.db.get_single_value('Production Settings', 'showroom_cash')
+    //         .then(showroom_cash => {
+                    // console.log("NAA MAN1111")
+                //
+    cur_frm.doc.showroom_cash = defaults['incentive_journal_defaults'].showroom_cash
+    cur_frm.refresh_field("showroom_cash")
+            // })
+    // frappe.db.get_single_value('Production Settings', 'showroom_card')
+    //         .then(showroom_card => {
+                    // console.log("NAA MAN222")
 
-                cur_frm.doc.showroom_cash = showroom_cash
-                cur_frm.refresh_field("showroom_cash")
-            })
-    frappe.db.get_single_value('Production Settings', 'showroom_card')
-            .then(showroom_card => {
-                    console.log("NAA MAN222")
-
-                cur_frm.doc.showroom_card = showroom_card
-                cur_frm.refresh_field("showroom_card")
-            })
+    cur_frm.doc.showroom_card = defaults['incentive_journal_defaults'].showroom_card
+    cur_frm.refresh_field("showroom_card")
+    // })
 }
 function compute_incentives(cur_frm) {
     var incentive_total = 0
@@ -195,26 +226,26 @@ cur_frm.cscript.reference = function (frm,cdt,cdn) {
                 cur_frm.refresh_field("production")
 
         if(add){
-        frappe.db.get_single_value('Production Settings', 'income_account')
-            .then(income_account => {
+        // frappe.db.get_single_value('Production Settings', 'income_account')
+            // .then(income_account => {
                 frappe.db.get_doc('Item', doc.item_code_prod)
-                .then(doc1 => {
-                     cur_frm.add_child('items', {
-                        item_code: doc.item_code_prod,
-                        qty: qty_1,
-                        uom: doc.umo,
-                        stock_uom: doc.umo,
-                        rate: doc.invoice_rate,
-                        amount: doc.invoice_rate * qty_1,
-                        item_name: doc1.item_name,
-                        description: doc1.description,
-                        income_account: income_account,
+                    .then(doc1 => {
+                         cur_frm.add_child('items', {
+                            item_code: doc.item_code_prod,
+                            qty: qty_1,
+                            uom: doc.umo,
+                            stock_uom: doc.umo,
+                            rate: doc.invoice_rate,
+                            amount: doc.invoice_rate * qty_1,
+                            item_name: doc1.item_name,
+                            description: doc1.description,
+                            income_account: defaults['finish_good_defaults'].income_account,
 
-                    });
+                        });
 
-                cur_frm.refresh_field('items');
+                    cur_frm.refresh_field('items');
                 })
-            })
+            // })
 
             if(doc.sales_man){
                 cur_frm.add_child('sales_man', {

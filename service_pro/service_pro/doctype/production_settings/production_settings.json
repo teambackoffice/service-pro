@@ -14,36 +14,20 @@
   "finished_good_defaults_section",
   "item_naming_series",
   "item_group",
-  "finish_good_cost_center",
   "column_break_lmvsc",
   "credit_note_user_role",
   "debit_note_user_role",
-  "column_break_ezez",
-  "income_account",
-  "finish_good_warehouse",
+  "section_break_raoa",
+  "finish_good_defaults",
   "raw_material_defaults_section",
-  "raw_material_warehouse",
-  "rate_of_materials_based_on",
-  "column_break_buan",
-  "raw_material_cost_center",
-  "price_list",
+  "raw_material_defaults",
   "site_job_report_section",
-  "warehouse_sjr",
-  "rate_of_materials_based_on_sjr",
-  "column_break_ofcb",
-  "cost_center_sjr",
-  "price_list_sjr",
+  "site_job_report_settings",
   "inspection_settings_section",
-  "image_width",
-  "column_break_vmpu",
-  "image_height",
+  "inspection_details",
   "other_tab",
   "incentive_journal_section",
-  "expense_account",
-  "expense_cost_center",
-  "column_break_13",
-  "showroom_cash",
-  "showroom_card",
+  "incentive_journal_defaults",
   "sales_partner_payments_section",
   "sales_partner_payments_details",
   "inter_company_stock_transfer_section",
@@ -57,52 +41,9 @@
    "label": "Finished Good Defaults"
   },
   {
-   "fieldname": "finish_good_warehouse",
-   "fieldtype": "Link",
-   "label": "Warehouse",
-   "options": "Warehouse"
-  },
-  {
-   "fieldname": "income_account",
-   "fieldtype": "Link",
-   "label": "Income Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "finish_good_cost_center",
-   "fieldtype": "Link",
-   "label": "Cost Center",
-   "options": "Cost Center"
-  },
-  {
    "fieldname": "raw_material_defaults_section",
    "fieldtype": "Section Break",
    "label": "Raw Material Defaults"
-  },
-  {
-   "fieldname": "raw_material_warehouse",
-   "fieldtype": "Link",
-   "label": "Warehouse",
-   "options": "Warehouse"
-  },
-  {
-   "fieldname": "raw_material_cost_center",
-   "fieldtype": "Link",
-   "label": "Cost Center",
-   "options": "Cost Center"
-  },
-  {
-   "fieldname": "rate_of_materials_based_on",
-   "fieldtype": "Select",
-   "label": "Rate of Materials Based On",
-   "options": "\nValuation Rate\nPrice List"
-  },
-  {
-   "depends_on": "eval: doc.rate_of_materials_based_on == \"Price List\"",
-   "fieldname": "price_list",
-   "fieldtype": "Select",
-   "label": "Price List",
-   "options": "\nStandard Buying\nStandard Selling"
   },
   {
    "fieldname": "incentive_journal_section",
@@ -110,77 +51,14 @@
    "label": "Incentive Journal"
   },
   {
-   "fieldname": "expense_account",
-   "fieldtype": "Link",
-   "label": "Expense Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "expense_cost_center",
-   "fieldtype": "Link",
-   "label": "Expense Cost Center",
-   "options": "Cost Center"
-  },
-  {
-   "fieldname": "column_break_13",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "showroom_cash",
-   "fieldtype": "Link",
-   "label": "Showroom Cash",
-   "options": "Mode of Payment"
-  },
-  {
-   "fieldname": "showroom_card",
-   "fieldtype": "Link",
-   "label": "Showroom Card",
-   "options": "Mode of Payment"
-  },
-  {
    "fieldname": "site_job_report_section",
    "fieldtype": "Section Break",
    "label": "Site Job Report"
   },
   {
-   "fieldname": "warehouse_sjr",
-   "fieldtype": "Link",
-   "label": "Warehouse",
-   "options": "Warehouse"
-  },
-  {
-   "fieldname": "cost_center_sjr",
-   "fieldtype": "Link",
-   "label": "Cost Center",
-   "options": "Cost Center"
-  },
-  {
-   "fieldname": "rate_of_materials_based_on_sjr",
-   "fieldtype": "Select",
-   "label": "Rate of Materials Based On",
-   "options": "\nValuation Rate\nPrice List\nLast Purchase Rate"
-  },
-  {
-   "depends_on": "eval: doc.rate_of_materials_based_on_sjr == \"Price List\"",
-   "fieldname": "price_list_sjr",
-   "fieldtype": "Select",
-   "label": "Price List",
-   "options": "\nStandard Buying\nStandard Selling"
-  },
-  {
    "fieldname": "inspection_settings_section",
    "fieldtype": "Section Break",
    "label": "Inspection Settings"
-  },
-  {
-   "fieldname": "image_width",
-   "fieldtype": "Int",
-   "label": "Image Width"
-  },
-  {
-   "fieldname": "image_height",
-   "fieldtype": "Int",
-   "label": "Image Height"
   },
   {
    "default": "0",
@@ -238,22 +116,6 @@
    "label": "Other Details"
   },
   {
-   "fieldname": "column_break_buan",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_ofcb",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_vmpu",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_ezez",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "column_break_kkcy",
    "fieldtype": "Column Break"
   },
@@ -288,12 +150,46 @@
    "fieldtype": "Table",
    "label": "To Companies ",
    "options": "Inter Company Stock Transfer To"
+  },
+  {
+   "fieldname": "inspection_details",
+   "fieldtype": "Table",
+   "label": "Inspection Details",
+   "options": "Inspection Settings"
+  },
+  {
+   "fieldname": "raw_material_defaults",
+   "fieldtype": "Table",
+   "label": "Raw Material Defaults",
+   "options": "Raw Material Defaults"
+  },
+  {
+   "fieldname": "site_job_report_settings",
+   "fieldtype": "Table",
+   "label": "Site Job Report Settings",
+   "options": "Site Job Report Settings"
+  },
+  {
+   "fieldname": "incentive_journal_defaults",
+   "fieldtype": "Table",
+   "label": "Incentive Journal Defaults",
+   "options": "Incentive Journal"
+  },
+  {
+   "fieldname": "finish_good_defaults",
+   "fieldtype": "Table",
+   "label": "Finish Good Defaults",
+   "options": "Finish Good Defaults"
+  },
+  {
+   "fieldname": "section_break_raoa",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-07-26 06:43:56.706797",
+ "modified": "2024-08-24 09:56:44.978721",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

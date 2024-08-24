@@ -37,20 +37,23 @@ class Inspection(Document):
 
 	@frappe.whitelist()
 	def crop_images(self):
-		settings = frappe.get_single("Production Settings").__dict__
-		for i in range(1,41):
-			if eval("self.attach_" + str(i)):
-				if 'private' not in eval("self.attach_" + str(i)):
-					im = Image.open(frappe.get_site_path() + "/public" + eval("self.attach_" + str(i)))
-				else:
-					im = Image.open(frappe.get_site_path() + eval("self.attach_" + str(i)))
+		if self.company:
+			data = frappe.db.sql(""" SELECT * FROM `tabInspection Settings` WHERE company=%s """, self.company, as_dict=1)
+			if len(data) > 0:
+				settings = data[0]
+				for i in range(1,41):
+					if eval("self.attach_" + str(i)):
+						if 'private' not in eval("self.attach_" + str(i)):
+							im = Image.open(frappe.get_site_path() + "/public" + eval("self.attach_" + str(i)))
+						else:
+							im = Image.open(frappe.get_site_path() + eval("self.attach_" + str(i)))
 
-				width, height = im.size
-				if width > settings['image_width'] and height > settings['image_height']:
-					width = settings['image_width']
-					height = settings['image_height']
-					area = im.resize((width, height))
-					if 'private' not in eval("self.attach_" + str(i)):
-						area.save(frappe.get_site_path() + "/public" + eval("self.attach_" + str(i)), quality=95)
-					else:
-						area.save(frappe.get_site_path()  + eval("self.attach_" + str(i)), quality=95)
+						width, height = im.size
+						if width > settings.image_width and height > settings.image_height:
+							width = settings.image_width
+							height = settings.image_height
+							area = im.resize((width, height))
+							if 'private' not in eval("self.attach_" + str(i)):
+								area.save(frappe.get_site_path() + "/public" + eval("self.attach_" + str(i)), quality=95)
+							else:
+								area.save(frappe.get_site_path()  + eval("self.attach_" + str(i)), quality=95)

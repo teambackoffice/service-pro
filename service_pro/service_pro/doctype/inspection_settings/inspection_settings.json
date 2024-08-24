@@ -1,0 +1,46 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-08-23 07:44:00.461731",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "image_width",
+  "image_height"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "image_width",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Image Width"
+  },
+  {
+   "fieldname": "image_height",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Image Height"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-08-23 07:44:53.752837",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Inspection Settings",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

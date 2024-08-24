@@ -1,22 +1,47 @@
 // Copyright (c) 2020, jan and contributors
 // For license information, please see license.txt
-
+var defaults = {}
 frappe.ui.form.on('Site Job Report', {
-	onload: function(frm) {
+	company: function () {
+       if(cur_frm.doc.company){
+            cur_frm.call({
+                doc: cur_frm.doc,
+                method: "get_defaults",
+                freeze: true,
+                freeze_message: "Getting Company Defaults....",
+                callback: function (r) {
+                    defaults = r.message
 
- if(cur_frm.is_new()){
-
-            frappe.db.get_single_value('Production Settings', 'rate_of_materials_based_on_sjr')
-            .then(rate => {
-                cur_frm.doc.rate_of_materials_based_on = rate
-                cur_frm.refresh_field("rate_of_materials_based_on")
-            })
-            frappe.db.get_single_value('Production Settings', 'price_list_sjr')
-            .then(price_list => {
-                cur_frm.doc.price_list = price_list
-                cur_frm.refresh_field("price_list")
+                }
             })
         }
+    },
+    onload: function (frm) {
+        if(cur_frm.doc.company){
+            cur_frm.call({
+                doc: cur_frm.doc,
+                method: "get_defaults",
+                freeze: true,
+                freeze_message: "Getting Company Defaults....",
+                callback: function (r) {
+                    defaults = r.message
+
+                }
+            })
+        }
+    // if(cur_frm.is_new()){
+    //
+    //         frappe.db.get_single_value('Production Settings', 'rate_of_materials_based_on_sjr')
+    //         .then(rate => {
+    //             cur_frm.doc.rate_of_materials_based_on = rate
+    //             cur_frm.refresh_field("rate_of_materials_based_on")
+    //         })
+    //         frappe.db.get_single_value('Production Settings', 'price_list_sjr')
+    //         .then(price_list => {
+    //             cur_frm.doc.price_list = price_list
+    //             cur_frm.refresh_field("price_list")
+    //         })
+    //     }
 	}
 });
 
@@ -172,17 +197,17 @@ function compute_raw_material_total(cur_frm) {
 }
 cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
     var d = locals[cdt][cdn]
-   frappe.db.get_single_value('Production Settings', 'warehouse_sjr')
-        .then(warehouse => {
-            if(warehouse){
-                d.warehouse = warehouse
-                cur_frm.refresh_field("raw_material")
-            }
-        })
-    frappe.db.get_single_value('Production Settings', 'cost_center_sjr')
-        .then(cost_center => {
-            if(cost_center){
-                 d.cost_center = cost_center
+   // frappe.db.get_single_value('Production Settings', 'warehouse_sjr')
+   //      .then(warehouse => {
+   //          if(warehouse){
+    d.warehouse = defaults['site_job_report_settings'].warehouse
+    cur_frm.refresh_field("raw_material")
+            // }
+        // })
+    // frappe.db.get_single_value('Production Settings', 'cost_center_sjr')
+    //     .then(cost_center => {
+            if(defaults['site_job_report_settings'].cost_center){
+                 d.cost_center = defaults['site_job_report_settings'].cost_center
                 cur_frm.refresh_field("raw_material")
             } else {
                 d.cost_center = cur_frm.doc.cost_center

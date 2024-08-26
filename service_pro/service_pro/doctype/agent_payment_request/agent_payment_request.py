@@ -10,9 +10,9 @@ class AgentPaymentRequest(Document):
 	@frappe.whitelist()
 	def get_sales_invoices(self):
 		if self.agent_name:
-			sales_invoices = frappe.db.sql(""" SELECT SI.name as sales_invoice, SI.posting_date, SI.status, SI.incentive, SI.net_total as net_amount FROM `tabSales Invoice` SI 
- 					INNER JOIN `tabSales Team` ST ON ST.parent=SI.name 
- 					WHERE SI.docstatus = 1 and ST.sales_person = %s and SI.agent_commision_record = 0 """, self.agent_name, as_dict=1)
+			sales_invoices = frappe.db.sql(""" SELECT SI.name as sales_partner_payments,SI.sales_invoice_reference as sales_invoice, SI.posting_date, SI.status, SI.incentive, SI.invoice_net_amount as net_amount 
+												FROM `tabSales Partner Payments` SI 
+												WHERE SI.docstatus = 1 and SI.sales_partner_name = %s """, self.agent_name, as_dict=1)
 			return sales_invoices
 		return []
 	def on_submit(self):
@@ -24,9 +24,9 @@ class AgentPaymentRequest(Document):
 			frappe.db.sql(""" UPDATE `tabSales Invoice` SET agent_commision_record=0 WHERE name=%s""", i.sales_invoice)
 			frappe.db.commit()
 
-	def validate(self):
-		if not self.liabilities_account:
-			frappe.throw("Please select liablities account for Sales Person " + self.agent_name)
+	# def validate(self):
+	# 	if not self.liabilities_account:
+	# 		frappe.throw("Please select liablities account for Sales Person " + self.agent_name)
 
 	@frappe.whitelist()
 	def generate_journal_entry(self):
@@ -46,10 +46,11 @@ class AgentPaymentRequest(Document):
 	@frappe.whitelist()
 	def jv_accounts(self):
 		accounts = []
-		amount = 0
-
+		data = frappe.db.sql(""" SELECT * FROM `tabSales Partner Payments Details` WHERE company=%s """,self.company, as_dict=1)
+		if len(data) == 0:
+			frappe.throw("Please check your Production Settings for Sales Partner Payments ")
 		accounts.append({
-			'account': self.liabilities_account,
+			'account': data[0].payable_account,
 			'debit_in_account_currency': self.agent_outstanding_amount,
 			'credit_in_account_currency': 0,
 		})
@@ -69,7 +70,7 @@ class AgentPaymentRequest(Document):
 
 @frappe.whitelist()
 def get_jv(name):
-	jv = frappe.db.sql(""" SELECT * FROM `tabJournal Entry` WHERE agent_payment_request=%s""",name, as_dict=1)
+	jv = frappe.db.sql(""" SELECT * FROM `tabJournal Entry` WHERE agent_payment_request=%s and docstatus=1""",name, as_dict=1)
 	if len(jv) > 0:
 		return True
 	return False

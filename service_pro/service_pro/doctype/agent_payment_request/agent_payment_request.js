@@ -7,11 +7,11 @@ frappe.ui.form.on('Agent Payment Request', {
         cur_frm.refresh_field("agent_outstanding_amount")
     },
 	refresh: function(frm) {
-	    cur_frm.set_query('agent_name', () => {
-            return {
-                query: 'service_pro.doc_events.events.get_sales_person',
-            }
-        })
+        // cur_frm.set_query('agent_name', () => {
+        //     return {
+        //         query: 'service_pro.doc_events.events.get_sales_person',
+        //     }
+        // })
         document.querySelectorAll("[data-doctype='Journal Entry']")[1].style.display ="none";
 
 	    var show = false

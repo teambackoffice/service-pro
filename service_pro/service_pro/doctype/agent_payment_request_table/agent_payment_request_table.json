@@ -5,6 +5,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "sales_partner_payments",
   "sales_invoice",
   "date",
   "status",
@@ -13,6 +14,7 @@
  ],
  "fields": [
   {
+   "fetch_from": "sales_partner_payments.sales_invoice_reference",
    "fieldname": "sales_invoice",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -21,6 +23,7 @@
    "read_only": 1
   },
   {
+   "columns": 1,
    "default": "Today",
    "fetch_from": "sales_invoice.posting_date",
    "fieldname": "date",
@@ -29,6 +32,7 @@
    "label": "Date"
   },
   {
+   "columns": 1,
    "fetch_from": "sales_invoice.status",
    "fieldname": "status",
    "fieldtype": "Data",
@@ -37,7 +41,7 @@
   },
   {
    "default": "0",
-   "fetch_from": "sales_invoice.incentive",
+   "fetch_from": "sales_partner_payments.incentive",
    "fieldname": "incentive",
    "fieldtype": "Currency",
    "in_list_view": 1,
@@ -50,12 +54,19 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Net Amount"
+  },
+  {
+   "fieldname": "sales_partner_payments",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": " Sales Partner Payments",
+   "options": "Sales Partner Payments"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-04-15 14:41:04.663911",
+ "modified": "2024-08-26 01:21:12.788116",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Agent Payment Request Table",
@@ -64,5 +75,6 @@
  "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

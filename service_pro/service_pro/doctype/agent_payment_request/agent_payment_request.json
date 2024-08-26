@@ -133,11 +133,10 @@
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
    "label": "Agent Name",
-   "options": "Sales Person",
+   "options": "Sales Partner",
    "reqd": 1
   },
   {
-   "fetch_from": "agent_name.liabilities_account",
    "fieldname": "liabilities_account",
    "fieldtype": "Data",
    "label": "Liabilities Account",
@@ -177,10 +176,11 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-03-29 19:01:19.260106",
+ "modified": "2024-08-26 01:19:10.308525",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Agent Payment Request",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
@@ -213,5 +213,6 @@
  "search_fields": "employee,employee_name",
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

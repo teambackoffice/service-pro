@@ -31,6 +31,7 @@
   "debit_value",
   "column_break_gpyj",
   "credit_value",
+  "column_break_fjtv",
   "deference_value",
   "amended_from"
  ],
@@ -147,7 +148,8 @@
   {
    "fieldname": "total_qty",
    "fieldtype": "Float",
-   "label": "Total Qty"
+   "label": "Total Qty",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_vhpq",
@@ -156,7 +158,8 @@
   {
    "fieldname": "debit_value",
    "fieldtype": "Currency",
-   "label": "Debit Value"
+   "label": "Debit Value",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_gpyj",
@@ -165,7 +168,8 @@
   {
    "fieldname": "credit_value",
    "fieldtype": "Currency",
-   "label": "Credit Value"
+   "label": "Credit Value",
+   "read_only": 1
   },
   {
    "fieldname": "amended_from",
@@ -180,13 +184,24 @@
   {
    "fieldname": "deference_value",
    "fieldtype": "Currency",
-   "label": "Deference Value"
+   "label": "Deference Value",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_fjtv",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
- "links": [],
- "modified": "2024-07-26 09:32:10.889630",
+ "links": [
+  {
+   "custom": 1,
+   "link_doctype": "Stock Entry",
+   "link_fieldname": "custom_inter_company_stock_transfer"
+  }
+ ],
+ "modified": "2024-08-27 03:02:30.167935",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Stock Transfer",

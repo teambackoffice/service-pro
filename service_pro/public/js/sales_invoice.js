@@ -78,8 +78,12 @@ frappe.ui.form.on('Sales Invoice', {
         if(cur_frm.doc.customer){
             frappe.db.get_doc("Customer", cur_frm.doc.customer)
                 .then(customer => {
-                    cur_frm.doc.sales_man = customer.sales_man
-                    cur_frm.refresh_field("sales_man")
+                    if(customer.sales_team.length > 0){
+                         cur_frm.doc.sales_man = customer.sales_team[0].sales_person
+                         cur_frm.doc.sales_partner = customer.sales_team[0].sales_person
+                        cur_frm.refresh_fields(["sales_man","sales_partner"])
+                    }
+
             })
         }
     }
@@ -152,27 +156,18 @@ cur_frm.cscript.onload = function(frm){
             }
         }
     });
-    // console.log("NAA MAN")
-    // frappe.db.get_single_value('Production Settings', 'expense_account')
-    //         .then(expense_account => {
-    //             console.log(expense_account)
-    cur_frm.doc.expense_account = defaults['incentive_journal_defaults'].expense_account
-    cur_frm.refresh_field("expense_account")
-            // })
-    // frappe.db.get_single_value('Production Settings', 'showroom_cash')
-    //         .then(showroom_cash => {
-                    // console.log("NAA MAN1111")
-                //
-    cur_frm.doc.showroom_cash = defaults['incentive_journal_defaults'].showroom_cash
-    cur_frm.refresh_field("showroom_cash")
-            // })
-    // frappe.db.get_single_value('Production Settings', 'showroom_card')
-    //         .then(showroom_card => {
-                    // console.log("NAA MAN222")
+    if('incentive_journal_defaults' in defaults){
+        cur_frm.doc.expense_account = defaults['incentive_journal_defaults'].expense_account
+        cur_frm.refresh_field("expense_account")
 
-    cur_frm.doc.showroom_card = defaults['incentive_journal_defaults'].showroom_card
-    cur_frm.refresh_field("showroom_card")
-    // })
+        cur_frm.doc.showroom_cash = defaults['incentive_journal_defaults'].showroom_cash
+        cur_frm.refresh_field("showroom_cash")
+
+        cur_frm.doc.showroom_card = defaults['incentive_journal_defaults'].showroom_card
+        cur_frm.refresh_field("showroom_card")
+    }
+
+
 }
 function compute_incentives(cur_frm) {
     var incentive_total = 0

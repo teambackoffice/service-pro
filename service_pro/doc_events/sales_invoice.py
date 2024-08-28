@@ -61,7 +61,7 @@ def jv_accounts_paid(doc):
 	accounts = []
 	accounts.append({
 		'account': doc.expense_account,
-		'debit_in_account_currency': doc.total_commission,
+		'debit_in_account_currency': doc.incentive,
 		'credit_in_account_currency': 0,
 		'cost_center': doc.expense_cost_center,
 	})
@@ -71,7 +71,7 @@ def jv_accounts_paid(doc):
 			accounts.append({
 				'account': mop_cash[0].default_account,
 				'debit_in_account_currency': 0,
-				'credit_in_account_currency': doc.total_commission
+				'credit_in_account_currency': doc.incentive
 			})
 	return accounts
 @frappe.whitelist()

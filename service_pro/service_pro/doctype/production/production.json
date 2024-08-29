@@ -80,7 +80,8 @@
   "printing_settings_section",
   "remarks",
   "column_break_kwuq",
-  "letter_head"
+  "letter_head",
+  "amended_from"
  ],
  "fields": [
   {
@@ -374,7 +375,6 @@
    "options": "Letter Head"
   },
   {
-   "fetch_from": "customer.sales_man",
    "fieldname": "sales_man",
    "fieldtype": "Link",
    "label": "Sales Peson",
@@ -545,12 +545,22 @@
   {
    "fieldname": "column_break_kwuq",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Production",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-26 06:48:42.975231",
+ "modified": "2024-08-30 01:58:49.765291",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

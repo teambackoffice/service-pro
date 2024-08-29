@@ -23,8 +23,8 @@ def generate_jv(doc):
 		doc_jv = {
 			"doctype": "Sales Partner Payments",
 			"sales_partner_name": doc.sales_partner,
-			"incentive": doc.total_commission,
-			"balance_amount": doc.total_commission,
+			"incentive": doc.incentive,
+			"balance_amount": doc.incentive,
 			"posting_date": doc.posting_date,
 			"status": "Unpaid",
 			"sales_invoice_reference": doc.name,
@@ -83,7 +83,7 @@ def on_submit_si(doc, method):
 			if max_disc and over_disc:
 				frappe.throw(" Maximum allowed discount is {0} for item {1}".format(max_disc, frappe.db.get_value("Sales Invoice Item", over_disc, ['item_code'])))
 
-	if len(doc.sales_team) > 0 and not doc.paid and not doc.unpaid:
+	if doc.sales_partner and not doc.paid and not doc.unpaid:
 		frappe.throw("Please select Paid or Unpaid for Sales Person")
 
 	generate_jv(doc)

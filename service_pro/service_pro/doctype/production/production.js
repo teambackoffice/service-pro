@@ -707,6 +707,10 @@ cur_frm.refresh_field("item_selling_price_list")
 	         frappe.db.get_doc("Customer", cur_frm.doc.customer)
             .then(doc => {
                 cur_frm.doc.customer_name = doc.customer_name
+                    if(doc.sales_team.length > 0){
+                         cur_frm.doc.sales_man = doc.sales_team[0].sales_person
+                        cur_frm.refresh_fields(["sales_man"])
+                    }
                 cur_frm.refresh_field("customer_name")
             })
 

@@ -33,9 +33,16 @@ def generate_jv(doc):
 			"customer_name": doc.customer_name,
 			"cost_center": doc.cost_center,
 		}
-		if len(data) > 0:
-			doc_jv['payable_account'] = data[0].payable_account
-			doc_jv['expense_account'] = data[0].expense_accounts
+		if len(data) == 0:
+			frappe.throw("Please set Sales Partner Payments Details defaults in Production Settings")
+		if len(data) > 0 and not data[0].payable_account:
+			frappe.throw("Please set Payable Account in Sales Partner Payments Details defaults in Production Settings")
+
+		if len(data) > 0 and not data[0].expense_accounts:
+			frappe.throw("Please set Expense Account in Sales Partner Payments Details defaults in Production Settings")
+
+		doc_jv['payable_account'] = data[0].payable_account
+		doc_jv['expense_account'] = data[0].expense_accounts
 		jv = frappe.get_doc(doc_jv)
 		jv.insert(ignore_permissions=1)
 		jv.submit()

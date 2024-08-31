@@ -448,14 +448,16 @@ cur_frm.refresh_field("item_selling_price_list")
         cur_frm.set_query('expense_account',"advance_payment", () => {
             return {
                 filters: [
-                        ["account_type", "in", ["Bank","Cash"]]
+                        ["account_type", "in", ["Bank","Cash"]],
+                        ["company", "=", cur_frm.doc.company]
                     ]
             }
         })
         cur_frm.set_query('expense_ledger',"additional_cost", () => {
             return {
                 filters: [
-                        ["account_type", "in", ["Expenses Included In Valuation"]]
+                        ["account_type", "in", ["Expenses Included In Valuation"]],
+                        ["company", "=", cur_frm.doc.company]
                     ]
             }
         })

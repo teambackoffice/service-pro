@@ -43,7 +43,7 @@ class Production(Document):
 			self.warehouse = defaults['finish_good_defaults'].finish_good_warehouse if 'finish_good_defaults' in defaults else ""
 			self.cost_center = defaults['finish_good_defaults'].finish_good_cost_center if 'finish_good_defaults' in defaults else ""
 			self.income_account = defaults['finish_good_defaults'].income_account if 'finish_good_defaults' in defaults else ""
-			self.rate_of_materials_based_on = defaults['rate_of_materials_based_on'] if 'rate_of_materials_based_on' in defaults else ""
+			self.rate_of_materials_based_on = defaults['raw_material_defaults'].rate_of_materials_based_on if 'raw_material_defaults' in defaults else ""
 			self.price_list = defaults['price_list'] if 'price_list' in defaults else ""
 			return defaults
 	@frappe.whitelist()

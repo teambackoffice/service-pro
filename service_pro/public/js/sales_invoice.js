@@ -86,6 +86,15 @@ frappe.ui.form.on('Sales Invoice', {
 
             })
         }
+    },
+    onload_post_render: function () {
+        if(cur_frm.is_new()){
+            cur_frm.doc.sales_partner = ""
+            cur_frm.doc.incentive = 0
+            cur_frm.doc.paid = 0
+            cur_frm.doc.unpaid = 0
+            cur_frm.refresh_fields(["sales_partner","incentive","paid","unpaid"])
+        }
     }
 })
 cur_frm.cscript.paid = function(frm){

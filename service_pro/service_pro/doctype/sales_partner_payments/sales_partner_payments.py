@@ -7,17 +7,48 @@ from frappe.model.document import Document
 
 class SalesPartnerPayments(Document):
 	def on_submit(self):
-		doc_jv = {
-			"doctype": "Journal Entry",
-			"voucher_type": "Journal Entry",
+		gl_debit = {
+			"doctype": "GL Entry",
 			"posting_date": self.posting_date,
-			"custom_sales_partner_payment": self.name,
-			"accounts": self.jv_accounts_unpaid(),
+			"account": self.expense_account,
+			"cost_center": self.cost_center,
+			"credit": self.incentive,
+			"credit_in_account_currency": self.incentive,
+			"credit_in_transaction_currency": self.incentive,
+			"voucher_type": self.doctype,
+			"voucher_no": self.name,
+			"company": self.company,
+			"transaction_exchange_rate": 1
 		}
-		print(doc_jv)
-		jv = frappe.get_doc(doc_jv)
-		jv.insert(ignore_permissions=1)
-		jv.submit()
+		gl_credit = {
+			"doctype": "GL Entry",
+			"account": self.expense_account,
+			"posting_date": self.posting_date,
+			"cost_center": self.cost_center,
+			"debit": self.incentive,
+			"debit_in_account_currency": self.incentive,
+			"debit_in_transaction_currency": self.incentive,
+			"voucher_type": self.doctype,
+			"voucher_no": self.name,
+			"company": self.company,
+			"transaction_exchange_rate": 1
+		}
+		debit = frappe.get_doc(gl_debit).insert(ignore_permissions=1)
+		debit.submit()
+		credit = frappe.get_doc(gl_credit).insert(ignore_permissions=1)
+		credit.submit()
+
+		# doc_jv = {
+		# 	"doctype": "Journal Entry",
+		# 	"voucher_type": "Journal Entry",
+		# 	"posting_date": self.posting_date,
+		# 	"custom_sales_partner_payment": self.name,
+		# 	"accounts": self.jv_accounts_unpaid(),
+		# }
+		# print(doc_jv)
+		# jv = frappe.get_doc(doc_jv)
+		# jv.insert(ignore_permissions=1)
+		# jv.submit()
 
 	def jv_accounts_unpaid(self):
 		accounts = []

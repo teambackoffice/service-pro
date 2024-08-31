@@ -12,13 +12,48 @@ class AgentPaymentRequest(Document):
 		if self.agent_name:
 			sales_invoices = frappe.db.sql(""" SELECT SI.name as sales_partner_payments,SI.sales_invoice_reference as sales_invoice, SI.posting_date, SI.status, SI.incentive, SI.invoice_net_amount as net_amount 
 												FROM `tabSales Partner Payments` SI 
-												WHERE SI.docstatus = 1 and SI.sales_partner_name = %s """, self.agent_name, as_dict=1)
+												WHERE SI.docstatus = 1 and SI.sales_partner_name = %s and SI.status='Unpaid' """, self.agent_name, as_dict=1)
 			return sales_invoices
 		return []
 	def on_submit(self):
 		for i in self.sales_invoice:
 			frappe.db.sql(""" UPDATE `tabSales Invoice` SET agent_commision_record=1 WHERE name=%s""", i.sales_invoice)
 			frappe.db.commit()
+		data = frappe.db.sql(""" SELECT * FROM `tabSales Partner Payments Details` WHERE company=%s """,self.company, as_dict=1)
+		if len(data) == 0:
+			frappe.throw("Please check your Production Settings for Sales Partner Payments ")
+		gl_debit = {
+			"doctype": "GL Entry",
+			"posting_date": self.posting_date,
+			"account": data[0].payable_account,
+			# "cost_center": self.cost_center,
+			"credit": self.agent_outstanding_amount,
+			"credit_in_account_currency": self.agent_outstanding_amount,
+			"credit_in_transaction_currency": self.agent_outstanding_amount,
+			"voucher_type": self.doctype,
+			"voucher_no": self.name,
+			"company": self.company,
+			"transaction_exchange_rate": 1
+		}
+		credit_acount = frappe.db.sql(""" SELECT * FROM `tabMode of Payment Account` WHERE parent=%s LIMIT 1""", self.mode_of_payment,as_dict=1)
+
+		gl_credit = {
+			"doctype": "GL Entry",
+			"account": credit_acount[0].default_account,
+			"posting_date": self.posting_date,
+			# "cost_center": self.cost_center,
+			"debit": self.agent_outstanding_amount,
+			"debit_in_account_currency": self.agent_outstanding_amount,
+			"debit_in_transaction_currency": self.agent_outstanding_amount,
+			"voucher_type": self.doctype,
+			"voucher_no": self.name,
+			"company": self.company,
+			"transaction_exchange_rate": 1
+		}
+		debit = frappe.get_doc(gl_debit).insert(ignore_permissions=1)
+		debit.submit()
+		credit = frappe.get_doc(gl_credit).insert(ignore_permissions=1)
+		credit.submit()
 	def on_cancel(self):
 		for i in self.sales_invoice:
 			frappe.db.sql(""" UPDATE `tabSales Invoice` SET agent_commision_record=0 WHERE name=%s""", i.sales_invoice)
@@ -46,25 +81,24 @@ class AgentPaymentRequest(Document):
 	@frappe.whitelist()
 	def jv_accounts(self):
 		accounts = []
-		data = frappe.db.sql(""" SELECT * FROM `tabSales Partner Payments Details` WHERE company=%s """,self.company, as_dict=1)
+		# data = frappe.db.sql(""" SELECT * FROM `tabSales Partner Payments Details` WHERE company=%s """,self.company, as_dict=1)
 		if len(data) == 0:
 			frappe.throw("Please check your Production Settings for Sales Partner Payments ")
-		accounts.append({
-			'account': data[0].payable_account,
-			'debit_in_account_currency': self.agent_outstanding_amount,
-			'credit_in_account_currency': 0,
-		})
+		# accounts.append({
+		# 	'account': data[0].payable_account,
+		# 	'debit_in_account_currency': self.agent_outstanding_amount,
+		# 	'credit_in_account_currency': 0,
+		# })
 
-		credit_acount = frappe.db.sql(""" SELECT * FROM `tabMode of Payment Account` WHERE parent=%s LIMIT 1""", self.mode_of_payment,as_dict=1)
 
-		if len(credit_acount) > 0:
-			accounts.append({
-				'account': credit_acount[0].default_account,
-				'debit_in_account_currency': 0,
-				'credit_in_account_currency': self.agent_outstanding_amount,
-				'party_type': "Employee",
-				'party': self.employee,
-			})
+		# if len(credit_acount) > 0:
+		# 	accounts.append({
+		# 		'account': credit_acount[0].default_account,
+		# 		'debit_in_account_currency': 0,
+		# 		'credit_in_account_currency': self.agent_outstanding_amount,
+		# 		'party_type': "Employee",
+		# 		'party': self.employee,
+		# 	})
 		print(accounts)
 		return accounts
 

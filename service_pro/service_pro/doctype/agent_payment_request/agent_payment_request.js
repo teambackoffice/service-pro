@@ -33,21 +33,21 @@ frappe.ui.form.on('Agent Payment Request', {
                 console.log(r.message)
             }
         })
-	    if(cur_frm.doc.docstatus && !show){
-	         frm.add_custom_button(__("Journal Entry"), () => {
-                    cur_frm.call({
-                        doc: cur_frm.doc,
-                        method: 'generate_journal_entry',
-                        args: {},
-                        freeze: true,
-                        freeze_message: "Generating Journal Entry...",
-                        callback: (r) => {
-                            cur_frm.reload_doc()
-                                frappe.set_route("Form", "Journal Entry", r.message);
-                        }
-                })
-            }, "Generate")
-        }
+        // if(cur_frm.doc.docstatus && !show){
+	     //     frm.add_custom_button(__("Journal Entry"), () => {
+        //             cur_frm.call({
+        //                 doc: cur_frm.doc,
+        //                 method: 'generate_journal_entry',
+        //                 args: {},
+        //                 freeze: true,
+        //                 freeze_message: "Generating Journal Entry...",
+        //                 callback: (r) => {
+        //                     cur_frm.reload_doc()
+        //                         frappe.set_route("Form", "Journal Entry", r.message);
+        //                 }
+        //         })
+        //     }, "Generate")
+        // }
 
 	}
 });

@@ -18,7 +18,22 @@ class AgentPaymentRequest(Document):
 	def on_submit(self):
 		for i in self.sales_invoice:
 			frappe.db.sql(""" UPDATE `tabSales Invoice` SET agent_commision_record=1 WHERE name=%s""", i.sales_invoice)
+			spp = frappe.get_doc("Sales Partner Payments", i.sales_partner_payments)
+			status = ""
+			pa = 0
+			if float(spp.incentive) == float(i.incentive):
+				pa = spp.incentive
+				status = "Paid"
+			elif float(i.incentive) > 0:
+				pa = spp.paid_amount + i.incentive
+				status = "Partly Paid"
+
+			balance = spp.incentive - pa
+			frappe.db.sql(
+				""" UPDATE `tabSales Partner Payments` SET balance_amount=%s,paid_amount=%s, status=%s WHERE name=%s """,
+				(balance, pa, status, i.sales_partner_payments))
 			frappe.db.commit()
+
 		data = frappe.db.sql(""" SELECT * FROM `tabSales Partner Payments Details` WHERE company=%s """,self.company, as_dict=1)
 		if len(data) == 0:
 			frappe.throw("Please check your Production Settings for Sales Partner Payments ")
@@ -55,35 +70,51 @@ class AgentPaymentRequest(Document):
 		credit = frappe.get_doc(gl_credit).insert(ignore_permissions=1)
 		credit.submit()
 	def on_cancel(self):
+		frappe.db.sql(""" DELETE FROM `tabGL Entry` WHERE docstatus=1 and voucher_no=%s and is_cancelled=0 """,self.name,as_dict=1)
+		frappe.db.commit()
 		for i in self.sales_invoice:
 			frappe.db.sql(""" UPDATE `tabSales Invoice` SET agent_commision_record=0 WHERE name=%s""", i.sales_invoice)
+			spp = frappe.get_doc("Sales Partner Payments", i.sales_partner_payments)
+			status = ""
+			balance = 0
+			pa = spp.paid_amount - i.incentive
+			if pa > 0:
+				balance = spp.incentive - pa
+				status = "Partly Paid"
+			elif pa == 0:
+				balance = spp.incentive
+				status = "Unpaid"
+
+			frappe.db.sql(
+				""" UPDATE `tabSales Partner Payments` SET balance_amount=%s,paid_amount=%s, status=%s WHERE name=%s """,
+				(balance, pa, status, i.sales_partner_payments))
 			frappe.db.commit()
 
 	# def validate(self):
 	# 	if not self.liabilities_account:
 	# 		frappe.throw("Please select liablities account for Sales Person " + self.agent_name)
 
-	@frappe.whitelist()
-	def generate_journal_entry(self):
-		doc_jv = {
-			"doctype": "Journal Entry",
-			"voucher_type": "Journal Entry",
-			"posting_date": self.posting_date,
-			"accounts": self.jv_accounts(),
-			"agent_payment_request": self.name,
-		}
+	# @frappe.whitelist()
+	# def generate_journal_entry(self):
+	# 	doc_jv = {
+	# 		"doctype": "Journal Entry",
+	# 		"voucher_type": "Journal Entry",
+	# 		"posting_date": self.posting_date,
+	# 		"accounts": self.jv_accounts(),
+	# 		"agent_payment_request": self.name,
+	# 	}
+    #
+	# 	jv = frappe.get_doc(doc_jv)
+	# 	jv.insert(ignore_permissions=1)
+	# 	# jv.submit()
+	# 	return jv.name
 
-		jv = frappe.get_doc(doc_jv)
-		jv.insert(ignore_permissions=1)
-		# jv.submit()
-		return jv.name
-
-	@frappe.whitelist()
-	def jv_accounts(self):
-		accounts = []
+	# @frappe.whitelist()
+	# def jv_accounts(self):
+		# accounts = []
 		# data = frappe.db.sql(""" SELECT * FROM `tabSales Partner Payments Details` WHERE company=%s """,self.company, as_dict=1)
-		if len(data) == 0:
-			frappe.throw("Please check your Production Settings for Sales Partner Payments ")
+		# if len(data) == 0:
+		# 	frappe.throw("Please check your Production Settings for Sales Partner Payments ")
 		# accounts.append({
 		# 	'account': data[0].payable_account,
 		# 	'debit_in_account_currency': self.agent_outstanding_amount,
@@ -99,8 +130,8 @@ class AgentPaymentRequest(Document):
 		# 		'party_type': "Employee",
 		# 		'party': self.employee,
 		# 	})
-		print(accounts)
-		return accounts
+		# print(accounts)
+		# return accounts
 
 @frappe.whitelist()
 def get_jv(name):

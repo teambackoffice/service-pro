@@ -48,6 +48,7 @@
   {
    "fieldname": "incentive_journal_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Incentive Journal"
   },
   {
@@ -189,7 +190,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-08-24 09:56:44.978721",
+ "modified": "2024-09-01 09:50:29.429271",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

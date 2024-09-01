@@ -11,7 +11,8 @@
   "expense_accounts",
   "column_break_mwgm",
   "payable_account",
-  "cost_center"
+  "cost_center",
+  "showroom_cash"
  ],
  "fields": [
   {
@@ -49,12 +50,19 @@
    "in_list_view": 1,
    "label": "Cost Center",
    "options": "Cost Center"
+  },
+  {
+   "fieldname": "showroom_cash",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Showroom Cash",
+   "options": "Mode of Payment"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-07-26 06:20:59.777801",
+ "modified": "2024-09-01 09:42:30.764689",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Sales Partner Payments Details",

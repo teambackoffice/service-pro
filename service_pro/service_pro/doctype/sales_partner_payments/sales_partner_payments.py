@@ -3,9 +3,18 @@
 
 import frappe
 from frappe.model.document import Document
-
+from erpnext.accounts.general_ledger import make_reverse_gl_entries
 
 class SalesPartnerPayments(Document):
+	def after_cancel(self):
+		print("AFTER CANEEELL")
+	def on_cancel(self):
+		frappe.db.sql(""" UPDATE `tabGL Entry` SET is_cancelled=1,docstatus=0 
+							WHERE voucher_no=%s and is_cancelled=0 """, self.name,
+					  as_dict=1)
+		frappe.db.commit()
+		# if self.docstatus == 2:
+		# 	make_reverse_gl_entries(voucher_type=self.doctype, voucher_no=self.name)
 	def on_submit(self):
 		gl_debit = {
 			"doctype": "GL Entry",

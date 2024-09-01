@@ -14,11 +14,22 @@ frappe.ui.form.on('Agent Payment Request', {
         cur_frm.refresh_field("agent_outstanding_amount")
     },
 	refresh: function(frm) {
-        // cur_frm.set_query('agent_name', () => {
-        //     return {
-        //         query: 'service_pro.doc_events.events.get_sales_person',
-        //     }
-        // })
+	    if(cur_frm.doc.docstatus){
+	         cur_frm.add_custom_button(__('Accounting Ledger'), function() {
+                frappe.route_options = {
+                    voucher_no: cur_frm.doc.name,
+                    from_date: cur_frm.doc.posting_date,
+                    to_date: moment(cur_frm.doc.modified).format('YYYY-MM-DD'),
+                    company:cur_frm.doc.company,
+                    group_by: "Group by Voucher (Consolidated)",
+                    show_cancelled_entries: cur_frm.doc.docstatus === 2,
+                    ignore_prepared_report: true
+                };
+                frappe.set_route("query-report", "General Ledger");
+            }, __("View"));
+        }
+
+
         document.querySelectorAll("[data-doctype='Journal Entry']")[1].style.display ="none";
 
 	    var show = false

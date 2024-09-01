@@ -10,7 +10,8 @@ def generate_jv(doc):
 
 			"accounts": jv_accounts_paid(doc),
 		}
-
+		print("HEEEEEEEEEEEEEEEEEEEEEEN")
+		print(doc_jv)
 		jv = frappe.get_doc(doc_jv)
 		jv.insert(ignore_permissions=1)
 		jv.submit()
@@ -73,7 +74,10 @@ def jv_accounts_paid(doc):
 		'cost_center': doc.expense_cost_center,
 	})
 	if doc.cash:
-		mop_cash = frappe.db.sql(""" SELECT * FROM `tabMode of Payment Account` WHERE parent=%s """, (doc.showroom_cash), as_dict=1)
+		if not doc.showroom_cash:
+			frappe.throw("Please set Showroom Cash in Production Settings")
+
+		mop_cash = frappe.db.sql(""" SELECT * FROM `tabMode of Payment Account` WHERE parent=%s """, doc.showroom_cash, as_dict=1)
 		if len(mop_cash) > 0:
 			accounts.append({
 				'account': mop_cash[0].default_account,

@@ -101,8 +101,8 @@ cur_frm.cscript.paid = function(frm){
     cur_frm.doc.expense_cost_center = defaults['sales_partner_payments_details'].cost_center
     cur_frm.refresh_field("expense_cost_center")
 
-    cur_frm.doc.expense_account = defaults['sales_partner_payments_details'].expense_accounts
-    cur_frm.refresh_field("expense_account")
+    // cur_frm.doc.expense_account = defaults['sales_partner_payments_details'].expense_accounts
+    // cur_frm.refresh_field("expense_account")
 
     cur_frm.doc.showroom_cash = defaults['sales_partner_payments_details'].showroom_cash
     cur_frm.refresh_field("showroom_cash")
@@ -126,8 +126,8 @@ cur_frm.cscript.unpaid = function(frm){
     // frappe.db.get_single_value('Production Settings', 'expense_account')
     //         .then(expense_account => {
     //             console.log(expense_account)
-    cur_frm.doc.expense_account = defaults['sales_partner_payments_details'].expense_accounts
-    cur_frm.refresh_field("expense_account")
+    // cur_frm.doc.expense_account = defaults['sales_partner_payments_details'].expense_accounts
+    // cur_frm.refresh_field("expense_account")
         // })
    if(cur_frm.doc.unpaid){
         cur_frm.doc.paid = 0
@@ -159,8 +159,8 @@ cur_frm.cscript.onload = function(frm){
         }
     });
     if('sales_partner_payments_details' in defaults){
-        cur_frm.doc.expense_account = defaults['sales_partner_payments_details'].expense_account
-        cur_frm.refresh_field("expense_account")
+        // cur_frm.doc.expense_account = defaults['sales_partner_payments_details'].expense_account
+        // cur_frm.refresh_field("expense_account")
 
         cur_frm.doc.showroom_cash = defaults['sales_partner_payments_details'].showroom_cash
         cur_frm.refresh_field("showroom_cash")

@@ -68,7 +68,7 @@ frappe.ui.form.on("Inter Company Stock Transfer", {
        compute_totals(cur_frm)
     },
 	from_company: function () {
-       if(cur_frm.doc.company){
+       if(cur_frm.doc.from_company){
             cur_frm.call({
                 doc: cur_frm.doc,
                 method: "get_defaults",
@@ -82,7 +82,7 @@ frappe.ui.form.on("Inter Company Stock Transfer", {
         }
     },
     to_company: function () {
-       if(cur_frm.doc.company){
+       if(cur_frm.doc.to_company){
             cur_frm.call({
                 doc: cur_frm.doc,
                 method: "get_defaults",

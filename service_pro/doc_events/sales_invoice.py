@@ -2,22 +2,58 @@ import frappe
 
 def generate_jv(doc):
 	if doc.paid:
-		doc_jv = {
-			"doctype": "Journal Entry",
-			"voucher_type": "Journal Entry",
-			"posting_date": doc.posting_date,
-			"sales_invoice": doc.name,
+		# doc_jv = {
+		# 	"doctype": "Journal Entry",
+		# 	"voucher_type": "Journal Entry",
+		# 	"posting_date": doc.posting_date,
+		# 	"sales_invoice": doc.name,
+        #
+		# 	"accounts": jv_accounts_paid(doc),
+		# }
+		# jv = frappe.get_doc(doc_jv)
+		# jv.insert(ignore_permissions=1)
+		# jv.submit()
+		# frappe.db.sql(""" UPDATE `tabSales Invoice` SET journal_entry=%s WHERE name=%s""", (jv.name, doc.name))
+		# frappe.db.commit()
+		data = frappe.db.sql(""" SELECT * FROM `tabSales Partner Payments Details` WHERE company=%s """, doc.company,
+							 as_dict=1)
 
-			"accounts": jv_accounts_paid(doc),
+		doc_jv = {
+			"doctype": "Sales Partner Payments",
+			"sales_partner_name": doc.sales_partner,
+			"incentive": doc.incentive,
+			"balance_amount": doc.incentive,
+			"posting_date": doc.posting_date,
+			"status": "Unpaid",
+			"sales_invoice_reference": doc.name,
+			"invoice_net_amount": doc.total,
+			"customer_id": doc.customer,
+			"customer_name": doc.customer_name,
+			"cost_center": doc.cost_center,
 		}
-		print("HEEEEEEEEEEEEEEEEEEEEEEN")
-		print(doc_jv)
+		if len(data) == 0:
+			frappe.throw("Please set Sales Partner Payments Details defaults in Production Settings")
+		if len(data) > 0 and not data[0].payable_account:
+			frappe.throw("Please set Payable Account in Sales Partner Payments Details defaults in Production Settings")
+
+		if len(data) > 0 and not data[0].expense_accounts:
+			frappe.throw("Please set Expense Account in Sales Partner Payments Details defaults in Production Settings")
+
+		if not doc.showroom_cash and not data[0].showroom_cash:
+			frappe.throw("Please set Showroom Cash in Production Settings")
+
+		mop_cash = frappe.db.sql(""" SELECT * FROM `tabMode of Payment Account` WHERE parent=%s and company=%s""", (doc.showroom_cash or data[0].showroom_cash,doc.company),
+								 as_dict=1)
+
+		if len(mop_cash) > 0:
+			doc_jv['payable_account'] = mop_cash[0].default_account
+		else:
+			frappe.throw("Please add account for company " + doc.company + " in Mode of Payment " + doc.showroom_cash or data[0].showroom_cash)
+		doc_jv['expense_account'] = data[0].expense_accounts
 		jv = frappe.get_doc(doc_jv)
 		jv.insert(ignore_permissions=1)
 		jv.submit()
-		frappe.db.sql(""" UPDATE `tabSales Invoice` SET journal_entry=%s WHERE name=%s""", (jv.name, doc.name))
-		frappe.db.commit()
-
+		frappe.msgprint("Sales Partner Payments Created")
 	elif doc.unpaid:
 		data = frappe.db.sql(""" SELECT * FROM `tabSales Partner Payments Details` WHERE company=%s """,doc.company, as_dict=1)
 
@@ -47,43 +83,58 @@ def generate_jv(doc):
 		jv = frappe.get_doc(doc_jv)
 		jv.insert(ignore_permissions=1)
 		jv.submit()
+		frappe.msgprint("Sales Partner Payments Created")
 		# doc.journal_entry = jv.name
 		# frappe.db.sql(""" UPDATE `tabSales Invoice` SET journal_entry=%s WHERE name=%s""", (jv.name, doc.name))
 		# frappe.db.commit()
 def jv_accounts_unpaid(doc):
+	data = frappe.db.sql(""" SELECT * FROM `tabSales Partner Payments` WHERE company=%s """, doc.company, as_dict=1)
+	if len(data) == 0:
+		frappe.throw("Please setup Sales Partner Payments for company " + doc.company)
 	accounts = []
 	accounts.append({
-		'account': doc.expense_account,
+		'account': data[0].expense_accounts,
 		'debit_in_account_currency': doc.incentive,
 		'credit_in_account_currency': 0,
 		'cost_center': doc.expense_cost_center,
 	})
 	accounts.append({
-		'account': doc.liabilities_account,
+		'account':data[0].payable_account,
 		'debit_in_account_currency': 0,
 		'credit_in_account_currency': doc.incentive
 	})
 	return accounts
 
 def jv_accounts_paid(doc):
+	data = frappe.db.sql(""" SELECT * FROM `tabSales Partner Payments` WHERE company=%s """, doc.company,as_dict=1)
+	if len(data) == 0:
+		frappe.throw("Please setup Sales Partner Payments for company " + doc.company)
 	accounts = []
 	accounts.append({
-		'account': doc.expense_account,
+		'account': data[0].expense_accounts,
 		'debit_in_account_currency': doc.incentive,
 		'credit_in_account_currency': 0,
 		'cost_center': doc.expense_cost_center,
 	})
 	if doc.cash:
-		if not doc.showroom_cash:
+		if not doc.showroom_cash and not data[0].showroom_cash:
 			frappe.throw("Please set Showroom Cash in Production Settings")
 
-		mop_cash = frappe.db.sql(""" SELECT * FROM `tabMode of Payment Account` WHERE parent=%s """, doc.showroom_cash, as_dict=1)
+		mop_cash = frappe.db.sql(""" SELECT * FROM `tabMode of Payment Account` WHERE parent=%s and company=%s """, (doc.showroom_cash or data[0].showroom_cash,doc.company), as_dict=1)
 		if len(mop_cash) > 0:
 			accounts.append({
 				'account': mop_cash[0].default_account,
 				'debit_in_account_currency': 0,
 				'credit_in_account_currency': doc.incentive
 			})
+		else:
+			frappe.throw("Please add account for company " + doc.company + " in Mode of Payment " + doc.showroom_cash or data[0].showroom_cash)
+	else:
+		accounts.append({
+			'account': data[0].payable_account,
+			'debit_in_account_currency': 0,
+			'credit_in_account_currency': doc.incentive
+		})
 	return accounts
 @frappe.whitelist()
 def on_submit_si(doc, method):

@@ -21,6 +21,7 @@ def generate_jv(doc):
 		doc_jv = {
 			"doctype": "Sales Partner Payments",
 			"sales_partner_name": doc.sales_partner,
+			"company": doc.company,
 			"incentive": doc.incentive,
 			"balance_amount": doc.incentive,
 			"posting_date": doc.posting_date,
@@ -59,6 +60,7 @@ def generate_jv(doc):
 
 		doc_jv = {
 			"doctype": "Sales Partner Payments",
+			"company": doc.company,
 			"sales_partner_name": doc.sales_partner,
 			"incentive": doc.incentive,
 			"balance_amount": doc.incentive,

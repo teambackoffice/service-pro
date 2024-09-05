@@ -6,6 +6,24 @@ from frappe.model.document import Document
 from erpnext.accounts.general_ledger import make_reverse_gl_entries
 
 class SalesPartnerPayments(Document):
+	@frappe.whitelist()
+	def get_defaults(self):
+		if self.company:
+			defaults = {
+			}
+			tables = [
+				"Sales Partner Payments Details",
+			]
+			for table in tables:
+				data = frappe.db.sql(""" SELECT * FROM `tab{0}` WHERE company=%s """.format(table), self.company,
+									 as_dict=1)
+				if len(data) > 0:
+					defaults[data[0].parentfield] = data[0]
+
+			self.payable_account = defaults[
+				'sales_partner_payments_details'].payable_account if 'sales_partner_payments_details' in defaults else ""
+			self.expense_account = defaults['sales_partner_payments_details'].expense_accounts if 'sales_partner_payments_details' in defaults else ""
+			return defaults
 	def after_cancel(self):
 		print("AFTER CANEEELL")
 	def on_trash(self):

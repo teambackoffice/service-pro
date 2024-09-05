@@ -9,7 +9,15 @@ frappe.ui.form.on('Agent Payment Request Table', {
 })
 frappe.ui.form.on('Agent Payment Request', {
     company: function () {
-      cur_frm.trigger("agent_name")
+        cur_frm.call({
+            doc: cur_frm.doc,
+            method: "get_defaults",
+            freeze: true,
+            freeze_message: "Getting Default....",
+            calback: function () {
+                cur_frm.trigger("agent_name")
+            }
+        })
     },
 	claim_amount: function(frm) {
 	    cur_frm.doc.agent_outstanding_amount = cur_frm.doc.claim_amount
@@ -17,7 +25,7 @@ frappe.ui.form.on('Agent Payment Request', {
     },
 	refresh: function(frm) {
 	    if(cur_frm.doc.docstatus){
-	         cur_frm.add_custom_button(__('Accounting Ledger'), function() {
+	         cur_frm.add_custom_button(__('Accounting Ledger'), () => {
                 frappe.route_options = {
                     voucher_no: cur_frm.doc.name,
                     from_date: cur_frm.doc.posting_date,
@@ -32,7 +40,7 @@ frappe.ui.form.on('Agent Payment Request', {
         }
 
 
-        document.querySelectorAll("[data-doctype='Journal Entry']")[1].style.display ="none";
+        // document.querySelectorAll("[data-doctype='Journal Entry']")[1].style.display ="none";
 
 	    var show = false
         frappe.call({

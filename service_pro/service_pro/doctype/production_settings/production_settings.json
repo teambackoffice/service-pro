@@ -25,6 +25,8 @@
   "site_job_report_settings",
   "inspection_settings_section",
   "inspection_details",
+  "agent_payment_request_setting_section",
+  "agent_payment_request_defaults",
   "other_tab",
   "incentive_journal_section",
   "incentive_journal_defaults",
@@ -185,12 +187,23 @@
   {
    "fieldname": "section_break_raoa",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "agent_payment_request_setting_section",
+   "fieldtype": "Section Break",
+   "label": "Agent Payment Request Setting"
+  },
+  {
+   "fieldname": "agent_payment_request_defaults",
+   "fieldtype": "Table",
+   "label": "Agent Payment Request Defaults",
+   "options": "Agent Payment Request Defaults"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-09-01 09:50:29.429271",
+ "modified": "2024-09-05 14:14:27.083659",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

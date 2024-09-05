@@ -8,6 +8,23 @@ from frappe.model.document import Document
 
 class AgentPaymentRequest(Document):
 	@frappe.whitelist()
+	def get_defaults(self):
+		if self.company:
+			defaults = {
+			}
+			tables = [
+				"Agent Payment Request Defaults",
+			]
+			for table in tables:
+				data = frappe.db.sql(""" SELECT * FROM `tab{0}` WHERE company=%s """.format(table), self.company,
+									 as_dict=1)
+				if len(data) > 0:
+					defaults[data[0].parentfield] = data[0]
+
+			self.mode_of_payment = defaults['agent_payment_request_defaults'].mode_of_payment if 'agent_payment_request_defaults' in defaults else ""
+			print("MODE OF PAAAYMENT")
+			print(self.mode_of_payment)
+	@frappe.whitelist()
 	def get_sales_invoices(self):
 		if self.agent_name:
 			sales_invoices = frappe.db.sql(""" SELECT SI.name as sales_partner_payments,SI.sales_invoice_reference as sales_invoice, SI.posting_date, SI.status, SI.incentive, SI.invoice_net_amount as net_amount 

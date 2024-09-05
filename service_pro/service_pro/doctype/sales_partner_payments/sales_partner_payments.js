@@ -2,6 +2,16 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on("Sales Partner Payments", {
+    company: function () {
+        cur_frm.call({
+            doc: cur_frm.doc,
+            method: "get_defaults",
+            freeze: true,
+            freeze_message: "Getting Default....",
+            calback: function () {
+            }
+        })
+    },
     refresh: function () {
       if(cur_frm.doc.docstatus){
 	         cur_frm.add_custom_button(__('Accounting Ledger'), function() {

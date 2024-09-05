@@ -2,19 +2,6 @@ import frappe
 
 def generate_jv(doc):
 	if doc.paid:
-		# doc_jv = {
-		# 	"doctype": "Journal Entry",
-		# 	"voucher_type": "Journal Entry",
-		# 	"posting_date": doc.posting_date,
-		# 	"sales_invoice": doc.name,
-        #
-		# 	"accounts": jv_accounts_paid(doc),
-		# }
-		# jv = frappe.get_doc(doc_jv)
-		# jv.insert(ignore_permissions=1)
-		# jv.submit()
-		# frappe.db.sql(""" UPDATE `tabSales Invoice` SET journal_entry=%s WHERE name=%s""", (jv.name, doc.name))
-		# frappe.db.commit()
 		data = frappe.db.sql(""" SELECT * FROM `tabSales Partner Payments Details` WHERE company=%s """, doc.company,
 							 as_dict=1)
 
@@ -25,7 +12,7 @@ def generate_jv(doc):
 			"incentive": doc.incentive,
 			"balance_amount": doc.incentive,
 			"posting_date": doc.posting_date,
-			"status": "Unpaid",
+			"status": "Paid",
 			"sales_invoice_reference": doc.name,
 			"invoice_net_amount": doc.total,
 			"customer_id": doc.customer,

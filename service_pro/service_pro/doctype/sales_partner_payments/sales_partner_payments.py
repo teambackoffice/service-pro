@@ -8,6 +8,11 @@ from erpnext.accounts.general_ledger import make_reverse_gl_entries
 class SalesPartnerPayments(Document):
 	def after_cancel(self):
 		print("AFTER CANEEELL")
+	def on_trash(self):
+		frappe.db.sql(""" DELETE FROM `tabGL Entry` 
+							WHERE voucher_no=%s""", self.name,
+					  as_dict=1)
+		frappe.db.commit()
 	def on_cancel(self):
 		frappe.db.sql(""" UPDATE `tabGL Entry` SET is_cancelled=1,docstatus=0 
 							WHERE voucher_no=%s and is_cancelled=0 """, self.name,

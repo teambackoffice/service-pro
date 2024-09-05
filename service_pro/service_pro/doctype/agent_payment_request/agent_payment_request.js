@@ -8,7 +8,9 @@ frappe.ui.form.on('Agent Payment Request Table', {
     },
 })
 frappe.ui.form.on('Agent Payment Request', {
-
+    company: function () {
+      cur_frm.trigger("agent_name")
+    },
 	claim_amount: function(frm) {
 	    cur_frm.doc.agent_outstanding_amount = cur_frm.doc.claim_amount
         cur_frm.refresh_field("agent_outstanding_amount")

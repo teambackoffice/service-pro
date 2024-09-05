@@ -12,10 +12,12 @@ class AgentPaymentRequest(Document):
 		if self.agent_name:
 			sales_invoices = frappe.db.sql(""" SELECT SI.name as sales_partner_payments,SI.sales_invoice_reference as sales_invoice, SI.posting_date, SI.status, SI.incentive, SI.invoice_net_amount as net_amount 
 												FROM `tabSales Partner Payments` SI 
-												WHERE SI.docstatus = 1 and SI.sales_partner_name = %s and SI.status='Unpaid' """, self.agent_name, as_dict=1)
+												WHERE SI.docstatus = 1 and SI.sales_partner_name = %s and SI.status='Unpaid' and company=%s""", (self.agent_name,self.company), as_dict=1)
 			return sales_invoices
 		return []
 	def on_submit(self):
+		if self.agent_outstanding_amount == 0 or self.claim_amount == 0:
+			frappe.throw("Please Enter Claim Amount")
 		for i in self.sales_invoice:
 			frappe.db.sql(""" UPDATE `tabSales Invoice` SET agent_commision_record=1 WHERE name=%s""", i.sales_invoice)
 			spp = frappe.get_doc("Sales Partner Payments", i.sales_partner_payments)
@@ -42,9 +44,9 @@ class AgentPaymentRequest(Document):
 			"posting_date": self.posting_date,
 			"account": data[0].payable_account,
 			# "cost_center": self.cost_center,
-			"credit": self.agent_outstanding_amount,
-			"credit_in_account_currency": self.agent_outstanding_amount,
-			"credit_in_transaction_currency": self.agent_outstanding_amount,
+			"debit": self.agent_outstanding_amount,
+			"debit_in_account_currency": self.agent_outstanding_amount,
+			"debit_in_transaction_currency": self.agent_outstanding_amount,
 			"voucher_type": self.doctype,
 			"voucher_no": self.name,
 			"company": self.company,
@@ -57,9 +59,9 @@ class AgentPaymentRequest(Document):
 			"account": credit_acount[0].default_account,
 			"posting_date": self.posting_date,
 			# "cost_center": self.cost_center,
-			"debit": self.agent_outstanding_amount,
-			"debit_in_account_currency": self.agent_outstanding_amount,
-			"debit_in_transaction_currency": self.agent_outstanding_amount,
+			"credit": self.agent_outstanding_amount,
+			"credit_in_account_currency": self.agent_outstanding_amount,
+			"credit_in_transaction_currency": self.agent_outstanding_amount,
 			"voucher_type": self.doctype,
 			"voucher_no": self.name,
 			"company": self.company,
@@ -90,10 +92,9 @@ class AgentPaymentRequest(Document):
 				(balance, pa, status, i.sales_partner_payments))
 			frappe.db.commit()
 
-	# def validate(self):
-	# 	if not self.liabilities_account:
-	# 		frappe.throw("Please select liablities account for Sales Person " + self.agent_name)
-
+	def validate(self):
+		if self.agent_outstanding_amount == 0 or self.claim_amount == 0:
+			frappe.throw("Please Enter Claim Amount")
 	# @frappe.whitelist()
 	# def generate_journal_entry(self):
 	# 	doc_jv = {

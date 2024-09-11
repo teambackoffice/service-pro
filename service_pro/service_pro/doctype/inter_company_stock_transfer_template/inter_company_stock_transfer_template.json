@@ -1,0 +1,103 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:name1",
+ "creation": "2024-09-11 09:02:52.010698",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "name1",
+  "column_break_uqrs",
+  "section_break_apbz",
+  "from_company",
+  "from_warehouse",
+  "from_company_debit_account",
+  "column_break_knww",
+  "to_company",
+  "to_warehouse",
+  "to_company_credit_account"
+ ],
+ "fields": [
+  {
+   "fieldname": "name1",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "from_company",
+   "fieldtype": "Link",
+   "label": "From Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "from_warehouse",
+   "fieldtype": "Link",
+   "label": "From Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "column_break_uqrs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "from_company_debit_account",
+   "fieldtype": "Link",
+   "label": "From Company Debit Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "to_company",
+   "fieldtype": "Link",
+   "label": "To Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "to_warehouse",
+   "fieldtype": "Link",
+   "label": "To Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "to_company_credit_account",
+   "fieldtype": "Link",
+   "label": "To Company Credit Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "section_break_apbz",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_knww",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-09-11 09:13:03.450583",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Inter Company Stock Transfer Template",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

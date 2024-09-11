@@ -6,6 +6,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "template",
   "section_break_j2j1",
   "column_break_obub",
   "from_company",
@@ -190,6 +191,12 @@
   {
    "fieldname": "column_break_fjtv",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "template",
+   "fieldtype": "Link",
+   "label": "Template",
+   "options": "Inter Company Stock Transfer Template"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -201,7 +208,7 @@
    "link_fieldname": "custom_inter_company_stock_transfer"
   }
  ],
- "modified": "2024-08-27 03:02:30.167935",
+ "modified": "2024-09-11 09:06:18.724268",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Stock Transfer",

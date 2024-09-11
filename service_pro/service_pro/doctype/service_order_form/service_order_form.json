@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "naming_series:",
  "creation": "2024-09-11 09:20:45.920546",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -9,20 +10,46 @@
   "company",
   "kind_attention",
   "rfq_no",
+  "currency",
   "column_break_stuj",
   "posting_date",
   "valid_till",
   "salesman_incentive_amount",
+  "option_2",
   "section_break_uklv",
-  "items",
-  "amended_from",
+  "option1_column",
+  "option1",
+  "section_break_jpgi",
+  "option2_items_column",
+  "option2",
+  "section_break_dnmf",
+  "apply_additional_discount_on",
+  "additional_discount_percentage",
+  "vat_on",
+  "column_break_rxrb",
+  "total",
+  "net_total",
+  "tax_amount",
+  "additional_discount_amount",
+  "grand_total",
+  "terms_tab",
+  "payment_terms",
+  "column_break_wify",
+  "delivery_period",
+  "total_quantity",
+  "section_break_thak",
+  "terms",
+  "term_details",
   "sales_team_tab",
   "sales_executive",
   "column_break_uuwt",
   "operation_executive",
   "more_tab",
   "remarks",
-  "column_break_fvrd"
+  "column_break_fvrd",
+  "status",
+  "naming_series",
+  "amended_from"
  ],
  "fields": [
   {
@@ -51,22 +78,6 @@
   {
    "fieldname": "section_break_uklv",
    "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "items",
-   "fieldtype": "Table",
-   "label": "Items",
-   "options": "Service Order Form Item"
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Service Order Form",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
   },
   {
    "fieldname": "sales_team_tab",
@@ -123,15 +134,165 @@
   {
    "fieldname": "column_break_fvrd",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_jpgi",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "option2_items_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "option1_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.option_2==1",
+   "fieldname": "option2",
+   "fieldtype": "Table",
+   "label": "Option-2",
+   "options": "Service Order Form Item"
+  },
+  {
+   "fieldname": "option1",
+   "fieldtype": "Table",
+   "label": "Option-1",
+   "options": "Service Order Form Item"
+  },
+  {
+   "fieldname": "delivery_period",
+   "fieldtype": "Data",
+   "label": "Delivery Period"
+  },
+  {
+   "fieldname": "total_quantity",
+   "fieldtype": "Float",
+   "label": "Total Quantity"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Service Order Form",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "section_break_dnmf",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "Net Total",
+   "fieldname": "apply_additional_discount_on",
+   "fieldtype": "Select",
+   "label": "Apply Additional Discount On",
+   "options": "Net Total\nGrand Total"
+  },
+  {
+   "fieldname": "column_break_rxrb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total",
+   "fieldtype": "Currency",
+   "label": "Total"
+  },
+  {
+   "fieldname": "net_total",
+   "fieldtype": "Currency",
+   "label": "Net Total"
+  },
+  {
+   "fieldname": "additional_discount_percentage",
+   "fieldtype": "Percent",
+   "label": "Additional Discount Percentage"
+  },
+  {
+   "fieldname": "additional_discount_amount",
+   "fieldtype": "Currency",
+   "label": "Additional Discount Amount"
+  },
+  {
+   "fieldname": "grand_total",
+   "fieldtype": "Currency",
+   "label": "Grand Total"
+  },
+  {
+   "fieldname": "vat_on",
+   "fieldtype": "Link",
+   "label": "Tax On",
+   "options": "Sales Taxes and Charges Template"
+  },
+  {
+   "fieldname": "tax_amount",
+   "fieldtype": "Currency",
+   "label": "Tax Amount"
+  },
+  {
+   "default": "0",
+   "fieldname": "option_2",
+   "fieldtype": "Check",
+   "label": "Is Optional Quote"
+  },
+  {
+   "fieldname": "terms_tab",
+   "fieldtype": "Tab Break",
+   "label": "Terms"
+  },
+  {
+   "fieldname": "payment_terms",
+   "fieldtype": "Data",
+   "label": "Payment Terms"
+  },
+  {
+   "fieldname": "section_break_thak",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "terms",
+   "fieldtype": "Link",
+   "label": "Terms",
+   "options": "Terms and Conditions"
+  },
+  {
+   "fieldname": "term_details",
+   "fieldtype": "Text Editor",
+   "label": "Term Details"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Open\nConverted\nExpired\nLost"
+  },
+  {
+   "fieldname": "column_break_wify",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "SOF.YY.####"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-11 09:29:29.398181",
+ "modified": "2024-09-11 12:08:00.531506",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Order Form",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {

@@ -34,7 +34,9 @@
   "sales_partner_payments_details",
   "inter_company_stock_transfer_section",
   "from_companies",
-  "to_companies"
+  "to_companies",
+  "other_settings_tab",
+  "service_order_form_default_tax"
  ],
  "fields": [
   {
@@ -116,7 +118,7 @@
   {
    "fieldname": "other_tab",
    "fieldtype": "Tab Break",
-   "label": "Other Details"
+   "label": "General Settings"
   },
   {
    "fieldname": "column_break_kkcy",
@@ -198,12 +200,23 @@
    "fieldtype": "Table",
    "label": "Agent Payment Request Defaults",
    "options": "Agent Payment Request Defaults"
+  },
+  {
+   "fieldname": "other_settings_tab",
+   "fieldtype": "Tab Break",
+   "label": "Other Settings"
+  },
+  {
+   "fieldname": "service_order_form_default_tax",
+   "fieldtype": "Link",
+   "label": "Service Order Form Default Tax",
+   "options": "Sales Taxes and Charges Template"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-09-05 14:14:27.083659",
+ "modified": "2024-09-11 11:54:05.470767",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

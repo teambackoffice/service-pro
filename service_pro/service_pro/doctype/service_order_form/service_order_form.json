@@ -26,6 +26,7 @@
   "apply_additional_discount_on",
   "additional_discount_percentage",
   "vat_on",
+  "in_words",
   "column_break_rxrb",
   "total",
   "net_total",
@@ -283,12 +284,17 @@
    "fieldtype": "Select",
    "label": "Series",
    "options": "SOF.YY.####"
+  },
+  {
+   "fieldname": "in_words",
+   "fieldtype": "Data",
+   "label": "In Words"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-11 12:08:00.531506",
+ "modified": "2024-09-11 12:11:48.902436",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Order Form",

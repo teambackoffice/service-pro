@@ -1,0 +1,154 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-09-11 09:20:45.920546",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_ue66",
+  "company",
+  "kind_attention",
+  "rfq_no",
+  "column_break_stuj",
+  "posting_date",
+  "valid_till",
+  "salesman_incentive_amount",
+  "section_break_uklv",
+  "items",
+  "amended_from",
+  "sales_team_tab",
+  "sales_executive",
+  "column_break_uuwt",
+  "operation_executive",
+  "more_tab",
+  "remarks",
+  "column_break_fvrd"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_ue66",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_stuj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_uklv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Service Order Form Item"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Service Order Form",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "sales_team_tab",
+   "fieldtype": "Tab Break",
+   "label": "Sales Team"
+  },
+  {
+   "fieldname": "sales_executive",
+   "fieldtype": "Link",
+   "label": "Sales Executive",
+   "options": "Sales Person"
+  },
+  {
+   "fieldname": "column_break_uuwt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "operation_executive",
+   "fieldtype": "Link",
+   "label": "Operation Executive",
+   "options": "Sales Person"
+  },
+  {
+   "fieldname": "valid_till",
+   "fieldtype": "Date",
+   "label": "Valid Till",
+   "reqd": 1
+  },
+  {
+   "fieldname": "kind_attention",
+   "fieldtype": "Data",
+   "label": "Kind Attention"
+  },
+  {
+   "fieldname": "rfq_no",
+   "fieldtype": "Data",
+   "label": "RFQ No"
+  },
+  {
+   "fieldname": "salesman_incentive_amount",
+   "fieldtype": "Currency",
+   "label": "Salesman Incentive Amount"
+  },
+  {
+   "fieldname": "more_tab",
+   "fieldtype": "Tab Break",
+   "label": "More"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "column_break_fvrd",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-09-11 09:29:29.398181",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Service Order Form",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

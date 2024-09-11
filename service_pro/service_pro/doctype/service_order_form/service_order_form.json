@@ -89,7 +89,8 @@
    "fieldname": "sales_executive",
    "fieldtype": "Link",
    "label": "Sales Executive",
-   "options": "Sales Person"
+   "options": "Sales Person",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_uuwt",
@@ -99,7 +100,8 @@
    "fieldname": "operation_executive",
    "fieldtype": "Link",
    "label": "Operation Executive",
-   "options": "Sales Person"
+   "options": "Sales Person",
+   "reqd": 1
   },
   {
    "fieldname": "valid_till",
@@ -267,7 +269,8 @@
    "fieldname": "currency",
    "fieldtype": "Link",
    "label": "Currency",
-   "options": "Currency"
+   "options": "Currency",
+   "reqd": 1
   },
   {
    "fieldname": "status",
@@ -294,7 +297,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-11 12:11:48.902436",
+ "modified": "2024-09-11 12:13:16.546916",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Order Form",

@@ -34,7 +34,8 @@
   "credit_value",
   "column_break_fjtv",
   "deference_value",
-  "amended_from"
+  "amended_from",
+  "connections_tab"
  ],
  "fields": [
   {
@@ -68,24 +69,28 @@
    "options": "ICST.YY.####"
   },
   {
+   "fetch_from": "template.from_company",
    "fieldname": "from_company",
    "fieldtype": "Link",
    "label": "From Company",
    "options": "Company"
   },
   {
+   "fetch_from": "template.from_warehouse",
    "fieldname": "from_warehouse",
    "fieldtype": "Link",
    "label": "From Warehouse ",
    "options": "Warehouse"
   },
   {
+   "fetch_from": "template.to_company",
    "fieldname": "to_company",
    "fieldtype": "Link",
    "label": "To Company",
    "options": "Company"
   },
   {
+   "fetch_from": "template.to_warehouse",
    "fieldname": "to_warehouse",
    "fieldtype": "Link",
    "label": "To Warehouse",
@@ -102,12 +107,14 @@
    "options": "Inter Company Stock Transfer Item"
   },
   {
+   "fetch_from": "template.from_company_debit_account",
    "fieldname": "from_company_debit_account",
    "fieldtype": "Link",
    "label": "From Company Debit Account",
    "options": "Account"
   },
   {
+   "fetch_from": "template.to_company_credit_account",
    "fieldname": "to_company_credit_account",
    "fieldtype": "Link",
    "label": "To Company Credit Account",
@@ -195,20 +202,21 @@
   {
    "fieldname": "template",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Template",
    "options": "Inter Company Stock Transfer Template"
+  },
+  {
+   "fieldname": "connections_tab",
+   "fieldtype": "Tab Break",
+   "label": "Connections",
+   "show_dashboard": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
- "links": [
-  {
-   "custom": 1,
-   "link_doctype": "Stock Entry",
-   "link_fieldname": "custom_inter_company_stock_transfer"
-  }
- ],
- "modified": "2024-09-11 09:06:18.724268",
+ "links": [],
+ "modified": "2024-09-12 16:49:38.022449",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Stock Transfer",

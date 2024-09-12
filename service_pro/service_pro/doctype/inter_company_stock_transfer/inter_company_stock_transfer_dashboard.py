@@ -6,8 +6,7 @@ def get_data():
 		'fieldname': 'custom_inter_company_stock_transfer',
 		'transactions': [
 			{
-				'label': _('Linked Forms'),
-				'items': [ "Stock Entry"]
+				'label': _('Reference'),'items': [ "Stock Entry"]
 			}
 		]
 	}

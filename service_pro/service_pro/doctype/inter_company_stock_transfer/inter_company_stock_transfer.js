@@ -67,47 +67,47 @@ frappe.ui.form.on("Inter Company Stock Transfer", {
       }
        compute_totals(cur_frm)
     },
-	from_company: function () {
-       if(cur_frm.doc.from_company){
-            cur_frm.call({
-                doc: cur_frm.doc,
-                method: "get_defaults",
-                freeze: true,
-                freeze_message: "Getting Company Defaults....",
-                callback: function (r) {
-                    defaults = r.message
+// 	from_company: function () {
+//        if(cur_frm.doc.from_company){
+//             cur_frm.call({
+//                 doc: cur_frm.doc,
+//                 method: "get_defaults",
+//                 freeze: true,
+//                 freeze_message: "Getting Company Defaults....",
+//                 callback: function (r) {
+//                     defaults = r.message
 
-                }
-            })
-        }
-    },
-    to_company: function () {
-       if(cur_frm.doc.to_company){
-            cur_frm.call({
-                doc: cur_frm.doc,
-                method: "get_defaults",
-                freeze: true,
-                freeze_message: "Getting Company Defaults....",
-                callback: function (r) {
-                    defaults = r.message
+//                 }
+//             })
+//         }
+//     },
+//     to_company: function () {
+//        if(cur_frm.doc.to_company){
+//             cur_frm.call({
+//                 doc: cur_frm.doc,
+//                 method: "get_defaults",
+//                 freeze: true,
+//                 freeze_message: "Getting Company Defaults....",
+//                 callback: function (r) {
+//                     defaults = r.message
 
-                }
-            })
-        }
-    },
-    onload: function (frm) {
-	    if(cur_frm.is_new()){
-	       cur_frm.call({
-                doc: cur_frm.doc,
-                method: "get_defaults",
-                freeze: true,
-                freeze_message: "Getting Company Defaults....",
-                callback: function (r) {
-                    defaults = r.message
+//                 }
+//             })
+//         }
+//     },
+//     onload: function (frm) {
+// 	    if(cur_frm.is_new()){
+// 	       cur_frm.call({
+//                 doc: cur_frm.doc,
+//                 method: "get_defaults",
+//                 freeze: true,
+//                 freeze_message: "Getting Company Defaults....",
+//                 callback: function (r) {
+//                     defaults = r.message
 
-                }
-            })
-        }
+//                 }
+//             })
+//         }
 
-    }
+//     }
 });

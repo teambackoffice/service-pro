@@ -32,9 +32,6 @@
   "incentive_journal_defaults",
   "sales_partner_payments_section",
   "sales_partner_payments_details",
-  "inter_company_stock_transfer_section",
-  "from_companies",
-  "to_companies",
   "other_settings_tab",
   "service_order_form_default_tax"
  ],
@@ -140,23 +137,6 @@
    "options": "Sales Partner Payments Details"
   },
   {
-   "fieldname": "inter_company_stock_transfer_section",
-   "fieldtype": "Section Break",
-   "label": "Inter Company Stock Transfer"
-  },
-  {
-   "fieldname": "from_companies",
-   "fieldtype": "Table",
-   "label": "From Companies",
-   "options": "Inter Company Stock Transfer From"
-  },
-  {
-   "fieldname": "to_companies",
-   "fieldtype": "Table",
-   "label": "To Companies ",
-   "options": "Inter Company Stock Transfer To"
-  },
-  {
    "fieldname": "inspection_details",
    "fieldtype": "Table",
    "label": "Inspection Details",
@@ -216,7 +196,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-09-11 11:54:05.470767",
+ "modified": "2024-09-17 11:25:50.899551",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

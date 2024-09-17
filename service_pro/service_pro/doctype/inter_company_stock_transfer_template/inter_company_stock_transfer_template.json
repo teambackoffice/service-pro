@@ -12,10 +12,12 @@
   "from_company",
   "from_warehouse",
   "from_company_debit_account",
+  "from_cost_center",
   "column_break_knww",
   "to_company",
   "to_warehouse",
-  "to_company_credit_account"
+  "to_company_credit_account",
+  "to_cost_center"
  ],
  "fields": [
   {
@@ -73,11 +75,23 @@
   {
    "fieldname": "column_break_knww",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "from_cost_center",
+   "fieldtype": "Link",
+   "label": "From Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "to_cost_center",
+   "fieldtype": "Link",
+   "label": "To Cost Center",
+   "options": "Cost Center"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-11 09:13:03.450583",
+ "modified": "2024-09-17 10:42:47.558959",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Stock Transfer Template",

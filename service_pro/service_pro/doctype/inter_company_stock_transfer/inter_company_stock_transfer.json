@@ -133,12 +133,14 @@
    "read_only": 1
   },
   {
+   "fetch_from": "template.from_cost_center",
    "fieldname": "from_cost_center",
    "fieldtype": "Link",
    "label": "From Cost Center",
    "options": "Cost Center"
   },
   {
+   "fetch_from": "template.to_cost_center",
    "fieldname": "to_cost_center",
    "fieldtype": "Link",
    "label": "To Cost Center",
@@ -216,7 +218,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-12 16:49:38.022449",
+ "modified": "2024-09-17 10:53:55.342533",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Stock Transfer",

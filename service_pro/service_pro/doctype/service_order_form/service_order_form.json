@@ -11,6 +11,8 @@
   "kind_attention",
   "rfq_no",
   "currency",
+  "customer",
+  "customer_name",
   "column_break_stuj",
   "posting_date",
   "valid_till",
@@ -292,12 +294,26 @@
    "fieldname": "in_words",
    "fieldtype": "Data",
    "label": "In Words"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "customer.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-11 12:13:16.546916",
+ "modified": "2024-09-17 18:23:50.815992",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Order Form",

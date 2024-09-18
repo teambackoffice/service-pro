@@ -7,17 +7,7 @@ from frappe.utils import money_in_words
 
 
 class ServiceOrderForm(Document):
-	pass
-
-	# def before_save(doc, method):
-	# 	# Ensure that grand_total has a value before converting it to words
-	# 	if doc.grand_total:
-	# 		# Fetch the Company document to get the default currency
-	# 		company = frappe.get_doc("Service Order Form", doc.service_order_form)
-
-	# 		# Convert grand_total to words using the company's default currency
-	# 		in_words = money_in_words(doc.grand_total, company.default_currency)
-
-	# 		# Set the value of the in_words field
-	# 		doc.in_words = in_words
-
+	
+	def validate(self):
+		
+		self.in_words = money_in_words(self.grand_total, self.currency)

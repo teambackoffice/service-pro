@@ -148,29 +148,3 @@ function calculate_total(frm) {
     // Set the calculated grand total
     frm.set_value('grand_total', grand_total);
 }
-frappe.ui.form.on('Service Order Form', {
-    before_save: function(frm) {
-        // Ensure that grand_total has a value before converting it to words
-        if (frm.doc.grand_total) {
-            // Fetch the Company document to get the default currency
-            frappe.call({
-                method: 'frappe.client.get',
-                args: {
-                    doctype: 'Service_Order_Form',
-                    name: frm.doc.service_order_f
-                },
-                callback: function(r) {
-                    if (r.message) {
-                        let company = r.message;
-                        
-                        // Convert grand_total to words using the company's default currency
-                        let in_words = frappe.utils.money_in_words(frm.doc.grand_total, company.default_currency);
-                        
-                        // Set the value of the in_words field
-                        frm.set_value('in_words', in_words);
-                    }
-                }
-            });
-        }
-    }
-});

@@ -8,22 +8,19 @@
  "field_order": [
   "section_break_ue66",
   "company",
-  "kind_attention",
-  "rfq_no",
-  "currency",
+  "sof_to",
   "customer",
   "customer_name",
+  "currency",
   "column_break_stuj",
   "posting_date",
   "valid_till",
+  "rfq_no",
+  "kind_attention",
   "salesman_incentive_amount",
-  "option_2",
   "section_break_uklv",
   "option1_column",
   "option1",
-  "section_break_jpgi",
-  "option2_items_column",
-  "option2",
   "section_break_dnmf",
   "apply_additional_discount_on",
   "additional_discount_percentage",
@@ -141,23 +138,8 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "section_break_jpgi",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "option2_items_column",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "option1_column",
    "fieldtype": "Column Break"
-  },
-  {
-   "depends_on": "eval: doc.option_2==1",
-   "fieldname": "option2",
-   "fieldtype": "Table",
-   "label": "Option-2",
-   "options": "Service Order Form Item"
   },
   {
    "fieldname": "option1",
@@ -237,12 +219,6 @@
    "label": "Tax Amount"
   },
   {
-   "default": "0",
-   "fieldname": "option_2",
-   "fieldtype": "Check",
-   "label": "Is Optional Quote"
-  },
-  {
    "fieldname": "terms_tab",
    "fieldtype": "Tab Break",
    "label": "Terms"
@@ -308,12 +284,18 @@
    "fieldtype": "Data",
    "label": "Customer Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "sof_to",
+   "fieldtype": "Link",
+   "label": "SOF To",
+   "options": "DocType"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-17 18:23:50.815992",
+ "modified": "2024-09-19 09:10:42.860797",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Order Form",

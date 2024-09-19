@@ -115,7 +115,10 @@ doc_events = {
         "on_submit": "service_pro.doc_events.stock_ledger_entry.update_item_valuation_rate"
     },
     "Sales Order":{
-        "on_submit": "service_pro.doc_events.sales_order.on_so_submit"
+       "on_submit": 
+            # "service_pro.doc_events.sales_order.on_so_submit",
+            "service_pro.doc_events.sales_order.sales_order_submit"
+        
     },
     "Quotation":{
         "on_submit": "service_pro.doc_events.quotation.on_submit_quotation"
@@ -159,7 +162,8 @@ doc_events = {
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps
 override_doctype_dashboards = {
-	"Stock Entry": "service_pro.doc_events.stock_entry_dashboard.get_stock_entry_data"
+	"Stock Entry": "service_pro.doc_events.stock_entry_dashboard.get_stock_entry_data",
+    
 }
 
 # exempt linked doctypes from being automatically cancelled

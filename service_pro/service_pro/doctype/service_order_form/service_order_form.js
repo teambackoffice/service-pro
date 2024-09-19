@@ -1,13 +1,44 @@
 // Copyright (c) 2024, jan and contributors
 // For license information, please see license.txt
 
-// frappe.ui.form.on("Service Order Form", {
-// 	refresh(frm) {
 
-// 	},
-// });
-// Event listeners for child table fields (qty, rate, discount, discount_percentage)
-// Event listeners for child table fields (qty, rate, discount, discount_percentage)
+frappe.ui.form.on("Service Order Form", {
+    refresh: function(frm) {
+        // Check if the document is submitted
+        if (frm.doc.docstatus == 1) {
+            // Add the 'Set Sales Order' button
+            frm.add_custom_button(__('Sales Order'), function() {
+                frappe.model.open_mapped_doc({
+                    method: "service_pro.service_pro.doctype.service_order_form.service_order_form.create_sales_order",
+                    frm: frm,
+                    run_link_triggers: true
+                });
+            },__('Create'));
+        }
+        calculate_total(frm);
+    },
+    option1_add: function(frm, cdt, cdn) {
+        calculate_total(frm);
+    },
+
+    option1_remove: function(frm, cdt, cdn) {
+        calculate_total(frm);
+    },
+
+    additional_discount_percentage: function(frm) {
+        calculate_total(frm);
+    },
+
+    apply_additional_discount_on: function(frm) {
+        calculate_total(frm);
+    },
+    
+    // Trigger when the tax_amount field is changed
+    tax_amount: function(frm) {
+        calculate_total(frm);
+    },
+    
+});
 frappe.ui.form.on('Service Order Form Item', {
     qty: function(frm, cdt, cdn) {
         calculate_amount(frm, cdt, cdn);
@@ -61,33 +92,6 @@ function calculate_amount(frm, cdt, cdn) {
     frm.refresh_field('option1');  // Replace 'option1' with your actual child table field name
 }
 
-// Event listeners for the main form and child table row add/remove events
-frappe.ui.form.on('Service Order Form', {
-    refresh: function(frm) {
-        calculate_total(frm);
-    },
-
-    option1_add: function(frm, cdt, cdn) {
-        calculate_total(frm);
-    },
-
-    option1_remove: function(frm, cdt, cdn) {
-        calculate_total(frm);
-    },
-
-    additional_discount_percentage: function(frm) {
-        calculate_total(frm);
-    },
-
-    apply_additional_discount_on: function(frm) {
-        calculate_total(frm);
-    },
-    
-    // Trigger when the tax_amount field is changed
-    tax_amount: function(frm) {
-        calculate_total(frm);
-    },
-});
 
 // Function to calculate the total amount from all the rows in the child table and include tax
 function calculate_total(frm) {

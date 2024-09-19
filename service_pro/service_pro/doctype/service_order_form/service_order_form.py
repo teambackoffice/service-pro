@@ -4,13 +4,15 @@
 import frappe
 from frappe.model.document import Document
 from frappe.utils import money_in_words
+from frappe.model.mapper import get_mapped_doc
+from frappe.query_builder.functions import Sum
 
 
 class ServiceOrderForm(Document):
-	pass
+    def validate(self):
+         self.in_words = money_in_words(self.grand_total, self.currency)
+	
 
-from frappe.model.mapper import get_mapped_doc
-from frappe.query_builder.functions import Sum
 
 @frappe.whitelist()
 def create_sales_order(source_name, target_doc=None):
@@ -44,8 +46,5 @@ def create_sales_order(source_name, target_doc=None):
 
 
 
-	
-	def validate(self):
-		
-		self.in_words = money_in_words(self.grand_total, self.currency)
+
 

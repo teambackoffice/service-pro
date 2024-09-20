@@ -10,9 +10,9 @@
   "company",
   "sof_to",
   "customer",
+  "lead",
   "customer_name",
   "currency",
-  "conversion_rate",
   "column_break_stuj",
   "posting_date",
   "valid_till",
@@ -122,7 +122,8 @@
   {
    "fieldname": "salesman_incentive_amount",
    "fieldtype": "Currency",
-   "label": "Salesman Incentive Amount"
+   "label": "Salesman Incentive Amount",
+   "options": "currency"
   },
   {
    "fieldname": "more_tab",
@@ -186,12 +187,15 @@
   {
    "fieldname": "total",
    "fieldtype": "Currency",
-   "label": "Total"
+   "label": "Total",
+   "options": "currency",
+   "read_only": 1
   },
   {
    "fieldname": "net_total",
    "fieldtype": "Currency",
    "label": "Net Total",
+   "options": "currency",
    "read_only": 1
   },
   {
@@ -202,12 +206,15 @@
   {
    "fieldname": "additional_discount_amount",
    "fieldtype": "Currency",
-   "label": "Additional Discount Amount"
+   "label": "Additional Discount Amount",
+   "options": "currency"
   },
   {
    "fieldname": "grand_total",
    "fieldtype": "Currency",
-   "label": "Grand Total"
+   "label": "Grand Total",
+   "options": "currency",
+   "read_only": 1
   },
   {
    "fieldname": "vat_on",
@@ -218,7 +225,9 @@
   {
    "fieldname": "tax_amount",
    "fieldtype": "Currency",
-   "label": "Tax Amount"
+   "label": "Tax Amount",
+   "options": "currency",
+   "read_only": 1
   },
   {
    "fieldname": "terms_tab",
@@ -253,6 +262,7 @@
    "reqd": 1
   },
   {
+   "default": "Open",
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
@@ -271,14 +281,16 @@
   {
    "fieldname": "in_words",
    "fieldtype": "Data",
-   "label": "In Words"
+   "label": "In Words",
+   "read_only": 1
   },
   {
+   "depends_on": "eval:doc.sof_to=='Customer'",
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Customer",
-   "options": "Customer",
-   "reqd": 1
+   "mandatory_depends_on": "eval:doc.sof_to=='Customer'",
+   "options": "Customer"
   },
   {
    "fetch_from": "customer.customer_name",
@@ -288,21 +300,25 @@
    "read_only": 1
   },
   {
+   "default": "Customer",
    "fieldname": "sof_to",
    "fieldtype": "Link",
    "label": "SOF To",
    "options": "DocType"
   },
   {
-   "fieldname": "conversion_rate",
-   "fieldtype": "Float",
-   "label": "Exchange Rate"
+   "depends_on": "eval:doc.sof_to=='Lead'",
+   "fieldname": "lead",
+   "fieldtype": "Link",
+   "label": "Lead",
+   "mandatory_depends_on": "eval:doc.sof_to=='Lead'",
+   "options": "Lead"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-20 08:55:02.060331",
+ "modified": "2024-09-20 15:36:07.329389",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Order Form",

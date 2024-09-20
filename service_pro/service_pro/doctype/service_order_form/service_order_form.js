@@ -30,12 +30,17 @@ frappe.ui.form.on("Service Order Form", {
         if (frm.doc.vat_on) {
             frappe.db.get_value('Sales Taxes and Charges Template', frm.doc.vat_on, 'custom_tax_rate', (r) => {
                 if (r && r.custom_tax_rate) {
-                    frm.set_value('tax_amount', r.custom_tax_rate);
+                    let tax_rate = r.custom_tax_rate ;  // Convert percentage to decimal
+                    let net_total = frm.doc.net_total || 0;
+                    let tax_amount = net_total * tax_rate;  // Calculate tax based on net total and tax rate
+                    frm.set_value('tax_amount', tax_amount);
                 }
             });
         }
-        
     },
+    
+    
+    
     currency: function(frm){
         var company_currency = erpnext.get_currency(frm.doc.company)
         frm.set_currency_labels(["rate", "amount"], frm.doc.currency, "option1");
@@ -52,10 +57,9 @@ frappe.ui.form.on("Service Order Form", {
                     freeze: true,
                     freeze_message: __("Fetching exchange rates ..."),
                     callback: function(r) {
-                        if(flt(r.message) != frm.doc.conversion_rate) {
+                        if(r.message) {
                             // me.set_margin_amount_based_on_currency(exchange_rate);
                             // me.set_actual_charges_based_on_currency(exchange_rate);
-                            frm.set_value("conversion_rate", flt(r.message));
                             $.each(frm.doc.option1 || [], function(i, d) {
                                 frappe.model.set_value(d.doctype, d.name, "rate",
                                     flt(d.rate) / flt(r.message));
@@ -76,13 +80,13 @@ frappe.ui.form.on("Service Order Form", {
         } else {
             // company currency and doc currency is same
             // this will prevent unnecessary conversion rate triggers
-            if(frm.doc.currency === company_currency) {
-                frm.set_value("conversion_rate", 1.0);
-            }else{
-                const subs =  [conversion_rate_label, frm.doc.currency, company_currency];
-                const err_message = __('{0} is mandatory. Maybe Currency Exchange record is not created for {1} to {2}', subs);
-                frappe.throw(err_message);
-            }
+            // if(frm.doc.currency === company_currency) {
+            //     frm.set_value("conversion_rate", 1.0);
+            // }else{
+            //     const subs =  [conversion_rate_label, frm.doc.currency, company_currency];
+            //     const err_message = __('{0} is mandatory. Maybe Currency Exchange record is not created for {1} to {2}', subs);
+            //     frappe.throw(err_message);
+            // }
         }
             // frm.doc.conversion_rate = flt(frm.doc.conversion_rate, (cur_frm) ? precision("conversion_rate") : 9);
             // var conversion_rate_label = frappe.meta.get_label(frm.doc.doctype, "conversion_rate",
@@ -201,15 +205,17 @@ function calculate_amount(frm, cdt, cdn) {
 
 function calculate_total(frm) {
     let total = 0;
-    let total_qty = 0; 
+    let total_qty = 0;
 
     frm.doc.option1.forEach(function(row) {
         total += row.amount || 0;
         total_qty += row.qty || 0; 
+
     });
 
     frm.set_value('total', total);
     frm.set_value('total_quantity', total_qty); 
+
 
     let additional_discount_percentage = frm.doc.additional_discount_percentage || 0;
     let additional_discount_amount = frm.doc.additional_discount_amount || 0;

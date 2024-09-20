@@ -43,7 +43,8 @@ def create_sales_order(source_name, target_doc=None):
                 "doctype": "Sales Order",
                 "field_map": {
                     "name": "custom_service_order_form_id", 
-                    "customer": "customer"  
+                    "customer": "customer",
+                    "terms": "tc_name"  
                 }
             }
         },

@@ -12,6 +12,7 @@
   "customer",
   "customer_name",
   "currency",
+  "conversion_rate",
   "column_break_stuj",
   "posting_date",
   "valid_till",
@@ -190,7 +191,8 @@
   {
    "fieldname": "net_total",
    "fieldtype": "Currency",
-   "label": "Net Total"
+   "label": "Net Total",
+   "read_only": 1
   },
   {
    "fieldname": "additional_discount_percentage",
@@ -290,12 +292,17 @@
    "fieldtype": "Link",
    "label": "SOF To",
    "options": "DocType"
+  },
+  {
+   "fieldname": "conversion_rate",
+   "fieldtype": "Float",
+   "label": "Exchange Rate"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-19 09:10:42.860797",
+ "modified": "2024-09-20 08:55:02.060331",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Order Form",

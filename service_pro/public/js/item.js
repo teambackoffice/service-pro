@@ -15,6 +15,25 @@ frappe.ui.form.on('Item', {
             })
         }
     },
+        item_name: function(frm) {
+            if (frm.doc.item_name) {
+                // Call the server-side method to get the translated name
+                frappe.call({
+                    method: "service_pro.doc_events.api.translate_to_arabic",
+                    args: {
+                        item_name: frm.doc.item_name
+                    },
+                    callback: function(response) {
+                        if (response.message) {
+                            // Set the translated name to the Arabic name field
+                            frm.set_value('item_arabic_name', response.message);
+                        }
+                    }
+                });
+            }
+        },
+  
+    
     custom_brand_name:function(frm){
         frm.trigger('makeItemname')
     },

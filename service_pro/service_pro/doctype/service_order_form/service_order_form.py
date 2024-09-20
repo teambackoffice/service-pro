@@ -3,14 +3,26 @@
 
 import frappe
 from frappe.model.document import Document
-from frappe.utils import money_in_words
+from frappe.utils import money_in_words, nowdate,getdate
 from frappe.model.mapper import get_mapped_doc
 from frappe.query_builder.functions import Sum
 
 
 class ServiceOrderForm(Document):
     def validate(self):
-         self.in_words = money_in_words(self.grand_total, self.currency)
+        self.in_words = money_in_words(self.grand_total, self.currency)
+
+
+def check_service_order_expiry():
+    current_date = getdate(nowdate())
+    service_orders = frappe.get_all('Service Order Form', filters={'status': 'Open','valid_till': ['<', current_date]},
+        fields=['name', 'valid_till']
+    )
+    
+    for order in service_orders:
+        frappe.db.set_value('Service Order Form', order.name, 'status', 'Expired')
+        frappe.db.commit() 
+
 	
 
 

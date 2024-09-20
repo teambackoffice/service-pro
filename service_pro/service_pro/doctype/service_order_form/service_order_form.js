@@ -1,12 +1,10 @@
 // Copyright (c) 2024, jan and contributors
 // For license information, please see license.txt
 
-
+let doc = ["Lead", "Customer"];
 frappe.ui.form.on("Service Order Form", {
     refresh: function(frm) {
-        // Check if the document is submitted
-        if (frm.doc.docstatus == 1) {
-            // Add the 'Set Sales Order' button
+        if (frm.doc.docstatus == 1 && frm.doc.status != "Expired") {
             frm.add_custom_button(__('Sales Order'), function() {
                 frappe.model.open_mapped_doc({
                     method: "service_pro.service_pro.doctype.service_order_form.service_order_form.create_sales_order",
@@ -16,16 +14,129 @@ frappe.ui.form.on("Service Order Form", {
             },__('Create'));
         }
         calculate_total(frm);
+
+        frm.set_query('sof_to', function() {
+            return {
+                filters: {
+                    name: ["in" ,doc] 
+                }
+            };
+        });
+
+
+
     },
+    vat_on: function(frm) {
+        if (frm.doc.vat_on) {
+            frappe.db.get_value('Sales Taxes and Charges Template', frm.doc.vat_on, 'custom_tax_rate', (r) => {
+                if (r && r.custom_tax_rate) {
+                    frm.set_value('tax_amount', r.custom_tax_rate);
+                }
+            });
+        }
+        
+    },
+    currency: function(frm){
+        var company_currency = erpnext.get_currency(frm.doc.company)
+        frm.set_currency_labels(["rate", "amount"], frm.doc.currency, "option1");
+        if(frm.doc.currency && frm.doc.currency !== company_currency
+            && !frm.doc.__onload?.load_after_mapping) {
+                frappe.call({
+                    method: "erpnext.setup.utils.get_exchange_rate",
+                    args: {
+                        transaction_date: frm.doc.posting_date,
+                        from_currency: frm.doc.currency,
+                        to_currency: company_currency,
+                        args: "for_selling"
+                    },
+                    freeze: true,
+                    freeze_message: __("Fetching exchange rates ..."),
+                    callback: function(r) {
+                        if(flt(r.message) != frm.doc.conversion_rate) {
+                            // me.set_margin_amount_based_on_currency(exchange_rate);
+                            // me.set_actual_charges_based_on_currency(exchange_rate);
+                            frm.set_value("conversion_rate", flt(r.message));
+                            $.each(frm.doc.option1 || [], function(i, d) {
+                                frappe.model.set_value(d.doctype, d.name, "rate",
+                                    flt(d.rate) / flt(r.message));
+                                frappe.model.set_value(d.doctype, d.name, "amount",
+                                    flt(d.rate) / flt(r.message));
+                            });
+                        }
+                    }
+                });
+        // frm.get_exchange_rate(transaction_date, frm.doc.currency, company_currency,
+        //     function(exchange_rate) {
+        //         if(exchange_rate != frm.doc.conversion_rate) {
+        //             // me.set_margin_amount_based_on_currency(exchange_rate);
+        //             // me.set_actual_charges_based_on_currency(exchange_rate);
+        //             frm.set_value("conversion_rate", exchange_rate);
+        //         }
+        //     });
+        } else {
+            // company currency and doc currency is same
+            // this will prevent unnecessary conversion rate triggers
+            if(frm.doc.currency === company_currency) {
+                frm.set_value("conversion_rate", 1.0);
+            }else{
+                const subs =  [conversion_rate_label, frm.doc.currency, company_currency];
+                const err_message = __('{0} is mandatory. Maybe Currency Exchange record is not created for {1} to {2}', subs);
+                frappe.throw(err_message);
+            }
+        }
+            // frm.doc.conversion_rate = flt(frm.doc.conversion_rate, (cur_frm) ? precision("conversion_rate") : 9);
+            // var conversion_rate_label = frappe.meta.get_label(frm.doc.doctype, "conversion_rate",
+            //     frm.doc.name);
+            // var company_currency = erpnext.get_currency(frm.doc.company)
+    
+            // if(!frm.doc.conversion_rate) {
+            //     if(frm.doc.currency == company_currency) {
+            //         frm.set_value("conversion_rate", 1);
+            //     } else {
+            //         const subs =  [conversion_rate_label, frm.doc.currency, company_currency];
+            //         const err_message = __('{0} is mandatory. Maybe Currency Exchange record is not created for {1} to {2}', subs);
+            //         frappe.throw(err_message);
+            //     }
+            // }
+    },
+    get_company_currency() {
+        return erpnext.get_currency(frm.doc.company);
+    },
+    get_exchange_rate(transaction_date, from_currency, to_currency, callback) {
+		var args  = "for_selling";
+
+		if (!transaction_date || !from_currency || !to_currency) return;
+		return frappe.call({
+			method: "erpnext.setup.utils.get_exchange_rate",
+			args: {
+				transaction_date: transaction_date,
+				from_currency: from_currency,
+				to_currency: to_currency,
+				args: args
+			},
+			freeze: true,
+			freeze_message: __("Fetching exchange rates ..."),
+			callback: function(r) {
+                console.log(r.message)
+				callback(flt(r.message));
+			}
+		});
+	},
     option1_add: function(frm, cdt, cdn) {
         calculate_total(frm);
+        
     },
 
     option1_remove: function(frm, cdt, cdn) {
         calculate_total(frm);
+       
     },
 
     additional_discount_percentage: function(frm) {
+        calculate_total(frm);
+       
+    },
+    additional_discount_amount: function(frm) {
         calculate_total(frm);
     },
 
@@ -33,12 +144,14 @@ frappe.ui.form.on("Service Order Form", {
         calculate_total(frm);
     },
     
-    // Trigger when the tax_amount field is changed
+
     tax_amount: function(frm) {
         calculate_total(frm);
     },
+
     
 });
+
 frappe.ui.form.on('Service Order Form Item', {
     qty: function(frm, cdt, cdn) {
         calculate_amount(frm, cdt, cdn);
@@ -58,9 +171,8 @@ frappe.ui.form.on('Service Order Form Item', {
     }
 });
 
-// Function to calculate the amount for each row in the child table
 function calculate_amount(frm, cdt, cdn) {
-    let row = locals[cdt][cdn];  // Get the child table row
+    let row = locals[cdt][cdn];  
 
     let qty = row.qty || 0;
     let rate = row.rate || 0;
@@ -69,86 +181,72 @@ function calculate_amount(frm, cdt, cdn) {
 
     let amount = qty * rate;
 
-    // Apply discount based on the discount percentage if provided
     if (discount_percentage > 0) {
         let discountAmountPercentage = (amount * discount_percentage) / 100;
         
-        // Set the calculated discount amount in the discount field
         frappe.model.set_value(cdt, cdn, 'discount', discountAmountPercentage);
         
         amount -= discountAmountPercentage;
     } else {
-        // If discount percentage is not provided, use the fixed discount amount
         amount -= discount;
     }
 
-    // Ensure amount does not go below zero
     amount = Math.max(amount, 0);
 
-    // Set the calculated amount in the current row
     frappe.model.set_value(cdt, cdn, 'amount', amount);
 
-    // Refresh the child table field
-    frm.refresh_field('option1');  // Replace 'option1' with your actual child table field name
+    frm.refresh_field('option1'); 
 }
 
 
-// Function to calculate the total amount from all the rows in the child table and include tax
 function calculate_total(frm) {
     let total = 0;
+    let total_qty = 0; 
 
-    // Loop through the child table rows and sum the amount fields
     frm.doc.option1.forEach(function(row) {
         total += row.amount || 0;
+        total_qty += row.qty || 0; 
     });
 
-    // Set the total (without additional discount) in the 'total' field
     frm.set_value('total', total);
+    frm.set_value('total_quantity', total_qty); 
 
-    // Get the additional discount percentage
     let additional_discount_percentage = frm.doc.additional_discount_percentage || 0;
-
-    // Initialize variables for additional discount amount and net/grand total
-    let additional_discount_amount = 0;
+    let additional_discount_amount = frm.doc.additional_discount_amount || 0;
     let net_total = total;
     let grand_total = total;
 
-    // Check the value of apply_additional_discount_on field
     if (frm.doc.apply_additional_discount_on === 'Net Total') {
-        // If discount is applied on Net Total, reduce it from net_total
         if (additional_discount_percentage > 0) {
             additional_discount_amount = (total * additional_discount_percentage) / 100;
             net_total -= additional_discount_amount;
+        } else if (additional_discount_amount > 0) {
+            net_total -= additional_discount_amount;
         }
 
-        // Ensure the net_total does not go below zero
         net_total = Math.max(net_total, 0);
 
         frm.set_value('net_total', net_total);
-        grand_total = net_total;  // Set the grand total to be the same as the net total for now
+        grand_total = net_total;
     } else if (frm.doc.apply_additional_discount_on === 'Grand Total') {
-        // If discount is applied on Grand Total, reduce it from grand_total
         if (additional_discount_percentage > 0) {
             additional_discount_amount = (total * additional_discount_percentage) / 100;
             grand_total -= additional_discount_amount;
+        } else if (additional_discount_amount > 0) {
+            grand_total -= additional_discount_amount;
         }
 
-        // Ensure the grand_total does not go below zero
         grand_total = Math.max(grand_total, 0);
 
-        frm.set_value('net_total', total);  // Net total will remain unchanged
+        frm.set_value('net_total', total);
     }
 
-    // Set the additional discount amount in the 'additional_discount_amount' field
     frm.set_value('additional_discount_amount', additional_discount_amount);
 
-    // Add the tax amount to the grand total
     let tax_amount = frm.doc.tax_amount || 0;
     grand_total += tax_amount;
 
-    // Ensure the grand_total does not go below zero after applying the tax
     grand_total = Math.max(grand_total, 0);
 
-    // Set the calculated grand total
     frm.set_value('grand_total', grand_total);
 }

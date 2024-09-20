@@ -128,23 +128,23 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"service_pro.tasks.all"
-# 	],
-# 	"daily": [
-# 		"service_pro.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"service_pro.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"service_pro.tasks.weekly"
-# 	]
-# 	"monthly": [
-# 		"service_pro.tasks.monthly"
-# 	]
-# }
+scheduler_events = {
+	# "all": [
+	# 	"service_pro.tasks.all"
+	# ],
+	"daily": [
+		"service_pro.service_pro.doctype.service_order_form.service_order_form.check_service_order_expiry"
+	],
+	# "hourly": [
+	# 	"service_pro.tasks.hourly"
+	# ],
+	# "weekly": [
+	# 	"service_pro.tasks.weekly"
+	# ]
+	# "monthly": [
+	# 	"service_pro.tasks.monthly"
+	# ]
+}
 
 # Testing
 # -------
@@ -163,7 +163,7 @@ doc_events = {
 # along with any modifications made in other Frappe apps
 override_doctype_dashboards = {
 	"Stock Entry": "service_pro.doc_events.stock_entry_dashboard.get_stock_entry_data",
-    
+
 }
 
 # exempt linked doctypes from being automatically cancelled

@@ -15,6 +15,8 @@ frappe.ui.form.on('Item', {
             })
         }
     },
+  
+    
     custom_brand_name:function(frm){
         frm.trigger('makeItemname')
     },

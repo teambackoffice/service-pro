@@ -13,7 +13,6 @@ frappe.ui.form.on("Service Order Form", {
                 });
             },__('Create'));
         }
-        calculate_total(frm);
 
         frm.set_query('sof_to', function() {
             return {
@@ -22,25 +21,32 @@ frappe.ui.form.on("Service Order Form", {
                 }
             };
         });
+        if (!frm.doc.vat_on&&frm.is_new()) {
+            frappe.db.get_value('Production Settings', {name: 'Production Settings'}, 'service_order_form_default_tax', (r) => {
+                if (r && r.service_order_form_default_tax) {
+                    frm.set_value('vat_on', r.service_order_form_default_tax);
+                }
+            });
+        }
 
-
-
-    },
-    vat_on: function(frm) {
         if (frm.doc.vat_on) {
             frappe.db.get_value('Sales Taxes and Charges Template', frm.doc.vat_on, 'custom_tax_rate', (r) => {
                 if (r && r.custom_tax_rate) {
-                    let tax_rate = r.custom_tax_rate ;  // Convert percentage to decimal
+                    let tax_rate = r.custom_tax_rate / 100; 
                     let net_total = frm.doc.net_total || 0;
-                    let tax_amount = net_total * tax_rate;  // Calculate tax based on net total and tax rate
+                    let tax_amount = net_total * tax_rate;   
                     frm.set_value('tax_amount', tax_amount);
                 }
             });
         }
+        
     },
-    
-    
-    
+   validate:function(frm){
+    if(!frm.doc.vat_on){
+        frm.set_value("tax_amount",0)
+    }
+   },
+      
     currency: function(frm){
         var company_currency = erpnext.get_currency(frm.doc.company)
         frm.set_currency_labels(["rate", "amount"], frm.doc.currency, "option1");
@@ -54,12 +60,8 @@ frappe.ui.form.on("Service Order Form", {
                         to_currency: company_currency,
                         args: "for_selling"
                     },
-                    freeze: true,
-                    freeze_message: __("Fetching exchange rates ..."),
                     callback: function(r) {
                         if(r.message) {
-                            // me.set_margin_amount_based_on_currency(exchange_rate);
-                            // me.set_actual_charges_based_on_currency(exchange_rate);
                             $.each(frm.doc.option1 || [], function(i, d) {
                                 frappe.model.set_value(d.doctype, d.name, "rate",
                                     flt(d.rate) / flt(r.message));
@@ -69,39 +71,9 @@ frappe.ui.form.on("Service Order Form", {
                         }
                     }
                 });
-        // frm.get_exchange_rate(transaction_date, frm.doc.currency, company_currency,
-        //     function(exchange_rate) {
-        //         if(exchange_rate != frm.doc.conversion_rate) {
-        //             // me.set_margin_amount_based_on_currency(exchange_rate);
-        //             // me.set_actual_charges_based_on_currency(exchange_rate);
-        //             frm.set_value("conversion_rate", exchange_rate);
-        //         }
-        //     });
         } else {
-            // company currency and doc currency is same
-            // this will prevent unnecessary conversion rate triggers
-            // if(frm.doc.currency === company_currency) {
-            //     frm.set_value("conversion_rate", 1.0);
-            // }else{
-            //     const subs =  [conversion_rate_label, frm.doc.currency, company_currency];
-            //     const err_message = __('{0} is mandatory. Maybe Currency Exchange record is not created for {1} to {2}', subs);
-            //     frappe.throw(err_message);
-            // }
+            
         }
-            // frm.doc.conversion_rate = flt(frm.doc.conversion_rate, (cur_frm) ? precision("conversion_rate") : 9);
-            // var conversion_rate_label = frappe.meta.get_label(frm.doc.doctype, "conversion_rate",
-            //     frm.doc.name);
-            // var company_currency = erpnext.get_currency(frm.doc.company)
-    
-            // if(!frm.doc.conversion_rate) {
-            //     if(frm.doc.currency == company_currency) {
-            //         frm.set_value("conversion_rate", 1);
-            //     } else {
-            //         const subs =  [conversion_rate_label, frm.doc.currency, company_currency];
-            //         const err_message = __('{0} is mandatory. Maybe Currency Exchange record is not created for {1} to {2}', subs);
-            //         frappe.throw(err_message);
-            //     }
-            // }
     },
     get_company_currency() {
         return erpnext.get_currency(frm.doc.company);
@@ -131,13 +103,9 @@ frappe.ui.form.on("Service Order Form", {
         
     },
 
-    option1_remove: function(frm, cdt, cdn) {
-        calculate_total(frm);
-       
-    },
-
     additional_discount_percentage: function(frm) {
         calculate_total(frm);
+        calculate_discount(frm);
        
     },
     additional_discount_amount: function(frm) {
@@ -146,6 +114,7 @@ frappe.ui.form.on("Service Order Form", {
 
     apply_additional_discount_on: function(frm) {
         calculate_total(frm);
+        calculate_discount(frm);
     },
     
 
@@ -159,19 +128,75 @@ frappe.ui.form.on("Service Order Form", {
 frappe.ui.form.on('Service Order Form Item', {
     qty: function(frm, cdt, cdn) {
         calculate_amount(frm, cdt, cdn);
-        calculate_total(frm);
+    let total = 0;
+    let total_qty = 0;
+    let total_disc = 0;
+
+    frm.doc.option1.forEach(function(row) {
+        total += row.amount || 0;
+        total_qty += row.qty || 0;
+        total_disc += row.discount || 0; 
+
+    });
+
+    frm.set_value('total', total);
+    frm.set_value('total_quantity', total_qty);
+    frm.set_value('additional_discount_amount', total_disc); 
     },
     rate: function(frm, cdt, cdn) {
         calculate_amount(frm, cdt, cdn);
-        calculate_total(frm);
+        let total = 0;
+        let total_qty = 0;
+        let total_disc = 0;
+    
+        frm.doc.option1.forEach(function(row) {
+            total += row.amount || 0;
+            total_qty += row.qty || 0;
+            total_disc += row.discount || 0; 
+    
+        });
+    
+        frm.set_value('total', total);
+        frm.set_value('total_quantity', total_qty);
+        frm.set_value('additional_discount_amount', total_disc);
+        calculate_total(frm)
     },
     discount: function(frm, cdt, cdn) {
         calculate_amount(frm, cdt, cdn);
-        calculate_total(frm);
+        let total = 0;
+        let total_qty = 0;
+        let total_disc = 0;
+    
+        frm.doc.option1.forEach(function(row) {
+            total += row.amount || 0;
+            total_qty += row.qty || 0;
+            total_disc += row.discount || 0; 
+    
+        });
+    
+        frm.set_value('total', total);
+        frm.set_value('total_quantity', total_qty);
+        frm.set_value('additional_discount_amount', total_disc);
+        calculate_total(frm)
     },
     discount_percentage: function(frm, cdt, cdn) {
         calculate_amount(frm, cdt, cdn);
-        calculate_total(frm);
+        
+        let total = 0;
+        let total_qty = 0;
+        let total_disc = 0;
+    
+        frm.doc.option1.forEach(function(row) {
+            total += row.amount || 0;
+            total_qty += row.qty || 0;
+            total_disc += row.discount || 0; 
+    
+        });
+    
+        frm.set_value('total', total);
+        frm.set_value('total_quantity', total_qty);
+        frm.set_value('additional_discount_amount', total_disc);
+        calculate_total(frm)
     }
 });
 
@@ -180,7 +205,8 @@ function calculate_amount(frm, cdt, cdn) {
 
     let qty = row.qty || 0;
     let rate = row.rate || 0;
-    let discount = row.discount || 0;
+
+   
     let discount_percentage = row.discount_percentage || 0;
 
     let amount = qty * rate;
@@ -191,9 +217,7 @@ function calculate_amount(frm, cdt, cdn) {
         frappe.model.set_value(cdt, cdn, 'discount', discountAmountPercentage);
         
         amount -= discountAmountPercentage;
-    } else {
-        amount -= discount;
-    }
+    } 
 
     amount = Math.max(amount, 0);
 
@@ -204,55 +228,42 @@ function calculate_amount(frm, cdt, cdn) {
 
 
 function calculate_total(frm) {
-    let total = 0;
-    let total_qty = 0;
-
-    frm.doc.option1.forEach(function(row) {
-        total += row.amount || 0;
-        total_qty += row.qty || 0; 
-
-    });
-
-    frm.set_value('total', total);
-    frm.set_value('total_quantity', total_qty); 
-
-
     let additional_discount_percentage = frm.doc.additional_discount_percentage || 0;
     let additional_discount_amount = frm.doc.additional_discount_amount || 0;
-    let net_total = total;
-    let grand_total = total;
+    let net_total = frm.doc.total || 0;
+    let grand_total = frm.doc.total || 0;
 
     if (frm.doc.apply_additional_discount_on === 'Net Total') {
         if (additional_discount_percentage > 0) {
-            additional_discount_amount = (total * additional_discount_percentage) / 100;
-            net_total -= additional_discount_amount;
-        } else if (additional_discount_amount > 0) {
-            net_total -= additional_discount_amount;
+            additional_discount_amount = (net_total * additional_discount_percentage) / 100;
         }
 
-        net_total = Math.max(net_total, 0);
-
+        net_total -= additional_discount_amount;
         frm.set_value('net_total', net_total);
         grand_total = net_total;
-    } else if (frm.doc.apply_additional_discount_on === 'Grand Total') {
-        if (additional_discount_percentage > 0) {
-            additional_discount_amount = (total * additional_discount_percentage) / 100;
-            grand_total -= additional_discount_amount;
-        } else if (additional_discount_amount > 0) {
-            grand_total -= additional_discount_amount;
-        }
-
-        grand_total = Math.max(grand_total, 0);
-
-        frm.set_value('net_total', total);
     }
 
+    else if (frm.doc.apply_additional_discount_on === 'Grand Total') {
+        if (additional_discount_percentage > 0) {
+            additional_discount_amount = (grand_total * additional_discount_percentage) / 100;
+        }
+
+        grand_total -= additional_discount_amount;
+    }
     frm.set_value('additional_discount_amount', additional_discount_amount);
+    frm.set_value('grand_total', grand_total);
 
     let tax_amount = frm.doc.tax_amount || 0;
     grand_total += tax_amount;
-
-    grand_total = Math.max(grand_total, 0);
+    grand_total = Math.max(grand_total, 0); 
 
     frm.set_value('grand_total', grand_total);
+}
+
+function calculate_discount(frm) {
+    let additional_discount_percentage = frm.doc.additional_discount_percentage || 0;
+    let total = frm.doc.total || 0;
+
+    let additional_discount_amount = (total * additional_discount_percentage) / 100;
+    frm.set_value('additional_discount_amount', additional_discount_amount);
 }

@@ -13,7 +13,6 @@ frappe.ui.form.on("Service Order Form", {
         }
 
         frm.refresh_field('vat_on');
-        frm.trigger('vat_on');
     },
     refresh: function(frm) {
         if (frm.doc.docstatus == 1 && frm.doc.status != "Expired") {
@@ -37,9 +36,11 @@ frappe.ui.form.on("Service Order Form", {
     },
     vat_on: function(frm) {
         tax_rate(frm)
+        
     },
     net_total: function(frm) {
         tax_rate(frm)
+        frm.set_value('grand_total', frm.doc.net_total+frm.doc.tax_amount)
     },
     additional_discount_amount: function(frm) {
         calculate_total(frm);
@@ -50,11 +51,6 @@ frappe.ui.form.on("Service Order Form", {
     apply_additional_discount_on: function(frm) {
         calculate_total(frm);
         
-    },
-    validate:function(frm){
-        if(!frm.doc.vat_on){
-            frm.set_value("tax_amount",0)
-        }
     },
     currency: function(frm){
         var company_currency = erpnext.get_currency(frm.doc.company)
@@ -86,6 +82,9 @@ frappe.ui.form.on("Service Order Form", {
     },
     get_company_currency() {
         return erpnext.get_currency(frm.doc.company);
+    },
+    tax_amount(frm){
+        frm.set_value('grand_total', frm.doc.net_total+frm.doc.tax_amount)
     },
     get_exchange_rate(transaction_date, from_currency, to_currency, callback) {
 		var args  = "for_selling";
@@ -196,10 +195,12 @@ function tax_rate(frm) {
                 let net_total = frm.doc.net_total || 0;
                 let tax_amount = net_total * tax_rate;
                 frm.set_value('tax_amount', tax_amount);
-                frm.set_value('grand_total', frm.doc.net_total+tax_amount)
             }
         });
+    }else{
+        frm.set_value('tax_amount', 0);
     }
+    // calculate_total(frm)
 }
 
 function calculate_total(frm) {
@@ -221,6 +222,7 @@ function calculate_total(frm) {
                 let tax_amount = net_total * tax_rate;
                 grand_total = net_total+tax_amount
             }
+            grand_total = grand_total||net_total
             var distributed_amount = flt(additional_discount_amount)*net_total/grand_total
             var net_amount = flt(net_total - distributed_amount)
             frm.set_value("net_total",net_amount)

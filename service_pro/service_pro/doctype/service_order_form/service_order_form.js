@@ -54,31 +54,31 @@ frappe.ui.form.on("Service Order Form", {
     },
     currency: function(frm){
         var company_currency = erpnext.get_currency(frm.doc.company)
-        frm.set_currency_labels(["rate", "amount"], frm.doc.currency, "option1");
-        if(frm.doc.currency && frm.doc.currency !== company_currency
-            && !frm.doc.__onload?.load_after_mapping) {
-                frappe.call({
-                    method: "erpnext.setup.utils.get_exchange_rate",
-                    args: {
-                        transaction_date: frm.doc.posting_date,
-                        from_currency: frm.doc.currency,
-                        to_currency: company_currency,
-                        args: "for_selling"
-                    },
-                    callback: function(r) {
-                        if(r.message) {
-                            $.each(frm.doc.option1 || [], function(i, d) {
-                                frappe.model.set_value(d.doctype, d.name, "rate",
-                                    flt(d.rate) / flt(r.message));
-                                frappe.model.set_value(d.doctype, d.name, "amount",
-                                    flt(d.rate) / flt(r.message));
-                            });
-                        }
-                    }
-                });
-        } else {
+        
+        // if(frm.doc.currency && frm.doc.currency !== company_currency
+        //     && !frm.doc.__onload?.load_after_mapping) {
+        //         frappe.call({
+        //             method: "erpnext.setup.utils.get_exchange_rate",
+        //             args: {
+        //                 transaction_date: frm.doc.posting_date,
+        //                 from_currency: frm.doc.currency,
+        //                 to_currency: company_currency,
+        //                 args: "for_selling"
+        //             },
+        //             // callback: function(r) {console.log(r)
+        //             //     if(r.message) {
+        //             //         // $.each(frm.doc.option1 || [], function(i, d) {
+        //             //         //     frappe.model.set_value(d.doctype, d.name, "rate",
+        //             //         //         flt(d.rate) );
+        //             //         //     frappe.model.set_value(d.doctype, d.name, "amount",
+        //             //         //         flt(d.rate));
+        //             //         // });
+        //             //     }
+        //             // }
+        //         });
+        // } else {
             
-        }
+        // }
     },
     get_company_currency() {
         return erpnext.get_currency(frm.doc.company);
@@ -86,26 +86,26 @@ frappe.ui.form.on("Service Order Form", {
     tax_amount(frm){
         frm.set_value('grand_total', frm.doc.net_total+frm.doc.tax_amount)
     },
-    get_exchange_rate(transaction_date, from_currency, to_currency, callback) {
-		var args  = "for_selling";
+    // get_exchange_rate(transaction_date, from_currency, to_currency, callback) {
+	// 	var args  = "for_selling";
 
-		if (!transaction_date || !from_currency || !to_currency) return;
-		return frappe.call({
-			method: "erpnext.setup.utils.get_exchange_rate",
-			args: {
-				transaction_date: transaction_date,
-				from_currency: from_currency,
-				to_currency: to_currency,
-				args: args
-			},
-			freeze: true,
-			freeze_message: __("Fetching exchange rates ..."),
-			callback: function(r) {
-                console.log(r.message)
-				callback(flt(r.message));
-			}
-		});
-	},
+	// 	if (!transaction_date || !from_currency || !to_currency) return;
+	// 	return frappe.call({
+	// 		method: "erpnext.setup.utils.get_exchange_rate",
+	// 		args: {
+	// 			transaction_date: transaction_date,
+	// 			from_currency: from_currency,
+	// 			to_currency: to_currency,
+	// 			args: args
+	// 		},
+	// 		freeze: true,
+	// 		freeze_message: __("Fetching exchange rates ..."),
+	// 		callback: function(r) {
+    //             console.log(r.message)
+	// 			callback(flt(r.message));
+	// 		}
+	// 	});
+	// },
 });
 
 frappe.ui.form.on('Service Order Form Item', {

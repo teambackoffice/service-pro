@@ -5,14 +5,8 @@ let doc = ["Lead", "Customer"];
 frappe.ui.form.on("Service Order Form", {
     onload: function(frm) {
         if (!frm.doc.vat_on && frm.is_new()) {
-            frappe.db.get_value('Production Settings', {name: 'Production Settings'}, 'service_order_form_default_tax', (r) => {
-                if (r && r.service_order_form_default_tax) {
-                    frm.set_value('vat_on', r.service_order_form_default_tax);
-                }
-            });
+            frm.trigger('set_vat_based_on_company');
         }
-
-        frm.refresh_field('vat_on');
     },
     refresh: function(frm) {
         if (frm.doc.docstatus == 1 && frm.doc.status != "Expired") {
@@ -32,11 +26,46 @@ frappe.ui.form.on("Service Order Form", {
                 }
             };
         });
-    
+      
     },
-    vat_on: function(frm) {
+  
+    set_vat_based_on_company: function(frm) {
+        if (frm.doc.company) {
+            frappe.db.get_doc('Production Settings', 'Production Settings').then(doc => {
+                let default_taxes = doc.service_order_form_default_tax || [];
+                console.log(default_taxes);
+
+                let found = false;  
+                default_taxes.forEach((row) => {
+                    if (row.company === frm.doc.company) {
+                        frm.set_value('vat_on', row.service_order_form_tax);
+                        frm.refresh_field('vat_on');
+                        found = true;
+                    }
+                });
+
+                if (!found) {
+                    frm.set_value('vat_on', null);
+                    frm.refresh_field('vat_on');
+                }
+            });
+        }
+
         tax_rate(frm)
-        
+ 
+    },
+    company: function(frm) {
+        if (frm.doc.company) {
+            frm.set_query('vat_on', function() {
+                return {
+                    filters: {
+                        company: frm.doc.company
+                    }
+                };
+            });
+        }
+        frm.trigger('set_vat_based_on_company');
+
     },
     net_total: function(frm) {
         tax_rate(frm)

@@ -1,0 +1,41 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-09-23 17:29:15.263682",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "service_order_form_tax",
+  "company"
+ ],
+ "fields": [
+  {
+   "fieldname": "service_order_form_tax",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Service Order Form Tax",
+   "options": "Sales Taxes and Charges Template"
+  },
+  {
+   "fetch_from": "service_order_form_tax.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-09-23 18:24:31.368999",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Tax Charges",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

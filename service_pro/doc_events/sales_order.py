@@ -24,3 +24,25 @@ def sales_order_submit(doc, method):
 	frappe.db.set_value('Service Order Form', doc.custom_service_order_form_id, 'status', 'Converted')
 	
 	frappe.db.commit()
+
+
+from frappe.model.mapper import get_mapped_doc
+
+@frappe.whitelist()
+def make_sales_order_from_service_order(source_name, target_doc=None):
+    doclist = get_mapped_doc(
+        "Sales Order",
+        source_name,
+        {
+            "Sales Order": {
+                "doctype": "Service Order Form",
+                "field_map": {
+                    "customer": "customer",
+                   
+                }
+            }
+        },
+        target_doc,
+    )
+
+    return doclist

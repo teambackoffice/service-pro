@@ -34,6 +34,7 @@ after_migrate = ["service_pro.doc_events.after_migrate.execute"]
 doctype_js = {
     "Quotation" : "public/js/quotation.js",
     "Sales Invoice" : "public/js/sales_invoice.js",
+    "Sales Order" : "public/js/sales_order.js",
     "Purchase Receipt" : "public/js/purchase_receipt.js",
     "Material Request" : "public/js/material_request.js",
     "Delivery Note" : "public/js/delivery_note.js",
@@ -117,7 +118,8 @@ doc_events = {
     "Sales Order":{
        "on_submit": 
             # "service_pro.doc_events.sales_order.on_so_submit",
-            "service_pro.doc_events.sales_order.sales_order_submit"
+            "service_pro.doc_events.sales_order.sales_order_submit",
+            
         
     },
     "Quotation":{

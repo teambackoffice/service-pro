@@ -54,6 +54,9 @@ frappe.ui.form.on("Service Order Form", {
         tax_rate(frm)
  
     },
+    vat_on: function (frm) {
+        tax_rate(frm)
+    },
     company: function(frm) {
         if (frm.doc.company) {
             frm.set_query('vat_on', function() {

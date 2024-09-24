@@ -36,20 +36,30 @@ def create_sales_order(source_name, target_doc=None):
                 })
 
     doclist = get_mapped_doc(
-        "Service Order Form",
-        source_name,
-        {
-            "Service Order Form": {
-                "doctype": "Sales Order",
-                "field_map": {
-                    "name": "custom_service_order_form_id", 
-                    "customer": "customer",
-                    "terms": "tc_name"  
-                }
+    "Service Order Form",
+    source_name,
+    {
+        "Service Order Form": {
+            "doctype": "Sales Order",
+            "field_map": {
+                "name": "custom_service_order_form_id", 
+                "customer": "customer",
+                "terms": "tc_name",
+                "term_details": "terms",
+                "vat_on": "taxes_and_charges", 
             }
         },
-        target_doc,
-        update_sales_team  
+        "Service Order Form Item": {
+            "doctype": "Sales Order Item",
+            "field_map": {
+            "item_description": "item_name",
+            "qty": "qty",
+            }
+            }
+
+    },
+    target_doc,
+    update_sales_team
     )
 
     return doclist

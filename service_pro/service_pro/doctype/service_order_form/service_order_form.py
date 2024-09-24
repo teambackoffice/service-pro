@@ -46,7 +46,9 @@ def create_sales_order(source_name, target_doc=None):
                 "customer": "customer",
                 "terms": "tc_name",
                 "term_details": "terms",
-                "vat_on": "taxes_and_charges", 
+                "vat_on": "taxes_and_charges",
+                "additional_discount_amount": "discount_amount",
+                "additional_discount_percentage": "additional_discount_percentage", 
             }
         },
         "Service Order Form Item": {

@@ -700,6 +700,7 @@ cur_frm.refresh_field("item_selling_price_list")
 
                 }
             })
+            set_batch_no_filter(frm)
 	},
     customer: function() {
 	    if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
@@ -925,8 +926,21 @@ cur_frm.refresh_field("item_selling_price_list")
         }
 
 	},
+    
+    
 
 });
+
+frappe.ui.form.on('Raw Material', {
+    item_code: function (frm, cdt, cdn) {
+        set_batch_no_filter(frm, cdt, cdn)
+    },
+    warehouse: function (frm, cdt, cdn) {
+        set_batch_no_filter(frm, cdt, cdn)
+    },
+});
+
+
 
 function filter_link_field(cur_frm) {
      cur_frm.set_query('estimation', () => {
@@ -1216,4 +1230,38 @@ function set_item_selling_price(cur_frm) {
         cur_frm.refresh_field("item_selling_price_list")
     }
 
+}
+
+function batch_filter(frm, cdt, cdn) {
+    let row = frappe.get_doc(cdt, cdn);
+
+    if (row.item_code) {
+        frm.fields_dict['raw_material'].grid.get_field('batch').get_query = function() {
+            return {
+                filters: {
+                    'item': row.item_code
+                }
+            };
+        };
+    }
+}
+function set_batch_no_filter(frm) {
+    frm.fields_dict['raw_material'].grid.get_field('batch').get_query = function(doc, cdt, cdn) {
+        var child = locals[cdt][cdn];
+
+        if (child.item_code && child.warehouse) {
+            return {
+                query: "erpnext.controllers.queries.get_batch_no", 
+                filters: {
+                    'item_code': child.item_code,
+                    'warehouse': child.warehouse,
+                   
+                }
+            };
+        } else {
+            return {
+                filters: {}
+            };
+        }
+    };
 }

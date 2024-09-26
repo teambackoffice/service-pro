@@ -341,7 +341,8 @@ class Production(Document):
 				'qty': item.qty_raw_material,
 				'uom': "Nos",
 				'basic_rate': item.rate_raw_material,
-				'cost_center': item.cost_center
+				'cost_center': item.cost_center,
+				"batch_no": item.batch,
 			})
 
 		items.append({

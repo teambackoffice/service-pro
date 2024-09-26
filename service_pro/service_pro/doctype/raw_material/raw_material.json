@@ -10,6 +10,7 @@
   "warehouse",
   "available_qty",
   "production",
+  "batch",
   "column_break_4",
   "umo",
   "qty_raw_material",
@@ -92,11 +93,19 @@
    "fieldtype": "Link",
    "label": "UMO",
    "options": "UOM"
+  },
+  {
+   "fieldname": "batch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Batch",
+   "options": "Batch",
+   "search_index": 1
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2020-08-30 17:15:51.428208",
+ "modified": "2024-09-25 12:18:10.582268",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Raw Material",
@@ -105,5 +114,6 @@
  "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

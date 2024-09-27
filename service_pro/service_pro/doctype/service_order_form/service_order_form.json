@@ -256,6 +256,7 @@
    "label": "Term Details"
   },
   {
+   "fetch_from": "company.default_currency",
    "fieldname": "currency",
    "fieldtype": "Link",
    "label": "Currency",
@@ -320,7 +321,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-24 15:09:35.903317",
+ "modified": "2024-09-27 10:05:19.817312",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Order Form",

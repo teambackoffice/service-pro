@@ -4,6 +4,7 @@
 
 from __future__ import unicode_literals
 import frappe
+from frappe import _
 import json
 from frappe.model.document import Document
 from erpnext.stock.stock_ledger import get_previous_sle
@@ -173,6 +174,13 @@ class Production(Document):
 			self.series = "SK-D-"
 		elif self.type == "Service":
 			self.series = "CS-"
+		self.validate_raw_material_batch()
+		
+	def validate_raw_material_batch(self):
+		for row in self.raw_material:
+			item = frappe.get_doc('Item', row.item_code)
+			if item.has_batch_no and not row.batch:
+				frappe.throw(_('Item "{}" is a batch item. Please select a batch.').format(item.item_code))
 
 	@frappe.whitelist()
 	def check_raw_materials(self):
@@ -613,3 +621,4 @@ def selling_price_list(raw_materials):
 				"rate_raw_material": selling_price[0] * i['qty_raw_material']
 			})
 	return array_selling
+

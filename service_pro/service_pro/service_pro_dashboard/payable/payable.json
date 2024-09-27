@@ -1,0 +1,21 @@
+{
+ "cards": [],
+ "charts": [
+  {
+   "chart": "Accounts Payable Ageing",
+   "width": "Half"
+  }
+ ],
+ "creation": "2024-09-26 15:18:06.395128",
+ "dashboard_name": "Payable",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "modified": "2024-09-26 15:18:51.027107",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Payable",
+ "owner": "Administrator"
+}

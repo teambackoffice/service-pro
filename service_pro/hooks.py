@@ -42,6 +42,7 @@ doctype_js = {
     "Landed Cost Voucher": "public/js/landed_cost_voucher.js",
     "Item": "public/js/item.js",
     "Purchase Invoice" : "public/js/purchase_invoice.js",
+    "Purchase Order" : "public/js/purchase_order.js"
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -118,13 +119,14 @@ doc_events = {
     "Sales Order":{
        "on_submit": 
             # "service_pro.doc_events.sales_order.on_so_submit",
-            "service_pro.doc_events.sales_order.sales_order_submit",
-            
-        
+            "service_pro.doc_events.sales_order.sales_order_submit",    
     },
     "Quotation":{
         "on_submit": "service_pro.doc_events.quotation.on_submit_quotation"
-    }
+    },
+    "Purchase Receipt": {
+        "before_submit": "service_pro.doc_events.purchase_receipt.update_supplier_packing_slip",
+	},
 }
 
 # Scheduled Tasks
@@ -165,6 +167,8 @@ scheduler_events = {
 # along with any modifications made in other Frappe apps
 override_doctype_dashboards = {
 	"Stock Entry": "service_pro.doc_events.stock_entry_dashboard.get_stock_entry_data",
+    "Purchase Order": "service_pro.doc_events.dashboard.dashboard.purchase_order_dashboard",
+    "Purchase Receipt": "service_pro.doc_events.dashboard.dashboard.purchase_receipt",
 
 }
 

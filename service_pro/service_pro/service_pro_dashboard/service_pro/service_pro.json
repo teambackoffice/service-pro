@@ -1,29 +1,29 @@
 {
  "cards": [
   {
-   "card": "Total Outgoing Bills"
+   "card": "Approved Claims (This Month)"
   }
  ],
  "charts": [
   {
-   "chart": "Accounts Payable Ageing",
+   "chart": "Service Pro",
    "width": "Half"
   },
   {
-   "chart": "Incoming Bills (Purchase Invoice)",
+   "chart": "Service Pro Status",
    "width": "Half"
   }
  ],
- "creation": "2024-09-26 15:18:06.395128",
- "dashboard_name": "Payable",
+ "creation": "2024-09-30 12:13:44.971305",
+ "dashboard_name": "Service Pro",
  "docstatus": 0,
  "doctype": "Dashboard",
  "idx": 0,
  "is_default": 0,
  "is_standard": 1,
- "modified": "2024-09-28 08:23:13.145292",
+ "modified": "2024-09-30 12:42:13.768273",
  "modified_by": "Administrator",
  "module": "Service Pro",
- "name": "Payable",
+ "name": "Service Pro",
  "owner": "Administrator"
 }

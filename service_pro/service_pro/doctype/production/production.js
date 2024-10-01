@@ -872,24 +872,24 @@ cur_frm.refresh_field("item_selling_price_list")
 
         }
 	},
-    estimation: function(frm) {
+    // estimation: function(frm) {
 
-	    if(cur_frm.doc.type && cur_frm.doc.type === "Service" && cur_frm.doc.estimation){
-            get_items_from_estimation(frm,cur_frm)
-        } else {
-            cur_frm.doc.item_code_prod = undefined
-            cur_frm.doc.qty = 1
-            cur_frm.doc.qty_for_sidn = 1
-            cur_frm.doc.rate = 0
-            cur_frm.doc.amount = 0
-            cur_frm.refresh_field("item_code")
-            cur_frm.refresh_field("qty")
-            cur_frm.refresh_field("qty_for_sidn")
-            cur_frm.refresh_field("rate")
-            cur_frm.refresh_field("amount")
+	//     if(cur_frm.doc.type && cur_frm.doc.type === "Service" && cur_frm.doc.estimation){
+    //         get_items_from_estimation(frm,cur_frm)
+    //     } else {
+    //         cur_frm.doc.item_code_prod = undefined
+    //         cur_frm.doc.qty = 1
+    //         cur_frm.doc.qty_for_sidn = 1
+    //         cur_frm.doc.rate = 0
+    //         cur_frm.doc.amount = 0
+    //         cur_frm.refresh_field("item_code")
+    //         cur_frm.refresh_field("qty")
+    //         cur_frm.refresh_field("qty_for_sidn")
+    //         cur_frm.refresh_field("rate")
+    //         cur_frm.refresh_field("amount")
 
-        }
-	},
+    //     }
+	// },
     address: function(frm) {
         if(cur_frm.doc.address){
             frappe.db.get_doc("Address", cur_frm.doc.address)

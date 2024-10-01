@@ -30,6 +30,7 @@ frappe.query_reports["Gross Profit Sales Invoice"] = {
 			label: __("Sales Invoice"),
 			fieldtype: "Link",
 			options: "Sales Invoice",
+			
 		},
 		{
 			fieldname: "group_by",
@@ -38,6 +39,7 @@ frappe.query_reports["Gross Profit Sales Invoice"] = {
 			options:
 				"Invoice\nItem Code\nItem Group\nBrand\nWarehouse\nCustomer\nCustomer Group\nTerritory\nSales Person\nProject\nCost Center\nMonthly\nPayment Term",
 			default: "Invoice",
+			read_only: 1
 		},
 		{
 			fieldname: "item_group",

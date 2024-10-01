@@ -33,8 +33,6 @@ def execute(filters=None):
 				"customer",
 				"customer_group",
 				"posting_date",
-				"item_code",
-				"item_name",
 				"item_group",
 				"brand",
 				"description",

@@ -1,8 +1,10 @@
 {
  "charts": [],
- "content": "[{\"id\":\"CEZNmuFvIS\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Service Pro</span>\",\"col\":12}},{\"id\":\"PJv00ZAXu4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Receipt Note\",\"col\":3}},{\"id\":\"d1X_o5nILw\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Estimation\",\"col\":3}},{\"id\":\"yt-2LFOOCO\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Inspection\",\"col\":3}},{\"id\":\"uIBFXxf7E4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Production\",\"col\":3}},{\"id\":\"UjN6Q55QgN\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Material Request\",\"col\":3}},{\"id\":\"eXHM803PHx\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Invoice\",\"col\":3}},{\"id\":\"koTARpeBRL\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"IZH2WKrbor\",\"type\":\"card\",\"data\":{\"card_name\":\"Showroom Masters\",\"col\":4}},{\"id\":\"W8irLy14s7\",\"type\":\"card\",\"data\":{\"card_name\":\"Site Service Masters\",\"col\":4}},{\"id\":\"OkNdx7Fgfd\",\"type\":\"card\",\"data\":{\"card_name\":\"Workshop Masters\",\"col\":4}},{\"id\":\"Du-RosDfCy\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"O_6I5KFHHd\",\"type\":\"card\",\"data\":{\"card_name\":\"Custom Master\",\"col\":4}}]",
+ "content": "[{\"id\":\"CEZNmuFvIS\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Service Pro</span>\",\"col\":12}},{\"id\":\"PJv00ZAXu4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Receipt Note\",\"col\":3}},{\"id\":\"d1X_o5nILw\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Estimation\",\"col\":3}},{\"id\":\"yt-2LFOOCO\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Inspection\",\"col\":3}},{\"id\":\"uIBFXxf7E4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Production\",\"col\":3}},{\"id\":\"UjN6Q55QgN\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Material Request\",\"col\":3}},{\"id\":\"eXHM803PHx\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Invoice\",\"col\":3}},{\"id\":\"koTARpeBRL\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"IZH2WKrbor\",\"type\":\"card\",\"data\":{\"card_name\":\"Showroom Masters\",\"col\":4}},{\"id\":\"W8irLy14s7\",\"type\":\"card\",\"data\":{\"card_name\":\"Site Service Masters\",\"col\":4}},{\"id\":\"OkNdx7Fgfd\",\"type\":\"card\",\"data\":{\"card_name\":\"Workshop Masters\",\"col\":4}},{\"id\":\"Du-RosDfCy\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"O_6I5KFHHd\",\"type\":\"card\",\"data\":{\"card_name\":\"Custom Master\",\"col\":4}},{\"id\":\"lpIkESGElY\",\"type\":\"card\",\"data\":{\"card_name\":\"Sales\",\"col\":4}}]",
  "creation": "2023-04-22 11:28:23.611529",
  "custom_blocks": [],
+ "custom_default_dashboard": "Service Pro",
+ "custom_menu_title": "Service Pro",
  "docstatus": 0,
  "doctype": "Workspace",
  "for_user": "",
@@ -99,6 +101,7 @@
    "link_to": "Stock Balance",
    "link_type": "Report",
    "onboard": 0,
+   "report_ref_doctype": "Stock Ledger Entry",
    "type": "Link"
   },
   {
@@ -109,6 +112,7 @@
    "link_to": "Stock Ledger",
    "link_type": "Report",
    "onboard": 0,
+   "report_ref_doctype": "Stock Ledger Entry",
    "type": "Link"
   },
   {
@@ -119,6 +123,7 @@
    "link_to": "Stock List Report",
    "link_type": "Report",
    "onboard": 0,
+   "report_ref_doctype": "Item",
    "type": "Link"
   },
   {
@@ -129,6 +134,7 @@
    "link_to": "Statement of Account",
    "link_type": "Report",
    "onboard": 0,
+   "report_ref_doctype": "GL Entry",
    "type": "Link"
   },
   {
@@ -139,6 +145,7 @@
    "link_to": "Simple EOD",
    "link_type": "Report",
    "onboard": 0,
+   "report_ref_doctype": "GL Entry",
    "type": "Link"
   },
   {
@@ -149,6 +156,7 @@
    "link_to": "PC Report",
    "link_type": "Report",
    "onboard": 0,
+   "report_ref_doctype": "GL Entry",
    "type": "Link"
   },
   {
@@ -526,9 +534,58 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Service Order Form",
+   "link_count": 0,
+   "link_to": "Service Order Form",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Quotation",
+   "link_count": 0,
+   "link_to": "Quotation",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Order",
+   "link_count": 0,
+   "link_to": "Sales Order",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Invoice",
+   "link_count": 0,
+   "link_to": "Sales Invoice",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2024-09-01 12:02:33.185249",
+ "modified": "2024-10-02 09:01:09.742616",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Pro",
@@ -538,7 +595,7 @@
  "public": 1,
  "quick_lists": [],
  "roles": [],
- "sequence_id": 33.0,
+ "sequence_id": 31.0,
  "shortcuts": [
   {
    "color": "Grey",

@@ -20,6 +20,7 @@
  ],
  "fields": [
   {
+   "columns": 3,
    "fieldname": "item_code",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -27,6 +28,7 @@
    "options": "Item"
   },
   {
+   "columns": 2,
    "fieldname": "warehouse",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -35,11 +37,13 @@
   },
   {
    "allow_on_submit": 1,
+   "columns": 1,
    "default": "0",
    "fieldname": "available_qty",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Available Qty"
+   "label": "Available Qty",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_4",
@@ -53,6 +57,7 @@
   },
   {
    "allow_on_submit": 1,
+   "columns": 1,
    "default": "1",
    "fieldname": "qty_raw_material",
    "fieldtype": "Float",
@@ -85,16 +90,18 @@
   {
    "fieldname": "item_name",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "Item Name"
   },
   {
+   "columns": 1,
    "fieldname": "umo",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "UMO",
    "options": "UOM"
   },
   {
+   "columns": 2,
    "fieldname": "batch",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -105,7 +112,7 @@
  ],
  "istable": 1,
  "links": [],
- "modified": "2024-09-25 12:18:10.582268",
+ "modified": "2024-10-02 08:59:33.088854",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Raw Material",

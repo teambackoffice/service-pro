@@ -15,6 +15,36 @@ frappe.ui.form.on('Item', {
             })
         }
     },
+
+    custom_tax_template: function(frm) {
+        if (frm.doc.custom_tax_template) {
+            frappe.call({
+                method: 'frappe.client.get',
+                args: {
+                    doctype: 'Item Tax Template',
+                    name: frm.doc.custom_tax_template
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        const item_tax_template = r.message.taxes;
+                        
+                        frm.clear_table('taxes');
+                        
+                        $.each(item_tax_template, function(index, row) {
+                            let child = frm.add_child('taxes');
+                            child.item_tax_template = row.tax_type; 
+                        });
+    
+                        frm.refresh_field('taxes');
+                    }
+                }
+            });
+        } else {
+            frm.clear_table('taxes');
+            frm.refresh_field('taxes');
+        }
+    },
+    
   
     
     custom_brand_name:function(frm){

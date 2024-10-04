@@ -73,5 +73,45 @@ frappe.ui.form.on('Production Settings', {
                 };
             }
         };
+        frm.fields_dict['sales_partner_payments_details'].grid.get_field('expense_accounts').get_query = function(doc, cdt, cdn) {
+            let row = locals[cdt][cdn];
+            if (row.company) {
+                return {
+                    filters: {
+                        company: row.company
+                    }
+                };
+            }
+        };
+        frm.fields_dict['sales_partner_payments_details'].grid.get_field('payable_account').get_query = function(doc, cdt, cdn) {
+            let row = locals[cdt][cdn];
+            if (row.company) {
+                return {
+                    filters: {
+                        company: row.company
+                    }
+                };
+            }
+        };
+        frm.fields_dict['sales_partner_payments_details'].grid.get_field('cost_center').get_query = function(doc, cdt, cdn) {
+            let row = locals[cdt][cdn];
+            if (row.company) {
+                return {
+                    filters: {
+                        company: row.company
+                    }
+                };
+            }
+        };
+        frm.fields_dict['service_order_form_default_tax'].grid.get_field('service_order_form_tax').get_query = function(doc, cdt, cdn) {
+            let row = locals[cdt][cdn];
+            if (row.company) {
+                return {
+                    filters: {
+                        company: row.company
+                    }
+                };
+            }
+        };
     }
 });

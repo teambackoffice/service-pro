@@ -12,6 +12,7 @@
   "column_break_3",
   "posting_date",
   "priority",
+  "company",
   "section_break_7",
   "details",
   "details_interest",
@@ -90,11 +91,17 @@
    "fieldname": "details_interest",
    "fieldtype": "Table",
    "options": "Payment Scheduler Details Interest"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2020-09-22 17:12:21.981433",
+ "modified": "2024-10-03 12:53:14.266381",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Payment Scheduler",
@@ -115,5 +122,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

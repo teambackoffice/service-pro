@@ -1,0 +1,24 @@
+{
+ "cards": [],
+ "charts": [
+  {
+   "width": "Half"
+  },
+  {
+   "chart": "Finance",
+   "width": "Half"
+  }
+ ],
+ "creation": "2024-10-03 12:27:59.763313",
+ "dashboard_name": "Financial Reports",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "modified": "2024-10-04 07:50:48.826756",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Financial Reports",
+ "owner": "Administrator"
+}

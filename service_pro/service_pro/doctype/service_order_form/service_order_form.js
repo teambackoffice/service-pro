@@ -28,6 +28,16 @@ frappe.ui.form.on("Service Order Form", {
         });
       
     },
+
+    terms: function(frm) {
+        if (frm.doc.terms) {
+            frappe.db.get_value('Terms and Conditions', frm.doc.terms, 'terms', function(value) {
+                if (value) {
+                    frm.set_value('term_details', value.terms);
+                }
+            });
+        }
+    },
   
     set_vat_based_on_company: function(frm) {
         if (frm.doc.company) {
@@ -287,6 +297,7 @@ function calculate_amount(frm, cdt, cdn) {
 
     frm.refresh_field('option1'); 
 }
+
 
 function calculate_discount(frm) {
     let net_total =  0;

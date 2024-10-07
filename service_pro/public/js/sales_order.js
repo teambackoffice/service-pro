@@ -17,7 +17,30 @@ frappe.ui.form.on("Sales Order", {
             },
             __("Get Items From")
         );
-    }
+    },
+    custom_company_bank_details: function(frm) {
+        if (frm.doc.custom_company_bank_details) {
+            frappe.call({
+                method: 'frappe.client.get',
+                args: {
+                    doctype: 'Company Bank Detailes',
+                    name: frm.doc.custom_company_bank_details
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        
+                        let account_no = r.message.bank_account_no || '';
+                        let iban_no = r.message.iban || '';
+                        let bank_name = r.message.bank || '';
+
+                        frm.set_value('custom_account_name', `Account No: ${account_no}\nIBAN: ${iban_no}\nBank Name: ${bank_name}`);
+                    }
+                }
+            });
+        } else {
+            frm.set_value('custom_account_name', '');
+        }
+    },
 });
 
 

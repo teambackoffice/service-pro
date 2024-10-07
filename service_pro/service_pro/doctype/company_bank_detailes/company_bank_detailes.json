@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:bank_account_no",
  "creation": "2024-10-03 13:31:24.973096",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -19,7 +20,8 @@
   {
    "fieldname": "bank_account_no",
    "fieldtype": "Data",
-   "label": "Bank Account No"
+   "label": "Bank Account No",
+   "unique": 1
   },
   {
    "fieldname": "iban",
@@ -34,10 +36,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-10-03 13:42:58.907549",
+ "modified": "2024-10-07 13:55:56.455278",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Company Bank Detailes",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {

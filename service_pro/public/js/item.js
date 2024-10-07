@@ -21,7 +21,7 @@ frappe.ui.form.on('Item', {
             frappe.call({
                 method: 'frappe.client.get',
                 args: {
-                    doctype: 'Item Tax Template',
+                    doctype: 'Tax Template',
                     name: frm.doc.custom_tax_template
                 },
                 callback: function(r) {
@@ -32,9 +32,10 @@ frappe.ui.form.on('Item', {
                         
                         $.each(item_tax_template, function(index, row) {
                             let child = frm.add_child('taxes');
-                            child.item_tax_template = row.tax_type; 
+                            child.item_tax_template = row.item_tax_template; 
+                            child.tax_category = row.tax_category;
                         });
-    
+        
                         frm.refresh_field('taxes');
                     }
                 }
@@ -44,6 +45,7 @@ frappe.ui.form.on('Item', {
             frm.refresh_field('taxes');
         }
     },
+    
     
   
     

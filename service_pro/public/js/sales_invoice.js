@@ -85,6 +85,15 @@ frappe.ui.form.on('Sales Invoice', {
                     }, 500);
                 }
             }                           
+        });
+        frm.set_query('cost_center', function() {
+            if (frm.doc.company) {
+                return {
+                    filters: {
+                        company: frm.doc.company
+                    }
+                };
+            }
         });  
     },
     is_pos: function(frm) {

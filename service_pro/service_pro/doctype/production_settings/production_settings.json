@@ -14,6 +14,7 @@
   "finished_good_defaults_section",
   "item_naming_series",
   "item_group",
+  "default_item_tax_template",
   "column_break_lmvsc",
   "credit_note_user_role",
   "debit_note_user_role",
@@ -105,7 +106,8 @@
   {
    "fieldname": "item_naming_series",
    "fieldtype": "Select",
-   "label": "Item Naming Series"
+   "label": "Item Naming Series",
+   "options": "NN.##"
   },
   {
    "fieldname": "details_section",
@@ -191,12 +193,18 @@
    "fieldtype": "Table",
    "label": "Service Order Form Default Tax",
    "options": "Tax Charges"
+  },
+  {
+   "fieldname": "default_item_tax_template",
+   "fieldtype": "Link",
+   "label": "Default Item Tax Template",
+   "options": "Tax Template"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-09-27 08:09:14.501286",
+ "modified": "2024-10-14 14:31:41.604050",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

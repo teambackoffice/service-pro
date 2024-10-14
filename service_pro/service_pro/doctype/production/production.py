@@ -55,6 +55,7 @@ class Production(Document):
 			frappe.throw("Please add valid UOM")
 
 		item_group = frappe.db.get_value("Production Settings", None, "item_group")
+		tax_template = frappe.db.get_value("Production Settings", None, "default_item_tax_template")
 		item_naming_series = frappe.db.get_value("Production Settings", None, "item_naming_series")
 		if not item_group:
 			frappe.throw("Please set default item group in Production Settings")
@@ -68,6 +69,8 @@ class Production(Document):
 			"stock_uom": self.umo,
 			"item_group": item_group,
 			"naming_series": item_naming_series,
+			"custom_tax_template": tax_template,
+			
 		}
 		item = frappe.get_doc(doctype).insert()
 		frappe.db.commit()

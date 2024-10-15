@@ -701,65 +701,61 @@ cur_frm.refresh_field("item_selling_price_list")
                 }
             })
             set_batch_no_filter(frm)
+            
+            frm.set_query('cost_center', function() {
+                if (frm.doc.company) {
+                    return {
+                        filters: {
+                            company: frm.doc.company
+                        }
+                    };
+                }
+            });
 	},
-    customer: function() {
-	    if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
-            filter_link_field(cur_frm)
-        }
-        if(cur_frm.doc.customer){
-	         frappe.db.get_doc("Customer", cur_frm.doc.customer)
-            .then(doc => {
-                cur_frm.doc.customer_name = doc.customer_name
-                    if(doc.sales_team.length > 0){
-                         cur_frm.doc.sales_man = doc.sales_team[0].sales_person
-                        cur_frm.refresh_fields(["sales_man"])
-                    }
-                cur_frm.refresh_field("customer_name")
-            })
-
+    setup: function (frm) {
+        frm.set_query("address", () => {
+            if (!frm.doc.customer) {
+                frappe.throw(__("Please set Customer"));
+            }
+    
+            return {
+                query: "frappe.contacts.doctype.address.address.address_query",
+                filters: {
+                    link_doctype: "Customer",
+                    link_name: frm.doc.customer,
+                },
+            };
+        });
+    },
+    customer:function(frm){
+        
             frappe.call({
-                method: "service_pro.service_pro.doctype.production.production.get_address",
-                args:{
-                    customer: cur_frm.doc.customer
+                method: "service_pro.service_pro.doctype.production.production.update_dispatch_address",
+                args: {
+                    customer: frm.doc.customer,
                 },
                 callback: function (r) {
-                    if(r.message){
-                        cur_frm.doc.address = r.message.name
-                        var address = ""
-                        if(r.message.address_line1){
-                            address += r.message.address_line1
-                            address += "\n"
-                        }
-                        if(r.message.city){
-                            address += r.message.city
-                            address += "\n"
-                        }
-                        if(r.message.county){
-                            address += r.message.county
-                            address += "\n"
-                        }
-                        if(r.message.country){
-                            address += r.message.country
-                            address += "\n"
-                        }
-                        if(r.message.state){
-                            address += r.message.state
-                            address += "\n"
-                        }
-                        if(r.message.pincode){
-                            address += r.message.pincode
-                            address += "\n"
-                        }
-
-                        cur_frm.doc.address_name = address
-                        cur_frm.refresh_field("address")
-                        cur_frm.refresh_field("address_name")
-                    }
-
-                }
-            })
+                    frm.set_value("address", r.message || "");
+                },
+            });
+        
+    },
+    address: function (frm) {
+        if (frm.doc.address) {
+            frappe.call({
+                method: "frappe.contacts.doctype.address.address.get_address_display",
+                args: {
+                    address_dict: frm.doc.address,
+                },
+                callback: function (r) {
+                    frm.set_value("address_name", r.message || "");
+                },
+            });
+        } else {
+            frm.set_value("address_name", "");
         }
-	},
+    },
+    
     series: function(){
         if(cur_frm.doc.series && cur_frm.doc.type === "Re-Service"){
             cur_frm.clear_table("linked_productions")
@@ -890,43 +886,6 @@ cur_frm.refresh_field("item_selling_price_list")
 
     //     }
 	// },
-    address: function(frm) {
-        if(cur_frm.doc.address){
-            frappe.db.get_doc("Address", cur_frm.doc.address)
-            .then(doc => {
-                var address = ""
-                if(doc.address_line1){
-                    address += doc.address_line1
-                    address += "\n"
-                }
-                if(doc.city){
-                    address += doc.city
-                    address += "\n"
-                }
-                if(doc.county){
-                    address += doc.county
-                    address += "\n"
-                }
-                if(doc.country){
-                    address += doc.country
-                    address += "\n"
-                }
-                if(doc.state){
-                    address += doc.state
-                    address += "\n"
-                }
-                if(doc.pincode){
-                    address += doc.pincode
-                    address += "\n"
-                }
-                cur_frm.doc.address_name = address
-
-                cur_frm.refresh_field("address_name")
-            })
-        }
-
-	},
-    
     
 
 });

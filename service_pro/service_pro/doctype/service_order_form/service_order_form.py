@@ -10,7 +10,8 @@ from frappe.query_builder.functions import Sum
 
 class ServiceOrderForm(Document):
     def validate(self):
-        self.in_words = money_in_words(self.grand_total, self.currency)
+        if self.grand_total and self.currency:
+            self.in_words = money_in_words(self.grand_total, self.currency)
 
 
 def check_service_order_expiry():

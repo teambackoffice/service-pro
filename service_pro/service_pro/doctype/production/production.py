@@ -179,6 +179,8 @@ class Production(Document):
 			self.series = "CS-"
 		self.validate_raw_material_batch()
 		
+	
+		
 	def validate_raw_material_batch(self):
 		for row in self.raw_material:
 			item = frappe.get_doc('Item', row.item_code)
@@ -522,22 +524,22 @@ def get_uom(item_code):
 
 	return item[0].stock_uom, item[0].item_name
 
-@frappe.whitelist()
-def get_address(customer):
-	address = frappe.db.sql(""" 
- 						SELECT
- 						 	A.name,
- 							A.address_line1, 
-							A.city, 
-							A.county ,
-							A.state,
-							A.country,
-							A.pincode
-						FROM `tabAddress` AS A 
- 						INNER JOIN `tabDynamic Link` AS DL 
- 						ON DL.link_doctype=%s and DL.link_name=%s and DL.parent = A.name
- 						WHERE A.is_primary_address=1  """,("Customer", customer), as_dict=1)
-	return address[0] if len(address) > 0 else {}
+# @frappe.whitelist()
+# def get_address(customer):
+# 	address = frappe.db.sql(""" 
+#  						SELECT
+#  						 	A.name,
+#  							A.address_line1, 
+# 							A.city, 
+# 							A.county ,
+# 							A.state,
+# 							A.country,
+# 							A.pincode
+# 						FROM `tabAddress` AS A 
+#  						INNER JOIN `tabDynamic Link` AS DL 
+#  						ON DL.link_doctype=%s and DL.link_name=%s and DL.parent = A.name
+#  						WHERE A.is_primary_address=1  """,("Customer", customer), as_dict=1)
+# 	return address[0] if len(address) > 0 else {}
 
 @frappe.whitelist()
 def get_jv(production):
@@ -644,4 +646,15 @@ def selling_price_list(raw_materials):
 				"rate_raw_material": selling_price[0] * i['qty_raw_material']
 			})
 	return array_selling
+
+@frappe.whitelist()
+def update_dispatch_address(customer):
+		
+	address_name = frappe.db.get_value('Dynamic Link', {
+		'link_doctype': 'Customer',
+		'link_name': customer,
+		'parenttype': 'Address'
+		}, 'parent')
+	
+	return address_name
 

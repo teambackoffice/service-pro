@@ -2,7 +2,7 @@ frappe.ui.form.on("Quotation", {
 	refresh: function (frm) {
         setTimeout(() => {
             frm.remove_custom_button('Sales Order', "Create");
-    }, 500);
+    }, 100);
 if (frm.doc.docstatus == 1 && !["Lost", "Ordered"].includes(frm.doc.status)) {
     if (
         frappe.boot.sysdefaults.allow_sales_order_creation_for_expired_quotation ||

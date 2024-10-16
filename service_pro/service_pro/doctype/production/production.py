@@ -381,7 +381,7 @@ class Production(Document):
 		serial_and_batch_bundle.append("entries",{
 			"batch_no":item.batch,
 			"warehouse":item.warehouse,
-			"qty":1
+			"qty":item.qty_raw_material
 		})
 		serial_and_batch_bundle.save(ignore_permissions=True)
 		return serial_and_batch_bundle.name

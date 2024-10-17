@@ -101,6 +101,7 @@
   {
    "fieldname": "address",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Address",
    "options": "Address"
   },
@@ -447,8 +448,8 @@
    "fieldname": "customer_and_workshop",
    "fieldtype": "Select",
    "label": "Customer and Workshop",
-   "options": "\nCustomer\nWorkshop",
-   "reqd": 1
+   "mandatory_depends_on": "eval: doc.type == \"Assemble\"",
+   "options": "\nCustomer\nWorkshop"
   },
   {
    "allow_on_submit": 1,
@@ -560,7 +561,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-30 01:58:49.765291",
+ "modified": "2024-10-17 13:12:46.426557",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

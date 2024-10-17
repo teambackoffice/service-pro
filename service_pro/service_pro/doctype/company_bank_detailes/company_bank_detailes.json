@@ -9,34 +9,63 @@
   "account_name",
   "bank_account_no",
   "iban",
-  "bank"
+  "bank",
+  "column_break_6sk5",
+  "branch",
+  "address",
+  "swift_code"
  ],
  "fields": [
   {
    "fieldname": "account_name",
    "fieldtype": "Data",
-   "label": "Account Name"
+   "in_list_view": 1,
+   "label": "Account Name",
+   "reqd": 1
   },
   {
    "fieldname": "bank_account_no",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Bank Account No",
+   "reqd": 1,
    "unique": 1
   },
   {
    "fieldname": "iban",
    "fieldtype": "Data",
-   "label": "IBAN"
+   "in_list_view": 1,
+   "label": "IBAN",
+   "reqd": 1
   },
   {
    "fieldname": "bank",
    "fieldtype": "Data",
    "label": "Bank Name"
+  },
+  {
+   "fieldname": "column_break_6sk5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Data",
+   "label": "Branch"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Data",
+   "label": "Address"
+  },
+  {
+   "fieldname": "swift_code",
+   "fieldtype": "Data",
+   "label": "Swift Code"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-10-07 13:55:56.455278",
+ "modified": "2024-10-16 12:59:44.021134",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Company Bank Detailes",

@@ -350,7 +350,7 @@ frappe.ui.form.on('Production', {
 
     },
     validate: function (frm) {
-        frm.set_df_property('type', 'read_only', 1);
+       
 
     },
 	refresh: function(frm) {
@@ -701,7 +701,7 @@ cur_frm.refresh_field("item_selling_price_list")
                 }
             })
             set_batch_no_filter(frm)
-            
+
             frm.set_query('cost_center', function() {
                 if (frm.doc.company) {
                     return {
@@ -736,25 +736,45 @@ cur_frm.refresh_field("item_selling_price_list")
                 },
                 callback: function (r) {
                     frm.set_value("address", r.message || "");
+                    
                 },
             });
         
     },
-    address: function (frm) {
-        if (frm.doc.address) {
-            frappe.call({
-                method: "frappe.contacts.doctype.address.address.get_address_display",
-                args: {
-                    address_dict: frm.doc.address,
-                },
-                callback: function (r) {
-                    frm.set_value("address_name", r.message || "");
-                },
-            });
-        } else {
-            frm.set_value("address_name", "");
+    address: function(frm) {
+        if(cur_frm.doc.address){
+            frappe.db.get_doc("Address", cur_frm.doc.address)
+            .then(doc => {
+                var address = ""
+                if(doc.address_line1){
+                    address += doc.address_line1
+                    address += "\n"
+                }
+                if(doc.city){
+                    address += doc.city
+                    address += "\n"
+                }
+                if(doc.county){
+                    address += doc.county
+                    address += "\n"
+                }
+                if(doc.country){
+                    address += doc.country
+                    address += "\n"
+                }
+                if(doc.state){
+                    address += doc.state
+                    address += "\n"
+                }
+                if(doc.pincode){
+                    address += doc.pincode
+                    address += "\n"
+                }
+                cur_frm.doc.address_name = address
+                cur_frm.refresh_field("address_name")
+            })
         }
-    },
+	},
     
     series: function(){
         if(cur_frm.doc.series && cur_frm.doc.type === "Re-Service"){

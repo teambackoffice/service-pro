@@ -373,23 +373,27 @@ class Production(Document):
 	@frappe.whitelist()
 	def update_serial_and_batch_bundle(self, item):
 		print(item.item_code)
-		serial_and_batch_bundle = frappe.new_doc("Serial and Batch Bundle")
-		serial_and_batch_bundle.item_code = item.item_code
-		serial_and_batch_bundle.warehouse = item.warehouse
-		serial_and_batch_bundle.type_of_transaction = "Outward" if self.type else "Inward"
-		serial_and_batch_bundle.voucher_type = "Stock Entry"
-		serial_and_batch_bundle.append("entries",{
-			"batch_no":item.batch,
-			"warehouse":item.warehouse,
-			"qty":item.qty_raw_material
-		})
-		serial_and_batch_bundle.save(ignore_permissions=True)
-		return serial_and_batch_bundle.name
+		if item.batch:
+			serial_and_batch_bundle = frappe.new_doc("Serial and Batch Bundle")
+			serial_and_batch_bundle.item_code = item.item_code
+			serial_and_batch_bundle.warehouse = item.warehouse
+			serial_and_batch_bundle.type_of_transaction = "Outward" if self.type else "Inward"
+			serial_and_batch_bundle.voucher_type = "Stock Entry"
+			serial_and_batch_bundle.append("entries",{
+				"batch_no":item.batch,
+				"warehouse":item.warehouse,
+				"qty":item.qty_raw_material
+			})
+			serial_and_batch_bundle.save(ignore_permissions=True)
+			return serial_and_batch_bundle.name
 	@frappe.whitelist()
 	def get_material_issue_se_items(self):
 		items = []
 
 		for item in self.raw_material:
+			if item.batch:
+				batch_no = self.update_serial_and_batch_bundle(item)
+
 			items.append({
 				'item_code': item.item_code,
 				's_warehouse': item.warehouse,
@@ -398,7 +402,7 @@ class Production(Document):
 				'basic_rate': item.rate_raw_material,
 				'cost_center': item.cost_center,
 				"batch_no": item.batch,
-				"serial_and_batch_bundle":self.update_serial_and_batch_bundle(item)
+				"serial_and_batch_bundle": batch_no
 			})
 		return items
 

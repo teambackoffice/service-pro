@@ -14,5 +14,12 @@ frappe.ui.form.on('Purchase Invoice', {
                 }
             }                           
         }); 
+        if( frm.doc.items[0].purchase_order){
+            frm.get_field('items').grid.cannot_add_rows = true;
+        }else{
+            frm.get_field('items').grid.cannot_add_rows = false;
+
+        }
     },
+    
 });

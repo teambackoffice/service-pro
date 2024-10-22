@@ -42,28 +42,10 @@ frappe.query_reports["Gross Profit Sales Invoice"] = {
 			read_only: 1
 		},
 		{
-			fieldname: "item_group",
-			label: __("Item Group"),
-			fieldtype: "Link",
-			options: "Item Group",
-		},
-		{
 			fieldname: "sales_person",
 			label: __("Sales Person"),
 			fieldtype: "Link",
 			options: "Sales Person",
-		},
-		{
-			fieldname: "warehouse",
-			label: __("Warehouse"),
-			fieldtype: "Link",
-			options: "Warehouse",
-			get_query: function () {
-				var company = frappe.query_report.get_filter_value("company");
-				return {
-					filters: [["Warehouse", "company", "=", company]],
-				};
-			},
 		},
 		{
 			fieldname: "cost_center",
@@ -71,16 +53,6 @@ frappe.query_reports["Gross Profit Sales Invoice"] = {
 			fieldtype: "MultiSelectList",
 			get_data: function (txt) {
 				return frappe.db.get_link_options("Cost Center", txt, {
-					company: frappe.query_report.get_filter_value("company"),
-				});
-			},
-		},
-		{
-			fieldname: "project",
-			label: __("Project"),
-			fieldtype: "MultiSelectList",
-			get_data: function (txt) {
-				return frappe.db.get_link_options("Project", txt, {
 					company: frappe.query_report.get_filter_value("company"),
 				});
 			},

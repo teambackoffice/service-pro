@@ -33,18 +33,11 @@ def execute(filters=None):
 				"customer",
 				"customer_group",
 				"posting_date",
-				"item_group",
-				"brand",
-				"description",
-				"warehouse",
-				"qty",
-				"base_rate",
 				"buying_rate",
 				"base_amount",
 				"buying_amount",
 				"gross_profit",
 				"gross_profit_percent",
-				"project",
 			],
 			"item_code": [
 				"item_code",
@@ -177,14 +170,14 @@ def get_data_when_grouped_by_invoice(columns, gross_profit_data, filters, group_
 
 	for src in gross_profit_data.si_list:
 		row = frappe._dict()
-		row.indent = src.indent
-		row.parent_invoice = src.parent_invoice
-		row.currency = filters.currency
-
-		for col in group_wise_columns.get(scrub(filters.group_by)):
-			row[column_names[col]] = src.get(col)
-
-		data.append(row)
+		if src.indent == 0.0:
+			row.indent = src.indent
+			row.parent_invoice = src.parent_invoice
+			row.currency = filters.currency
+			
+			for col in group_wise_columns.get(scrub(filters.group_by)):
+				row[column_names[col]] = src.get(col)
+			data.append(row)
 
 
 def get_data_when_not_grouped_by_invoice(gross_profit_data, filters, group_wise_columns, data):

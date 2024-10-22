@@ -30,7 +30,10 @@ def execute(filters=None):
 	condition = ""
 	if filters.get("item_group"):
 		condition += " and item_group='{0}' ".format(filters.get("item_group"))
-
+	if filters.get("custom_brand_name"):
+		condition += " and custom_brand_name='{0}' ".format(filters.get("custom_brand_name"))
+	if filters.get("custom_item_description"):
+		condition += " and custom_item_description='{0}' ".format(filters.get("custom_item_description"))
 	if filters.get("item"):
 		condition += " and name='{0}' ".format(filters.get("item"))
 	query = """ SELECT * FROM `tabItem` WHERE disabled=0 {0}""".format(condition)

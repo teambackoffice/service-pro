@@ -186,7 +186,7 @@ def get_data_when_grouped_by_invoice(columns, gross_profit_data, filters, group_
 			row.currency = filters.currency
 			for col in group_wise_columns.get(scrub(filters.group_by)):
 				row[column_names[col]] = src.get(col)
-				data.append(row)
+			data.append(row)
 
 
 def get_data_when_not_grouped_by_invoice(gross_profit_data, filters, group_wise_columns, data):

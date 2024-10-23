@@ -14,8 +14,7 @@ frappe.query_reports["Stock List Report"] = {
 			fieldname: "item_group",
             label: __("Item Group"),
             fieldtype: "Link",
-            options: "Item Group",
-			reqd: 1
+            options: "Item Group"
 		},
 		{
 			fieldname: "custom_brand_name",

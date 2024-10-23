@@ -30,13 +30,24 @@ def execute(filters=None):
 	group_wise_columns = frappe._dict(
 		{
 			"invoice": [
+				
 				"customer",
-				"customer_name",
+				"customer_group",
 				"posting_date",
+				
+				
+				
+				
+				
+				
+				"qty",
+				"base_rate",
+				"buying_rate",
 				"base_amount",
 				"buying_amount",
 				"gross_profit",
 				"gross_profit_percent",
+				
 			],
 			"item_code": [
 				"item_code",
@@ -173,10 +184,9 @@ def get_data_when_grouped_by_invoice(columns, gross_profit_data, filters, group_
 			row.indent = src.indent
 			row.parent_invoice = src.parent_invoice
 			row.currency = filters.currency
-			
 			for col in group_wise_columns.get(scrub(filters.group_by)):
 				row[column_names[col]] = src.get(col)
-			data.append(row)
+				data.append(row)
 
 
 def get_data_when_not_grouped_by_invoice(gross_profit_data, filters, group_wise_columns, data):
@@ -194,6 +204,7 @@ def get_columns(group_wise_columns, filters):
 	columns = []
 	column_map = frappe._dict(
 		{
+			
 			"posting_date": {
 				"label": _("Posting Date"),
 				"fieldname": "posting_date",
@@ -240,7 +251,7 @@ def get_columns(group_wise_columns, filters):
 				"options": "Warehouse",
 				"width": 100,
 			},
-			"qty": {"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 80},
+			"qty": {"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 40},
 			"base_rate": {
 				"label": _("Avg. Selling Rate"),
 				"fieldname": "avg._selling_rate",
@@ -267,7 +278,7 @@ def get_columns(group_wise_columns, filters):
 				"fieldname": "buying_amount",
 				"fieldtype": "Currency",
 				"options": "currency",
-				"width": 100,
+				"width": 150,
 			},
 			"gross_profit": {
 				"label": _("Gross Profit"),
@@ -315,20 +326,20 @@ def get_columns(group_wise_columns, filters):
 				"fieldname": "customer",
 				"fieldtype": "Link",
 				"options": "Customer",
-				"width": 150,
+				"width": 200,
 			},
 			"customer_name": {
 				"label": _("Customer Name"),
 				"fieldname": "customer_name",
 				"fieldtype": "Data",
-				"width": 250,
+				"width": 200,
 			},
 			"territory": {
 				"label": _("Territory"),
 				"fieldname": "territory",
 				"fieldtype": "Link",
 				"options": "Territory",
-				"width": 200,
+				"width": 100,
 			},
 			"monthly": {
 				"label": _("Monthly"),
@@ -345,6 +356,7 @@ def get_columns(group_wise_columns, filters):
 			},
 		}
 	)
+	
 
 	for col in group_wise_columns.get(scrub(filters.group_by)):
 		columns.append(column_map.get(col))
@@ -367,7 +379,7 @@ def get_column_names():
 		{
 			"invoice_or_item": "sales_invoice",
 			"customer": "customer",
-			"customer_name": "customer_name",
+			"customer_group": "customer_group",
 			"posting_date": "posting_date",
 			"item_code": "item_code",
 			"item_name": "item_name",
@@ -820,7 +832,7 @@ class GrossProfitGenerator:
 				`tabSales Invoice Item`.parenttype, `tabSales Invoice Item`.parent,
 				`tabSales Invoice`.posting_date, `tabSales Invoice`.posting_time,
 				`tabSales Invoice`.project, `tabSales Invoice`.update_stock,
-				`tabSales Invoice`.customer, `tabSales Invoice`.customer_name,
+				`tabSales Invoice`.customer, `tabSales Invoice`.customer_group,
 				`tabSales Invoice`.territory, `tabSales Invoice Item`.item_code,
 				`tabSales Invoice Item`.item_name, `tabSales Invoice Item`.description,
 				`tabSales Invoice Item`.warehouse, `tabSales Invoice Item`.item_group,
@@ -916,7 +928,7 @@ class GrossProfitGenerator:
 				"project": row.project,
 				"update_stock": row.update_stock,
 				"customer": row.customer,
-				"customer_name": row.customer_name,
+				"customer_group": row.customer_group,
 				"item_code": None,
 				"item_name": None,
 				"description": None,
@@ -951,7 +963,7 @@ class GrossProfitGenerator:
 				"posting_time": product_bundle.posting_time,
 				"project": product_bundle.project,
 				"customer": product_bundle.customer,
-				"customer_name": product_bundle.customer_name,
+				"customer_group": product_bundle.customer_group,
 				"item_code": item.item_code,
 				"item_name": item_name,
 				"description": description,

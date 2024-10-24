@@ -32,7 +32,7 @@ def execute(filters=None):
 			"invoice": [
 				
 				"customer",
-				"customer_group",
+				"customer_name",
 				"posting_date",
 				
 				
@@ -379,7 +379,7 @@ def get_column_names():
 		{
 			"invoice_or_item": "sales_invoice",
 			"customer": "customer",
-			"customer_group": "customer_group",
+			"customer_name": "customer_name",
 			"posting_date": "posting_date",
 			"item_code": "item_code",
 			"item_name": "item_name",
@@ -832,7 +832,7 @@ class GrossProfitGenerator:
 				`tabSales Invoice Item`.parenttype, `tabSales Invoice Item`.parent,
 				`tabSales Invoice`.posting_date, `tabSales Invoice`.posting_time,
 				`tabSales Invoice`.project, `tabSales Invoice`.update_stock,
-				`tabSales Invoice`.customer, `tabSales Invoice`.customer_group,
+				`tabSales Invoice`.customer, `tabSales Invoice`.customer_name,
 				`tabSales Invoice`.territory, `tabSales Invoice Item`.item_code,
 				`tabSales Invoice Item`.item_name, `tabSales Invoice Item`.description,
 				`tabSales Invoice Item`.warehouse, `tabSales Invoice Item`.item_group,
@@ -928,7 +928,7 @@ class GrossProfitGenerator:
 				"project": row.project,
 				"update_stock": row.update_stock,
 				"customer": row.customer,
-				"customer_group": row.customer_group,
+				"customer_name": row.customer_name,
 				"item_code": None,
 				"item_name": None,
 				"description": None,
@@ -963,7 +963,7 @@ class GrossProfitGenerator:
 				"posting_time": product_bundle.posting_time,
 				"project": product_bundle.project,
 				"customer": product_bundle.customer,
-				"customer_group": product_bundle.customer_group,
+				"customer_name": product_bundle.customer_name,
 				"item_code": item.item_code,
 				"item_name": item_name,
 				"description": description,

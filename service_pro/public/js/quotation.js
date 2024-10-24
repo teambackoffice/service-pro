@@ -1,5 +1,18 @@
 frappe.ui.form.on("Quotation", {
-	refresh: function (frm) {
+    onload : function(frm) {
+        frm.set_query("warehouse", "items", function (doc, cdt, cdn) {
+			let row = locals[cdt][cdn];
+			let query = {
+				filters: [["Warehouse", "company", "in", ["", cstr(frm.doc.company)]]],
+			};
+			if (row.item_code) {
+				query.query = "erpnext.controllers.queries.warehouse_query";
+				query.filters.push(["Bin", "item_code", "=", row.item_code]);
+			}
+			return query;
+		});
+    },
+    refresh: function (frm) {
         setTimeout(() => {
             frm.remove_custom_button('Sales Order', "Create");
     }, 100);

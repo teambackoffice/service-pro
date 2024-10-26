@@ -49,18 +49,19 @@ class AgentPaymentRequest(Document):
 
 			balance = spp.incentive - pa
 			frappe.db.sql(
-				""" UPDATE `tabSales Partner Payments` SET balance_amount=%s,paid_amount=%s, status=%s WHERE name=%s """,
-				(balance, pa, status, i.sales_partner_payments))
+				""" UPDATE `tabSales Partner Payments` SET balance_amount=%s, paid_amount=%s, status=%s WHERE name=%s """,
+				(balance, pa, status, i.sales_partner_payments)
+			)
 			frappe.db.commit()
 
-		data = frappe.db.sql(""" SELECT * FROM `tabSales Partner Payments Details` WHERE company=%s """,self.company, as_dict=1)
+		data = frappe.db.sql(""" SELECT * FROM `tabSales Partner Payments Details` WHERE company=%s """, self.company, as_dict=1)
 		if len(data) == 0:
 			frappe.throw("Please check your Production Settings for Sales Partner Payments ")
+
 		gl_debit = {
 			"doctype": "GL Entry",
 			"posting_date": self.posting_date,
 			"account": data[0].payable_account,
-			# "cost_center": self.cost_center,
 			"debit": self.agent_outstanding_amount,
 			"debit_in_account_currency": self.agent_outstanding_amount,
 			"debit_in_transaction_currency": self.agent_outstanding_amount,
@@ -69,13 +70,15 @@ class AgentPaymentRequest(Document):
 			"company": self.company,
 			"transaction_exchange_rate": 1
 		}
-		credit_acount = frappe.db.sql(""" SELECT * FROM `tabMode of Payment Account` WHERE parent=%s LIMIT 1""", self.mode_of_payment,as_dict=1)
+
+		credit_account = frappe.db.sql("""
+			SELECT * FROM `tabMode of Payment Account` WHERE parent=%s AND company=%s LIMIT 1
+		""", (self.mode_of_payment, self.company), as_dict=1)
 
 		gl_credit = {
 			"doctype": "GL Entry",
-			"account": credit_acount[0].default_account,
+			"account": credit_account[0].default_account,
 			"posting_date": self.posting_date,
-			# "cost_center": self.cost_center,
 			"credit": self.agent_outstanding_amount,
 			"credit_in_account_currency": self.agent_outstanding_amount,
 			"credit_in_transaction_currency": self.agent_outstanding_amount,
@@ -84,10 +87,12 @@ class AgentPaymentRequest(Document):
 			"company": self.company,
 			"transaction_exchange_rate": 1
 		}
+
 		debit = frappe.get_doc(gl_debit).insert(ignore_permissions=1)
 		debit.submit()
 		credit = frappe.get_doc(gl_credit).insert(ignore_permissions=1)
 		credit.submit()
+
 	def on_cancel(self):
 		frappe.db.sql(""" DELETE FROM `tabGL Entry` WHERE docstatus=1 and voucher_no=%s and is_cancelled=0 """,self.name,as_dict=1)
 		frappe.db.commit()

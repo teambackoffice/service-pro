@@ -138,6 +138,8 @@ cur_frm.cscript.unpaid = function(frm){
     //             console.log(expense_account)
     // cur_frm.doc.expense_account = defaults['sales_partner_payments_details'].expense_accounts
     // cur_frm.refresh_field("expense_account")
+    cur_frm.doc.liabilities_account = defaults['sales_partner_payments_details'].expense_accounts
+    cur_frm.refresh_field("liabilities_account")
         // })
    if(cur_frm.doc.unpaid){
         cur_frm.doc.paid = 0

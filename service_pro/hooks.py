@@ -244,19 +244,7 @@ fixtures = [
         ]
     },
     {
-        "doctype": "Property Setter",
-        "filters": [
-            [
-                "name",
-                "in",
-                [
-                    "Item-valuation_rate-read_only_depends_on",
-                    "Item-main-field_order",
-                    "Item-naming_series-options",
-                    "Item-item_group-read_only_depends_on"
-                ]
-            ]
-        ]
+        "dt":"Property Setter","filters":[["module","in",["Service Pro"]]]
     }
 ]
 

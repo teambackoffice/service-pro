@@ -45,7 +45,7 @@ frappe.query_reports["Gross Profit Sales Invoice"] = {
 			fieldname: "sales_man",
 			label: __("Sales Man"),
 			fieldtype: "Link",
-			options: "Sales Man",
+			options: "Employee",
 		},
 		{
 			fieldname: "cost_center",

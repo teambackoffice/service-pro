@@ -42,10 +42,10 @@ frappe.query_reports["Gross Profit Sales Invoice"] = {
 			read_only: 1
 		},
 		{
-			fieldname: "sales_person",
-			label: __("Sales Person"),
+			fieldname: "sales_man",
+			label: __("Sales Man"),
 			fieldtype: "Link",
-			options: "Sales Person",
+			options: "Sales Man",
 		},
 		{
 			fieldname: "cost_center",

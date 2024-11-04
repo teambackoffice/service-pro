@@ -30,12 +30,12 @@ def execute(filters=None):
 	group_wise_columns = frappe._dict(
 		{
 			"invoice": [
+				"invoice_or_item",
 				"customer",
 				"customer_name",
 				"posting_date",
 				"qty",
 				"base_rate",
-				"buying_rate",
 				"base_amount",
 				"buying_amount",
 				"gross_profit",
@@ -202,6 +202,12 @@ def get_columns(group_wise_columns, filters):
 				"label": _("Posting Date"),
 				"fieldname": "posting_date",
 				"fieldtype": "Date",
+				"width": 150,
+			},
+			"invoice_or_item": {
+				"label": _("Sales Invoice"),
+				"fieldtype": "Link",
+				"options": "Sales Invoice",
 				"width": 150,
 			},
 			"posting_time": {

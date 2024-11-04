@@ -204,8 +204,8 @@ cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
     cur_frm.refresh_field("raw_material")
             // }
         // })
-    // frappe.db.get_single_value('Production Settings', 'cost_center_sjr')
-    //     .then(cost_center => {
+    frappe.db.get_single_value('Production Settings', 'cost_center_sjr')
+        .then(cost_center => {
             if(defaults['site_job_report_settings'].cost_center){
                  d.cost_center = defaults['site_job_report_settings'].cost_center
                 cur_frm.refresh_field("raw_material")

@@ -54,30 +54,45 @@ class ServiceReceiptNote(Document):
 		}
 
 		doc_q = frappe.get_doc(doc).insert()
-		frappe.db.sql(""" UPDATE `tabService Receipt Note` SET quotation=%s WHERE name=%s""",(doc_q.name,self.name), as_dict=1)
+
+		frappe.db.set_value("Service Receipt Note", self.name, "quotation", doc_q.name)
 		frappe.db.commit()
+		
 		return doc_q.name
 
 	@frappe.whitelist()
 	def get_items(self):
 		items = []
-		for item in self.materials:
-			inspection_values = frappe.db.get_value('Estimation',
-													{"receipt_note": self.name, "item_code": item.materials},
-													['rate','amount'], as_dict=1)
-			item_record = frappe.db.sql(""" SELECT * FROM `tabItem` WHERE name=%s""", item.materials, as_dict=1)
-			print("ITEEEEEEEEEEEEM")
-			print(item_record)
-			items.append({
-				"item_code": item.materials,
-				"item_name": item_record[0].item_name,
-				"description": item_record[0].description,
-				"qty": item.qty,
-				"rate": inspection_values.rate if inspection_values.rate else 0,
-				"amount": inspection_values.amount if inspection_values.amount else 0,
-				"uom": item_record[0].default_unit_of_measure,
+		
+		item_codes = [item.materials for item in self.materials]
+		item_details = frappe.db.get_all(
+			'Item', 
+			filters={'name': ('in', item_codes)},
+			fields=['name', 'item_name', 'description']
+		)
+		
+		item_map = {item['name']: item for item in item_details}
 
-			})
+		for item in self.materials:
+			inspection_values = frappe.db.get_value(
+				'Estimation',
+				{"receipt_note": self.name, "item_code_est": item.materials},
+				['rate', 'amount'],
+				as_dict=True
+			) or {'rate': 0, 'amount': 0}  
+
+			item_info = item_map.get(item.materials)
+
+			if item_info:
+				items.append({
+					"item_code": item.materials,
+					"item_name": item_info['item_name'],
+					"description": item_info['description'],
+					"qty": item.qty,
+					"rate": inspection_values['rate'],
+					"amount": inspection_values['amount']
+				})
+
 		return items
 
 

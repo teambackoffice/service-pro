@@ -121,6 +121,9 @@ doc_events = {
     },
     "Purchase Receipt":{
         "validate": "service_pro.doc_events.purchase_receipt.validate"
+    },
+    "Item Price":{
+        "before_save": "service_pro.doc_events.events.update_selling_rate"
     }
 }
 

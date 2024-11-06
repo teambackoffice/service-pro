@@ -43,3 +43,13 @@ def get_fields(doctype, fields=[]):
         fields.insert(1, meta.title_field.strip())
 
     return unique(fields)
+
+
+def update_selling_rate(doc, method):
+    if doc.selling:
+        
+        item = frappe.get_doc("Item", doc.item_code)
+        item.standard_rate = doc.price_list_rate 
+
+        item.save(ignore_permissions=True)
+        frappe.db.commit()  

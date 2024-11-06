@@ -103,9 +103,12 @@ frappe.ui.form.on('Estimation', {
                 })
             })
         }
-         cur_frm.add_custom_button(__("Material Request"), () => {
-                 frappe.set_route('Form', 'Material Request', "New Material Request 1")
-            });
+        //  cur_frm.add_custom_button(__("Material Request"), () => {
+        //          frappe.set_route('Form', 'Material Request', "New Material Request")
+        //     });
+        cur_frm.add_custom_button(__("Material Request"), () => {
+            frappe.new_doc('Material Request');
+        });
     },
     company: function () {
        if(cur_frm.doc.company){

@@ -72,6 +72,15 @@ frappe.ui.form.on('Sales Invoice', {
                     }
                 };
             }
+        });
+        frm.set_query('set_warehouse', function() {
+            if (frm.doc.company) {
+                return {
+                    filters: {
+                        company: frm.doc.company
+                    }
+                };
+            }
         });  
     },
     is_pos: function(frm) {

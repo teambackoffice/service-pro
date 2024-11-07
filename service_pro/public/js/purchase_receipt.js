@@ -1,37 +1,3 @@
-frappe.ui.form.on('Purchase Receipt', {
-    onload: function(frm) {
-        frm.set_query('cost_center', function() {
-            return {
-                filters: {
-                    'company': frm.doc.company
-                }
-            };
-        });
-    }
-});
-
-
-
-cur_frm.cscript.customer = function(frm){
-    filter_link_field(cur_frm)
-
-}
-cur_frm.cscript.onload = function(frm){
-    filter_link_field(cur_frm)
-
-}
-
-function filter_link_field(cur_frm) {
-     cur_frm.set_query('reference', 'production', () => {
-        return {
-            filters: [
-                ["docstatus", "=", 1],
-                ["status", "in", ["To Deliver and Bill"]],
-            ]
-        }
-    })
-}
-
 cur_frm.cscript.reference = function (frm,cdt,cdn) {
     var d = locals[cdt][cdn]
     if(d.reference){
@@ -66,3 +32,38 @@ cur_frm.cscript.reference = function (frm,cdt,cdn) {
             })
     }
 }
+
+frappe.ui.form.on('Purchase Receipt', {
+    onload: function(frm) {
+        frm.set_query("provisional_expense_account", "items", (doc, cdt, cdn) => {
+			let row = locals[cdt][cdn];
+			return {
+				filters: {
+					company: frm.doc.company,
+				},
+			};
+		});
+    }
+});
+
+
+
+// cur_frm.cscript.customer = function(frm){
+//     filter_link_field(cur_frm)
+
+// }
+// cur_frm.cscript.onload = function(frm){
+//     filter_link_field(cur_frm)
+
+// }
+
+// function filter_link_field(frm) {
+//      frm.set_query('reference', 'production', () => {
+//         return {
+//             filters: [
+//                 ["docstatus", "=", 1],
+//                 ["status", "in", ["To Deliver and Bill"]],
+//             ]
+//         }
+//     })
+// }

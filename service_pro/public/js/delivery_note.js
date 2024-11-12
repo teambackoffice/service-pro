@@ -1,3 +1,17 @@
+frappe.ui.form.on('Delivery Note', {
+    refresh: function(frm) {
+    frm.set_query('cost_center', function() {
+        if (frm.doc.company) {
+            return {
+                filters: {
+                    company: frm.doc.company
+                }
+            };
+        }
+    });
+}
+});
+
 cur_frm.cscript.customer = function(frm){
     filter_link_field(cur_frm)
 

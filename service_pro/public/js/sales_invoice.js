@@ -68,7 +68,8 @@ frappe.ui.form.on('Sales Invoice', {
             if (frm.doc.company) {
                 return {
                     filters: {
-                        company: frm.doc.company
+                        company: frm.doc.company,
+                        is_group: 0,
                     }
                 };
             }

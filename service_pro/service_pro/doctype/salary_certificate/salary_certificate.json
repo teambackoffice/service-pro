@@ -13,12 +13,14 @@
   "employee_name",
   "iqama_no",
   "passport_no",
+  "iqama_number",
   "column_break_dpru",
   "from_date",
   "to_date",
   "amount",
   "amount_in_words",
   "designation",
+  "seal",
   "section_break_cppb",
   "terms",
   "template",
@@ -122,12 +124,23 @@
    "fieldtype": "Data",
    "label": "Designation",
    "read_only": 1
+  },
+  {
+   "fieldname": "seal",
+   "fieldtype": "Attach Image",
+   "label": "Seal"
+  },
+  {
+   "fetch_from": "employee.custom_iqama_number",
+   "fieldname": "iqama_number",
+   "fieldtype": "Data",
+   "label": "Iqama Number"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-09 08:49:34.622398",
+ "modified": "2024-11-13 09:56:44.946762",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Salary Certificate",

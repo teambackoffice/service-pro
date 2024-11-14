@@ -34,7 +34,10 @@
   "sales_partner_payments_section",
   "sales_partner_payments_details",
   "other_settings_tab",
-  "service_order_form_default_tax"
+  "service_order_form_default_tax",
+  "tab_4_tab",
+  "salary_certificate_section",
+  "salary_seal"
  ],
  "fields": [
   {
@@ -199,12 +202,28 @@
    "fieldtype": "Link",
    "label": "Default Item Tax Template",
    "options": "Tax Template"
+  },
+  {
+   "fieldname": "tab_4_tab",
+   "fieldtype": "Tab Break",
+   "label": "Salary Certificate"
+  },
+  {
+   "fieldname": "salary_certificate_section",
+   "fieldtype": "Section Break",
+   "label": "Salary Certificate"
+  },
+  {
+   "fieldname": "salary_seal",
+   "fieldtype": "Table",
+   "label": "Salary Seal",
+   "options": "Salary Seal"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-10-14 14:31:41.604050",
+ "modified": "2024-11-14 09:54:05.954961",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

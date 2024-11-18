@@ -7,38 +7,43 @@ class InterCompanyMaterialRequest(Document):
 
 def create_material_requests(doc):
     """
-    Create Material Requests grouped by company from the Inter Company Material Request.
+    Create Material Requests grouped by supplier from the Inter Company Material Request.
     """
-    # Group items by company
-    company_items_map = {}
+    supplier_items_map = {}
     for item in doc.items:  # Assuming the child table is named 'items'
-        if item.company not in company_items_map:
-            company_items_map[item.company] = []
-        company_items_map[item.company].append(item)
+        if not item.supplier:
+            frappe.throw(f"Supplier is missing for item {item.item_code}. Please provide a valid supplier.")
+        
+        if item.supplier not in supplier_items_map:
+            supplier_items_map[item.supplier] = []
+        supplier_items_map[item.supplier].append(item)
 
-    # Create Material Request for each company
-    for company, items in company_items_map.items():
+    for supplier, items in supplier_items_map.items():
         material_request = frappe.new_doc("Material Request")
         material_request.update({
-            "company": company,
-            "material_request_type": "Purchase",  # Or set it dynamically if needed
+            "company": doc.company,  # Assuming the parent doc has a 'company' field
+            "internal_supplier": supplier,  # Map supplier to the internal_supplier field
+            "material_request_type": "Purchase",
             "items": []
         })
 
         for item in items:
             material_request.append("items", {
                 "item_code": item.item_code,
+                "warehouse": doc.set_warehouse,
                 "warehouse": item.warehouse,
                 "qty": item.qty,
-                "schedule_date": item.schedule_date or frappe.utils.nowdate()  # Default to today's date if not provided
+                "schedule_date": item.schedule_date or frappe.utils.nowdate() 
             })
 
-        # Save and optionally submit the Material Request
         material_request.save()
-        frappe.msgprint(f"Material Request {material_request.name} created for company {company}")
+        frappe.msgprint(f"Material Request {material_request.name} created for supplier {supplier}")
 
 @frappe.whitelist()
 def get_available_qty(item_code):
+    """
+    Fetch available stock quantity for the given item code.
+    """
     warehouses = frappe.db.sql("""
         SELECT
             sle.company AS company,

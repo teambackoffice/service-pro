@@ -12,6 +12,7 @@
   "title",
   "material_request_type",
   "customer",
+  "company",
   "column_break_2",
   "transaction_date",
   "schedule_date",
@@ -19,6 +20,7 @@
   "scan_barcode",
   "column_break_13",
   "column_break5",
+  "set_warehouse",
   "items_section",
   "items",
   "section_break_v0bu",
@@ -112,7 +114,8 @@
    "fieldname": "schedule_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Required By"
+   "label": "Required By",
+   "reqd": 1
   },
   {
    "fieldname": "amended_from",
@@ -342,12 +345,26 @@
   {
    "fieldname": "section_break_v0bu",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "set_warehouse",
+   "fieldtype": "Link",
+   "label": "Set Target Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-ticket",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-15 10:07:16.515235",
+ "modified": "2024-11-16 14:26:16.577951",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Material Request",

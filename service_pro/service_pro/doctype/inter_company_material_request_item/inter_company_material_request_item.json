@@ -9,7 +9,7 @@
  "field_order": [
   "item_code",
   "item_name",
-  "company",
+  "supplier",
   "col_break1",
   "schedule_date",
   "section_break_4",
@@ -183,8 +183,7 @@
    "label": "Stock UOM",
    "options": "UOM",
    "print_hide": 1,
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
    "depends_on": "eval:parent.material_request_type == \"Material Transfer\"",
@@ -193,18 +192,6 @@
    "ignore_user_permissions": 1,
    "label": "Source Warehouse",
    "options": "Warehouse"
-  },
-  {
-   "columns": 3,
-   "fieldname": "warehouse",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Target Warehouse",
-   "oldfieldname": "warehouse",
-   "oldfieldtype": "Link",
-   "options": "Warehouse",
-   "print_width": "100px",
-   "width": "100px"
   },
   {
    "fieldname": "col_break2",
@@ -487,17 +474,23 @@
    "print_hide": 1
   },
   {
-   "fieldname": "company",
+   "fieldname": "supplier",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Company",
-   "options": "Company"
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Target Warehouse",
+   "options": "Warehouse"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-11-15 10:19:45.968525",
+ "modified": "2024-11-16 12:20:33.361258",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Material Request Item",

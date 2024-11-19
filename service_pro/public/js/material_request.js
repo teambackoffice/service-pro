@@ -1,3 +1,35 @@
+frappe.ui.form.on("Material Request", {
+    refresh: function (frm) {
+        // Remove default buttons under "Create"
+        ["Purchase Order", "Request for Quotation", "Supplier Quotation"].forEach(button => {
+            frm.remove_custom_button(button, "Create");
+        });
+
+        // Add a custom "Purchase Order" button under "Create"
+        frm.add_custom_button(
+            __('Purchase Order'),
+            function () {
+                if (!frm.doc.internal_supplier) {
+                    return;
+                }
+
+                frappe.model.open_mapped_doc({
+                    method: "service_pro.doc_events.material_request.make_purchase_order",
+                    frm: frm,
+                    args: {
+                        supplier: frm.doc.internal_supplier
+                    },
+                    freeze: true,
+                    freeze_message: __('Creating Purchase Order...')
+                });
+            },
+            __("Create")
+        );
+    }
+});
+
+
+
 cur_frm.cscript.customer = function(frm){
     filter_link_field(cur_frm)
 

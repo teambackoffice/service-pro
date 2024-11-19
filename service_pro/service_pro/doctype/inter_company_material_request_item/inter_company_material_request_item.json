@@ -66,7 +66,7 @@
  "fields": [
   {
    "bold": 1,
-   "columns": 3,
+   "columns": 4,
    "fieldname": "item_code",
    "fieldtype": "Link",
    "in_global_search": 1,
@@ -490,7 +490,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-11-16 12:20:33.361258",
+ "modified": "2024-11-19 07:58:06.810563",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Material Request Item",

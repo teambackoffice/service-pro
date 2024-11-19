@@ -1,9 +1,42 @@
+frappe.ui.form.on("Inter Company Material Request", {
+    schedule_date: function(frm) {
+        if (frm.doc.schedule_date) {
+            // Loop through each row in the child table
+            frm.doc.items.forEach(row => {
+                frappe.model.set_value(row.doctype, row.name, "schedule_date", frm.doc.schedule_date);
+            });
+        }
+    },
+    refresh: function(frm) {
+        // Set query for supplier field in child table
+        frm.fields_dict["items"].grid.get_field("supplier").get_query = function(doc, cdt, cdn) {
+            return {
+                filters: {
+                    is_internal_supplier: 1
+                }
+            };
+        };
+
+        // Set query for set_warehouse field in the parent Doctype
+        frm.set_query("set_warehouse", function() {
+            if (frm.doc.company) {
+                return {
+                    filters: {
+                        company: frm.doc.company,
+                        is_group: 0
+                    }
+                };
+            }
+        });
+    }
+});
+
 frappe.ui.form.on("Inter Company Material Request Item", {
     item_code: function(frm, cdt, cdn) {
         let item = frappe.get_doc(cdt, cdn);
 
         if (item.item_code) {
-            // Fetch stock details as in your existing code
+            // Fetch stock details
             frappe.call({
                 method: "service_pro.service_pro.doctype.inter_company_material_request.inter_company_material_request.get_available_qty",
                 args: {
@@ -47,6 +80,7 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                 }
             });
 
+            // Fetch UOM
             frappe.call({
                 method: "frappe.client.get_value",
                 args: {
@@ -57,7 +91,7 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                 callback: function(r) {
                     if (r.message) {
                         frappe.model.set_value(cdt, cdn, "uom", r.message.stock_uom);
-                    } 
+                    }
                 }
             });
         } else {
@@ -65,27 +99,3 @@ frappe.ui.form.on("Inter Company Material Request Item", {
         }
     },
 });
-
-frappe.ui.form.on("Inter Company Material Request", {
-    refresh: function(frm) {
-        frm.fields_dict["items"].grid.get_field("supplier").get_query = function(doc, cdt, cdn) {
-            return {
-                filters: {
-                    is_internal_supplier: 1
-                }
-            };
-        };
-
-        frm.set_query("set_warehouse", function() {
-            if (frm.doc.company) {
-                return {
-                    filters: {
-                        company: frm.doc.company,
-                        is_group: 0
-                    }
-                };
-            }
-        });
-    }
-});
-

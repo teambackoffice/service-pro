@@ -1,11 +1,9 @@
 frappe.ui.form.on("Material Request", {
     refresh: function (frm) {
-        // Remove default buttons under "Create"
         ["Purchase Order", "Request for Quotation", "Supplier Quotation"].forEach(button => {
             frm.remove_custom_button(button, "Create");
         });
 
-        // Add a custom "Purchase Order" button under "Create"
         frm.add_custom_button(
             __('Purchase Order'),
             function () {
@@ -20,11 +18,12 @@ frappe.ui.form.on("Material Request", {
                         supplier: frm.doc.internal_supplier
                     },
                     freeze: true,
-                    freeze_message: __('Creating Purchase Order...')
+                    
                 });
             },
             __("Create")
-        );
+        ).addClass("btn-primary");
+
     }
 });
 

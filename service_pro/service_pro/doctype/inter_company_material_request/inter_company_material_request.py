@@ -24,6 +24,8 @@ def create_material_requests(doc):
             "company": doc.company,  # Assuming the parent doc has a 'company' field
             "internal_supplier": supplier,  # Map supplier to the internal_supplier field
             "material_request_type": "Purchase",
+            "custom_inter_company_material_request": doc.name,
+            "set_warehouse" : doc.set_warehouse,
             "items": []
         })
 

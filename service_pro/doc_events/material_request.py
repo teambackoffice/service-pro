@@ -9,8 +9,7 @@ def make_purchase_order(source_name, target_doc=None, args=None):
             target.supplier = source.internal_supplier
         elif args and args.get("supplier"):
             target.supplier = args.get("supplier")
-        else:
-            frappe.throw(_("Internal Supplier is required to create a Purchase Order."))
+       
 
     # Map fields from Material Request to Purchase Order
     doc = get_mapped_doc(

@@ -1,14 +1,13 @@
 frappe.ui.form.on("Inter Company Material Request", {
     schedule_date: function(frm) {
         if (frm.doc.schedule_date) {
-            // Loop through each row in the child table
             frm.doc.items.forEach(row => {
                 frappe.model.set_value(row.doctype, row.name, "schedule_date", frm.doc.schedule_date);
             });
         }
     },
     refresh: function(frm) {
-        // Set query for supplier field in child table
+        frm.fields_dict.stock_details.$wrapper.empty();
         frm.fields_dict["items"].grid.get_field("supplier").get_query = function(doc, cdt, cdn) {
             return {
                 filters: {
@@ -17,7 +16,6 @@ frappe.ui.form.on("Inter Company Material Request", {
             };
         };
 
-        // Set query for set_warehouse field in the parent Doctype
         frm.set_query("set_warehouse", function() {
             if (frm.doc.company) {
                 return {
@@ -71,8 +69,9 @@ frappe.ui.form.on("Inter Company Material Request Item", {
 
                         frm.fields_dict.stock_details.$wrapper.html(html_content);
                     } else {
-                        frappe.throw({
-                            title: __('Message'),
+                        frm.fields_dict.stock_details.$wrapper.empty();
+                        frappe.msgprint({
+                            title: __('No Stock Data'),
                             message: __('No available stock data found for this item.'),
                             indicator: 'blue'
                         });
@@ -80,17 +79,18 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                 }
             });
 
-            // Fetch UOM
+            // Fetch UOM and Item Name
             frappe.call({
-                method: "frappe.client.get_value",
+                method: "frappe.client.get",
                 args: {
                     doctype: "Item",
-                    fieldname: "stock_uom",
-                    filters: { name: item.item_code }
+                    name: item.item_code
                 },
                 callback: function(r) {
                     if (r.message) {
                         frappe.model.set_value(cdt, cdn, "uom", r.message.stock_uom);
+
+                        frappe.model.set_value(cdt, cdn, "item_name", r.message.item_name);
                     }
                 }
             });
@@ -99,3 +99,4 @@ frappe.ui.form.on("Inter Company Material Request Item", {
         }
     },
 });
+

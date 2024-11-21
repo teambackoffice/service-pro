@@ -1,5 +1,15 @@
 frappe.ui.form.on("Sales Order", {
     refresh: function(frm) {
+        frm.set_query('set_warehouse', function() {
+            if (frm.doc.company) {
+                return {
+                    filters: {
+                        company: frm.doc.company,
+                        is_group: 0,
+                    }
+                };
+            }
+        });
         frm.add_custom_button(
             __("Service Order Form"),
             function() {

@@ -33,6 +33,7 @@ frappe.ui.form.on("Inter Company Material Request", {
                 }
             };
         });
+        
     }
 });
 
@@ -82,6 +83,10 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                             message: __('No available stock data found for this item.'),
                             indicator: 'blue'
                         });
+
+                        // Automatically remove the row if no stock is available
+                        frappe.model.clear_doc(cdt, cdn);
+                        frm.refresh_field("items");
                     }
                 }
             });
@@ -102,25 +107,6 @@ frappe.ui.form.on("Inter Company Material Request Item", {
             });
         } else {
             frm.fields_dict.stock_details.$wrapper.empty();
-        }
-    },
-
-    supplier: function(frm, cdt, cdn) {
-        let item = frappe.get_doc(cdt, cdn);
-        if (item.supplier) {
-            // Fetch supplier name
-            frappe.call({
-                method: "frappe.client.get",
-                args: {
-                    doctype: "Supplier",
-                    name: item.supplier
-                },
-                callback: function(r) {
-                    if (r.message) {
-                        frappe.model.set_value(cdt, cdn, "supplier_name", r.message.supplier_name);
-                    }
-                }
-            });
         }
     }
 });

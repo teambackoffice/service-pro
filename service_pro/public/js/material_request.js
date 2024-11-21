@@ -1,5 +1,15 @@
 frappe.ui.form.on("Material Request", {
     refresh: function (frm) {
+        frm.set_query('set_warehouse', function() {
+            if (frm.doc.company) {
+                return {
+                    filters: {
+                        company: frm.doc.company,
+                        is_group: 0,
+                    }
+                };
+            }
+        });
         // Remove existing buttons under "Create"
         ["Purchase Order", "Request for Quotation", "Supplier Quotation"].forEach(button => {
             frm.remove_custom_button(button, "Create");

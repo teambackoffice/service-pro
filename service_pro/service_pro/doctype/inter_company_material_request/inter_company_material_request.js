@@ -26,6 +26,13 @@ frappe.ui.form.on("Inter Company Material Request", {
                 };
             }
         });
+        frm.set_query("company", function() {
+            return {
+                filters: {
+                    is_group: 0  
+                }
+            };
+        });
     }
 });
 
@@ -89,7 +96,6 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                 callback: function(r) {
                     if (r.message) {
                         frappe.model.set_value(cdt, cdn, "uom", r.message.stock_uom);
-
                         frappe.model.set_value(cdt, cdn, "item_name", r.message.item_name);
                     }
                 }
@@ -98,5 +104,23 @@ frappe.ui.form.on("Inter Company Material Request Item", {
             frm.fields_dict.stock_details.$wrapper.empty();
         }
     },
-});
 
+    supplier: function(frm, cdt, cdn) {
+        let item = frappe.get_doc(cdt, cdn);
+        if (item.supplier) {
+            // Fetch supplier name
+            frappe.call({
+                method: "frappe.client.get",
+                args: {
+                    doctype: "Supplier",
+                    name: item.supplier
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        frappe.model.set_value(cdt, cdn, "supplier_name", r.message.supplier_name);
+                    }
+                }
+            });
+        }
+    }
+});

@@ -477,7 +477,7 @@
    "fieldname": "supplier",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Internal Supplier",
+   "label": "Target Internal Supplier",
    "options": "Supplier"
   },
   {
@@ -490,7 +490,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-11-19 11:53:46.459011",
+ "modified": "2024-11-21 11:41:29.308372",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Material Request Item",

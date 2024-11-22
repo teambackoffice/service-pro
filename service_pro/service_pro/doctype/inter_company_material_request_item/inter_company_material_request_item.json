@@ -10,6 +10,7 @@
   "item_code",
   "item_name",
   "supplier",
+  "supplier_name",
   "col_break1",
   "schedule_date",
   "section_break_4",
@@ -102,7 +103,6 @@
    "columns": 2,
    "fieldname": "schedule_date",
    "fieldtype": "Date",
-   "in_list_view": 1,
    "label": "Required By",
    "oldfieldname": "schedule_date",
    "oldfieldtype": "Date",
@@ -485,12 +485,19 @@
    "fieldtype": "Link",
    "label": "Target Warehouse",
    "options": "Warehouse"
+  },
+  {
+   "fetch_from": "supplier.supplier_name",
+   "fieldname": "supplier_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Supplier Name"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-11-21 11:41:29.308372",
+ "modified": "2024-11-21 15:34:03.423886",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Material Request Item",

@@ -10,7 +10,7 @@ def create_material_requests(doc):
     Create Material Requests grouped by supplier from the Inter Company Material Request.
     """
     supplier_items_map = {}
-    for item in doc.items:  # Assuming the child table is named 'items'
+    for item in doc.items: 
         if not item.supplier:
             frappe.throw(f"Supplier is missing for item {item.item_code}. Please provide a valid supplier.")
         
@@ -19,13 +19,16 @@ def create_material_requests(doc):
         supplier_items_map[item.supplier].append(item)
 
     for supplier, items in supplier_items_map.items():
+        supplier_name = frappe.db.get_value("Supplier", supplier, "supplier_name")
+        
         material_request = frappe.new_doc("Material Request")
         material_request.update({
-            "company": doc.company,  # Assuming the parent doc has a 'company' field
-            "internal_supplier": supplier,  # Map supplier to the internal_supplier field
+            "company": doc.company,  
+            "internal_supplier": supplier, 
+            "custom_internal_supplier_name": supplier_name, 
             "material_request_type": "Purchase",
             "custom_inter_company_material_request": doc.name,
-            "set_warehouse" : doc.set_warehouse,
+            "set_warehouse": doc.set_warehouse,
             "items": []
         })
 
@@ -34,11 +37,12 @@ def create_material_requests(doc):
                 "item_code": item.item_code,
                 "warehouse": doc.set_warehouse,
                 "qty": item.qty,
-                "schedule_date": doc.schedule_date or frappe.utils.nowdate() 
+                "schedule_date": doc.schedule_date or frappe.utils.nowdate()
             })
 
         material_request.save()
-        frappe.msgprint(f"Material Request {material_request.name} created for supplier {supplier}")
+        frappe.msgprint(f"Material Request {material_request.name} created for supplier {supplier} ({supplier_name})")
+
 
 @frappe.whitelist()
 def get_available_qty(item_code):

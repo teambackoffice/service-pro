@@ -478,14 +478,14 @@
    "fetch_from": "supplier.supplier_name",
    "fieldname": "supplier_name",
    "fieldtype": "Data",
-   "label": "Supplier Name",
+   "label": "Internal Supplier Name",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-11-22 08:21:44.569979",
+ "modified": "2024-11-22 08:49:44.876311",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Material Request Item",

@@ -34,7 +34,7 @@ def create_material_requests(doc):
                 "item_code": item.item_code,
                 "warehouse": doc.set_warehouse,
                 "qty": item.qty,
-                "schedule_date": item.schedule_date or frappe.utils.nowdate() 
+                "schedule_date": doc.schedule_date or frappe.utils.nowdate() 
             })
 
         material_request.save()

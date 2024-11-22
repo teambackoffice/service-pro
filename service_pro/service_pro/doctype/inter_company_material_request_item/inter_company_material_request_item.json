@@ -12,7 +12,6 @@
   "supplier",
   "supplier_name",
   "col_break1",
-  "schedule_date",
   "section_break_4",
   "description",
   "column_break_12",
@@ -96,19 +95,6 @@
   {
    "fieldname": "col_break1",
    "fieldtype": "Column Break"
-  },
-  {
-   "allow_on_submit": 1,
-   "bold": 1,
-   "columns": 2,
-   "fieldname": "schedule_date",
-   "fieldtype": "Date",
-   "label": "Required By",
-   "oldfieldname": "schedule_date",
-   "oldfieldtype": "Date",
-   "print_width": "100px",
-   "reqd": 1,
-   "width": "100px"
   },
   {
    "collapsible": 1,
@@ -474,6 +460,7 @@
    "print_hide": 1
   },
   {
+   "columns": 2,
    "fieldname": "supplier",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -487,17 +474,18 @@
    "options": "Warehouse"
   },
   {
+   "columns": 2,
    "fetch_from": "supplier.supplier_name",
    "fieldname": "supplier_name",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Supplier Name"
+   "label": "Supplier Name",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-11-21 15:34:03.423886",
+ "modified": "2024-11-22 08:21:44.569979",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Material Request Item",

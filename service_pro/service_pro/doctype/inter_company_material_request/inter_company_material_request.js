@@ -77,16 +77,28 @@ frappe.ui.form.on("Inter Company Material Request Item", {
 
                         frm.fields_dict.stock_details.$wrapper.html(html_content);
                     } else {
-                        frm.fields_dict.stock_details.$wrapper.empty();
-                        frappe.msgprint({
-                            title: __('No Stock Data'),
-                            message: __("insufficient Stock: {0}", [item.item_code]),
-                            indicator: 'red'
-                        });
+                        // Fetch Item Name before showing the message
+                        frappe.call({
+                            method: "frappe.client.get",
+                            args: {
+                                doctype: "Item",
+                                name: item.item_code
+                            },
+                            callback: function(r) {
+                                let item_name = r.message?.item_name || "Unknown Item";
 
-                        // Automatically remove the row if no stock is available
-                        frappe.model.clear_doc(cdt, cdn);
-                        frm.refresh_field("items");
+                                frm.fields_dict.stock_details.$wrapper.empty();
+                                frappe.msgprint({
+                                    title: __('No Stock Data'),
+                                    message: __("Insufficient Stock for {0} - {1}", [item_name, item.item_code]),
+                                    indicator: 'red'
+                                });
+
+                                // Automatically remove the row if no stock is available
+                                frappe.model.clear_doc(cdt, cdn);
+                                frm.refresh_field("items");
+                            }
+                        });
                     }
                 }
             });

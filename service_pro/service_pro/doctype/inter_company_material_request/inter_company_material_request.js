@@ -80,8 +80,8 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                         frm.fields_dict.stock_details.$wrapper.empty();
                         frappe.msgprint({
                             title: __('No Stock Data'),
-                            message: __('No available stock data found for this item.'),
-                            indicator: 'blue'
+                            message: __("insufficient Stock: {0}", [item.item_code]),
+                            indicator: 'red'
                         });
 
                         // Automatically remove the row if no stock is available

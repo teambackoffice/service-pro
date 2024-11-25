@@ -150,3 +150,21 @@ def get_rate(item_code, warehouse, based_on,price_list):
 		rate = item_price[0].valuation_rate if len(item_price) > 0 else 0
 
 	return rate, balance
+
+@frappe.whitelist()
+def calculate_cost(doc, method):
+    total_hours = 0
+    total_cost = 0
+    for row in doc.workshop_details:
+        if row.machine_name:
+            cost_rate = frappe.db.get_value("Machine", row.machine_name, "cost_rate") or 0
+            row.cost_amount = cost_rate * row.hrs
+        total_hours += row.hrs or 0
+        total_cost += row.cost_amount or 0
+    
+    doc.total_machine_hours = total_hours
+    doc.total_cost_amount = total_cost
+
+
+
+

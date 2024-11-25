@@ -313,3 +313,109 @@ function set_rate_and_amount(cur_frm) {
     cur_frm.refresh_field("amount")
     cur_frm.refresh_field("rate")
 }
+
+
+
+
+frappe.ui.form.on('Workshop Details', {
+    from_time: function (frm, cdt, cdn) {
+        update_to_time_and_hours(frm, cdt, cdn);
+        calculate_totals(frm);
+    },
+    to_time: function (frm, cdt, cdn) {
+        update_hours_based_on_times(frm, cdt, cdn);
+        calculate_totals(frm);
+    },
+    hrs: function (frm, cdt, cdn) {
+        update_cost_amount(frm, cdt, cdn);
+        calculate_totals(frm);
+    },
+    machine_name: function (frm, cdt, cdn) {
+        update_cost_amount(frm, cdt, cdn);
+        calculate_totals(frm);
+    },
+    cost_amount: function (frm, cdt, cdn) {
+        calculate_totals(frm);
+    },
+    workshop_details_remove: function (frm) {
+        calculate_totals(frm);
+    }
+});
+
+const validate_time_format = (time, fieldName) => {
+    const formattedTime = moment(time, "YYYY-MM-DD HH:mm:ss");
+    if (!formattedTime.isValid()) {
+        frappe.msgprint(__(`Invalid datetime format in "${fieldName}". Please use "YYYY-MM-DD HH:mm:ss" format.`));
+        return false;
+    }
+    return formattedTime;
+};
+
+const update_to_time_and_hours = (frm, cdt, cdn) => {
+    const child = locals[cdt][cdn];
+    if (!child.from_time || !child.hrs) return;
+
+    const fromTime = validate_time_format(child.from_time, "From Time");
+    if (!fromTime) return;
+
+    const toTime = moment(fromTime).add(child.hrs, "hours").format("YYYY-MM-DD HH:mm:ss");
+    frappe.model.set_value(cdt, cdn, "to_time", toTime);
+
+    update_cost_amount(frm, cdt, cdn);
+};
+
+const update_hours_based_on_times = (frm, cdt, cdn) => {
+    const child = locals[cdt][cdn];
+    if (!child.from_time || !child.to_time) {
+        frappe.msgprint(__('Both "From Time" and "To Time" must be set to calculate hours.'));
+        return;
+    }
+
+    const fromTime = validate_time_format(child.from_time, "From Time");
+    const toTime = validate_time_format(child.to_time, "To Time");
+
+    if (!fromTime || !toTime) return;
+
+    const calculatedHours = moment(toTime).diff(moment(fromTime), "seconds") / 3600;
+    frappe.model.set_value(cdt, cdn, "hrs", calculatedHours.toFixed(2));
+
+    update_cost_amount(frm, cdt, cdn);
+};
+
+const update_cost_amount = (frm, cdt, cdn) => {
+    const row = locals[cdt][cdn];
+    if (row.machine_name && row.hrs) {
+        frappe.call({
+            method: "frappe.client.get_value",
+            args: {
+                doctype: "Machine",
+                filters: { name: row.machine_name },
+                fieldname: "cost_rate"
+            },
+            callback: function (r) {
+                if (r.message) {
+                    const costRate = r.message.cost_rate || 0;
+                    const costAmount = costRate * row.hrs;
+
+                    frappe.model.set_value(cdt, cdn, "cost_rate", costRate);
+                    frappe.model.set_value(cdt, cdn, "cost_amount", costAmount);
+                }
+            }
+        });
+    } else {
+        frappe.model.set_value(cdt, cdn, "cost_amount", 0);
+    }
+};
+
+const calculate_totals = (frm) => {
+    let totalHours = 0;
+    let totalCost = 0;
+
+    (frm.doc.workshop_details || []).forEach(row => {
+        totalHours += parseFloat(row.hrs || 0);
+        totalCost += parseFloat(row.cost_amount || 0);
+    });
+
+    frm.set_value('total_machine_hours', totalHours.toFixed(2));
+    frm.set_value('total_cost_amount', totalCost.toFixed(2));
+};

@@ -50,7 +50,11 @@
   "update_available_stock",
   "raw_material_total",
   "amended_from",
-  "letter_head"
+  "letter_head",
+  "mechines_tab",
+  "workshop_details",
+  "total_machine_hours",
+  "total_cost_amount"
  ],
  "fields": [
   {
@@ -314,11 +318,34 @@
   {
    "fieldname": "column_break_cdqc",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mechines_tab",
+   "fieldtype": "Tab Break",
+   "label": "Mechines"
+  },
+  {
+   "fieldname": "workshop_details",
+   "fieldtype": "Table",
+   "label": "Workshop Details",
+   "options": "Workshop Details"
+  },
+  {
+   "fieldname": "total_machine_hours",
+   "fieldtype": "Data",
+   "label": "Total Machine Hours",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_cost_amount",
+   "fieldtype": "Data",
+   "label": "Total Cost Amount",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-25 07:40:51.548826",
+ "modified": "2024-11-25 12:03:48.781804",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

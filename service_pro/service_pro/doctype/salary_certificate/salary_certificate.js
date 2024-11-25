@@ -33,24 +33,8 @@ frappe.ui.form.on("Salary Certificate", {
                 }
             });
         }
+        total_amount(frm)
     },
-    // terms: function(frm) {
-    //     if (frm.doc.terms) {
-    //         frappe.call({
-    //             method: 'frappe.client.get',
-    //             args: {
-    //                 doctype: 'Terms and Conditions',
-    //                 name: frm.doc.terms,
-    //             },
-    //             callback: function(r) {console.log(r)
-    //                 if (r.message) {
-    //                     // Set the fetched template content in the Text Editor field
-    //                     frm.set_value('template', r.message.terms_and_conditions_details);
-    //                 } 
-    //             }
-    //         });
-    //     } 
-    // },
     terms: function (frm) {
 		erpnext.utils.get_terms(frm.doc.terms, frm.doc, function (r) {
 			if (!r.exc) {console.log(r.message)
@@ -67,13 +51,27 @@ frappe.ui.form.on("Salary Certificate", {
                 },
                 callback: function(r) {
                     if (r.message) {
-                        console.log("Amount in words:", r.message);
-                        // Use r.message as needed, for example:
                         frm.set_value("amount_in_words", r.message);
                     }
                 }
             });
                       
         }
-    }
+    },
+    gosi_basic_salary: function(frm) {
+        total_amount(frm)
+    },
+    gosi_housing_allowance: function(frm) {
+        total_amount(frm)
+    },
+    gosi_other_allowance: function(frm) {
+        total_amount(frm)
+    },
 });
+function total_amount(frm){
+var total = 0;
+
+total = frm.doc.gosi_basic_salary + frm.doc.gosi_housing_allowance + frm.doc.gosi_other_allowance
+
+frm.set_value("amount",total );
+}

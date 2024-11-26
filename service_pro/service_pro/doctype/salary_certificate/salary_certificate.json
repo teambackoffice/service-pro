@@ -17,6 +17,9 @@
   "column_break_dpru",
   "from_date",
   "to_date",
+  "gosi_basic_salary",
+  "gosi_housing_allowance",
+  "gosi_other_allowance",
   "amount",
   "amount_in_words",
   "designation",
@@ -129,12 +132,30 @@
    "fieldname": "iqama_number",
    "fieldtype": "Data",
    "label": "Iqama Number"
+  },
+  {
+   "fetch_from": "employee.custom_gosi_basic_salary",
+   "fieldname": "gosi_basic_salary",
+   "fieldtype": "Currency",
+   "label": "GOSI Basic Salary"
+  },
+  {
+   "fetch_from": "employee.custom_gosi_housing_allowance",
+   "fieldname": "gosi_housing_allowance",
+   "fieldtype": "Currency",
+   "label": "GOSI Housing Allowance"
+  },
+  {
+   "fetch_from": "employee.custom_gosi_other_allowance",
+   "fieldname": "gosi_other_allowance",
+   "fieldtype": "Currency",
+   "label": "GOSI Other Allowance"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-13 14:50:05.192854",
+ "modified": "2024-11-25 18:10:01.386013",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Salary Certificate",

@@ -101,7 +101,6 @@
    "link_to": "Stock Balance",
    "link_type": "Report",
    "onboard": 0,
-   "report_ref_doctype": "Stock Ledger Entry",
    "type": "Link"
   },
   {
@@ -112,7 +111,6 @@
    "link_to": "Stock Ledger",
    "link_type": "Report",
    "onboard": 0,
-   "report_ref_doctype": "Stock Ledger Entry",
    "type": "Link"
   },
   {
@@ -123,7 +121,6 @@
    "link_to": "Stock List Report",
    "link_type": "Report",
    "onboard": 0,
-   "report_ref_doctype": "Item",
    "type": "Link"
   },
   {
@@ -134,7 +131,6 @@
    "link_to": "Statement of Account",
    "link_type": "Report",
    "onboard": 0,
-   "report_ref_doctype": "GL Entry",
    "type": "Link"
   },
   {
@@ -145,7 +141,6 @@
    "link_to": "Simple EOD",
    "link_type": "Report",
    "onboard": 0,
-   "report_ref_doctype": "GL Entry",
    "type": "Link"
   },
   {
@@ -156,7 +151,6 @@
    "link_to": "PC Report",
    "link_type": "Report",
    "onboard": 0,
-   "report_ref_doctype": "GL Entry",
    "type": "Link"
   },
   {
@@ -230,6 +224,16 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Project",
+   "link_count": 0,
+   "link_to": "Project",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Service Receipt Note",
    "link_count": 0,
    "link_to": "Service Receipt Note",
@@ -260,16 +264,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Production",
-   "link_count": 0,
-   "link_to": "Production",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Quotation",
    "link_count": 0,
    "link_to": "Quotation",
@@ -290,9 +284,9 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Sales Invoice",
+   "label": "Production",
    "link_count": 0,
-   "link_to": "Sales Invoice",
+   "link_to": "Production",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -303,6 +297,16 @@
    "label": "Delivery Note",
    "link_count": 0,
    "link_to": "Delivery Note",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Invoice",
+   "link_count": 0,
+   "link_to": "Sales Invoice",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -585,7 +589,7 @@
    "type": "Link"
   }
  ],
- "modified": "2024-10-02 09:01:09.742616",
+ "modified": "2024-11-28 07:42:13.326018",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Service Pro",

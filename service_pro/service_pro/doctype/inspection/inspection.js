@@ -13,6 +13,19 @@ frappe.ui.form.on('Inspection', {
 
     },
     refresh: function (frm) {
+        if (cur_frm.doc.docstatus) {
+            frm.add_custom_button(__('Estimation'), () => {
+                frappe.new_doc('Estimation', {
+                    inspection: frm.doc.name,
+                    customer: frm.doc.customer,
+                    customer_name: frm.doc.customer_name,
+                    item_code: frm.doc.item_code_est
+                }).then(new_doc => {
+                    frappe.set_route('Form', 'Estimation', new_doc.name);
+                });
+            }, __('Create'));
+        }
+
         cur_frm.set_query('service_receipt_note', () => {
             return {
                 filters: [

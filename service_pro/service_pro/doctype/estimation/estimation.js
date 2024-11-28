@@ -63,6 +63,14 @@ frappe.ui.form.on('Estimation', {
 
     },
     refresh: function (frm) {
+        frm.add_custom_button(__('Quotation'), function () {
+            
+            frappe.model.open_mapped_doc({
+                method: "service_pro.service_pro.doctype.estimation.estimation.create_production",
+                frm: frm,
+                
+            });
+        }, __("Create"));
 
          cur_frm.set_query('receipt_note', () => {
             return {
@@ -328,13 +336,21 @@ frappe.ui.form.on('Workshop Details', {
     },
     hrs: function (frm, cdt, cdn) {
         update_cost_amount(frm, cdt, cdn);
+        update_worker_cost_amount(frm, cdt, cdn);
         calculate_totals(frm);
     },
     machine_name: function (frm, cdt, cdn) {
         update_cost_amount(frm, cdt, cdn);
         calculate_totals(frm);
     },
-    cost_amount: function (frm, cdt, cdn) {
+    worker: function (frm, cdt, cdn) {
+        update_worker_cost_amount(frm, cdt, cdn);
+        calculate_totals(frm);
+    },
+    total_machine_cost: function (frm, cdt, cdn) {
+        calculate_totals(frm);
+    },
+    total_worker_cost: function (frm, cdt, cdn) {
         calculate_totals(frm);
     },
     workshop_details_remove: function (frm) {
@@ -362,6 +378,7 @@ const update_to_time_and_hours = (frm, cdt, cdn) => {
     frappe.model.set_value(cdt, cdn, "to_time", toTime);
 
     update_cost_amount(frm, cdt, cdn);
+    update_worker_cost_amount(frm, cdt, cdn);
 };
 
 const update_hours_based_on_times = (frm, cdt, cdn) => {
@@ -371,6 +388,7 @@ const update_hours_based_on_times = (frm, cdt, cdn) => {
         return;
     }
 
+    
     const fromTime = validate_time_format(child.from_time, "From Time");
     const toTime = validate_time_format(child.to_time, "To Time");
 
@@ -380,6 +398,16 @@ const update_hours_based_on_times = (frm, cdt, cdn) => {
     frappe.model.set_value(cdt, cdn, "hrs", calculatedHours.toFixed(2));
 
     update_cost_amount(frm, cdt, cdn);
+    update_worker_cost_amount(frm, cdt, cdn);
+};
+
+const update_cost_amount_field = (frm, cdt, cdn) => {
+    const row = locals[cdt][cdn];
+    const totalMachineCost = parseFloat(row.total_machine_cost || 0);
+    const totalWorkerCost = parseFloat(row.total_worker_cost || 0);
+
+    const costAmount = totalMachineCost + totalWorkerCost;
+    frappe.model.set_value(cdt, cdn, "cost_amount", costAmount);
 };
 
 const update_cost_amount = (frm, cdt, cdn) => {
@@ -398,24 +426,58 @@ const update_cost_amount = (frm, cdt, cdn) => {
                     const costAmount = costRate * row.hrs;
 
                     frappe.model.set_value(cdt, cdn, "cost_rate", costRate);
-                    frappe.model.set_value(cdt, cdn, "cost_amount", costAmount);
+                    frappe.model.set_value(cdt, cdn, "total_machine_cost", costAmount);
+                    update_cost_amount_field(frm, cdt, cdn);
                 }
             }
         });
     } else {
-        frappe.model.set_value(cdt, cdn, "cost_amount", 0);
+        frappe.model.set_value(cdt, cdn, "total_machine_cost", 0);
+        update_cost_amount_field(frm, cdt, cdn);
+    }
+};
+
+const update_worker_cost_amount = (frm, cdt, cdn) => {
+    const row = locals[cdt][cdn];
+    if (row.worker && row.hrs) {
+        frappe.call({
+            method: "frappe.client.get_value",
+            args: {
+                doctype: "Worker",
+                filters: { name: row.worker },
+                fieldname: "worker_per_hour_cost"
+            },
+            callback: function (r) {
+                if (r.message) {
+                    const workerRate = r.message.worker_per_hour_cost || 0;
+                    const workerCostAmount = workerRate * row.hrs;
+
+                    frappe.model.set_value(cdt, cdn, "worker_per_hour_cost", workerRate);
+                    frappe.model.set_value(cdt, cdn, "total_worker_cost", workerCostAmount);
+                    update_cost_amount_field(frm, cdt, cdn);
+                }
+            }
+        });
+    } else {
+        frappe.model.set_value(cdt, cdn, "total_worker_cost", 0);
+        update_cost_amount_field(frm, cdt, cdn);
     }
 };
 
 const calculate_totals = (frm) => {
     let totalHours = 0;
-    let totalCost = 0;
+    let totalMachineCost = 0;
+    let totalWorkerCost = 0;
+    let totalCostAmount = 0;
 
     (frm.doc.workshop_details || []).forEach(row => {
         totalHours += parseFloat(row.hrs || 0);
-        totalCost += parseFloat(row.cost_amount || 0);
+        totalMachineCost += parseFloat(row.total_machine_cost || 0);
+        totalWorkerCost += parseFloat(row.total_worker_cost || 0);
+        totalCostAmount += parseFloat(row.cost_amount || 0); // Add cost_amount field to the total
     });
 
     frm.set_value('total_machine_hours', totalHours.toFixed(2));
-    frm.set_value('total_cost_amount', totalCost.toFixed(2));
+    frm.set_value('total_cost_amount', totalCostAmount.toFixed(2)); // Set the sum of cost_amount field
 };
+

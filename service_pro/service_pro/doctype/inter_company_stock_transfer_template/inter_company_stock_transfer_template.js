@@ -19,7 +19,7 @@ frappe.ui.form.on("Inter Company Stock Transfer Template", {
                 return {
                     filters: {
                         company: frm.doc.from_company,
-                        root_type: "Asset",
+                        
                         is_group: 0
                     }
                 };
@@ -49,7 +49,7 @@ frappe.ui.form.on("Inter Company Stock Transfer Template", {
                 return {
                     filters: {
                         company: frm.doc.to_company,
-                        root_type: "Asset",
+                      
                         is_group: 0
                     }
                 };

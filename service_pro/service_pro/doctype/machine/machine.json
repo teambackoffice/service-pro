@@ -7,7 +7,9 @@
  "engine": "InnoDB",
  "field_order": [
   "machine_name",
-  "cost_rate"
+  "cost_rate",
+  "column_break_fakv",
+  "company"
  ],
  "fields": [
   {
@@ -20,11 +22,21 @@
    "fieldname": "cost_rate",
    "fieldtype": "Currency",
    "label": "Machine Per Hour Cost"
+  },
+  {
+   "fieldname": "column_break_fakv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-27 08:30:18.170327",
+ "modified": "2024-11-28 12:52:58.887417",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Machine",

@@ -10,6 +10,7 @@ frappe.ui.form.on('Service Receipt Note', {
                     service_receipt_note: frm.doc.name,
                     customer: frm.doc.customer,
                     customer_name: frm.doc.customer_name,
+                    company: frm.doc.company,
                 });
             }, __('Create'));
         }

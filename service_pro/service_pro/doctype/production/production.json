@@ -14,6 +14,7 @@
   "address",
   "address_name",
   "customer_number",
+  "sales_order",
   "column_break_4",
   "type",
   "series",
@@ -556,12 +557,20 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "label": "Sales Order",
+   "options": "Sales Order",
+   "read_only": 1,
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-10-17 13:12:46.426557",
+ "modified": "2024-11-28 08:56:42.072412",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

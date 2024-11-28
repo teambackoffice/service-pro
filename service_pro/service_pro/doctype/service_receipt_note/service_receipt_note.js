@@ -4,6 +4,15 @@
 frappe.ui.form.on('Service Receipt Note', {
 
 	refresh: function(frm) {
+        if (cur_frm.doc.docstatus) {
+            frm.add_custom_button(__('Inspection'), () => {
+                frappe.new_doc('Inspection', {
+                    service_receipt_note: frm.doc.name,
+                    customer: frm.doc.customer,
+                    customer_name: frm.doc.customer_name,
+                });
+            }, __('Create'));
+        }
 cur_frm.set_query("customer", () => {
             return {
                 filters: {

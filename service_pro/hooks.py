@@ -42,6 +42,7 @@ doctype_js = {
     "Landed Cost Voucher": "public/js/landed_cost_voucher.js",
     "Item": "public/js/item.js",
     "Purchase Invoice" : "public/js/purchase_invoice.js",
+    "Project" : "public/js/project.js",
     "Purchase Order" : "public/js/purchase_order.js",
     "Supplier Quotation" : "public/js/supplier_quotation.js",
 }

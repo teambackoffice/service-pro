@@ -4,6 +4,8 @@
 
 from __future__ import unicode_literals
 import frappe
+from frappe.model.mapper import get_mapped_doc
+from frappe import _
 from frappe.model.document import Document
 from erpnext.stock.stock_ledger import get_previous_sle
 from frappe.utils import cint, flt
@@ -154,16 +156,62 @@ def get_rate(item_code, warehouse, based_on,price_list):
 @frappe.whitelist()
 def calculate_cost(doc, method):
     total_hours = 0
-    total_cost = 0
+    total_machine_cost = 0
+    total_worker_cost = 0
+
     for row in doc.workshop_details:
+        # Machine cost calculation
         if row.machine_name:
             cost_rate = frappe.db.get_value("Machine", row.machine_name, "cost_rate") or 0
-            row.cost_amount = cost_rate * row.hrs
+            row.total_machine_cost = cost_rate * row.hrs
+
+        # Worker cost calculation
+        if row.worker:
+            worker_rate = frappe.db.get_value("Worker", row.worker, "worker_per_hour_cost") or 0
+            row.total_worker_cost = worker_rate * row.hrs
+
+        # Cost Amount = total_machine_cost + total_worker_cost
+        row.cost_amount = (row.total_machine_cost or 0) + (row.total_worker_cost or 0)
+
+        # Update totals
         total_hours += row.hrs or 0
-        total_cost += row.cost_amount or 0
-    
+        total_machine_cost += row.total_machine_cost or 0
+        total_worker_cost += row.total_worker_cost or 0
+
     doc.total_machine_hours = total_hours
-    doc.total_cost_amount = total_cost
+    doc.total_cost_amount = total_machine_cost
+  
+
+
+@frappe.whitelist()
+def create_production(source_name, target_doc=None):
+    
+
+    doclist = get_mapped_doc(
+    "Estimation",
+    source_name,
+    {
+        "Estimation": {
+            "doctype": "Quotation",
+            "field_map": {
+				"name": "custom_estimation", 
+				"customer": "party_name",
+            }
+        },
+        # "Scoop of Work": {
+        #     "doctype": "Scoop of Work",
+        #     "field_map": {
+            
+        #     }
+        #     }
+
+    },
+    target_doc
+    )
+
+    return doclist
+
+
 
 
 

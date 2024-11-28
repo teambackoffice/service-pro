@@ -10,6 +10,7 @@
   "customer",
   "customer_name",
   "contact_person",
+  "inspection",
   "column_break_7",
   "status",
   "receipt_note",
@@ -341,11 +342,19 @@
    "fieldtype": "Data",
    "label": "Total Cost Amount",
    "read_only": 1
+  },
+  {
+   "fieldname": "inspection",
+   "fieldtype": "Link",
+   "label": "Inspection",
+   "options": "Inspection",
+   "read_only": 1,
+   "reqd": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-25 12:03:48.781804",
+ "modified": "2024-11-27 15:28:03.763032",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

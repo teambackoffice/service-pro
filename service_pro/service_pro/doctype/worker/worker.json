@@ -1,0 +1,76 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:worker_name",
+ "creation": "2024-11-27 08:03:17.233404",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "name_and_employee_id_section",
+  "worker_name",
+  "worker_per_hour_cost",
+  "column_break_yjgl",
+  "employee",
+  "employee_name"
+ ],
+ "fields": [
+  {
+   "fieldname": "name_and_employee_id_section",
+   "fieldtype": "Section Break",
+   "label": "Name and Employee ID"
+  },
+  {
+   "fieldname": "worker_name",
+   "fieldtype": "Data",
+   "label": "Worker Name",
+   "unique": 1
+  },
+  {
+   "fieldname": "worker_per_hour_cost",
+   "fieldtype": "Data",
+   "label": "Worker Per Hour Cost"
+  },
+  {
+   "fieldname": "column_break_yjgl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-27 08:26:13.241664",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Worker",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "employee"
+}

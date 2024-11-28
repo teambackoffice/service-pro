@@ -189,16 +189,16 @@ fixtures = [
             ]
         ]
     },
-    {
-        "doctype": "Property Setter",
-        "filters": [
-            [
-                "module",
-                "in",
-                "Service Pro"
-            ]
-        ]
-    }
+    # {
+    #     "doctype": "Property Setter",
+    #     "filters": [
+    #         [
+    #             "module",
+    #             "in",
+    #             "Service Pro"
+    #         ]
+    #     ]
+    # }
 ]
 
 report_override_html = {

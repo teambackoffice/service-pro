@@ -21,7 +21,7 @@ class ServiceReceiptNote(Document):
 					"customer_name": self.customer_name,
 					"customer_reference": self.customer_ref,
 					"item_code": i.materials,
-					"company": i.company,
+					"company": getattr(i, 'company', self.company),
 					"item_name": i.item_name,
 					"qty": 1,
 					"service_receipt_note": self.name
@@ -144,7 +144,6 @@ def make_quotation(source_name, target_doc=None, skip_item_mapping=False):
 		"field_map": {
 			"materials": "item_code",
 			"qty": "qty",
-			"company": "company",
 		},
 
 	}

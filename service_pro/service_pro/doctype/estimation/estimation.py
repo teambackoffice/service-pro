@@ -157,7 +157,7 @@ def get_rate(item_code, warehouse, based_on,price_list):
 def calculate_cost(doc, method):
     total_hours = 0
     total_machine_cost = 0
-    total_worker_cost = 0
+    total_worker_hours = 0
 
     for row in doc.workshop_details:
         if row.machine_name:
@@ -167,16 +167,17 @@ def calculate_cost(doc, method):
         if row.worker:
             worker_rate = frappe.db.get_value("Worker", row.worker, "worker_per_hour_cost") or 0
             row.total_worker_cost = worker_rate * row.hrs
+            total_worker_hours += row.hrs or 0  
 
         row.cost_amount = (row.total_machine_cost or 0) + (row.total_worker_cost or 0)
 
         total_hours += row.hrs or 0
         total_machine_cost += row.total_machine_cost or 0
-        total_worker_cost += row.total_worker_cost or 0
 
     doc.total_machine_hours = total_hours
     doc.total_cost_amount = total_machine_cost
-    doc.total_worker_amount = total_worker_cost
+    doc.total_worker_hours = total_worker_hours  
+
 
   
 

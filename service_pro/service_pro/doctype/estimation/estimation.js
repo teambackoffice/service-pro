@@ -64,59 +64,75 @@ frappe.ui.form.on('Estimation', {
     },
     refresh: function (frm) {
         frm.add_custom_button(__('Quotation'), function () {
-            
             frappe.model.open_mapped_doc({
                 method: "service_pro.service_pro.doctype.estimation.estimation.create_production",
                 frm: frm,
-                
             });
         }, __("Create"));
 
-         cur_frm.set_query('receipt_note', () => {
+        cur_frm.set_query('receipt_note', () => {
             return {
                 filters: [
                     ["docstatus", "=", 1],
-                    ["status", "in", ["To Production","To Estimation"]]
+                    ["status", "in", ["To Production", "To Estimation"]]
                 ]
-            }
-        })
-        if(cur_frm.doc.docstatus && !(["Closed", "Completed"].includes(cur_frm.doc.status))){
-             frm.add_custom_button(__("Close"), () => {
-                    cur_frm.call({
-                        doc: cur_frm.doc,
-                        method: 'change_status',
-                        args: {
-                            status: "Closed"
-                        },
-                        freeze: true,
-                        freeze_message: "Closing...",
-                        callback: () => {
-                        cur_frm.reload_doc()
-                        }
-                })
-            })
-        } else if (cur_frm.doc.status === "Closed"){
-            frm.add_custom_button(__("Open"), () => {
-                    cur_frm.call({
-                        doc: cur_frm.doc,
-                        method: 'change_status',
-                        args: {
-                            status: "To Production"
-                        },
-                        freeze: true,
-                        freeze_message: "Opening...",
-                        callback: () => {
-                        cur_frm.reload_doc()
-                        }
-                })
-            })
+            };
+        });
+
+        if (cur_frm.doc.docstatus && !(["Closed", "Completed"].includes(cur_frm.doc.status))) {
+            frm.add_custom_button(__("Close"), () => {
+                cur_frm.call({
+                    doc: cur_frm.doc,
+                    method: 'change_status',
+                    args: {
+                        status: "Closed"
+                    },
+                    freeze: true,
+                    freeze_message: "Closing...",
+                    callback: () => {
+                        cur_frm.reload_doc();
+                    }
+                });
+            });
         }
-        //  cur_frm.add_custom_button(__("Material Request"), () => {
-        //          frappe.set_route('Form', 'Material Request', "New Material Request")
-        //     });
+        else if (cur_frm.doc.status === "Closed") {
+            frm.add_custom_button(__("Open"), () => {
+                cur_frm.call({
+                    doc: cur_frm.doc,
+                    method: 'change_status',
+                    args: {
+                        status: "To Production"
+                    },
+                    freeze: true,
+                    freeze_message: "Opening...",
+                    callback: () => {
+                        cur_frm.reload_doc();
+                    }
+                });
+            });
+        }
+
         cur_frm.add_custom_button(__("Material Request"), () => {
             frappe.new_doc('Material Request');
         });
+
+        frm.fields_dict['workshop_details'].grid.get_field('machine_name').get_query = function (doc, cdt, cdn) {
+            return {
+                filters: {
+                    company: frm.doc.company
+                }
+            };
+        };
+    },
+
+    company: function (frm) {
+        frm.fields_dict['workshop_details'].grid.get_field('machine_name').get_query = function (doc, cdt, cdn) {
+            return {
+                filters: {
+                    company: frm.doc.company
+                }
+            };
+        };
     },
     company: function () {
        if(cur_frm.doc.company){
@@ -467,18 +483,19 @@ const update_worker_cost_amount = (frm, cdt, cdn) => {
 const calculate_totals = (frm) => {
     let totalHours = 0;
     let totalMachineCost = 0;
-    let totalWorkerCost = 0;
+    let totalWorkerHours = 0;
     let totalCostAmount = 0;
 
     (frm.doc.workshop_details || []).forEach(row => {
         totalHours += parseFloat(row.hrs || 0);
         totalMachineCost += parseFloat(row.total_machine_cost || 0);
-        totalWorkerCost += parseFloat(row.total_worker_cost || 0);
+        totalWorkerHours += parseFloat(row.hrs || 0);  
         totalCostAmount += parseFloat(row.cost_amount || 0); 
     });
 
     frm.set_value('total_machine_hours', totalHours.toFixed(2));
     frm.set_value('total_cost_amount', totalCostAmount.toFixed(2));
-    frm.set_value('total_worker_amount', totalWorkerCost.toFixed(2));
+    frm.set_value('total_worker_hours', totalWorkerHours.toFixed(2));  
 };
+
 

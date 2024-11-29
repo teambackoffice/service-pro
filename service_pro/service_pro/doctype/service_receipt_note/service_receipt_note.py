@@ -21,6 +21,7 @@ class ServiceReceiptNote(Document):
 					"customer_name": self.customer_name,
 					"customer_reference": self.customer_ref,
 					"item_code": i.materials,
+					"company": i.company,
 					"item_name": i.item_name,
 					"qty": 1,
 					"service_receipt_note": self.name

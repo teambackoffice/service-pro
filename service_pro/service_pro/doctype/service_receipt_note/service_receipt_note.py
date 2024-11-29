@@ -144,6 +144,7 @@ def make_quotation(source_name, target_doc=None, skip_item_mapping=False):
 		"field_map": {
 			"materials": "item_code",
 			"qty": "qty",
+			"company": "company",
 		},
 
 	}

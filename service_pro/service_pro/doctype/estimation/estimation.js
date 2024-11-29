@@ -474,10 +474,11 @@ const calculate_totals = (frm) => {
         totalHours += parseFloat(row.hrs || 0);
         totalMachineCost += parseFloat(row.total_machine_cost || 0);
         totalWorkerCost += parseFloat(row.total_worker_cost || 0);
-        totalCostAmount += parseFloat(row.cost_amount || 0); // Add cost_amount field to the total
+        totalCostAmount += parseFloat(row.cost_amount || 0); 
     });
 
     frm.set_value('total_machine_hours', totalHours.toFixed(2));
-    frm.set_value('total_cost_amount', totalCostAmount.toFixed(2)); // Set the sum of cost_amount field
+    frm.set_value('total_cost_amount', totalCostAmount.toFixed(2));
+    frm.set_value('total_worker_amount', totalWorkerCost.toFixed(2));
 };
 

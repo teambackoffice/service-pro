@@ -160,26 +160,24 @@ def calculate_cost(doc, method):
     total_worker_cost = 0
 
     for row in doc.workshop_details:
-        # Machine cost calculation
         if row.machine_name:
             cost_rate = frappe.db.get_value("Machine", row.machine_name, "cost_rate") or 0
             row.total_machine_cost = cost_rate * row.hrs
 
-        # Worker cost calculation
         if row.worker:
             worker_rate = frappe.db.get_value("Worker", row.worker, "worker_per_hour_cost") or 0
             row.total_worker_cost = worker_rate * row.hrs
 
-        # Cost Amount = total_machine_cost + total_worker_cost
         row.cost_amount = (row.total_machine_cost or 0) + (row.total_worker_cost or 0)
 
-        # Update totals
         total_hours += row.hrs or 0
         total_machine_cost += row.total_machine_cost or 0
         total_worker_cost += row.total_worker_cost or 0
 
     doc.total_machine_hours = total_hours
     doc.total_cost_amount = total_machine_cost
+    doc.total_worker_amount = total_worker_cost
+
   
 
 

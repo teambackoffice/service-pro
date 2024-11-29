@@ -30,13 +30,15 @@
   {
    "fieldname": "company",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Company",
-   "options": "Company"
+   "options": "Company",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-28 12:52:58.887417",
+ "modified": "2024-11-29 08:16:53.067012",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Machine",

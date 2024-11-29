@@ -54,8 +54,11 @@
   "letter_head",
   "mechines_tab",
   "workshop_details",
+  "section_break_ayua",
   "total_machine_hours",
-  "total_cost_amount"
+  "total_cost_amount",
+  "column_break_xgvk",
+  "total_worker_amount"
  ],
  "fields": [
   {
@@ -350,11 +353,25 @@
    "options": "Inspection",
    "read_only": 1,
    "reqd": 1
+  },
+  {
+   "fieldname": "total_worker_amount",
+   "fieldtype": "Data",
+   "label": "Total Worker Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_ayua",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_xgvk",
+   "fieldtype": "Column Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-27 15:28:03.763032",
+ "modified": "2024-11-29 08:26:34.920029",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

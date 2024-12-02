@@ -99,14 +99,15 @@ cur_frm.set_query("customer", () => {
                                         service_receipt_note: cur_frm.docname,
                                         docstatus: 0
                                     }
-                                }).then(records2 => {
-                                    if(records2.length === 0){
-                                       frm.add_custom_button(__("Quotation"), () => {
-                                            create_quotation(frm, cur_frm)
-
-                                        }, __("Create"))
-                                    }
                                 })
+                                // .then(records2 => {
+                                //     if(records2.length === 0){
+                                //        frm.add_custom_button(__("Quotation"), () => {
+                                //             create_quotation(frm, cur_frm)
+
+                                //         }, __("Create"))
+                                //     }
+                                // })
                             }
                         })
                     }

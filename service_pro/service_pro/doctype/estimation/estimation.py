@@ -67,7 +67,7 @@ class Estimation(Document):
 				frappe.throw("Please Input Valid Cost Center in Raw Material row " + str(raw.idx))
 	def on_submit(self):
 		for i in self.inspections:
-			self.check_status("To Production", i.inspection)
+			self.check_status("To Quotation", i.inspection)
 
 	def on_cancel(self):
 		for i in self.inspections:

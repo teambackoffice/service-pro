@@ -703,7 +703,7 @@ def create_sales_invoice(source_name, target_doc=None):
                    
                     "customer": "customer",
                     "company": "company",
-					"production": "name",
+					"custom_production_id": "name",
                     "posting_date": "posting_date",
                 }
             },

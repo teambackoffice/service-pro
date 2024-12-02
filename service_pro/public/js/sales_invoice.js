@@ -36,6 +36,16 @@ frappe.ui.form.on('Sales Invoice', {
     },
    
     onload: function (frm) {
+        frm.set_query('cost_center', function() {
+            if (frm.doc.company) {
+                return {
+                    filters: {
+                        company: frm.doc.company,
+                        is_group: 0,
+                    }
+                };
+            }
+        });
         console.log("ONLOAD")
         if(cur_frm.doc.company) {
             frappe.call({

@@ -57,3 +57,5 @@ class Inspection(Document):
 								area.save(frappe.get_site_path() + "/public" + eval("self.attach_" + str(i)), quality=95)
 							else:
 								area.save(frappe.get_site_path()  + eval("self.attach_" + str(i)), quality=95)
+
+

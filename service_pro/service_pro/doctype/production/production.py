@@ -7,6 +7,7 @@ import frappe
 from frappe import _
 import json
 from frappe.model.document import Document
+from frappe.model.mapper import get_mapped_doc
 from erpnext.stock.stock_ledger import get_previous_sle
 from frappe.utils import cint, flt
 from datetime import datetime
@@ -460,12 +461,12 @@ class Production(Document):
 
 		}]
 
-	@frappe.whitelist()
-	def get_sales_man(self):
-		return [{
-			'sales_man': self.sales_man,
-			'reference': self.name,
-		}]
+	# @frappe.whitelist()
+	# def get_sales_man(self):
+	# 	return [{
+	# 		'sales_man': self.sales_man,
+	# 		'reference': self.name,
+	# 	}]
 
 	@frappe.whitelist()
 	def get_item_value(self, field):
@@ -662,3 +663,58 @@ def update_dispatch_address(customer):
 	
 	return address_name
 
+
+@frappe.whitelist()
+def create_delivery_note(source_name, target_doc=None):
+    doclist = get_mapped_doc(
+        "Production", 
+        source_name, 
+        {
+            "Production": {
+                "doctype": "Delivery Note",
+                "field_map": {
+                   
+                    "customer": "customer",
+                    "company": "company",
+                    "posting_date": "posting_date",
+                }
+            },
+            "Raw Material": {
+                "doctype": "Delivery Note Item",
+                "field_map": {
+                    
+                }
+            }
+        },
+        target_doc,
+    )
+
+    return doclist
+
+@frappe.whitelist()
+def create_sales_invoice(source_name, target_doc=None):
+    doclist = get_mapped_doc(
+        "Production", 
+        source_name, 
+        {
+            "Production": {
+                "doctype": "Sales Invoice",
+                "field_map": {
+                   
+                    "customer": "customer",
+                    "company": "company",
+					"production": "name",
+                    "posting_date": "posting_date",
+                }
+            },
+            "Raw Material": {
+                "doctype": "Sales Invoice Item",
+                "field_map": {
+                    
+                }
+            }
+        },
+        target_doc,
+    )
+
+    return doclist

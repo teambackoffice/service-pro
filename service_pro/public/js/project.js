@@ -5,7 +5,9 @@ frappe.ui.form.on('Project', {
                 frappe.new_doc('Service Receipt Note', {
                     project_id: frm.doc.project_id, 
                     project: frm.doc.name, 
-                    customer: frm.doc.customer
+                    customer: frm.doc.customer,
+                    company: frm.doc.company
+
                 });
             }, __('Create')); 
         }

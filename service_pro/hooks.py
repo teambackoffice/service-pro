@@ -171,6 +171,8 @@ override_doctype_dashboards = {
 	"Stock Entry": "service_pro.doc_events.stock_entry_dashboard.get_stock_entry_data",
     "Purchase Order": "service_pro.doc_events.dashboard.dashboard.purchase_order_dashboard",
     "Purchase Receipt": "service_pro.doc_events.dashboard.dashboard.purchase_receipt",
+    "Project": "service_pro.doc_events.dashboard.project_dashboard.project_dashboard",
+    "Sales Order": "service_pro.doc_events.dashboard.dashboard.sales_order_dashboard",
 
 }
 

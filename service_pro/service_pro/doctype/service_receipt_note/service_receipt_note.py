@@ -12,22 +12,22 @@ class ServiceReceiptNote(Document):
 		frappe.db.sql(""" UPDATE `tabService Receipt Note` SET status=%s WHERE name=%s """,(status, self.name))
 		frappe.db.commit()
 
-	def on_submit(self):
-		for i in self.materials:
-			for ii in range(0,i.qty):
-				doc = {
-					"doctype": "Inspection",
-					"customer": self.customer,
-					"customer_name": self.customer_name,
-					"customer_reference": self.customer_ref,
-					"item_code": i.materials,
-					"company": getattr(i, 'company', self.company),
-					"item_name": i.item_name,
-					"qty": 1,
-					"service_receipt_note": self.name
-				}
+	# def on_submit(self):
+	# 	for i in self.materials:
+	# 		for ii in range(0,i.qty):
+	# 			doc = {
+	# 				"doctype": "Inspection",
+	# 				"customer": self.customer,
+	# 				"customer_name": self.customer_name,
+	# 				"customer_reference": self.customer_ref,
+	# 				"item_code": i.materials,
+	# 				"company": getattr(i, 'company', self.company),
+	# 				"item_name": i.item_name,
+	# 				"qty": 1,
+	# 				"service_receipt_note": self.name
+	# 			}
 
-				frappe.get_doc(doc).insert()
+	# 			frappe.get_doc(doc).insert()
 
 	@frappe.whitelist()
 	def submit_inspections(self):

@@ -36,6 +36,18 @@ frappe.ui.form.on('Sales Invoice', {
     },
    
     onload: function (frm) {
+        frm.fields_dict.items.grid.get_field('income_account').get_query = function(doc, cdt, cdn) {
+            let row = locals[cdt][cdn];
+            if (frm.doc.company) {
+                return {
+                    filters: {
+                        company: frm.doc.company,
+                        is_group: 0,
+                    }
+                };
+            }
+        };
+        
         frm.set_query('cost_center', function() {
             if (frm.doc.company) {
                 return {

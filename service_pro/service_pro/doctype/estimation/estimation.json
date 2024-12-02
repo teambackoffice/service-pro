@@ -288,12 +288,12 @@
   },
   {
    "allow_on_submit": 1,
-   "default": "To Production",
+   "default": "To Quotation",
    "fieldname": "status",
    "fieldtype": "Select",
    "hidden": 1,
    "label": "Status",
-   "options": "\nClosed\nTo Production\nCompleted"
+   "options": "\nClosed\nTo Quotation\nCompleted"
   },
   {
    "fieldname": "company",
@@ -371,7 +371,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-29 08:38:43.793276",
+ "modified": "2024-12-02 16:16:39.248084",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

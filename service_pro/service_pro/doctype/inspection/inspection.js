@@ -19,6 +19,7 @@ frappe.ui.form.on('Inspection', {
                     inspection: frm.doc.name,
                     customer: frm.doc.customer,
                     customer_name: frm.doc.customer_name,
+                    company: frm.doc.company,
                     item_code: frm.doc.item_code_est
                 }).then(new_doc => {
                     frappe.set_route('Form', 'Estimation', new_doc.name);

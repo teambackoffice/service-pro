@@ -57,9 +57,9 @@ cur_frm.set_query("customer", () => {
             }).then(records => {
                 if(records.length > 0){
 
-                    frm.add_custom_button(__("Submit Inspection/s"), () => {
-                        submit_inspections(frm, cur_frm)
-                    }, __("Submit"))
+                    // frm.add_custom_button(__("Submit Inspection/s"), () => {
+                    //     submit_inspections(frm, cur_frm)
+                    // }, __("Submit"))
                 }
             })
 
@@ -72,10 +72,10 @@ cur_frm.set_query("customer", () => {
             }).then(records => {
                 if(records.length > 0){
 
-                    frm.add_custom_button(__("Submit Estimation/s"), () => {
-                        submit_estimations(frm, cur_frm)
+                    // frm.add_custom_button(__("Submit Estimation/s"), () => {
+                    //     submit_estimations(frm, cur_frm)
 
-                    }, __("Submit"))
+                    // }, __("Submit"))
                 }
             })
                  frappe.db.get_list('Quotation', {

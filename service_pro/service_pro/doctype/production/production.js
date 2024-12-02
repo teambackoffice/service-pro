@@ -354,38 +354,23 @@ frappe.ui.form.on('Production', {
 
     },
 	refresh: function(frm) {
-        frm.page.add_inner_button(__('Delivery Note'), function() {
-            frappe.model.with_doctype('Delivery Note', function() {
-                var dn_doc = frappe.model.get_new_doc('Delivery Note');
-
-                // Map fields from Production to Delivery Note
-                dn_doc.production = frm.doc.name; // Link Production to Delivery Note
-                dn_doc.customer = frm.doc.customer; // Populate customer
-                dn_doc.company = frm.doc.company; // Populate company
-                dn_doc.posting_date = frm.doc.posting_date; // Set posting date
-                dn_doc.sales_man = frm.doc.sales_man; 
-
-                
-                // Redirect to the new Delivery Note
-                frappe.set_route('Form', 'Delivery Note', dn_doc.name);
-            });
-        }, __('Create')); // Add under "Create"
-
-        frm.page.add_inner_button(__('Sales Invoice'), function() {
-            frappe.model.with_doctype('Sales Invoice', function() {
-                var si_doc = frappe.model.get_new_doc('Sales Invoice');
-
-                // Map fields from Production to Sales Invoice
-                si_doc.production = frm.doc.name; // Link Production to Sales Invoice
-                si_doc.customer = frm.doc.customer; // Populate customer
-                si_doc.company = frm.doc.company; // Populate company
-                si_doc.posting_date = frm.doc.posting_date; // Set posting date
-                si_doc.custom_production_id = frm.doc.name;
-                
-                // Redirect to the new Sales Invoice
-                frappe.set_route('Form', 'Sales Invoice', si_doc.name);
+        frm.add_custom_button(__('Delivery Note'), function() {
+            frappe.model.open_mapped_doc({
+                method: "service_pro.service_pro.doctype.production.production.create_delivery_note",
+                frm: frm,
+                run_link_triggers: true
             });
         }, __('Create'));
+
+
+        frm.add_custom_button(__('Sales Invoice'), function() {
+            frappe.model.open_mapped_doc({
+                method: "service_pro.service_pro.doctype.production.production.create_sales_invoice",
+                frm: frm,
+                run_link_triggers: true
+            });
+        }, __('Create'));
+        
         
 
         cur_frm.set_query("customer", () => {
@@ -656,76 +641,76 @@ cur_frm.refresh_field("item_selling_price_list")
 
                                 }
 
-                                if (cur_frm.doc.qty_for_sidn > 0) {
+                                // if (cur_frm.doc.qty_for_sidn > 0) {
 
-                                    cur_frm.add_custom_button(__("Sales Invoice"), () => {
-                                        let d = new frappe.ui.Dialog({
-                                        title: "Enter Qty",
-                                        fields: [
-                                            {
-                                                label: 'Qty',
-                                                fieldname: 'qty',
-                                                fieldtype: 'Float',
-                                                default: cur_frm.doc.qty_for_sidn
-                                            }
-                                        ],
-                                        primary_action_label: 'Generate',
-                                        primary_action(values) {
+                                //     cur_frm.add_custom_button(__("Sales Invoice"), () => {
+                                //         let d = new frappe.ui.Dialog({
+                                //         title: "Enter Qty",
+                                //         fields: [
+                                //             {
+                                //                 label: 'Qty',
+                                //                 fieldname: 'qty',
+                                //                 fieldtype: 'Float',
+                                //                 default: cur_frm.doc.qty_for_sidn
+                                //             }
+                                //         ],
+                                //         primary_action_label: 'Generate',
+                                //         primary_action(values) {
 
-                                            cur_frm.doc.input_qty = values.qty
-                                            cur_frm.call({
-                                            doc: cur_frm.doc,
-                                            method: 'generate_si',
-                                            freeze: true,
-                                            freeze_message: "Generating Sales Invoice ...",
-                                            callback: (r) => {
-                                                        cur_frm.reload_doc()
+                                //             cur_frm.doc.input_qty = values.qty
+                                //             cur_frm.call({
+                                //             doc: cur_frm.doc,
+                                //             method: 'generate_si',
+                                //             freeze: true,
+                                //             freeze_message: "Generating Sales Invoice ...",
+                                //             callback: (r) => {
+                                //                         cur_frm.reload_doc()
 
-                                                frappe.set_route("Form", "Sales Invoice", r.message);
-                                            }
-                                        })
-                                        }
-                                    });
+                                //                 frappe.set_route("Form", "Sales Invoice", r.message);
+                                //             }
+                                //         })
+                                //         }
+                                //     });
 
-                                    d.show();
+                                //     d.show();
 
-                                    },"Generate");
+                                //     },"Generate");
 
-                                }
-                                if( cur_frm.doc.qty_for_sidn > 0){
-                                    cur_frm.add_custom_button(__("Delivery Note"), () => {
-                                        let d = new frappe.ui.Dialog({
-                                        title: "Enter Qty",
-                                        fields: [
-                                            {
-                                                label: 'Qty',
-                                                fieldname: 'qty',
-                                                fieldtype: 'Float',
-                                                default: cur_frm.doc.qty_for_sidn
-                                            }
-                                        ],
-                                        primary_action_label: 'Generate',
-                                        primary_action(values) {
+                                // }
+                                // if( cur_frm.doc.qty_for_sidn > 0){
+                                //     cur_frm.add_custom_button(__("Delivery Note"), () => {
+                                //         let d = new frappe.ui.Dialog({
+                                //         title: "Enter Qty",
+                                //         fields: [
+                                //             {
+                                //                 label: 'Qty',
+                                //                 fieldname: 'qty',
+                                //                 fieldtype: 'Float',
+                                //                 default: cur_frm.doc.qty_for_sidn
+                                //             }
+                                //         ],
+                                //         primary_action_label: 'Generate',
+                                //         primary_action(values) {
 
-                                            cur_frm.doc.input_qty = values.qty
-                                           cur_frm.call({
-                                            doc: cur_frm.doc,
-                                            method: 'generate_dn',
-                                            freeze: true,
-                                            freeze_message: "Generating Delivery Note ...",
-                                            callback: (r) => {
-                                                                                    cur_frm.reload_doc()
+                                //             cur_frm.doc.input_qty = values.qty
+                                //            cur_frm.call({
+                                //             doc: cur_frm.doc,
+                                //             method: 'generate_dn',
+                                //             freeze: true,
+                                //             freeze_message: "Generating Delivery Note ...",
+                                //             callback: (r) => {
+                                //                                                     cur_frm.reload_doc()
 
-                                                frappe.set_route("Form", "Delivery Note", r.message);
-                                            }
-                                        })
-                                        }
-                                    });
+                                //                 frappe.set_route("Form", "Delivery Note", r.message);
+                                //             }
+                                //         })
+                                //         }
+                                //     });
 
-                                    d.show();
+                                //     d.show();
 
-                                    },"Generate");
-                                }
+                                //     },"Generate");
+                                // }
 
                             }
                         })

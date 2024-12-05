@@ -44,3 +44,37 @@ def make_supplier_packing_slip(purchase_order):
         return sp.name
     else:
         frappe.msgprint(_("All qty against supplier packing slip created"))
+
+
+@frappe.whitelist()
+def get_available_qty(item_code, warehouse, posting_date=None):
+    stock_balance = frappe.db.get_value('Bin', {'item_code': item_code, 'warehouse': warehouse}, 'actual_qty')
+    return flt(stock_balance or 0)
+
+@frappe.whitelist()
+def get_sales_order_id(sales_order, item_code):
+    if not sales_order or not item_code:
+        frappe.throw(_("Sales Order and Item Code are required."))
+
+    return frappe.db.get_value(
+        'Sales Order Item',
+        {'parent': sales_order, 'item_code': item_code},
+        'parent'
+    )
+
+@frappe.whitelist()
+def get_material_request_id(material_request, item_code):
+    if not material_request or not item_code:
+        frappe.throw(_("Material Request and Item Code are required."))
+
+    return frappe.db.get_value(
+        'Material Request Item',
+        {'parent': material_request, 'item_code': item_code},
+        'parent'
+    )
+
+
+
+
+
+   

@@ -37,6 +37,9 @@ frappe.ui.form.on('Purchase Order Item', {
         } else if (row.request === 'Sales Order') {
             frappe.msgprint(__('There is no purchase order against sales order.'));
         }
+        else if (row.request === 'Material Request') {
+            frappe.msgprint(__('There is no purchase order against material request.'));
+        }
     },
     sales_order: function (frm, cdt, cdn) {
         const row = locals[cdt][cdn];

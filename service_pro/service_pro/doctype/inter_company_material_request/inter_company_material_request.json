@@ -44,8 +44,7 @@
   "job_card",
   "column_break_35",
   "work_order",
-  "connections_tab",
-  "amended_from"
+  "connections_tab"
  ],
  "fields": [
   {
@@ -116,20 +115,6 @@
    "in_list_view": 1,
    "label": "Required By",
    "reqd": 1
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "ignore_user_permissions": 1,
-   "label": "Amended From",
-   "no_copy": 1,
-   "oldfieldname": "amended_from",
-   "oldfieldtype": "Data",
-   "options": "Material Request",
-   "print_hide": 1,
-   "print_width": "150px",
-   "read_only": 1,
-   "width": "150px"
   },
   {
    "fieldname": "warehouse_section",
@@ -324,20 +309,6 @@
    "show_dashboard": 1
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "ignore_user_permissions": 1,
-   "label": "Amended From",
-   "no_copy": 1,
-   "oldfieldname": "amended_from",
-   "oldfieldtype": "Data",
-   "options": "Material Request",
-   "print_hide": 1,
-   "print_width": "150px",
-   "read_only": 1,
-   "width": "150px"
-  },
-  {
    "fieldname": "stock_details",
    "fieldtype": "Text Editor",
    "label": "Stock Details"
@@ -357,14 +328,13 @@
    "fieldname": "set_warehouse",
    "fieldtype": "Link",
    "label": "Set Target Warehouse",
-   "options": "Warehouse",
-   "reqd": 1
+   "options": "Warehouse"
   }
  ],
  "icon": "fa fa-ticket",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-16 14:26:16.577951",
+ "modified": "2024-12-09 09:07:54.408156",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Material Request",

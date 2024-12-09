@@ -1,4 +1,32 @@
 frappe.ui.form.on("Inter Company Material Request", {
+    validate: function(frm) {
+        let has_insufficient_stock = false;
+
+        frm.doc.items.forEach(item => {
+            frappe.call({
+                method: "service_pro.service_pro.doctype.inter_company_material_request.inter_company_material_request.get_available_qty",
+                args: {
+                    item_code: item.item_code
+                },
+                async: false,
+                callback: function(r) {
+                    if (r.message && r.message.some(stock => stock.actual_qty === 0)) {
+                        has_insufficient_stock = true;
+                        frappe.msgprint({
+                            title: __('Validation Error'),
+                            message: __('Cannot save. Insufficient stock for {0} - {1}.', [item.item_name, item.item_code]),
+                            indicator: 'red'
+                        });
+                    }
+                }
+            });
+
+            if (has_insufficient_stock) {
+                frappe.validated = false;
+                return false; 
+            }
+        });
+    },
     schedule_date: function(frm) {
         if (frm.doc.schedule_date) {
             frm.doc.items.forEach(row => {
@@ -7,14 +35,14 @@ frappe.ui.form.on("Inter Company Material Request", {
         }
     },
     refresh: function(frm) {
-        frm.fields_dict.stock_details.$wrapper.empty();
-        frm.fields_dict["items"].grid.get_field("supplier").get_query = function(doc, cdt, cdn) {
-            return {
-                filters: {
-                    is_internal_supplier: 1
-                }
-            };
-        };
+        // frm.fields_dict.stock_details.$wrapper.empty();
+        // frm.fields_dict["items"].grid.get_field("supplier").get_query = function(doc, cdt, cdn) {
+        //     return {
+        //         filters: {
+        //             is_internal_supplier: 1
+        //         }
+        //     };
+        // };
 
         frm.set_query("set_warehouse", function() {
             if (frm.doc.company) {
@@ -42,7 +70,6 @@ frappe.ui.form.on("Inter Company Material Request Item", {
         let item = frappe.get_doc(cdt, cdn);
 
         if (item.item_code) {
-            // Fetch stock details
             frappe.call({
                 method: "service_pro.service_pro.doctype.inter_company_material_request.inter_company_material_request.get_available_qty",
                 args: {
@@ -77,7 +104,6 @@ frappe.ui.form.on("Inter Company Material Request Item", {
 
                         frm.fields_dict.stock_details.$wrapper.html(html_content);
                     } else {
-                        // Fetch Item Name before showing the message
                         frappe.call({
                             method: "frappe.client.get",
                             args: {
@@ -94,7 +120,6 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                                     indicator: 'red'
                                 });
 
-                                // Automatically remove the row if no stock is available
                                 frappe.model.clear_doc(cdt, cdn);
                                 frm.refresh_field("items");
                             }
@@ -103,7 +128,6 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                 }
             });
 
-            // Fetch UOM and Item Name
             frappe.call({
                 method: "frappe.client.get",
                 args: {

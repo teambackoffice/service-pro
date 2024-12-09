@@ -1,47 +1,75 @@
-import frappe
 from frappe.model.document import Document
+import frappe
 
 class InterCompanyMaterialRequest(Document):
     def on_submit(self):
-        create_material_requests(self)
-
-def create_material_requests(doc):
-    """
-    Create Material Requests grouped by supplier from the Inter Company Material Request.
-    """
-    supplier_items_map = {}
-    for item in doc.items: 
-        if not item.supplier:
-            frappe.throw(f"Supplier is missing for item {item.item_code}. Please provide a valid supplier.")
+        stock_transfer_template = None
+        for item in self.get("items"):
+            if item.stock_transfer_template:
+                stock_transfer_template = item.stock_transfer_template
+                break
         
-        if item.supplier not in supplier_items_map:
-            supplier_items_map[item.supplier] = []
-        supplier_items_map[item.supplier].append(item)
-
-    for supplier, items in supplier_items_map.items():
-        supplier_name = frappe.db.get_value("Supplier", supplier, "supplier_name")
+        if not stock_transfer_template:
+            frappe.throw("No stock transfer template found in items.")
         
-        material_request = frappe.new_doc("Material Request")
-        material_request.update({
-            "company": doc.company,  
-            "internal_supplier": supplier, 
-            "custom_internal_supplier_name": supplier_name, 
-            "material_request_type": "Purchase",
-            "custom_inter_company_material_request": doc.name,
-            "set_warehouse": doc.set_warehouse,
-            "items": []
-        })
+        stock_transfer = frappe.new_doc("Inter Company Stock Transfer")
+        
+        stock_transfer.template = stock_transfer_template
 
-        for item in items:
-            material_request.append("items", {
+        stock_transfer.inter_company_material_request = self.name
+
+        
+        for item in self.get("items"):
+            stock_transfer.append("item_details", {
                 "item_code": item.item_code,
-                "warehouse": doc.set_warehouse,
-                "qty": item.qty,
-                "schedule_date": doc.schedule_date or frappe.utils.nowdate()
+                "item_name": item.item_name,
+                "qty": item.qty
             })
+        
+        stock_transfer.insert()
+        stock_transfer.submit()
 
-        material_request.save()
-        frappe.msgprint(f"Material Request {material_request.name} created for supplier {supplier} ({supplier_name})")
+        
+#     def on_submit(self):
+#         create_material_requests(self)
+
+# def create_material_requests(doc):
+#     """
+#     Create Material Requests grouped by supplier from the Inter Company Material Request.
+#     """
+#     supplier_items_map = {}
+#     for item in doc.items: 
+#         if not item.supplier:
+#             frappe.throw(f"Supplier is missing for item {item.item_code}. Please provide a valid supplier.")
+        
+#         if item.supplier not in supplier_items_map:
+#             supplier_items_map[item.supplier] = []
+#         supplier_items_map[item.supplier].append(item)
+
+#     for supplier, items in supplier_items_map.items():
+#         supplier_name = frappe.db.get_value("Supplier", supplier, "supplier_name")
+        
+#         material_request = frappe.new_doc("Material Request")
+#         material_request.update({
+#             "company": doc.company,  
+#             "internal_supplier": supplier, 
+#             "custom_internal_supplier_name": supplier_name, 
+#             "material_request_type": "Purchase",
+#             "custom_inter_company_material_request": doc.name,
+#             "set_warehouse": doc.set_warehouse,
+#             "items": []
+#         })
+
+#         for item in items:
+#             material_request.append("items", {
+#                 "item_code": item.item_code,
+#                 "warehouse": doc.set_warehouse,
+#                 "qty": item.qty,
+#                 "schedule_date": doc.schedule_date or frappe.utils.nowdate()
+#             })
+
+#         material_request.save()
+#         frappe.msgprint(f"Material Request {material_request.name} created for supplier {supplier} ({supplier_name})")
 
 
 @frappe.whitelist()

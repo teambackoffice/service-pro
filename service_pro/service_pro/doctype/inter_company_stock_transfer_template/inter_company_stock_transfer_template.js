@@ -13,6 +13,15 @@ frappe.ui.form.on("Inter Company Stock Transfer Template", {
                 };
             }
         });
+        frm.set_query('in_transit_warehouse', function() {
+            if (frm.doc.from_company) {
+                return {
+                    filters: {
+                        company: frm.doc.from_company
+                    }
+                };
+            }
+        });
 
         frm.set_query('from_company_debit_account', function() {
             if (frm.doc.from_company) {

@@ -13,6 +13,7 @@
   "from_warehouse",
   "from_company_debit_account",
   "from_cost_center",
+  "in_transit_warehouse",
   "column_break_knww",
   "to_company",
   "to_warehouse",
@@ -87,11 +88,17 @@
    "fieldtype": "Link",
    "label": "To Cost Center",
    "options": "Cost Center"
+  },
+  {
+   "fieldname": "in_transit_warehouse",
+   "fieldtype": "Link",
+   "label": "In Transit Warehouse",
+   "options": "Warehouse"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-17 10:42:47.558959",
+ "modified": "2024-12-06 12:14:05.207537",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Stock Transfer Template",

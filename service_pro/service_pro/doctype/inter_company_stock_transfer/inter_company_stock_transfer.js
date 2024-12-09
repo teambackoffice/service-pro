@@ -59,6 +59,53 @@ frappe.ui.form.on("Inter Company Stock Transfer Item", {
     },
 })
 frappe.ui.form.on("Inter Company Stock Transfer", {
+    refresh: function (frm) {
+        if (frm.doc.docstatus == 1) {
+            if (frm.doc.in_transit != 1) {
+                frm.add_custom_button(__('In Transit'), function () {
+                    frappe.call({
+                        method: "service_pro.service_pro.doctype.inter_company_stock_transfer.inter_company_stock_transfer.create_material_transfer",
+                        args: {
+                            name: frm.doc.name
+                        },
+                        callback: function (r) {
+                            if (r.message) {
+                                frappe.msgprint(__('Material Transfer created successfully: {0}', [r.message]));
+                                frm.reload_doc();
+                            }
+                        }
+                    });
+                }, __("Create"));
+            }
+
+            if (!frm.doc.is_received) {
+                frm.add_custom_button(__('Received'), function () {
+                    frappe.call({
+                        method: "service_pro.service_pro.doctype.inter_company_stock_transfer.inter_company_stock_transfer.reserve_material_transfer",
+                        args: {
+                            name: frm.doc.name
+                        },
+                        callback: function (r) {
+                            if (r.message) {
+                                frappe.msgprint(__('Material Issue and Receipt created successfully.'));
+                                frappe.db.set_value(
+                                    "Inter Company Stock Transfer",
+                                    frm.doc.name,
+                                    "is_received",
+                                    1
+                                ).then(() => {
+                                    frm.reload_doc();
+                                });
+                            }
+                        }
+                    });
+                }, __("Create"));
+            }
+        }
+    },
+    in_transit: function (frm) {
+        frm.refresh();
+    },
 
     auto_fill_credit_value: function () {
       for(var x=0;x<cur_frm.doc.item_details.length;x+=1){

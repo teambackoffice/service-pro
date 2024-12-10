@@ -16,6 +16,7 @@
   "column_break_2",
   "transaction_date",
   "schedule_date",
+  "supplier",
   "warehouse_section",
   "scan_barcode",
   "column_break_13",
@@ -44,7 +45,8 @@
   "job_card",
   "column_break_35",
   "work_order",
-  "connections_tab"
+  "connections_tab",
+  "amended_from"
  ],
  "fields": [
   {
@@ -329,12 +331,29 @@
    "fieldtype": "Link",
    "label": "Set Target Warehouse",
    "options": "Warehouse"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Inter Company Material Request",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "icon": "fa fa-ticket",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-09 09:07:54.408156",
+ "modified": "2024-12-10 08:55:42.634425",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Material Request",

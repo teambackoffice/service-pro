@@ -41,6 +41,7 @@ doctype_js = {
     "Additional Salary" : "public/js/additional_salary.js",
     "Landed Cost Voucher": "public/js/landed_cost_voucher.js",
     "Item": "public/js/item.js",
+    "Employee": "public/js/employee.js",
     "Purchase Invoice" : "public/js/purchase_invoice.js",
     "Project" : "public/js/project.js",
     "Purchase Order" : "public/js/purchase_order.js",

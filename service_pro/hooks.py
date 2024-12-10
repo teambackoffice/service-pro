@@ -118,10 +118,11 @@ doc_events = {
     "Stock Ledger Entry":{
         "on_submit": "service_pro.doc_events.stock_ledger_entry.update_item_valuation_rate"
     },
-    "Sales Order":{
-       "on_submit": 
-            # "service_pro.doc_events.sales_order.on_so_submit",
-            "service_pro.doc_events.sales_order.sales_order_submit",    
+    "Sales Order": {
+        "on_submit": [
+            "service_pro.doc_events.sales_order.create_qr_code",
+            "service_pro.doc_events.sales_order.sales_order_submit"
+        ]
     },
     "Quotation":{
         "on_submit": "service_pro.doc_events.quotation.on_submit_quotation"
@@ -192,16 +193,16 @@ fixtures = [
             ]
         ]
     },
-    # {
-    #     "doctype": "Property Setter",
-    #     "filters": [
-    #         [
-    #             "module",
-    #             "in",
-    #             "Service Pro"
-    #         ]
-    #     ]
-    # }
+    {
+        "doctype": "Property Setter",
+        "filters": [
+            [
+                "module",
+                "in",
+                "Service Pro"
+            ]
+        ]
+    }
 ]
 
 report_override_html = {

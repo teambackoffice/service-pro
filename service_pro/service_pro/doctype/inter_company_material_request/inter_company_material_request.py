@@ -3,18 +3,12 @@ import frappe
 
 class InterCompanyMaterialRequest(Document):
     def on_submit(self):
-        stock_transfer_template = None
-        for item in self.get("items"):
-            if item.stock_transfer_template:
-                stock_transfer_template = item.stock_transfer_template
-                break
-        
-        if not stock_transfer_template:
-            frappe.throw("No stock transfer template found in items.")
-        
         stock_transfer = frappe.new_doc("Inter Company Stock Transfer")
+        for item in self.get("items"):
+            if not item.stock_transfer_template:
+                frappe.throw("No stock transfer template found in items.")
         
-        stock_transfer.template = stock_transfer_template
+            stock_transfer.template = item.stock_transfer_template
 
         stock_transfer.inter_company_material_request = self.name
 

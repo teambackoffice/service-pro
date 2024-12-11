@@ -144,5 +144,34 @@ frappe.ui.form.on("Inter Company Material Request Item", {
         } else {
             frm.fields_dict.stock_details.$wrapper.empty();
         }
+    },
+
+    stock_transfer_template: function(frm, cdt, cdn) {
+        let item = frappe.get_doc(cdt, cdn);
+        if (item.stock_transfer_template){
+
+        }
+        frappe.call({
+            method: "service_pro.service_pro.doctype.inter_company_material_request.inter_company_material_request.get_available",
+            args: {
+                item_code: item.item_code,
+                stock_transfer_template : item.stock_transfer_template
+
+            },
+            callback: function(r) {console.log(r)
+                if (r.message) {
+                    frappe.model.set_value(cdt, cdn, "available_qty", r.message);
+                    
+                }
+            }
+        });
+
+    },
+    qty: function(frm, cdt, cdn) {
+        let row = locals[cdt][cdn];
+        if (row.qty > row.available_qty) {
+            frappe.msgprint(__('The Item requested quantity exceeds the available quantity.'));
+            frappe.model.set_value(cdt, cdn, 'qty', row.available_qty);
+        }
     }
 });

@@ -4,7 +4,6 @@ from frappe import _
 
 
 class InterCompanyStockTransfer(Document):
-    # Function to create the first Stock Entry (Material Issue)
     def first_se(self):
         obj = {
             "doctype": "Stock Entry",
@@ -33,7 +32,6 @@ class InterCompanyStockTransfer(Document):
         frappe.msgprint(_('Material Issue created successfully'))
         se.submit()
 
-    # Function to create the second Stock Entry (Material Receipt)
     def second_se(self):
         obj = {
             "doctype": "Stock Entry",

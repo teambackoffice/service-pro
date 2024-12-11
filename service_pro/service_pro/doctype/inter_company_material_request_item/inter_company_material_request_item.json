@@ -11,6 +11,7 @@
   "item_name",
   "stock_transfer_template",
   "col_break1",
+  "available_qty",
   "section_break_4",
   "description",
   "column_break_12",
@@ -469,12 +470,18 @@
    "fieldtype": "Link",
    "label": "Stock Transfer Template",
    "options": "Inter Company Stock Transfer Template"
+  },
+  {
+   "fieldname": "available_qty",
+   "fieldtype": "Data",
+   "label": "Available Qty",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-12-09 08:25:49.423596",
+ "modified": "2024-12-11 08:49:25.175008",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Material Request Item",

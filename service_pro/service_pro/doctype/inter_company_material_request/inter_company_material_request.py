@@ -1,7 +1,17 @@
 from frappe.model.document import Document
 import frappe
+from frappe import _
 
 class InterCompanyMaterialRequest(Document):
+    def validate(self):
+        for item in self.items:  
+            if item.qty > item.available_qty:
+                frappe.throw(
+                    _("Row {0}: The requested quantity ({1}) exceeds the available quantity ({2}).").format(
+                        item.idx, item.qty, item.available_qty
+                    )
+                )
+
     def on_submit(self):
         stock_transfer = frappe.new_doc("Inter Company Stock Transfer")
         for item in self.get("items"):
@@ -17,11 +27,13 @@ class InterCompanyMaterialRequest(Document):
             stock_transfer.append("item_details", {
                 "item_code": item.item_code,
                 "item_name": item.item_name,
+                "value": item.rate,
+                "available_qty": item.available_qty,
                 "qty": item.qty
             })
         
         stock_transfer.insert()
-        stock_transfer.submit()
+       
 
         
 #     def on_submit(self):
@@ -90,3 +102,13 @@ def get_available_qty(item_code):
             sle.company, sle.warehouse
     """, (item_code,), as_dict=True)
     return warehouses
+
+@frappe.whitelist()
+def get_available(item_code, stock_transfer_template):
+    templete = frappe.get_doc("Inter Company Stock Transfer Template",stock_transfer_template)
+    available_qty = frappe.db.get_value(
+        "Bin",
+        {"item_code": item_code, "warehouse": templete.from_warehouse},
+        "actual_qty"
+    )
+    return available_qty or 0

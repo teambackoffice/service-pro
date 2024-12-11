@@ -1,32 +1,4 @@
 frappe.ui.form.on("Inter Company Material Request", {
-    validate: function(frm) {
-        let has_insufficient_stock = false;
-
-        frm.doc.items.forEach(item => {
-            frappe.call({
-                method: "service_pro.service_pro.doctype.inter_company_material_request.inter_company_material_request.get_available_qty",
-                args: {
-                    item_code: item.item_code
-                },
-                async: false,
-                callback: function(r) {
-                    if (r.message && r.message.some(stock => stock.actual_qty === 0)) {
-                        has_insufficient_stock = true;
-                        frappe.msgprint({
-                            title: __('Validation Error'),
-                            message: __('Cannot save. Insufficient stock for {0} - {1}.', [item.item_name, item.item_code]),
-                            indicator: 'red'
-                        });
-                    }
-                }
-            });
-
-            if (has_insufficient_stock) {
-                frappe.validated = false;
-                return false; 
-            }
-        });
-    },
     schedule_date: function(frm) {
         if (frm.doc.schedule_date) {
             frm.doc.items.forEach(row => {
@@ -77,32 +49,44 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                 },
                 callback: function(r) {
                     if (r.message && r.message.length > 0) {
-                        let html_content = `<h5>Available Stock Details</h5>`;
-                        html_content += `<table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Company</th>
-                                    <th>Item Code</th>
-                                    <th>Item Name</th>
-                                    <th>Warehouse</th>
-                                    <th>Available Qty</th>
-                                </tr>
-                            </thead>
-                            <tbody>`;
+                        let filtered_stock = r.message.filter(stock => 
+                            stock.company !== "HYDROTECH GROUP OF COMPANY" && stock.actual_qty > 0
+                        );
 
-                        r.message.forEach(stock => {
-                            html_content += `<tr>
-                                <td>${stock.company}</td>
-                                <td>${stock.item_code}</td>
-                                <td>${stock.item_name}</td>
-                                <td>${stock.warehouse}</td>
-                                <td>${stock.actual_qty}</td>
-                            </tr>`;
-                        });
+                        if (filtered_stock.length > 0) {
+                            let html_content = `<h5>Available Stock Details</h5>`;
+                            html_content += `<table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Company</th>
+                                        <th>Item Code</th>
+                                        <th>Item Name</th>
+                                        <th>Warehouse</th>
+                                        <th>Available Qty</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
 
-                        html_content += `</tbody></table>`;
+                            filtered_stock.forEach(stock => {
+                                html_content += `<tr>
+                                    <td>${stock.company}</td>
+                                    <td>${stock.item_code}</td>
+                                    <td>${stock.item_name}</td>
+                                    <td>${stock.warehouse}</td>
+                                    <td>${stock.actual_qty}</td>
+                                </tr>`;
+                            });
 
-                        frm.fields_dict.stock_details.$wrapper.html(html_content);
+                            html_content += `</tbody></table>`;
+                            frm.fields_dict.stock_details.$wrapper.html(html_content);
+                        } else {
+                            frm.fields_dict.stock_details.$wrapper.empty();
+                            frappe.msgprint({
+                                title: __('No Stock Data'),
+                                message: __('No available stock for this item from valid companies or stock is zero.'),
+                                indicator: 'red'
+                            });
+                        }
                     } else {
                         frappe.call({
                             method: "frappe.client.get",
@@ -156,17 +140,15 @@ frappe.ui.form.on("Inter Company Material Request Item", {
             args: {
                 item_code: item.item_code,
                 stock_transfer_template : item.stock_transfer_template
-
             },
-            callback: function(r) {console.log(r)
+            callback: function(r) {
                 if (r.message) {
                     frappe.model.set_value(cdt, cdn, "available_qty", r.message);
-                    
                 }
             }
         });
-
     },
+
     qty: function(frm, cdt, cdn) {
         let row = locals[cdt][cdn];
         if (row.qty > row.available_qty) {

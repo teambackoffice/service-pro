@@ -40,7 +40,7 @@ frappe.ui.form.on("Inter Company Material Request", {
 frappe.ui.form.on("Inter Company Material Request Item", {
     item_code: function(frm, cdt, cdn) {
         let item = frappe.get_doc(cdt, cdn);
-
+    
         if (item.item_code) {
             frappe.call({
                 method: "service_pro.service_pro.doctype.inter_company_material_request.inter_company_material_request.get_available_qty",
@@ -49,10 +49,10 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                 },
                 callback: function(r) {
                     if (r.message && r.message.length > 0) {
-                        let filtered_stock = r.message.filter(stock => 
+                        let filtered_stock = r.message.filter(stock =>
                             stock.company !== "HYDROTECH GROUP OF COMPANY" && stock.actual_qty > 0
                         );
-
+    
                         if (filtered_stock.length > 0) {
                             let html_content = `<h5>Available Stock Details</h5>`;
                             html_content += `<table class="table table-bordered">
@@ -66,7 +66,7 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                                     </tr>
                                 </thead>
                                 <tbody>`;
-
+    
                             filtered_stock.forEach(stock => {
                                 html_content += `<tr>
                                     <td>${stock.company}</td>
@@ -76,16 +76,47 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                                     <td>${stock.actual_qty}</td>
                                 </tr>`;
                             });
-
+    
                             html_content += `</tbody></table>`;
                             frm.fields_dict.stock_details.$wrapper.html(html_content);
                         } else {
-                            frm.fields_dict.stock_details.$wrapper.empty();
-                            frappe.msgprint({
-                                title: __('No Stock Data'),
-                                message: __('No available stock for this item from valid companies or stock is zero.'),
-                                indicator: 'red'
-                            });
+                            // Check for "HYDROTECH COMPANY CENTRAL WAREHOUSE"
+                            let hydro_stock = r.message.find(stock =>
+                                stock.company === "HYDROTECH COMPANY CENTRAL WAREHOUSE"
+                            );
+    
+                            if (hydro_stock) {
+                                frm.fields_dict.stock_details.$wrapper.html(`
+                                    <h5>Available Stock Details</h5>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Company</th>
+                                                <th>Item Code</th>
+                                                <th>Item Name</th>
+                                                <th>Warehouse</th>
+                                                <th>Available Qty</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>${hydro_stock.company}</td>
+                                                <td>${hydro_stock.item_code}</td>
+                                                <td>${hydro_stock.item_name}</td>
+                                                <td>${hydro_stock.warehouse}</td>
+                                                <td>${hydro_stock.actual_qty}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                `);
+                            } else {
+                                frm.fields_dict.stock_details.$wrapper.empty();
+                                frappe.msgprint({
+                                    title: __('No Stock Data'),
+                                    message: __('No available stock for this item from valid companies or stock is zero.'),
+                                    indicator: 'red'
+                                });
+                            }
                         }
                     } else {
                         frappe.call({
@@ -96,14 +127,14 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                             },
                             callback: function(r) {
                                 let item_name = r.message?.item_name || "Unknown Item";
-
+    
                                 frm.fields_dict.stock_details.$wrapper.empty();
                                 frappe.msgprint({
                                     title: __('No Stock Data'),
                                     message: __("Insufficient Stock for {0} - {1}", [item_name, item.item_code]),
                                     indicator: 'red'
                                 });
-
+    
                                 frappe.model.clear_doc(cdt, cdn);
                                 frm.refresh_field("items");
                             }
@@ -111,7 +142,7 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                     }
                 }
             });
-
+    
             frappe.call({
                 method: "frappe.client.get",
                 args: {
@@ -129,24 +160,25 @@ frappe.ui.form.on("Inter Company Material Request Item", {
             frm.fields_dict.stock_details.$wrapper.empty();
         }
     },
+    
 
     stock_transfer_template: function(frm, cdt, cdn) {
         let item = frappe.get_doc(cdt, cdn);
-        if (item.stock_transfer_template){
 
-        }
-        frappe.call({
-            method: "service_pro.service_pro.doctype.inter_company_material_request.inter_company_material_request.get_available",
-            args: {
-                item_code: item.item_code,
-                stock_transfer_template : item.stock_transfer_template
-            },
-            callback: function(r) {
-                if (r.message) {
-                    frappe.model.set_value(cdt, cdn, "available_qty", r.message);
+        if (item.stock_transfer_template) {
+            frappe.call({
+                method: "service_pro.service_pro.doctype.inter_company_material_request.inter_company_material_request.get_available",
+                args: {
+                    item_code: item.item_code || "",  
+                    stock_transfer_template: item.stock_transfer_template || "" 
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        frappe.model.set_value(cdt, cdn, "available_qty", r.message);
+                    } 
                 }
-            }
-        });
+            });
+        } 
     },
 
     qty: function(frm, cdt, cdn) {

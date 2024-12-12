@@ -11,6 +11,7 @@
   "available_qty",
   "column_break_hupz",
   "qty",
+  "received_qty",
   "value",
   "credit_value"
  ],
@@ -51,7 +52,7 @@
    "fieldname": "qty",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Qty",
+   "label": "Issued Qty",
    "reqd": 1
   },
   {
@@ -69,13 +70,20 @@
    "fieldname": "credit_value",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Credit Value"
+   "label": "Credit Value",
+   "reqd": 1
+  },
+  {
+   "fieldname": "received_qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Received Qty"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-08-27 02:54:34.222437",
+ "modified": "2024-12-12 10:12:50.969053",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Stock Transfer Item",

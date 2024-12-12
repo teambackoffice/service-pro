@@ -1,6 +1,7 @@
 import frappe
 from frappe.model.document import Document
 from frappe import _
+import json
 
 
 class InterCompanyStockTransfer(Document):
@@ -19,7 +20,7 @@ class InterCompanyStockTransfer(Document):
         for x in self.item_details:
             items.append({
                 "item_code": x.item_code,
-                "qty": x.qty,
+                "qty": x.received_qty,
                 "s_warehouse": self.in_transit_warehouse,
                 "basic_rate": x.value,
                 "expense_account": self.from_company_debit_account,
@@ -46,7 +47,7 @@ class InterCompanyStockTransfer(Document):
         for x in self.item_details:
             items.append({
                 "item_code": x.item_code,
-                "qty": x.qty,
+                "qty": x.received_qty,
                 "s_warehouse": self.from_warehouse,
                 "basic_rate": x.credit_value,
                 "expense_account": self.to_company_credit_account,
@@ -139,4 +140,23 @@ def create_material_transfer(name):
     frappe.db.set_value("Inter Company Stock Transfer", name, "in_transit", 1, update_modified=False)
 
     return stock_entry.name
+
+@frappe.whitelist()
+def update_received_qty(docname, items):
+    items = json.loads(items)
+    doc = frappe.get_doc("Inter Company Stock Transfer", docname)
+
+    doc.flags.ignore_validate_update_after_submit = True
+
+    for item in doc.item_details:
+        for updated_item in items:
+            if item.item_code == updated_item.get("item_code"):
+                item.received_qty = updated_item.get("received_qty")
+
+    doc.save(ignore_permissions=True)  
+    frappe.db.commit() 
+    return doc.name
+
+
+
 

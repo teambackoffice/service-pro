@@ -1,66 +1,70 @@
 // Copyright (c) 2024, jan and contributors
 // For license information, please see license.txt
-var defaults = {}
-function compute_totals(cur_frm) {
-    var total_qty = 0
-    var debit_value = 0
-    var credit_value = 0
-     for(var x=0;x<cur_frm.doc.item_details.length;x+=1){
-         if(cur_frm.doc.item_details[x].qty > cur_frm.doc.item_details[x].available_qty){
-             cur_frm.doc.item_details[x].qty = 0
-             cur_frm.refresh_field("item_details")
-             frappe.throw("Qty Cannot Be More Than Available Qty")
-         }
-          total_qty += cur_frm.doc.item_details[x].qty
-          debit_value += cur_frm.doc.item_details[x].value
-          credit_value += cur_frm.doc.item_details[x].credit_value
+var defaults = {};
 
-      }
-    cur_frm.doc.deference_value = debit_value - credit_value
-    cur_frm.doc.total_qty = total_qty
-    cur_frm.doc.debit_value = debit_value
-    cur_frm.doc.credit_value = credit_value
-    cur_frm.refresh_fields(["deference_value","total_qty","debit_value","credit_value"])
+function compute_totals(cur_frm) {
+    var total_qty = 0;
+    var debit_value = 0;
+    var credit_value = 0;
+
+    for (var x = 0; x < cur_frm.doc.item_details.length; x += 1) {
+        if (cur_frm.doc.item_details[x].qty > cur_frm.doc.item_details[x].available_qty) {
+            cur_frm.doc.item_details[x].qty = 0;
+            cur_frm.refresh_field("item_details");
+            frappe.throw("Qty Cannot Be More Than Available Qty");
+        }
+
+        total_qty += cur_frm.doc.item_details[x].qty;
+        debit_value += cur_frm.doc.item_details[x].value;
+        credit_value += cur_frm.doc.item_details[x].credit_value;
+    }
+
+    cur_frm.doc.deference_value = debit_value - credit_value;
+    cur_frm.doc.total_qty = total_qty;
+    cur_frm.doc.debit_value = debit_value;
+    cur_frm.doc.credit_value = credit_value;
+    cur_frm.refresh_fields(["deference_value", "total_qty", "debit_value", "credit_value"]);
 }
+
 frappe.ui.form.on("Inter Company Stock Transfer Item", {
-    item_code: function (frm,cdt,cdn) {
-        var d = locals[cdt][cdn]
-        if(d.item_code){
+    item_code: function (frm, cdt, cdn) {
+        var d = locals[cdt][cdn];
+        if (d.item_code) {
             cur_frm.call({
                 doc: cur_frm.doc,
                 method: "get_avail_qty",
                 args: {
-                  item: d
+                    item: d
                 },
                 freeze: true,
                 freeze_message: "Getting Available Qty",
                 callback: function (r) {
-                    d.available_qty = r.message.actual_qty
-                    d.value = r.message.valuation_rate
-                    cur_frm.refresh_field(d.parentfield)
-                    compute_totals(cur_frm)
-
+                    d.available_qty = r.message.actual_qty;
+                    d.value = r.message.valuation_rate;
+                    cur_frm.refresh_field(d.parentfield);
+                    compute_totals(cur_frm);
                 }
-            })
-
+            });
         }
-        
     },
-     qty: function (frm,cdt,cdn) {
-       compute_totals(cur_frm)
-
+    qty: function (frm, cdt, cdn) {
+        compute_totals(cur_frm);
     },
-     credit_value: function (frm,cdt,cdn) {
-       compute_totals(cur_frm)
-
+    credit_value: function (frm, cdt, cdn) {
+        compute_totals(cur_frm);
     },
     item_details_remove: function () {
-        compute_totals(cur_frm)
+        compute_totals(cur_frm);
     },
-})
+});
+
 frappe.ui.form.on("Inter Company Stock Transfer", {
     refresh: function (frm) {
-        if (frm.doc.docstatus == 1) {
+        if (!frm.is_new() && frm.doc.docstatus === 1) {
+            frm.add_custom_button(__('Update Qty'), function () {
+                open_update_qty_dialog(frm);
+            }, __("Actions"));
+
             if (frm.doc.in_transit != 1) {
                 frm.add_custom_button(__('In Transit'), function () {
                     frappe.call({
@@ -103,17 +107,66 @@ frappe.ui.form.on("Inter Company Stock Transfer", {
             }
         }
     },
-    in_transit: function (frm) {
-        frm.refresh();
-    },
-
     auto_fill_credit_value: function () {
-      for(var x=0;x<cur_frm.doc.item_details.length;x+=1){
-          cur_frm.doc.item_details[x].credit_value =cur_frm.doc.item_details[x].value
-          cur_frm.refresh_field("item_details")
-      }
-       compute_totals(cur_frm)
+        for (var x = 0; x < cur_frm.doc.item_details.length; x += 1) {
+            cur_frm.doc.item_details[x].credit_value = cur_frm.doc.item_details[x].value;
+            cur_frm.refresh_field("item_details");
+        }
+        compute_totals(cur_frm);
     },
+});
+
+function open_update_qty_dialog(frm) {
+    const dialog = new frappe.ui.Dialog({
+        title: 'Update Received Qty',
+        fields: [
+            {
+                label: 'Items',
+                fieldname: 'items',
+                fieldtype: 'Table',              
+                fields: [
+                    {
+                        fieldtype: 'Link',
+                        fieldname: 'item_code',
+                        options: 'Item',
+                        label: 'Item Code',
+                        in_list_view: 1 
+                    },
+                    {
+                        fieldtype: 'Float',
+                        fieldname: 'received_qty',
+                        label: 'Received Qty',
+                        in_list_view: 1
+                    }
+                ],
+                data: frm.doc.item || [], 
+              
+            }
+        ],
+        primary_action_label: 'Update',
+        primary_action(values) {
+            frappe.call({
+                method: 'service_pro.service_pro.doctype.inter_company_stock_transfer.inter_company_stock_transfer.update_received_qty',
+                args: {
+                    docname: frm.doc.name,
+                    items: values.items
+                },
+                callback: function (r) {
+                    if (!r.exc) {
+                        frappe.msgprint(__('Received Qty updated successfully'));
+                        frm.reload_doc();
+                    }
+                }
+            });
+            dialog.hide();
+        }
+    });
+
+    dialog.show();
+}
+
+
+
 // 	from_company: function () {
 //        if(cur_frm.doc.from_company){
 //             cur_frm.call({
@@ -157,4 +210,4 @@ frappe.ui.form.on("Inter Company Stock Transfer", {
 //         }
 
 //     }
-});
+

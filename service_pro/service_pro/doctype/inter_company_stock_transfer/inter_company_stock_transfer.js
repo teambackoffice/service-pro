@@ -61,17 +61,19 @@ frappe.ui.form.on("Inter Company Stock Transfer Item", {
 frappe.ui.form.on("Inter Company Stock Transfer", {
     refresh: function (frm) {
         if (!frm.is_new() && frm.doc.docstatus === 1) {
-            // Add Update Qty button
-            frm.add_custom_button(__("Update Qty"), () => {
-                erpnext.utils.update_child_items({
-                    frm,
-                    child_docname: "item_details",
-                    cannot_add_row: false,
-                    has_reserved_stock: frm.doc.__onload?.has_reserved_stock,
-                });
-            });
+            frm.clear_custom_buttons();
 
-            // Fetch roles from Production Settings
+            if (!frm.doc.is_received) {
+                frm.add_custom_button(__("Update Qty"), () => {
+                    erpnext.utils.update_child_items({
+                        frm,
+                        child_docname: "item_details",
+                        cannot_add_row: false,
+                        has_reserved_stock: frm.doc.__onload?.has_reserved_stock,
+                    });
+                });
+            }
+
             frappe.call({
                 method: "frappe.client.get_value",
                 args: {
@@ -83,8 +85,10 @@ frappe.ui.form.on("Inter Company Stock Transfer", {
                         const in_transit_role = res.message.in_transit_user_role;
                         const received_role = res.message.received_user_role;
 
-                        // Add "In Transit" button
-                        if (frappe.user_roles.includes(in_transit_role) && frm.doc.in_transit != 1) {
+                        // Ensure Administrator always sees the buttons
+                        const is_admin = frappe.user_roles.includes("Administrator");
+
+                        if ((frappe.user_roles.includes(in_transit_role) || is_admin) && frm.doc.in_transit != 1) {
                             frm.add_custom_button(__('In Transit'), function () {
                                 frappe.confirm(
                                     __('Are you sure you want to mark this as In Transit?'),
@@ -106,8 +110,7 @@ frappe.ui.form.on("Inter Company Stock Transfer", {
                             }, __("Create"));
                         }
 
-                        // Add "Received" button
-                        if (frappe.user_roles.includes(received_role) && !frm.doc.is_received) {
+                        if ((frappe.user_roles.includes(received_role) || is_admin) && !frm.doc.is_received) {
                             frm.add_custom_button(__('Received'), function () {
                                 frappe.confirm(
                                     __('Are you sure you want to mark this as Received?'),
@@ -140,14 +143,16 @@ frappe.ui.form.on("Inter Company Stock Transfer", {
             });
         }
     },
-    auto_fill_credit_value: function () {
-        for (var x = 0; x < cur_frm.doc.item_details.length; x += 1) {
-            cur_frm.doc.item_details[x].credit_value = cur_frm.doc.item_details[x].value;
-            cur_frm.refresh_field("item_details");
-        }
-        compute_totals(cur_frm);
+
+    auto_fill_credit_value: function (frm) {
+        frm.doc.item_details.forEach(item => {
+            item.credit_value = item.value;
+        });
+        frm.refresh_field("item_details");
+        compute_totals(frm);
     },
 });
+
 
 
 
@@ -194,7 +199,8 @@ erpnext.utils.update_child_items = function (opts) {
         {
             fieldtype: "Float",
             fieldname: "qty",
-            label: __("Qty"),
+            label: __("Issued Qty"),
+            read_only: 1,
             precision: getPrecision("qty"),
             in_list_view: 1,
         },

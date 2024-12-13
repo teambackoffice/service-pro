@@ -138,6 +138,7 @@ def create_material_transfer(name):
         stock_entry.append("items", {
             "item_code": item.item_code,
             "qty": item.qty,
+            "basic_rate": item.value,
             "s_warehouse": source_doc.from_warehouse,
             "t_warehouse": source_doc.in_transit_warehouse,
             "cost_center": source_doc.from_cost_center,

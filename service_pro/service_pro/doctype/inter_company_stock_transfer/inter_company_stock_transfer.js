@@ -61,50 +61,83 @@ frappe.ui.form.on("Inter Company Stock Transfer Item", {
 frappe.ui.form.on("Inter Company Stock Transfer", {
     refresh: function (frm) {
         if (!frm.is_new() && frm.doc.docstatus === 1) {
-            frm.add_custom_button(__('Update Qty'), function () {
-                open_update_qty_dialog(frm);
-            }, __("Actions"));
+            // Add Update Qty button
+            frm.add_custom_button(__("Update Qty"), () => {
+                erpnext.utils.update_child_items({
+                    frm,
+                    child_docname: "item_details",
+                    cannot_add_row: false,
+                    has_reserved_stock: frm.doc.__onload?.has_reserved_stock,
+                });
+            });
 
-            if (frm.doc.in_transit != 1) {
-                frm.add_custom_button(__('In Transit'), function () {
-                    frappe.call({
-                        method: "service_pro.service_pro.doctype.inter_company_stock_transfer.inter_company_stock_transfer.create_material_transfer",
-                        args: {
-                            name: frm.doc.name
-                        },
-                        callback: function (r) {
-                            if (r.message) {
-                                frappe.msgprint(__('Material Transfer created successfully: {0}', [r.message]));
-                                frm.reload_doc();
-                            }
-                        }
-                    });
-                }, __("Create"));
-            }
+            // Fetch roles from Production Settings
+            frappe.call({
+                method: "frappe.client.get_value",
+                args: {
+                    doctype: "Production Settings",
+                    fieldname: ["in_transit_user_role", "received_user_role"]
+                },
+                callback: function (res) {
+                    if (res.message) {
+                        const in_transit_role = res.message.in_transit_user_role;
+                        const received_role = res.message.received_user_role;
 
-            if (!frm.doc.is_received) {
-                frm.add_custom_button(__('Received'), function () {
-                    frappe.call({
-                        method: "service_pro.service_pro.doctype.inter_company_stock_transfer.inter_company_stock_transfer.reserve_material_transfer",
-                        args: {
-                            name: frm.doc.name
-                        },
-                        callback: function (r) {
-                            if (r.message) {
-                                frappe.msgprint(__('Material Issue and Receipt created successfully.'));
-                                frappe.db.set_value(
-                                    "Inter Company Stock Transfer",
-                                    frm.doc.name,
-                                    "is_received",
-                                    1
-                                ).then(() => {
-                                    frm.reload_doc();
-                                });
-                            }
+                        // Add "In Transit" button
+                        if (frappe.user_roles.includes(in_transit_role) && frm.doc.in_transit != 1) {
+                            frm.add_custom_button(__('In Transit'), function () {
+                                frappe.confirm(
+                                    __('Are you sure you want to mark this as In Transit?'),
+                                    function () {
+                                        frappe.call({
+                                            method: "service_pro.service_pro.doctype.inter_company_stock_transfer.inter_company_stock_transfer.create_material_transfer",
+                                            args: {
+                                                name: frm.doc.name
+                                            },
+                                            callback: function (r) {
+                                                if (r.message) {
+                                                    frappe.msgprint(__('Material Transfer created successfully: {0}', [r.message]));
+                                                    frm.reload_doc();
+                                                }
+                                            }
+                                        });
+                                    }
+                                );
+                            }, __("Create"));
                         }
-                    });
-                }, __("Create"));
-            }
+
+                        // Add "Received" button
+                        if (frappe.user_roles.includes(received_role) && !frm.doc.is_received) {
+                            frm.add_custom_button(__('Received'), function () {
+                                frappe.confirm(
+                                    __('Are you sure you want to mark this as Received?'),
+                                    function () {
+                                        frappe.call({
+                                            method: "service_pro.service_pro.doctype.inter_company_stock_transfer.inter_company_stock_transfer.reserve_material_transfer",
+                                            args: {
+                                                name: frm.doc.name
+                                            },
+                                            callback: function (r) {
+                                                if (r.message) {
+                                                    frappe.msgprint(__('Material Issue and Receipt created successfully.'));
+                                                    frappe.db.set_value(
+                                                        "Inter Company Stock Transfer",
+                                                        frm.doc.name,
+                                                        "is_received",
+                                                        1
+                                                    ).then(() => {
+                                                        frm.reload_doc();
+                                                    });
+                                                }
+                                            }
+                                        });
+                                    }
+                                );
+                            }, __("Create"));
+                        }
+                    }
+                }
+            });
         }
     },
     auto_fill_credit_value: function () {
@@ -116,55 +149,111 @@ frappe.ui.form.on("Inter Company Stock Transfer", {
     },
 });
 
-function open_update_qty_dialog(frm) {
+
+
+
+erpnext.utils.update_child_items = function (opts) {
+    const frm = opts.frm;
+    const cannotAddRow = opts.cannot_add_row ?? true;
+    const childDocname = opts.child_docname || "item_details";
+    const hasReservedStock = opts.has_reserved_stock || false;
+    const childMeta = frappe.get_meta(`${frm.doc.doctype} Item`);
+
+    const getPrecision = (fieldname) => {
+        const field = childMeta.fields.find((f) => f.fieldname === fieldname);
+        return field?.precision || 2; 
+    };
+
+    const data = frm.doc[childDocname].map((item) => ({
+        docname: item.name,
+        item_code: item.item_code,
+        item_name: item.item_name,
+        qty: item.qty,
+        received_qty: item.received_qty,
+        rate: item.rate,
+        uom: item.uom,
+    }));
+
+    const fields = [
+        { fieldtype: "Data", fieldname: "docname", hidden: 1 },
+        {
+            fieldtype: "Link",
+            fieldname: "item_code",
+            options: "Item",
+            in_list_view: 1,
+            label: __("Item Code"),
+            get_query: () => ({ query: "erpnext.controllers.queries.item_query", filters: { is_stock_item: 1 } }),
+        },
+        {
+            fieldtype: "Data",
+            fieldname: "item_name",
+            label: __("Item Name"),
+            in_list_view: 1, 
+            read_only: 1, 
+        },
+        {
+            fieldtype: "Float",
+            fieldname: "qty",
+            label: __("Qty"),
+            precision: getPrecision("qty"),
+            in_list_view: 1,
+        },
+        {
+            fieldtype: "Float",
+            fieldname: "received_qty",
+            label: __("Received Qty"),
+            precision: getPrecision("qty"),
+            in_list_view: 1,
+        },
+    ];
+
     const dialog = new frappe.ui.Dialog({
-        title: 'Update Received Qty',
+        title: __("Update Items"),
+        size: "extra-large",
         fields: [
             {
-                label: 'Items',
-                fieldname: 'items',
-                fieldtype: 'Table',              
-                fields: [
-                    {
-                        fieldtype: 'Link',
-                        fieldname: 'item_code',
-                        options: 'Item',
-                        label: 'Item Code',
-                        in_list_view: 1 
-                    },
-                    {
-                        fieldtype: 'Float',
-                        fieldname: 'received_qty',
-                        label: 'Received Qty',
-                        in_list_view: 1
-                    }
-                ],
-                data: frm.doc.item || [], 
-              
-            }
+                fieldname: "trans_items",
+                fieldtype: "Table",
+                label: __("Items"),
+                cannot_add_rows: cannotAddRow,
+                in_place_edit: false,
+                reqd: 1,
+                data,
+                fields,
+            },
         ],
-        primary_action_label: 'Update',
-        primary_action(values) {
+        primary_action_label: __("Update"),
+        primary_action() {
+            if (frm.doctype === "Inter Company Stock Transfer" && hasReservedStock) {
+                frappe.confirm(
+                    __("The reserved stock will be released when you update items. Are you sure you want to proceed?"),
+                    () => this.updateItems()
+                );
+            } else {
+                this.updateItems();
+            }
+        },
+        updateItems() {
+            const transItems = this.get_values().trans_items.filter((item) => item.item_code);
+            console.log(transItems)
             frappe.call({
-                method: 'service_pro.service_pro.doctype.inter_company_stock_transfer.inter_company_stock_transfer.update_received_qty',
+                method: "service_pro.service_pro.doctype.inter_company_stock_transfer.inter_company_stock_transfer.update_child_qty_rate",
+                freeze: true,
                 args: {
-                    docname: frm.doc.name,
-                    items: values.items
+                    parent_doctype: frm.doc.doctype,
+                    parent_doctype_name: frm.doc.name,
+                    trans_items: transItems,
+                    child_docname: childDocname,
                 },
-                callback: function (r) {
-                    if (!r.exc) {
-                        frappe.msgprint(__('Received Qty updated successfully'));
-                        frm.reload_doc();
-                    }
-                }
+                callback: () => frm.reload_doc(),
             });
-            dialog.hide();
-        }
+            this.hide();
+            refresh_field(childDocname);
+        },
     });
 
     dialog.show();
-}
-
+};
 
 
 // 	from_company: function () {

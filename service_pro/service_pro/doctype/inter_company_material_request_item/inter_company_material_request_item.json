@@ -277,6 +277,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "fetch_from": "item_code.valuation_rate",
    "fieldname": "rate",
    "fieldtype": "Currency",
    "label": "Rate",
@@ -481,7 +482,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-12-11 08:49:25.175008",
+ "modified": "2024-12-13 08:31:24.719897",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Material Request Item",

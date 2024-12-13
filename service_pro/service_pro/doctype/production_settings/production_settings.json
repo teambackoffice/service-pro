@@ -37,7 +37,10 @@
   "service_order_form_default_tax",
   "tab_4_tab",
   "salary_certificate_section",
-  "salary_seal"
+  "salary_seal",
+  "permission_tab",
+  "in_transit_user_role",
+  "received_user_role"
  ],
  "fields": [
   {
@@ -218,12 +221,29 @@
    "fieldtype": "Table",
    "label": "Salary Seal",
    "options": "Salary Seal"
+  },
+  {
+   "fieldname": "permission_tab",
+   "fieldtype": "Tab Break",
+   "label": "Permission"
+  },
+  {
+   "fieldname": "in_transit_user_role",
+   "fieldtype": "Link",
+   "label": "In Transit User Role",
+   "options": "Role"
+  },
+  {
+   "fieldname": "received_user_role",
+   "fieldtype": "Link",
+   "label": "Received User Role",
+   "options": "Role"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-11-14 09:54:05.954961",
+ "modified": "2024-12-13 08:41:41.412054",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

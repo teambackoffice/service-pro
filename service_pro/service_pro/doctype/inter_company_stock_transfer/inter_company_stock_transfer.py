@@ -75,6 +75,7 @@ def reserve_material_transfer(name):
         frappe.msgprint(_('Material Receipt created successfully'))
 
         doc.is_received = 1
+        doc.status = "Received"
         doc.save(ignore_permissions=True)
 
         return {"message": "Stock Entries created successfully"}

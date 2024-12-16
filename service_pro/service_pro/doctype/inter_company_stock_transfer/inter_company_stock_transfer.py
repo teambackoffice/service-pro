@@ -13,61 +13,7 @@ from erpnext.controllers.accounts_controller import set_order_defaults, validate
 
 
 class InterCompanyStockTransfer(Document):
-    def first_se(self):
-        obj = {
-            "doctype": "Stock Entry",
-            "stock_entry_type": "Material Issue",
-            "posting_date": self.posting_date,
-            "posting_time": self.time,
-            "from_warehouse": self.from_warehouse,
-            "company": self.from_company,
-            "set_posting_time": 1
-        }
-
-        items = []
-        for x in self.item_details:
-            items.append({
-                "item_code": x.item_code,
-                "qty": x.qty,
-                "s_warehouse": self.in_transit_warehouse,
-                "basic_rate": x.value,
-                "expense_account": self.from_company_debit_account,
-                "cost_center": self.from_cost_center,
-                "custom_inter_company_stock_transfer": x.parent
-            })
-
-        obj['items'] = items
-        se = frappe.get_doc(obj).insert(ignore_permissions=True)
-        frappe.msgprint(_('Material Issue created successfully'))
-        se.submit()
-
-    def second_se(self):
-        obj = {
-            "doctype": "Stock Entry",
-            "stock_entry_type": "Material Receipt",
-            "posting_date": self.posting_date,
-            "posting_time": self.time,
-            "to_warehouse": self.to_warehouse,
-            "company": self.to_company,
-        }
-
-        items = []
-        for x in self.item_details:
-            items.append({
-                "item_code": x.item_code,
-                "qty": x.received_qty,
-                "s_warehouse": self.from_warehouse,
-                "basic_rate": x.credit_value,
-                "expense_account": self.to_company_credit_account,
-                "cost_center": self.to_cost_center,
-                "custom_inter_company_stock_transfer": x.parent
-            })
-
-        obj['items'] = items
-        se = frappe.get_doc(obj).insert(ignore_permissions=True)
-        frappe.msgprint(_('Material Receipt created successfully'))
-        se.submit()
-        
+    
     @frappe.whitelist()
     def get_avail_qty(self,item):
         bin = frappe.db.sql(""" SELECT * FROM `tabBin` WHERE item_code=%s and warehouse=%s """,(item['item_code'],self.from_warehouse),as_dict=1)
@@ -76,14 +22,64 @@ class InterCompanyStockTransfer(Document):
 
 @frappe.whitelist()
 def reserve_material_transfer(name):
-    """Function to create both stock entries and mark the transfer as received."""
-    doc = frappe.get_doc("Inter Company Stock Transfer", name)
-    doc.first_se()
-    doc.second_se()
-    frappe.db.set_value("Inter Company Stock Transfer", name, "is_received", 1, update_modified=False)
-    frappe.db.set_value("Inter Company Stock Transfer", name, "status","Received")
-    frappe.db.commit()
-    return {"message": "Stock Entries created successfully"}
+   
+        doc = frappe.get_doc("Inter Company Stock Transfer", name)
+        
+        material_issue = {
+            "doctype": "Stock Entry",
+            "stock_entry_type": "Material Issue",
+            "posting_date": doc.posting_date,
+            "posting_time": doc.time,
+            "from_warehouse": doc.in_transit_warehouse,
+            "company": doc.from_company,
+            "items": []
+        }
+        for x in doc.item_details:
+            material_issue["items"].append({
+                "item_code": x.item_code,
+                "qty": x.qty,
+                "s_warehouse": doc.in_transit_warehouse,
+                "basic_rate": x.value,
+                "expense_account": doc.from_company_debit_account,
+                "cost_center": doc.from_cost_center,
+                "custom_inter_company_stock_transfer": x.parent
+            })
+        
+        mi_doc = frappe.get_doc(material_issue)
+        mi_doc.insert(ignore_permissions=True)
+        mi_doc.submit()
+        frappe.msgprint(_('Material Issue created successfully'))
+
+        material_receipt = {
+            "doctype": "Stock Entry",
+            "stock_entry_type": "Material Receipt",
+            "posting_date": doc.posting_date,
+            "posting_time": doc.time,
+            "to_warehouse": doc.to_warehouse,
+            "company": doc.to_company,
+            "items": []
+        }
+        for x in doc.item_details:
+            material_receipt["items"].append({
+                "item_code": x.item_code,
+                "qty": x.received_qty,
+                "basic_rate": x.credit_value,
+                "expense_account": doc.to_company_credit_account,
+                "cost_center": doc.to_cost_center,
+                "custom_inter_company_stock_transfer": x.parent
+            })
+
+        mt_doc = frappe.get_doc(material_receipt)
+        mt_doc.insert(ignore_permissions=True)
+        mt_doc.submit()
+        frappe.msgprint(_('Material Receipt created successfully'))
+
+        doc.is_received = 1
+        doc.status = "Received"
+        doc.save(ignore_permissions=True)
+
+        return {"message": "Stock Entries created successfully"}
+    
     
 
 

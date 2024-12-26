@@ -37,6 +37,14 @@ cur_frm.cscript.inspection = function (frm, cdt, cdn) {
     }
 }
 frappe.ui.form.on('Estimation', {
+    raw_material_total: function(frm) {
+        calculate_total_cost(frm);
+    },
+    total_cost_amount: function(frm) {
+        calculate_total_cost(frm);
+    },
+    
+    
     receipt_note: function () {
         if(cur_frm.doc.receipt_note){
             cur_frm.fields_dict.inspections.grid.get_field("inspection").get_query =
@@ -124,6 +132,7 @@ frappe.ui.form.on('Estimation', {
             };
         };
     },
+    
 
     company: function (frm) {
         frm.fields_dict['workshop_details'].grid.get_field('machine_name').get_query = function (doc, cdt, cdn) {
@@ -181,6 +190,14 @@ frappe.ui.form.on('Estimation', {
         df0.hidden = 1
 	}
 });
+function calculate_total_cost(frm) {
+    // Ensure the fields are numbers, fallback to 0 if undefined
+    const raw_material_total = parseFloat(frm.doc.raw_material_total || 0);
+    const total_cost_amount = parseFloat(frm.doc.total_cost_amount || 0);
+
+    // Calculate total_cost
+    frm.set_value('total_cost', raw_material_total + total_cost_amount);
+}
 
 cur_frm.cscript.warehouse = function (frm,cdt, cdn) {
     var d = locals[cdt][cdn]
@@ -281,7 +298,7 @@ function compute_scoop_of_work_total(cur_frm) {
 function compute_raw_material_total(cur_frm) {
     var total = 0
     for(var x=0;x<cur_frm.doc.raw_material.length;x += 1){
-        total += cur_frm.doc.raw_material[x].amount_raw_material
+        total += cur_frm.doc.raw_material[x].amount_raw_material + cur_frm.doc.scoop_of_work[x].cost
     }
     cur_frm.doc.raw_material_total = total
     cur_frm.refresh_field("raw_material_total")

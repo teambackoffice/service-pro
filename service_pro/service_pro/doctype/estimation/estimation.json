@@ -351,7 +351,6 @@
    "fieldtype": "Link",
    "label": "Inspection",
    "options": "Inspection",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -371,7 +370,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-02 16:16:39.248084",
+ "modified": "2024-12-26 12:03:35.498732",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

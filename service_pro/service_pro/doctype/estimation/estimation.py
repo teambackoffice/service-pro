@@ -181,33 +181,32 @@ def calculate_cost(doc, method):
 
   
 
-
 @frappe.whitelist()
 def create_production(source_name, target_doc=None):
-    
-
     doclist = get_mapped_doc(
-    "Estimation",
-    source_name,
-    {
-        "Estimation": {
-            "doctype": "Quotation",
-            "field_map": {
-				"name": "custom_estimation", 
-				"customer": "party_name",
+        "Estimation",
+        source_name,
+        {
+            "Estimation": {
+                "doctype": "Quotation",
+                "field_map": {
+                    "name": "custom_estimation", 
+                    "customer": "party_name",
+                }
+            },
+            "Raw Material": {  # Replace with the actual child table name in your Estimation doctype
+                "doctype": "Quotation Item",  # Replace with the actual child table name in your Quotation doctype
+                "field_map": {
+                    "item_code": "item_code",  # Map fields from source child table to target child table
+                    "qty": "qty_raw_material",
+                    "rate": "rate_raw_material",
+					"base_amount" : "amount_raw_material"
+                },
+                "add_if_empty": True  # Ensures the child table is added even if initially empty
             }
         },
-        # "Scoop of Work": {
-        #     "doctype": "Scoop of Work",
-        #     "field_map": {
-            
-        #     }
-        #     }
-
-    },
-    target_doc
+        target_doc
     )
-
     return doclist
 
 

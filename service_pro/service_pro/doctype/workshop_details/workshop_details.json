@@ -19,12 +19,14 @@
  ],
  "fields": [
   {
+   "allow_on_submit": 1,
    "fieldname": "from_time",
    "fieldtype": "Datetime",
    "in_list_view": 1,
    "label": "From Time"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "to_time",
    "fieldtype": "Datetime",
    "in_list_view": 1,
@@ -81,7 +83,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-11-27 08:33:30.030632",
+ "modified": "2024-12-26 09:55:44.516643",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Workshop Details",

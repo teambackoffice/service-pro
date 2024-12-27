@@ -329,6 +329,7 @@
   {
    "fieldname": "set_warehouse",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Set Target Warehouse",
    "options": "Warehouse"
   },
@@ -353,7 +354,7 @@
  "icon": "fa fa-ticket",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-10 08:55:42.634425",
+ "modified": "2024-12-14 08:30:52.126171",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Material Request",

@@ -62,13 +62,22 @@ frappe.ui.form.on('Estimation', {
         }
 
     },
-    refresh: function (frm) {
+    refresh: function (frm) { 
         frm.add_custom_button(__('Quotation'), function () {
-            frappe.model.open_mapped_doc({
+            frappe.call({
                 method: "service_pro.service_pro.doctype.estimation.estimation.create_production",
-                frm: frm,
+                args: {
+                    source_name: frm.doc.name
+                },
+                callback: function (r) {
+                    if (r.message) {
+                        frappe.msgprint(__('Quotation {0} created successfully.', [r.message]));
+                        frappe.set_route("Form", "Quotation", r.message);
+                    }
+                }
             });
         }, __("Create"));
+        
 
         cur_frm.set_query('receipt_note', () => {
             return {

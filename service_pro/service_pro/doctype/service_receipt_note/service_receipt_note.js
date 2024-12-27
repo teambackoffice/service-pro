@@ -131,15 +131,44 @@ cur_frm.set_query("customer", () => {
             })
         }
 	},
-    customer: function () {
-	    if(cur_frm.doc.customer){
-	         frappe.db.get_doc("Customer", cur_frm.doc.customer)
-            .then(doc => {
-                cur_frm.doc.customer_name = doc.customer_name
-                cur_frm.refresh_field("customer_name")
-            })
-        }
+    customer: function (frm) {
+        if (frm.doc.customer) {
+            // Fetch customer name
+            frappe.db.get_doc("Customer", frm.doc.customer)
+                .then(doc => {
+                    frm.set_value("customer_name", doc.customer_name);
+                });
 
+            // Fetch sales team data
+            frappe.call({
+                method: "frappe.client.get",
+                args: {
+                    doctype: "Customer",
+                    name: frm.doc.customer
+                },
+                callback: function (response) {
+                    if (response.message) {
+                        const customer = response.message;
+                        if (customer.sales_team && customer.sales_team.length > 0) {
+                            frm.clear_table("sales_team");
+                            customer.sales_team.forEach(row => {
+                                let child = frm.add_child("sales_team");
+                                child.sales_person = row.sales_person;
+                                child.allocated_percentage = row.allocated_percentage;
+                                child.allocated_amount = row.allocated_amount;
+                                child.commission_rate = row.commission_rate;
+                            });
+                            frm.refresh_field("sales_team");
+                        }
+                    }
+                }
+            });
+        } else {
+            // Clear customer_name and sales_team if no customer is selected
+            frm.set_value("customer_name", "");
+            frm.clear_table("sales_team");
+            frm.refresh_field("sales_team");
+        }
     },
     contact_person: function () {
 	    if(cur_frm.doc.contact_person){

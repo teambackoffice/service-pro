@@ -126,7 +126,8 @@ doc_events = {
         ]
     },
     "Quotation":{
-        "on_submit": "service_pro.doc_events.quotation.on_submit_quotation"
+        "on_submit": "service_pro.doc_events.quotation.on_submit_quotation",
+        "validate": "service_pro.doc_events.quotation.validate_item",
     },
     "Purchase Receipt": {
         "before_submit": "service_pro.doc_events.purchase_receipt.update_supplier_packing_slip",

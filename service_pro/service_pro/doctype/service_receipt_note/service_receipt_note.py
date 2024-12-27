@@ -6,7 +6,21 @@ from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
+
 class ServiceReceiptNote(Document):
+	def validate(self):
+		if self.customer:
+			customer = frappe.get_doc("Customer", self.customer)
+			if customer.sales_team:
+				self.sales_team = []
+				for row in customer.sales_team:
+					self.append("sales_team", {
+						"sales_person": row.sales_person,
+						"allocated_percentage": row.allocated_percentage,
+						"allocated_amount": row.allocated_amount,
+						"commission_rate": row.commission_rate,
+						})
+
 	@frappe.whitelist()
 	def change_status(self, status):
 		frappe.db.sql(""" UPDATE `tabService Receipt Note` SET status=%s WHERE name=%s """,(status, self.name))

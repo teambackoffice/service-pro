@@ -7,6 +7,7 @@ import frappe
 from frappe.model.document import Document
 from PIL import Image
 import os
+from frappe.model.mapper import get_mapped_doc
 from os.path import dirname
 
 
@@ -58,4 +59,23 @@ class Inspection(Document):
 							else:
 								area.save(frappe.get_site_path()  + eval("self.attach_" + str(i)), quality=95)
 
-
+@frappe.whitelist()
+def create_production(source_name, target_doc=None):
+    doclist = get_mapped_doc(
+        "Inspection", 
+        source_name,  
+        {
+            "Inspection": {  
+                "doctype": "Estimation",  
+                "field_map": {
+                    "customer": "customer", 
+					"name": "inspection", 
+					"item_code": "item_code_est",
+                },
+                "field_no_map": ["items"],  
+            },
+        },
+        target_doc
+    )
+    
+    return doclist

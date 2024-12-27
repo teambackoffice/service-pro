@@ -4,12 +4,17 @@
 
 from __future__ import unicode_literals
 import frappe
+from frappe.utils import get_datetime, cstr
+import json
 from frappe.model.mapper import get_mapped_doc
 from frappe import _
 from frappe.model.document import Document
 from erpnext.stock.stock_ledger import get_previous_sle
 from frappe.utils import cint, flt
 from datetime import datetime
+from datetime import datetime
+from frappe.utils import flt
+
 class Estimation(Document):
 	@frappe.whitelist()
 	def get_defaults(self):
@@ -182,35 +187,31 @@ def calculate_cost(doc, method):
   
 
 @frappe.whitelist()
-def create_production(source_name, target_doc=None):
-    doclist = get_mapped_doc(
-        "Estimation",
-        source_name,
-        {
-            "Estimation": {
-                "doctype": "Quotation",
-                "field_map": {
-                    "name": "custom_estimation", 
-                    "customer": "party_name",
-                }
-            },
-            "Raw Material": {  # Replace with the actual child table name in your Estimation doctype
-                "doctype": "Quotation Item",  # Replace with the actual child table name in your Quotation doctype
-                "field_map": {
-                    "item_code": "item_code",  # Map fields from source child table to target child table
-                    "qty": "qty_raw_material",
-                    "rate": "rate_raw_material",
-					"base_amount" : "amount_raw_material"
-                },
-                "add_if_empty": True  # Ensures the child table is added even if initially empty
-            }
-        },
-        target_doc
-    )
-    return doclist
+def create_production(source_name):
+    source_doc = frappe.get_doc("Estimation", source_name)
+    
+    quotation = frappe.new_doc("Quotation")
+    quotation.quotation_to = "Customer" 
+    quotation.party_name = source_doc.customer  
+    quotation.custom_estimation = source_doc.name 
+    quotation.transaction_date = frappe.utils.nowdate() 
 
+    for raw_material in source_doc.raw_material:
+        if not raw_material.item_code:
+            frappe.throw(f"Item Code is missing in Raw Material row {raw_material.idx}")
 
+        item = quotation.append("items", {})
+        item.item_code = raw_material.item_code
+        item.item_name = raw_material.item_name or "Unnamed Item"
+        item.qty = raw_material.qty_raw_material or 0
+        item.uom = raw_material.umo or "Nos"  
+        item.rate = raw_material.rate_raw_material or 0
+        item.amount = raw_material.amount_raw_material or 0
 
+    quotation.insert(ignore_permissions=True)
+    frappe.db.commit()  
+
+    return quotation.name
 
 
 

@@ -304,12 +304,14 @@
    "options": "Workshop Details"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "total_machine_hours",
    "fieldtype": "Data",
    "label": "Total Machine Hours",
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "total_cost_amount",
    "fieldtype": "Data",
    "label": "Total Cost Amount",
@@ -331,6 +333,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "total_worker_hours",
    "fieldtype": "Data",
    "label": "Total Worker Hours",
@@ -339,7 +342,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-26 15:01:52.885569",
+ "modified": "2024-12-27 14:45:10.538209",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

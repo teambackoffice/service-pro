@@ -16,6 +16,63 @@ def on_submit_quotation(doc, method=None):
 			over_disc = frappe.db.exists("Quotation Item", {"parent":doc.name, "discount_percentage": [">", max_disc]}, ['item_code'])
 			if max_disc and over_disc:
 				frappe.throw("Maximum allowed discount is {0} for item {1}".format(max_disc, frappe.db.get_value("Quotation Item", over_disc, ['item_code'])))
+
+def validate_item(self, method):
+    if self.docstatus == 0:  
+        for item in self.items:
+            # Fetch all submitted quotations for the same customer excluding the current quotation
+            existing_quotations = frappe.get_all(
+                "Quotation",
+                filters={
+                    "docstatus": 1,  # Submitted quotations only
+                    "party_name": self.party_name,
+                    "name": ["!=", self.name],  
+                },
+                pluck="name"
+            )
+
+            if existing_quotations:
+                # Find quotations where the same item has been quoted
+                item_details = frappe.get_all(
+                    "Quotation Item",
+                    filters={
+                        "parent": ["in", existing_quotations],
+                        "item_code": item.item_code,
+                    },
+                    fields=["parent"],
+                    order_by="modified desc"  # Fetch the latest quotations
+                )
+
+                # Count occurrences and fetch the relevant quotation IDs
+                item_count = len(item_details)
+
+                if item_count > 0:
+                    # Fetch the latest 5 quotation IDs
+                    latest_quotations = [detail.get("parent") for detail in item_details[:5]]
+                    latest_quotation_ids = ", ".join(latest_quotations)
+
+                    if item_count == 1:
+                        frappe.msgprint(
+                            _("The item {0} has already been quoted in Quotation {1} by this customer.").format(
+                                item.item_code, latest_quotation_ids
+                            )
+                        )
+                    elif item_count == 2:
+                        frappe.msgprint(
+                            _("The item {0} has already been quoted in Quotations {1} by this customer.").format(
+                                item.item_code, latest_quotation_ids
+                            )
+                        )
+                    elif item_count >= 3:
+                        frappe.msgprint(
+                            _("The item {0} has already been quoted {1} times by this customer in the following Quotations: {2}.").format(
+                                item.item_code, item_count, latest_quotation_ids
+                            )
+                        )
+
+
+
+
                 
 
 @frappe.whitelist()

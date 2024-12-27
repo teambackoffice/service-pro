@@ -33,13 +33,9 @@
   "column_break_22",
   "item_name",
   "section_break_mwxv",
-  "qty",
   "total_cost",
   "column_break_rqjh",
-  "rate",
-  "scoop_of_work_total",
   "column_break_cdqc",
-  "amount",
   "series",
   "materials_tab",
   "scoop_of_works_section",
@@ -155,29 +151,8 @@
    "label": "Finished Good"
   },
   {
-   "default": "0",
-   "fieldname": "rate",
-   "fieldtype": "Currency",
-   "label": "Rate",
-   "read_only": 1
-  },
-  {
    "fieldname": "column_break_22",
    "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "qty",
-   "fieldtype": "Float",
-   "label": "Qty",
-   "read_only": 1
-  },
-  {
-   "default": "0",
-   "fieldname": "amount",
-   "fieldtype": "Currency",
-   "label": "Amount",
-   "read_only": 1
   },
   {
    "fieldname": "scoop_of_works_section",
@@ -208,12 +183,6 @@
    "fieldname": "raw_material",
    "fieldtype": "Table",
    "options": "Raw Material"
-  },
-  {
-   "default": "0",
-   "fieldname": "scoop_of_work_total",
-   "fieldtype": "Currency",
-   "label": "Total"
   },
   {
    "default": "0",
@@ -351,7 +320,6 @@
    "fieldtype": "Link",
    "label": "Inspection",
    "options": "Inspection",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -371,7 +339,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-02 16:16:39.248084",
+ "modified": "2024-12-26 15:01:52.885569",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Estimation",

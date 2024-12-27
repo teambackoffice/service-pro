@@ -12,11 +12,37 @@ frappe.ui.form.on("Quotation", {
 			return query;
 		});
     },
+    party_name: function(frm) {
+        if (frm.doc.party_name) {
+            frappe.call({
+                method: 'frappe.client.get',
+                args: {
+                    doctype: 'Customer',
+                    name: frm.doc.party_name,
+                },
+                callback: function(r) {
+                    console.log(r)
+                    if (r.message) {
+                        let sales_team = r.message.sales_team || [];
+                        console.log("Sales",sales_team);
+                        if (sales_team.length > 0) {
+                            frm.set_value('sales_person', sales_team[0].sales_person);
+                        } else {
+                            frm.set_value('sales_person', null);
+                            frappe.msgprint(__('No Sales Person found for the selected Customer'));
+                        }
+                    }
+                }
+            });
+        } else {
+            frm.set_value('sales_person', null);
+        }
+    },
     refresh: function (frm) {
         setTimeout(() => {
             frm.remove_custom_button('Sales Order', "Create");
     }, 100);
-if (frm.doc.docstatus == 1 && !["Lost", "Ordered"].includes(frm.doc.status)) {
+    if (frm.doc.docstatus == 1 && !["Lost", "Ordered"].includes(frm.doc.status)) {
     if (
         frappe.boot.sysdefaults.allow_sales_order_creation_for_expired_quotation ||
         !frm.doc.valid_till ||

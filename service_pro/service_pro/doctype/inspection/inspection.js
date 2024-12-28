@@ -15,11 +15,19 @@ frappe.ui.form.on('Inspection', {
     refresh: function (frm) {
         if (frm.doc.docstatus == 1) {
             frm.add_custom_button(__('Estimation'), function () {
-                frappe.model.open_mapped_doc({
+                frappe.call({
                     method: "service_pro.service_pro.doctype.inspection.inspection.create_production",
-                    frm: frm,
+                    args: {
+                        source_name: frm.doc.name
+                    },
+                    callback: function (r) {
+                        if (r.message) {
+                            frappe.set_route("Form", "Estimation", r.message.name);
+                        }
+                    }
                 });
             }, __("Create"));
+            
             }
 
 

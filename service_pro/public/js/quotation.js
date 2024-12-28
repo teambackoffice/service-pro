@@ -11,6 +11,21 @@ frappe.ui.form.on("Quotation", {
 			}
 			return query;
 		});
+        frappe.call({
+            method: "service_pro.doc_events.quotation.get_role",
+            callback: function (r) {
+                if (r.message) {
+                    const authorized_role = r.message; 
+                    console.log("Authorized Role:", authorized_role);
+        
+                    frappe.user_roles.includes(authorized_role)
+                        ? frm.set_df_property('custom_ignore_permission_', 'read_only', 0) // Enable field
+                        : frm.set_df_property('custom_ignore_permission_', 'read_only', 1); // Disable field
+                } else {
+                    console.error("No authorized role found.");
+                }
+            }
+        });
     },
     party_name: function(frm) {
         if (frm.doc.party_name) {
@@ -39,6 +54,9 @@ frappe.ui.form.on("Quotation", {
         }
     },
     refresh: function (frm) {
+        
+    
+
         setTimeout(() => {
             frm.remove_custom_button('Sales Order', "Create");
     }, 100);

@@ -171,3 +171,12 @@ def get_vat_amount(doc):
 			vat_amount += tax.base_tax_amount
 
 	return vat_amount
+
+def validate_permission(doc, method):
+	if doc.custom_ignore_permission_ == 0:
+		frappe.throw("Estimation is Required")
+
+@frappe.whitelist()
+def get_role():
+	doc = frappe.db.get_value("Production Settings",None,"ignore_permission")
+	return doc

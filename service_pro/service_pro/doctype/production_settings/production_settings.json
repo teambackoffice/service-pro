@@ -40,7 +40,8 @@
   "salary_seal",
   "permission_tab",
   "in_transit_user_role",
-  "received_user_role"
+  "received_user_role",
+  "ignore_permission"
  ],
  "fields": [
   {
@@ -238,12 +239,18 @@
    "fieldtype": "Link",
    "label": "Received User Role",
    "options": "Role"
+  },
+  {
+   "fieldname": "ignore_permission",
+   "fieldtype": "Link",
+   "label": " Ignore Permission",
+   "options": "Role"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-12-13 08:41:41.412054",
+ "modified": "2024-12-28 11:51:18.171454",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

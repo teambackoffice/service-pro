@@ -59,23 +59,22 @@ class Inspection(Document):
 							else:
 								area.save(frappe.get_site_path()  + eval("self.attach_" + str(i)), quality=95)
 
+
+
 @frappe.whitelist()
-def create_production(source_name, target_doc=None):
-    doclist = get_mapped_doc(
-        "Inspection", 
-        source_name,  
-        {
-            "Inspection": {  
-                "doctype": "Estimation",  
-                "field_map": {
-                    "customer": "customer", 
-					"name": "inspection", 
-					"item_code": "item_code_est",
-                },
-                "field_no_map": ["items"],  
-            },
-        },
-        target_doc
-    )
+def create_production(source_name):
+    source_doc = frappe.get_doc("Inspection", source_name)
     
-    return doclist
+    new_doc = frappe.new_doc("Estimation")
+    
+    new_doc.customer = source_doc.customer
+    new_doc.company = source_doc.company
+    new_doc.inspection = source_doc.name
+    new_doc.item_name = source_doc.item_name
+    new_doc.item_code_est = source_doc.item_code
+    
+    new_doc.insert(ignore_permissions=True)
+    
+    return new_doc
+
+

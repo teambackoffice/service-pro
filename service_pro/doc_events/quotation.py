@@ -236,7 +236,7 @@ def _make_customer(source_name, ignore_permissions=False, customer_group=None):
 			return frappe.get_doc("Customer", quotation.get("party_name"))
 
 def validate_permission(doc, method):
-	if doc.custom_ignore_permission_ == 0:
+	if not doc.custom_ignore_permission_ and not doc.custom_estimation:
 		frappe.throw("Estimation is Required")
 
 @frappe.whitelist()

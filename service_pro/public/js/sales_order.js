@@ -48,7 +48,7 @@ frappe.ui.form.on("Sales Order", {
     },
     onload : function(frm) {
         frappe.call({
-            method: "service_pro.doc_events.quotation.get_role",
+            method: "service_pro.doc_events.sales_order.get_role",
             callback: function (r) {
                 if (r.message) {
                     const authorized_role = r.message; 

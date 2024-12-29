@@ -2,6 +2,7 @@ import frappe
 from frappe.utils.data import add_to_date, get_time, getdate
 from pyqrcode import create as qr_create
 import io
+from frappe import _ 
 import os
 from base64 import b64encode
 from datetime import datetime
@@ -173,8 +174,8 @@ def get_vat_amount(doc):
 	return vat_amount
 
 def validate_permission(doc, method):
-	if doc.custom_ignore_permission_ == 0:
-		frappe.throw("Estimation is Required")
+	if not doc.custom_ignore_permission_ and not doc.custom_quotation:
+		frappe.throw("Quotation is Required")
 
 @frappe.whitelist()
 def get_role():

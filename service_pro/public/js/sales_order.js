@@ -46,4 +46,21 @@ frappe.ui.form.on("Sales Order", {
             __("Create")
         );
     },
+    onload : function(frm) {
+        frappe.call({
+            method: "service_pro.doc_events.sales_order.get_role",
+            callback: function (r) {
+                if (r.message) {
+                    const authorized_role = r.message; 
+                    console.log("Authorized Role:", authorized_role);
+        
+                    frappe.user_roles.includes(authorized_role)
+                        ? frm.set_df_property('custom_ignore_permission_', 'read_only', 0) // Enable field
+                        : frm.set_df_property('custom_ignore_permission_', 'read_only', 1); // Disable field
+                } else {
+                    console.error("No authorized role found.");
+                }
+            }
+        });
+    },
 });

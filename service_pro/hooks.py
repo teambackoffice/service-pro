@@ -122,12 +122,15 @@ doc_events = {
     "Sales Order": {
         "on_submit": [
             "service_pro.doc_events.sales_order.create_qr_code",
-            "service_pro.doc_events.sales_order.sales_order_submit"
-        ]
+            "service_pro.doc_events.sales_order.sales_order_submit",
+        ],
+        "before_submit": "service_pro.doc_events.sales_order.validate_permission",
+
     },
     "Quotation":{
         "on_submit": "service_pro.doc_events.quotation.on_submit_quotation",
         "validate": "service_pro.doc_events.quotation.validate_item",
+        "before_submit": "service_pro.doc_events.quotation.validate_permission",
     },
     "Purchase Receipt": {
         "before_submit": "service_pro.doc_events.purchase_receipt.update_supplier_packing_slip",

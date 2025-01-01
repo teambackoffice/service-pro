@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:specification",
  "creation": "2023-10-22 17:44:59.922352",
@@ -20,7 +21,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-22 17:44:59.922352",
+ "modified": "2025-01-01 14:53:47.110555",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Item Specification",

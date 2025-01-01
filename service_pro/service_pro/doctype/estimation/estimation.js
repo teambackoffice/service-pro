@@ -37,6 +37,15 @@ cur_frm.cscript.inspection = function (frm, cdt, cdn) {
     }
 }
 frappe.ui.form.on('Estimation', {
+    setup: function(frm){
+        frm.fields_dict['raw_material'].grid.get_field('cost_center').get_query = function (doc, cdt, cdn) {
+            return {
+                filters: {
+                    company: frm.doc.company
+                }
+            };
+        };
+    },
     raw_material_total: function(frm) {
         calculate_total_cost(frm);
     },
@@ -60,7 +69,8 @@ frappe.ui.form.on('Estimation', {
         }
 
     },
-     customer: function () {
+    
+    customer: function () {
 	    if(cur_frm.doc.customer){
 	         frappe.db.get_doc("Customer", cur_frm.doc.customer)
             .then(doc => {
@@ -141,7 +151,7 @@ frappe.ui.form.on('Estimation', {
             };
         };
     },
-    
+   
 
     company: function (frm) {
         frm.fields_dict['workshop_details'].grid.get_field('machine_name').get_query = function (doc, cdt, cdn) {

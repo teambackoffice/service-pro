@@ -189,12 +189,13 @@ def calculate_cost(doc, method):
 @frappe.whitelist()
 def create_production(source_name):
     source_doc = frappe.get_doc("Estimation", source_name)
-    
+
     quotation = frappe.new_doc("Quotation")
-    quotation.quotation_to = "Customer" 
-    quotation.party_name = source_doc.customer  
-    quotation.custom_estimation = source_doc.name 
-    quotation.transaction_date = frappe.utils.nowdate() 
+    quotation.quotation_to = "Customer"
+    quotation.party_name = source_doc.customer
+    quotation.company = source_doc.company
+    quotation.custom_estimation = source_doc.name
+    quotation.transaction_date = frappe.utils.nowdate()
 
     for raw_material in source_doc.raw_material:
         if not raw_material.item_code:
@@ -204,14 +205,16 @@ def create_production(source_name):
         item.item_code = raw_material.item_code
         item.item_name = raw_material.item_name or "Unnamed Item"
         item.qty = raw_material.qty_raw_material or 0
-        item.uom = raw_material.umo or "Nos"  
+        item.uom = getattr(raw_material, "uom", "Nos")  
         item.rate = raw_material.rate_raw_material or 0
         item.amount = raw_material.amount_raw_material or 0
 
     quotation.insert(ignore_permissions=True)
-    frappe.db.commit()  
+    frappe.db.commit()
 
     return quotation.name
+
+
 
 
 

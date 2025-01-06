@@ -72,9 +72,12 @@ def create_production(source_name):
     new_doc.inspection = source_doc.name
     new_doc.item_name = source_doc.item_name
     new_doc.item_code_est = source_doc.item_code
+    new_doc.rod_dia = source_doc.piston_rod_size
+    new_doc.tube_size = source_doc.tube_size
     
     new_doc.insert(ignore_permissions=True)
     
     return new_doc
+
 
 

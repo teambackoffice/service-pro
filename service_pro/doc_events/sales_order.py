@@ -174,7 +174,7 @@ def get_vat_amount(doc):
 	return vat_amount
 
 def validate_permission(doc, method):
-	if not doc.custom_ignore_permission_ and not doc.custom_production_id:
+	if not doc.custom_ignore_permission_ and not doc.custom_quotation:
 		frappe.throw("Quotation is Required")
 
 @frappe.whitelist()

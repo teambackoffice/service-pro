@@ -304,3 +304,12 @@ def validate_so(doc, method):
 			for it in doc.get("items"):
 				if not it.sales_order:
 					frappe.throw("The Item {0}-{1} Does not have Sales Order".format(it.item_code,it.item_name))
+
+def validate_permission(doc, method):
+	if not doc.custom_ignore_permission_ and not doc.custom_production_id:
+		frappe.throw("Sales Invoice is Required")
+
+@frappe.whitelist()
+def get_role():
+	doc = frappe.db.get_value("Production Settings",None,"ignore_permission")
+	return doc

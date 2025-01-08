@@ -73,6 +73,21 @@ frappe.ui.form.on('Sales Invoice', {
                 }
             })
         }
+        frappe.call({
+            method: "service_pro.doc_events.sales_invoice.get_role",
+            callback: function (r) {
+                if (r.message) {
+                    const authorized_role = r.message; 
+                    console.log("Authorized Role:", authorized_role);
+        
+                    frappe.user_roles.includes(authorized_role)
+                        ? frm.set_df_property('custom_ignore_permission_', 'read_only', 0) 
+                        : frm.set_df_property('custom_ignore_permission_', 'read_only', 1); 
+                } else {
+                    console.error("No authorized role found.");
+                }
+            }
+        });
     },
     refresh: function(frm) {
         // frm.toggle_display("update_stock", frm.doc.is_pos)

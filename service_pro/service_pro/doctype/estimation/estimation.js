@@ -37,6 +37,13 @@ cur_frm.cscript.inspection = function (frm, cdt, cdn) {
     }
 }
 frappe.ui.form.on('Estimation', {
+    raw_material_total: function(frm) {
+        calculate_total_costs(frm);
+    },
+    total_cost_amount: function(frm) {
+        calculate_total_costs(frm);
+    },
+
     setup: function(frm){
         frm.fields_dict['raw_material'].grid.get_field('cost_center').get_query = function (doc, cdt, cdn) {
             return {
@@ -81,6 +88,7 @@ frappe.ui.form.on('Estimation', {
 
     },
     refresh: function (frm) { 
+        calculate_total_costs(frm);
         frm.add_custom_button(__('Quotation'), function () {
             frappe.call({
                 method: "service_pro.service_pro.doctype.estimation.estimation.create_production",
@@ -209,6 +217,25 @@ frappe.ui.form.on('Estimation', {
         df0.hidden = 1
 	}
 });
+
+function calculate_total_costs(frm) {
+    const raw_material_total = parseFloat(frm.doc.raw_material_total || 0);
+    const total_cost_amount = parseFloat(frm.doc.total_cost_amount || 0);
+
+    const total_cost = raw_material_total + total_cost_amount;
+
+    frm.set_value('total_cost', total_cost);
+
+
+    if (frm.doc.scoop_of_work) {
+        frm.doc.scoop_of_work.forEach(row => {
+            frappe.model.set_value(row.doctype, row.name, 'cost', total_cost);
+        });
+
+        frm.refresh_field('scoop_of_work');
+    }
+}
+
 function calculate_total_cost(frm) {
     // Ensure the fields are numbers, fallback to 0 if undefined
     const raw_material_total = parseFloat(frm.doc.raw_material_total || 0);

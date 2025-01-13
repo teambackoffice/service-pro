@@ -54,9 +54,13 @@ frappe.ui.form.on("Sales Order", {
                     const authorized_role = r.message; 
                     console.log("Authorized Role:", authorized_role);
         
-                    frappe.user_roles.includes(authorized_role)
-                        ? frm.set_df_property('custom_ignore_permission_', 'read_only', 0) // Enable field
-                        : frm.set_df_property('custom_ignore_permission_', 'read_only', 1); // Disable field
+                    if (frappe.user_roles.includes(authorized_role)) {
+                        frm.set_df_property('custom_ignore_permission_', 'read_only', 0); 
+                        frm.set_value('custom_ignore_permission_', 1); 
+                    } else {
+                        frm.set_df_property('custom_ignore_permission_', 'read_only', 1); 
+                        frm.set_value('custom_ignore_permission_', 0); 
+                    }
                 } else {
                     console.error("No authorized role found.");
                 }

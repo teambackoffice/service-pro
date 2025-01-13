@@ -199,8 +199,8 @@ frappe.ui.form.on('Production', {
           freeze: true,
           freeze_message: "Generating Item....",
           callback: function(r){
-              // cur_frm.doc.item_code_prod = r.message
-              // cur_frm.refresh_field("item_code_prod")
+            //   cur_frm.doc.item_code_prod = r.message
+            //   cur_frm.refresh_field("item_code_prod")
           }
       })
     },

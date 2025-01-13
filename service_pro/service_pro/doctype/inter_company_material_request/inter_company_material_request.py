@@ -84,30 +84,36 @@ class InterCompanyMaterialRequest(Document):
 #         frappe.msgprint(f"Material Request {material_request.name} created for supplier {supplier} ({supplier_name})")
 
 
+
+
 @frappe.whitelist()
 def get_available_qty(item_code):
-    """
-    Fetch available stock quantity for the given item code.
-    """
-    warehouses = frappe.db.sql("""
-        SELECT
-            sle.company AS company,
-            sle.item_code AS item_code,
-            item.item_name AS item_name,
-            sle.warehouse AS warehouse,
-            SUM(sle.actual_qty) AS actual_qty
-        FROM
-            `tabStock Ledger Entry` sle
-        JOIN
-            `tabItem` item ON sle.item_code = item.item_code
-        WHERE
-            sle.item_code = %s
-        GROUP BY
-            sle.company, sle.item_code, sle.warehouse
-        ORDER BY
-            sle.company, sle.warehouse
-    """, (item_code,), as_dict=True)
+    warehouses = frappe.db.sql(
+        """
+        SELECT 
+            wh.name AS warehouse,
+            wh.company,
+            bin.item_code,
+            bin.actual_qty,
+            item.item_name 
+        FROM 
+            `tabWarehouse` AS wh
+        LEFT JOIN 
+            `tabBin` AS bin
+        ON 
+            wh.name = bin.warehouse
+        LEFT JOIN 
+            `tabItem` AS item
+        ON 
+            bin.item_code = item.name
+        WHERE 
+            bin.item_code = %s
+        """,
+        (item_code,),
+        as_dict=True
+    )
     return warehouses
+
 
 @frappe.whitelist()
 def get_available(item_code, stock_transfer_template):

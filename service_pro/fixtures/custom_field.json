@@ -2422,7 +2422,7 @@
   "dt": "Salary Structure Assignment",
   "fetch_from": null,
   "fetch_if_empty": 0,
-  "fieldname": "custom_other_allowance",
+  "fieldname": "custom_valuation_rate_htcr",
   "fieldtype": "Currency",
   "hidden": 0,
   "hide_border": 0,

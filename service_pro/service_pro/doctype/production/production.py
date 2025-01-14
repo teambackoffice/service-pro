@@ -51,19 +51,19 @@ class Production(Document):
 	@frappe.whitelist()
 	def generate_item(self):
 		if not self.item_name:
-			frappe.throw("Please add valid item name")
+			frappe.throw("Please add a valid item name")
 		if not self.umo:
-			frappe.throw("Please add valid UOM")
+			frappe.throw("Please add a valid UOM")
 
+		# Fetch values from Production Settings
 		item_group = frappe.db.get_value("Production Settings", None, "item_group")
 		tax_template = frappe.db.get_value("Production Settings", None, "default_item_tax_template")
 		item_naming_series = frappe.db.get_value("Production Settings", None, "item_naming_series")
+
 		if not item_group:
-			frappe.throw("Please set default item group in Production Settings")
+			frappe.throw("Please set the default item group in Production Settings")
 		if not item_naming_series:
-			frappe.throw("Please set default Naming Series in Production Settings")
-
-
+			frappe.throw("Please set the default Naming Series in Production Settings")
 		doctype = {
 			"doctype": "Item",
 			"item_name": self.item_name,
@@ -71,11 +71,26 @@ class Production(Document):
 			"item_group": item_group,
 			"naming_series": item_naming_series,
 			"custom_tax_template": tax_template,
-			
 		}
-		item = frappe.get_doc(doctype).insert()
+
+		item = frappe.get_doc(doctype)
+
+		if tax_template:
+			tax_details = frappe.get_all(
+				"Item Tax",
+				filters={"parent": tax_template},
+				fields=["item_tax_template", "tax_category"]
+			)
+			for tax in tax_details:
+				item.append("taxes", {
+					"item_tax_template": tax.get("item_tax_template"),
+					"tax_category": tax.get("tax_category"),
+				})
+
+		item.save()
 		frappe.db.commit()
 		self.item_code_prod = item.name
+
 	@frappe.whitelist()
 	def change_status(self, status):
 		if status == "Closed" or status == "Completed":
@@ -666,30 +681,36 @@ def update_dispatch_address(customer):
 
 @frappe.whitelist()
 def create_delivery_note(source_name, target_doc=None):
+    def set_missing_values(source, target):
+        """Set default values for fields in the Delivery Note."""
+        target.append("items", {
+            "item_code": source.item_code_prod,  # Ensure this field exists in the Production Doctype
+            "qty": source.qty,  # Ensure this field exists in the Production Doctype
+            "uom": source.umo,  # Fix typo from "umo" to "uom"
+            "item_name": source.item_name,  # Ensure this field exists in the Production Doctype
+            "rate": source.invoice_rate  # Map "invoice_rate" to "rate"
+        })
+
     doclist = get_mapped_doc(
-        "Production", 
-        source_name, 
+        "Production",
+        source_name,
         {
             "Production": {
                 "doctype": "Delivery Note",
                 "field_map": {
-                   
-                    "customer": "customer",
-                    "company": "company",
-                    "posting_date": "posting_date",
-                }
-            },
-            "Raw Material": {
-                "doctype": "Delivery Note Item",
-                "field_map": {
-                    
+                    "customer": "customer",  # Map "customer" field
+                    "company": "company",  # Map "company" field
+                    "posting_date": "posting_date",  # Map "posting_date" field
                 }
             }
         },
         target_doc,
+        set_missing_values
     )
 
     return doclist
+
+
 
 @frappe.whitelist()
 def create_sales_invoice(source_name, target_doc=None):

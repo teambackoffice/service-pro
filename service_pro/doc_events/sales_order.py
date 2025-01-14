@@ -9,6 +9,7 @@ from datetime import datetime
 from erpnext import get_region
 from frappe.model.mapper import get_mapped_doc
 
+
 # def on_so_submit(doc, method=None):
 # 	if doc.selling_price_list:
 # 		if frappe.db.exists("Maximum User Discount", {"parent":doc.selling_price_list, "user": frappe.session.user}):
@@ -181,3 +182,43 @@ def validate_permission(doc, method):
 def get_role():
 	doc = frappe.db.get_value("Production Settings",None,"ignore_permission")
 	return doc
+
+
+@frappe.whitelist()
+def create_production_from_sales_order(source_name):
+    def update_item_table(source_doc, target_doc, source_parent):
+        # Map item data from Sales Order to Raw Material in Production
+        target_doc.item_code = source_doc.item_code
+        target_doc.qty = source_doc.qty
+        target_doc.rate = source_doc.rate
+        target_doc.amount = source_doc.amount
+
+    # Map fields and child table entries
+    production_doc = get_mapped_doc(
+        "Sales Order",
+        source_name,
+        {
+            "Sales Order": {
+                "doctype": "Production",
+                "field_map": {
+                    "name": "sales_order_reference",
+                    # Map additional fields as necessary
+                }
+            },
+            "Sales Order Item": {
+                "doctype": "Raw Material",
+                "postprocess": update_item_table,
+                "field_map": {
+                    "item_code": "item_code",
+                    "qty": "qty",
+                    "rate": "rate",
+                    "amount": "amount"
+                }
+            }
+        },
+        ignore_permissions=True
+    )
+
+    production_doc.insert()
+    frappe.db.commit()
+    return production_doc.name

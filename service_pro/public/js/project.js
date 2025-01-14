@@ -13,6 +13,26 @@ frappe.ui.form.on('Project', {
             }, __('Create'));
         }
     },
+    customer: function(frm) {
+        if (frm.doc.customer) {
+            frappe.call({
+                method: 'frappe.client.get_value',
+                args: {
+                    doctype: 'Customer',
+                    fieldname: 'customer_name',
+                    filters: { name: frm.doc.customer }
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        frm.set_value('custom_customer_name', r.message.customer_name);
+                    }
+                }
+            });
+        } else {
+            frm.set_value('customer_name', '');
+        }
+    }
 });
+
 
 

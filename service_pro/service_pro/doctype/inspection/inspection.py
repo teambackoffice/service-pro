@@ -64,9 +64,9 @@ class Inspection(Document):
 @frappe.whitelist()
 def create_production(source_name):
     source_doc = frappe.get_doc("Inspection", source_name)
-    
+
     new_doc = frappe.new_doc("Estimation")
-    
+
     new_doc.customer = source_doc.customer
     new_doc.company = source_doc.company
     new_doc.inspection = source_doc.name
@@ -74,9 +74,10 @@ def create_production(source_name):
     new_doc.item_code_est = source_doc.item_code
     new_doc.rod_dia = source_doc.piston_rod_size
     new_doc.tube_size = source_doc.tube_size
-    
+    new_doc.customer_name = source_doc.customer_name
+
     new_doc.insert(ignore_permissions=True)
-    
+
     return new_doc
 
 

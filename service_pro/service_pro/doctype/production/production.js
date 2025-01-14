@@ -55,7 +55,7 @@ cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
 
             compute_raw_material_total(cur_frm)
             compute_for_selling_price(cur_frm)
-set_item_selling_price(cur_frm)
+            set_item_selling_price(cur_frm)
 
         })
 

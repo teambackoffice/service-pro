@@ -35,16 +35,32 @@ frappe.ui.form.on("Sales Order", {
             function() {
                 frappe.model.with_doctype('Production', function() {
                     var prod_doc = frappe.model.get_new_doc('Production');
-
-                    prod_doc.sales_order = frm.doc.name; 
-                    prod_doc.customer = frm.doc.customer; 
-                    prod_doc.company = frm.doc.company; 
-
+        
+                    // Set main fields
+                    prod_doc.sales_order = frm.doc.name;
+                    prod_doc.customer = frm.doc.customer;
+                    prod_doc.company = frm.doc.company;
+        
+                    // Copy values from Sales Order Items table to Raw Material table in Production
+                    $.each(frm.doc.items || [], function(index, item) {
+                        var child_row = frappe.model.add_child(prod_doc, 'Raw Material', 'raw_material'); // Update with your actual child table fieldname
+        
+                        // Set values from Sales Order item to Production Raw Material row
+                        child_row.item_code = item.item_code;
+                        child_row.item_name = item.item_name;
+                        child_row.quantity = item.qty;
+                        child_row.uom = item.uom;
+                        child_row.rate_raw_material = item.rate;
+                        child_row.amount_raw_material = item.amount ;
+                    });
+        
+                    // Navigate to the new Production form
                     frappe.set_route('Form', 'Production', prod_doc.name);
                 });
             },
             __("Create")
         );
+        
     },
     onload : function(frm) {
         frappe.call({

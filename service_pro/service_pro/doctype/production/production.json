@@ -29,6 +29,7 @@
   "site_job_report",
   "old_sk_number",
   "production_status",
+  "ignore_permission",
   "section_break_vylf",
   "generate_item",
   "column_break_fknz",
@@ -563,14 +564,19 @@
    "fieldtype": "Link",
    "label": "Sales Order",
    "options": "Sales Order",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "ignore_permission",
+   "fieldtype": "Check",
+   "label": "Ignore Permission "
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-28 08:56:42.072412",
+ "modified": "2025-01-15 10:23:46.070846",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

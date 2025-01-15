@@ -721,15 +721,7 @@ cur_frm.refresh_field("item_selling_price_list")
             })
             set_batch_no_filter(frm)
 
-            frm.set_query('cost_center', function() {
-                if (frm.doc.company) {
-                    return {
-                        filters: {
-                            company: frm.doc.company
-                        }
-                    };
-                }
-            });
+            
 	},
     setup: function (frm) {
         frm.set_query("address", () => {
@@ -744,6 +736,15 @@ cur_frm.refresh_field("item_selling_price_list")
                     link_name: frm.doc.customer,
                 },
             };
+        });
+        frm.set_query('cost_center', function() {
+            if (frm.doc.company) {
+                return {
+                    filters: {
+                        company: frm.doc.company
+                    }
+                };
+            }
         });
     },
     customer:function(frm){

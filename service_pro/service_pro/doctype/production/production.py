@@ -689,11 +689,12 @@ def create_delivery_note(source_name, target_doc=None):
     def set_missing_values(source, target):
         """Set default values for fields in the Delivery Note."""
         target.append("items", {
-            "item_code": source.item_code_prod,  # Ensure this field exists in the Production Doctype
-            "qty": source.qty,  # Ensure this field exists in the Production Doctype
-            "uom": source.umo,  # Fix typo from "umo" to "uom"
-            "item_name": source.item_name,  # Ensure this field exists in the Production Doctype
-            "rate": source.invoice_rate  # Map "invoice_rate" to "rate"
+            "item_code": source.item_code_prod,  
+            "qty": source.qty,  
+            "uom": source.umo,
+			"stock_uom": source.umo,    
+            "item_name": source.item_name, 
+            "rate": source.invoice_rate 
         })
 
     doclist = get_mapped_doc(
@@ -703,9 +704,9 @@ def create_delivery_note(source_name, target_doc=None):
             "Production": {
                 "doctype": "Delivery Note",
                 "field_map": {
-                    "customer": "customer",  # Map "customer" field
-                    "company": "company",  # Map "company" field
-                    "posting_date": "posting_date",  # Map "posting_date" field
+                    "customer": "customer", 
+                    "company": "company",  
+                    "posting_date": "posting_date",  
                 }
             }
         },

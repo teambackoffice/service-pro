@@ -236,7 +236,7 @@ frappe.ui.form.on('Production', {
                 method: "get_defaults",
                 freeze: true,
                 freeze_message: "Getting Company Defaults....",
-                callback: function (r) {
+                callback: function (r) {console.log(r)
                     defaults = r.message
 
                 }
@@ -542,13 +542,6 @@ cur_frm.refresh_field("item_selling_price_list")
                 }
             }
         });
-         cur_frm.set_query('cost_center', () => {
-            return {
-                filters: {
-                    is_group: 0,
-                }
-            }
-        });
          cur_frm.fields_dict.linked_productions.grid.get_field("cylinder_service").get_query =
 			function() {
 				return {
@@ -759,7 +752,9 @@ cur_frm.refresh_field("item_selling_price_list")
             if (frm.doc.company) {
                 return {
                     filters: {
-                        company: frm.doc.company
+                        company: frm.doc.company,
+                        is_group: 0,
+
                     }
                 };
             }

@@ -12,6 +12,11 @@ from erpnext.stock.stock_ledger import get_previous_sle
 from frappe.utils import cint, flt
 from datetime import datetime
 class Production(Document):
+	def before_submit(self):
+		if not self.ignore_permission and not self.sales_order:
+			frappe.throw("Sales Order is Required")
+
+
 	@frappe.whitelist()
 	def get_defaults(self):
 		if self.company:
@@ -739,3 +744,8 @@ def create_sales_invoice(source_name, target_doc=None):
     )
 
     return doclist
+
+@frappe.whitelist()
+def get_role():
+    doc = frappe.db.get_value("Production Settings", None, "ignore_permission")
+    return doc

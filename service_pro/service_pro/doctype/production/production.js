@@ -244,6 +244,24 @@ frappe.ui.form.on('Production', {
         }
     },
     onload: function (frm) {
+        frappe.call({
+            method: "service_pro.service_pro.doctype.production.production.get_role",
+            callback: function (r) {
+                if (r.message) {
+                    const authorized_role = r.message; 
+                    console.log("Authorized Role:", authorized_role);
+        
+                    frappe.user_roles.includes(authorized_role)
+                        ? frm.set_df_property('ignore_permission', 'read_only', 0) 
+                        : frm.set_df_property('ignore_permission', 'read_only', 1); 
+                } else {
+                    console.error("No authorized role found.");
+                }
+            }
+        });
+        
+        
+
         if(cur_frm.doc.company){
             cur_frm.call({
                 doc: cur_frm.doc,

@@ -772,7 +772,7 @@ cur_frm.refresh_field("item_selling_price_list")
                     
                 },
             });
-        
+                   
     },
     address: function(frm) {
         if(cur_frm.doc.address){

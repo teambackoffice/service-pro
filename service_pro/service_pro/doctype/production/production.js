@@ -762,17 +762,35 @@ cur_frm.refresh_field("item_selling_price_list")
     },
     customer:function(frm){
         
-            frappe.call({
-                method: "service_pro.service_pro.doctype.production.production.update_dispatch_address",
-                args: {
-                    customer: frm.doc.customer,
-                },
-                callback: function (r) {
-                    frm.set_value("address", r.message || "");
-                    
-                },
-            });
-                   
+        frappe.call({
+            method: "service_pro.service_pro.doctype.production.production.update_dispatch_address",
+            args: {
+                customer: frm.doc.customer,
+            },
+            callback: function (r) {
+                frm.set_value("address", r.message || "");
+                
+            },
+        });
+            if (frm.doc.customer) {
+                frappe.call({
+                    method: 'service_pro.service_pro.doctype.production.production.get_customer_name',
+                    args: {
+                        customer: frm.doc.customer
+                    },
+                    callback: function (r) {
+                        if (r.message) {
+                            frm.set_value('customer_name', r.message);
+                        } else {
+                            frm.set_value('customer_name', '');
+                        }
+                    }
+                });
+            } else {
+                frm.set_value('customer_name', '');
+            }
+        
+        
     },
     address: function(frm) {
         if(cur_frm.doc.address){

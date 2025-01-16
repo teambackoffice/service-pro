@@ -750,3 +750,12 @@ def create_sales_invoice(source_name, target_doc=None):
 def get_role():
     doc = frappe.db.get_value("Production Settings", None, "ignore_permission")
     return doc
+
+
+
+@frappe.whitelist()
+def get_customer_name(customer):
+    if customer:
+        customer_name = frappe.db.get_value("Customer", customer, "customer_name")
+        return customer_name
+    return None

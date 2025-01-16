@@ -183,6 +183,7 @@ frappe.ui.form.on('Estimation', {
                 }
             })
         }
+        frm.fields_dict['raw_material'].grid.refresh();
     },
 	onload: function(frm) {
         if(cur_frm.doc.company){
@@ -197,6 +198,17 @@ frappe.ui.form.on('Estimation', {
                 }
             })
         }
+        
+        // Ensure the script runs when the form loads
+        frm.fields_dict['raw_material'].grid.get_field('warehouse').get_query = function (doc, cdt, cdn) {
+            let row = locals[cdt][cdn];
+            return {
+                filters: {
+                    company: frm.doc.company // Filter warehouses based on the selected company
+                }
+            };
+        };
+        
 
          // frappe.db.get_single_value('Production Settings', 'rate_of_materials_based_on')
          //    .then(rate => {

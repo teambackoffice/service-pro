@@ -159,6 +159,15 @@ frappe.ui.form.on("Inter Company Material Request Item", {
         } else {
             frm.fields_dict.stock_details.$wrapper.empty();
         }
+        frm.call({
+            method: "get_valution_rate",
+            args: {item_code: item.item_code},
+            callback: function(r) {console.log(r)
+                if (r.message) {
+                    frappe.model.set_value(cdt, cdn, "rate", r.message);
+                }
+            }
+        });
     },
     
 

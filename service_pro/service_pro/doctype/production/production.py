@@ -750,3 +750,31 @@ def create_sales_invoice(source_name, target_doc=None):
 def get_role():
     doc = frappe.db.get_value("Production Settings", None, "ignore_permission")
     return doc
+
+@frappe.whitelist()
+def get_estimation_raw_material(estimation_id):
+    try:
+        estimation = frappe.get_doc('Estimation', estimation_id)
+        raw_material_data = []
+        
+        for row in estimation.raw_material:
+            raw_material_data.append({
+                'item_code': row.item_code,
+                'item_name': row.item_name,
+                'warehouse': row.warehouse,
+                'available_qty': row.available_qty,
+                'production': row.production,
+                'batch': row.batch,
+                'umo': row.umo,
+                'qty_raw_material': row.qty_raw_material,
+                'rate_raw_material': row.rate_raw_material,
+                'amount_raw_material': row.amount_raw_material,
+                'cost_center': row.cost_center
+            })
+        
+        return raw_material_data
+    except frappe.DoesNotExistError:
+        frappe.throw(f"Estimation {estimation_id} does not exist.")
+    except Exception as e:
+        frappe.throw(f"An error occurred while fetching data: {str(e)}")
+

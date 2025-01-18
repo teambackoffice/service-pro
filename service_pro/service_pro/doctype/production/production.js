@@ -1008,15 +1008,17 @@ frappe.ui.form.on('Raw Material', {
 
 
 function filter_link_field(cur_frm) {
-     cur_frm.set_query('estimation', () => {
+    cur_frm.set_query('estimation', function() {
         return {
-            // filters: [
-            //     ["docstatus","=",1],
-            //     ["status","=","To Production"]
-            // ]
-        }
-    })
+            filters: {
+                company: cur_frm.doc.company, 
+                // docstatus: 1,              
+                // status: "To Production"    
+            }
+        };
+    });
 }
+
 function get_items_from_estimation(frm,cur_frm) {
    frappe.db.get_doc('Estimation', cur_frm.doc.estimation)
     .then(doc => {

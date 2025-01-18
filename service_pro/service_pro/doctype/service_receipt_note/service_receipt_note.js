@@ -114,22 +114,23 @@ cur_frm.set_query("customer", () => {
                 })
 
 
-        } else if (cur_frm.doc.status === "Closed"){
-            frm.add_custom_button(__("Open"), () => {
-                    cur_frm.call({
-                        doc: cur_frm.doc,
-                        method: 'change_status',
-                        args: {
-                            status: "To Inspection"
-                        },
-                        freeze: true,
-                        freeze_message: "Opening...",
-                        callback: () => {
-                        cur_frm.reload_doc()
-                        }
-                })
-            })
         }
+        //  else if (cur_frm.doc.status === "Closed"){
+        //     frm.add_custom_button(__("Open"), () => {
+        //             cur_frm.call({
+        //                 doc: cur_frm.doc,
+        //                 method: 'change_status',
+        //                 args: {
+        //                     status: "To Inspection"
+        //                 },
+        //                 freeze: true,
+        //                 freeze_message: "Opening...",
+        //                 callback: () => {
+        //                 cur_frm.reload_doc()
+        //                 }
+        //         })
+        //     })
+        // } 
 	},
     customer: function (frm) {
         if (frm.doc.customer) {

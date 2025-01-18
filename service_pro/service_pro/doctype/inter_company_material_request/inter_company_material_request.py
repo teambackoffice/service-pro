@@ -126,3 +126,15 @@ def get_available(item_code, stock_transfer_template):
     )
 
     return available_qty or 0
+
+
+@frappe.whitelist()
+def get_valution_rate(item_code):
+
+    available_qty = frappe.db.get_value(
+        "Bin",
+        {"item_code": item_code},
+        "valuation_rate"
+    )
+
+    return available_qty

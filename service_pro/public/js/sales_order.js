@@ -40,6 +40,7 @@ frappe.ui.form.on("Sales Order", {
                     prod_doc.sales_order = frm.doc.name;
                     prod_doc.customer = frm.doc.customer;
                     prod_doc.company = frm.doc.company;
+                    prod_doc.customer_name = frm.doc.customer_name;
         
                     // Copy values from Sales Order Items table to Raw Material table in Production
                     $.each(frm.doc.items || [], function(index, item) {
@@ -52,6 +53,7 @@ frappe.ui.form.on("Sales Order", {
                         child_row.uom = item.uom;
                         child_row.rate_raw_material = item.rate;
                         child_row.amount_raw_material = item.amount ;
+                        
                     });
         
                     // Navigate to the new Production form

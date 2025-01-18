@@ -230,13 +230,6 @@
    "options": "In Progress\nPartially Delivered\nPartially Sales Order\nCompleted\nTo Deliver and Bill\nTo Deliver\nTo Bill\nClosed\nLinked"
   },
   {
-   "fieldname": "cost_center",
-   "fieldtype": "Link",
-   "label": "Cost Center",
-   "options": "Cost Center",
-   "reqd": 1
-  },
-  {
    "fieldname": "income_account",
    "fieldtype": "Link",
    "label": "Income Account",
@@ -276,7 +269,6 @@
    "fieldtype": "Link",
    "label": "Item Code",
    "options": "Item",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -570,13 +562,21 @@
    "default": "0",
    "fieldname": "ignore_permission",
    "fieldtype": "Check",
-   "label": "Ignore Permission "
+   "label": "Ignore Permission",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-15 10:23:46.070846",
+ "modified": "2025-01-17 07:45:54.513693",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

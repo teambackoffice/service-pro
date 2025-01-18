@@ -236,7 +236,7 @@ frappe.ui.form.on('Production', {
                 method: "get_defaults",
                 freeze: true,
                 freeze_message: "Getting Company Defaults....",
-                callback: function (r) {
+                callback: function (r) {console.log(r)
                     defaults = r.message
 
                 }
@@ -542,13 +542,6 @@ cur_frm.refresh_field("item_selling_price_list")
                 }
             }
         });
-         cur_frm.set_query('cost_center', () => {
-            return {
-                filters: {
-                    is_group: 0,
-                }
-            }
-        });
          cur_frm.fields_dict.linked_productions.grid.get_field("cylinder_service").get_query =
 			function() {
 				return {
@@ -739,15 +732,7 @@ cur_frm.refresh_field("item_selling_price_list")
             })
             set_batch_no_filter(frm)
 
-            frm.set_query('cost_center', function() {
-                if (frm.doc.company) {
-                    return {
-                        filters: {
-                            company: frm.doc.company
-                        }
-                    };
-                }
-            });
+            
 	},
     setup: function (frm) {
         frm.set_query("address", () => {
@@ -763,19 +748,48 @@ cur_frm.refresh_field("item_selling_price_list")
                 },
             };
         });
+        frm.set_query('cost_center', function() {
+            if (frm.doc.company) {
+                return {
+                    filters: {
+                        company: frm.doc.company,
+                        is_group: 0,
+
+                    }
+                };
+            }
+        });
     },
     customer:function(frm){
         
-            frappe.call({
-                method: "service_pro.service_pro.doctype.production.production.update_dispatch_address",
-                args: {
-                    customer: frm.doc.customer,
-                },
-                callback: function (r) {
-                    frm.set_value("address", r.message || "");
-                    
-                },
-            });
+        frappe.call({
+            method: "service_pro.service_pro.doctype.production.production.update_dispatch_address",
+            args: {
+                customer: frm.doc.customer,
+            },
+            callback: function (r) {
+                frm.set_value("address", r.message || "");
+                
+            },
+        });
+            if (frm.doc.customer) {
+                frappe.call({
+                    method: 'service_pro.service_pro.doctype.production.production.get_customer_name',
+                    args: {
+                        customer: frm.doc.customer
+                    },
+                    callback: function (r) {
+                        if (r.message) {
+                            frm.set_value('customer_name', r.message);
+                        } else {
+                            frm.set_value('customer_name', '');
+                        }
+                    }
+                });
+            } else {
+                frm.set_value('customer_name', '');
+            }
+        
         
     },
     address: function(frm) {

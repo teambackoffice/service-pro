@@ -939,6 +939,41 @@ cur_frm.refresh_field("item_selling_price_list")
 
         }
 	},
+    estimation: function(frm) {
+        if (!frm.doc.estimation) return;
+    
+        frappe.call({
+            method: 'service_pro.service_pro.doctype.production.production.get_estimation_raw_material',
+            args: { estimation_id: frm.doc.estimation },
+            callback: function(r) {
+                if (r.message) {
+                    frm.clear_table('raw_material');
+                    r.message.forEach(row => {
+                        const child = frm.add_child('raw_material', {
+                            item_code: row.item_code,
+                            item_name: row.item_name,
+                            warehouse: row.warehouse,
+                            available_qty: row.available_qty,
+                            production: row.production,
+                            batch: row.batch,
+                            umo: row.umo,
+                            qty_raw_material: row.qty_raw_material,
+                            rate_raw_material: row.rate_raw_material,
+                            amount_raw_material: row.amount_raw_material,
+                            cost_center: row.cost_center,
+                        });
+                    });
+                    frm.refresh_field('raw_material');
+                } else {
+                    frappe.msgprint(__('No raw material found for the selected estimation.'));
+                }
+            },
+        });
+    },
+    
+
+
+
     // estimation: function(frm) {
 
 	//     if(cur_frm.doc.type && cur_frm.doc.type === "Service" && cur_frm.doc.estimation){
@@ -975,10 +1010,10 @@ frappe.ui.form.on('Raw Material', {
 function filter_link_field(cur_frm) {
      cur_frm.set_query('estimation', () => {
         return {
-            filters: [
-                ["docstatus","=",1],
-                ["status","=","To Production"]
-            ]
+            // filters: [
+            //     ["docstatus","=",1],
+            //     ["status","=","To Production"]
+            // ]
         }
     })
 }

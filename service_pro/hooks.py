@@ -181,6 +181,8 @@ override_doctype_dashboards = {
     "Purchase Receipt": "service_pro.doc_events.dashboard.dashboard.purchase_receipt",
     "Project": "service_pro.doc_events.dashboard.project_dashboard.project_dashboard",
     "Sales Order": "service_pro.doc_events.dashboard.dashboard.sales_order_dashboard",
+   "Quotation": "service_pro.doc_events.dashboard.quotation_dashboard.quotation_dashboard",
+
 
 }
 

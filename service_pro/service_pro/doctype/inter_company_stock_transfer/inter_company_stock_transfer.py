@@ -13,6 +13,10 @@ from erpnext.controllers.accounts_controller import set_order_defaults, validate
 
 
 class InterCompanyStockTransfer(Document):
+    def before_submit(self):
+         for item in self.item_details:
+              if not item.credit_value:
+                   frappe.throw(_("Credit Value is required for {0}").format(item.item_code))
     
     @frappe.whitelist()
     def get_avail_qty(self,item):

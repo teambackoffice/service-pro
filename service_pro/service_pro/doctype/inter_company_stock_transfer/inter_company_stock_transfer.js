@@ -145,11 +145,18 @@ frappe.ui.form.on("Inter Company Stock Transfer", {
     },
 
     auto_fill_credit_value: function (frm) {
+        let modified = false; 
+        
         frm.doc.item_details.forEach(item => {
-            item.credit_value = item.value;
+            if (item.value && item.credit_value !== item.value) { 
+                item.credit_value = item.value;
+                modified = true;
+            }
         });
-        frm.refresh_field("item_details");
-        compute_totals(frm);
+        if (modified) {
+            frm.refresh_field("item_details");
+            compute_totals(frm);
+        }
     },
     before_submit: function(frm) {
         frm.doc.item_details.forEach(item => {

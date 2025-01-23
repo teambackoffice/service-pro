@@ -239,13 +239,13 @@ function calculate_total_costs(frm) {
     frm.set_value('total_cost', total_cost);
 
 
-    if (frm.doc.scoop_of_work) {
-        frm.doc.scoop_of_work.forEach(row => {
-            frappe.model.set_value(row.doctype, row.name, 'cost', total_cost);
-        });
+    // if (frm.doc.scoop_of_work) {
+    //     frm.doc.scoop_of_work.forEach(row => {
+    //         frappe.model.set_value(row.doctype, row.name, 'cost', total_cost);
+    //     });
 
-        frm.refresh_field('scoop_of_work');
-    }
+    //     frm.refresh_field('scoop_of_work');
+    // }
 }
 
 function calculate_total_cost(frm) {
@@ -344,56 +344,40 @@ cur_frm.cscript.rate_raw_material = function (frm,cdt, cdn) {
     }
 
 }
-function compute_scoop_of_work_total(cur_frm) {
-    var total = 0
-    for(var x=0;x<cur_frm.doc.scoop_of_work.length;x += 1){
-        total += cur_frm.doc.scoop_of_work[x].cost
-    }
-    cur_frm.doc.total_cost = total
-    cur_frm.refresh_field("total_cost")
-    set_rate_and_amount(cur_frm)
-}
 function compute_raw_material_total(cur_frm) {
-    var total = 0
-    for(var x=0;x<cur_frm.doc.raw_material.length;x += 1){
-        total += cur_frm.doc.raw_material[x].amount_raw_material + cur_frm.doc.scoop_of_work[x].cost
+    var raw_material_sum = 0;
+    var scoop_work_sum = 0;
+    
+    // Sum raw material amounts
+    if (cur_frm.doc.raw_material && cur_frm.doc.raw_material.length > 0) {
+        cur_frm.doc.raw_material.forEach(function(row) {
+            raw_material_sum += flt(row.amount_raw_material || 0);
+        });
     }
-    cur_frm.doc.raw_material_total = total
-    cur_frm.refresh_field("raw_material_total")
-    set_rate_and_amount(cur_frm)
+    
+    // Sum scoop of work costs
+    if (cur_frm.doc.scoop_of_work && cur_frm.doc.scoop_of_work.length > 0) {
+        cur_frm.doc.scoop_of_work.forEach(function(row) {
+            scoop_work_sum += flt(row.cost || 0);
+        });
+    }
+    
+    // Update raw_material_total with both sums
+    cur_frm.doc.raw_material_total = raw_material_sum + scoop_work_sum;
+    cur_frm.refresh_field("raw_material_total");
+    set_rate_and_amount(cur_frm);
 }
 cur_frm.cscript.cost = function (frm,cdt,cdn) {
-    compute_scoop_of_work_total(cur_frm)
+    compute_raw_material_total(cur_frm);
 }
 cur_frm.cscript.scoop_of_work_remove = function (frm,cdt,cdn) {
-    compute_scoop_of_work_total(cur_frm)
+    compute_raw_material_total(cur_frm);
 }
-
-cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
-    var d = locals[cdt][cdn]
-    if(d.qty_raw_material && d.qty_raw_material <= d.available_qty){
-        d.amount_raw_material = d.rate_raw_material * d.qty_raw_material
-        cur_frm.refresh_field("raw_material")
-    } else {
-        var qty = d.qty_raw_material
-        d.qty_raw_material = d.available_qty
-        d.amount_raw_material = d.rate_raw_material * d.available_qty
-        cur_frm.refresh_field("raw_material")
-        frappe.throw("Not enough stock. Can't change to " + qty.toString())
-
-    }
-    compute_raw_material_total(cur_frm)
-}
-cur_frm.cscript.rate_raw_material = function (frm,cdt,cdn) {
-   var d = locals[cdt][cdn]
-    if(d.rate_raw_material){
-        d.amount_raw_material = d.rate_raw_material * d.qty_raw_material
-        cur_frm.refresh_field("raw_material")
-    }
-    compute_raw_material_total(cur_frm)
+cur_frm.cscript.scoop_of_work_add = function (frm,cdt,cdn) {
+    compute_raw_material_total(cur_frm);
 }
 cur_frm.cscript.raw_material_remove = function (frm,cdt,cdn) {
-    compute_raw_material_total(cur_frm)
+    compute_raw_material_total(cur_frm);
 }
 cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
     var d = locals[cdt][cdn]

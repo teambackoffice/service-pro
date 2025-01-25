@@ -5,16 +5,12 @@ from frappe import _
 class InterCompanyMaterialRequest(Document):
     def validate(self):
         for item in self.items:
-            if item.qty is None or item.available_qty is None:
+            item_qty = float(item.qty) if isinstance(item.qty, (int, float, str)) and item.qty else 0
+            item_available_qty = float(item.available_qty) if isinstance(item.available_qty, (int, float, str)) and item.available_qty else 0
+            if item_qty > item_available_qty:
                 frappe.throw(
-                _("Row {0}: Quantity or available quantity cannot be empty.").format(item.idx)
-            )
-        if item.qty > item.available_qty:
-            frappe.throw(
-                _("Row {0}: The requested quantity ({1}) exceeds the available quantity ({2}).").format(
-                    item.idx, item.qty, item.available_qty
-                )
-            )
+                    _("The requested quantity for Item {0} exceeds the available quantity.").format(item.item_code)
+                    )
 
 
     def on_submit(self):

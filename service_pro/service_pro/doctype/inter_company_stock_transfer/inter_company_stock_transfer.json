@@ -172,7 +172,8 @@
    "fieldname": "debit_value",
    "fieldtype": "Currency",
    "label": "Debit Value",
-   "read_only": 1
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "column_break_gpyj",
@@ -182,7 +183,8 @@
    "fieldname": "credit_value",
    "fieldtype": "Currency",
    "label": "Credit Value",
-   "read_only": 1
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "amended_from",
@@ -198,7 +200,8 @@
    "fieldname": "deference_value",
    "fieldtype": "Currency",
    "label": "Deference Value",
-   "read_only": 1
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "column_break_fjtv",
@@ -263,7 +266,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-16 16:00:18.186159",
+ "modified": "2025-01-29 13:22:26.533189",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Stock Transfer",

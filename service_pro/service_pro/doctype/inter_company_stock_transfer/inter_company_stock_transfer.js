@@ -316,3 +316,29 @@ erpnext.utils.update_child_items = function (opts) {
 //         }
 
 //     }
+
+frappe.ui.form.on('Inter Company Stock Transfer Item', {
+    value: function(frm, cdt, cdn) {
+        validate_mandatory_fields(frm, cdt, cdn);
+    },
+    credit_value: function(frm, cdt, cdn) {
+        validate_mandatory_fields(frm, cdt, cdn);
+    },
+    items_add: function(frm, cdt, cdn) { 
+        validate_mandatory_fields(frm, cdt, cdn);
+    }
+});
+
+function validate_mandatory_fields(frm, cdt, cdn) {
+    let row = locals[cdt][cdn];
+    
+    if (row.value === undefined || row.value === null || row.value === '') {
+        frappe.msgprint(__('Value is mandatory and cannot be empty.'));
+        frappe.validated = false;
+    }
+    
+    if (row.credit_value === undefined || row.credit_value === null || row.credit_value === '') {
+        frappe.msgprint(__('Credit Value is mandatory and cannot be empty.'));
+        frappe.validated = false;
+    }
+}

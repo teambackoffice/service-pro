@@ -160,6 +160,9 @@ frappe.ui.form.on("Inter Company Stock Transfer", {
             if (!item.credit_value) {
                 frappe.throw(__('Credit Value is required'));
             }
+            if (!item.value) {
+                frappe.throw(__('Debit Value is required'));
+            }
         });
         
     },

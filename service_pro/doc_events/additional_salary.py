@@ -17,6 +17,6 @@ def get_salary_structure(employee, total_working_hours):
 
     gp = basic_salary + house_rent_allowance
 
-    total = float((gp / 30 / 8) * 1.5) * float(total_working_hours)
+    total = float(gp / 30 / 8) * float(total_working_hours)
 
     return total

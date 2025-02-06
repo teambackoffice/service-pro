@@ -1,15 +1,16 @@
 {
  "charts": [
   {
-   "chart_name": "Expense Claims",
-   "label": "Expense Claims"
+   "chart_name": "Profit and Loss",
+   "label": "Profit and Loss"
   }
  ],
- "content": "[{\"id\":\"eE-OJX5Dyh\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Expense Claims\",\"col\":12}},{\"id\":\"XWC2SQa4up\",\"type\":\"card\",\"data\":{\"card_name\":\"Hydrotech Company\",\"col\":3}},{\"id\":\"kb3XPLg8lb\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"nWd2KJPW8l\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Item\",\"col\":3}},{\"id\":\"snrzfbFr5Y\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"id\":\"SHJKakmLLf\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Supplier\",\"col\":3}},{\"id\":\"CPxEyhaf3G\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Invoice\",\"col\":3}},{\"id\":\"WU4F-HUcIQ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Leaderboard\",\"col\":3}},{\"id\":\"d_KVM1gsf9\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"JVu8-FJZCu\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"JiuSi0ubOg\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounting\",\"col\":4}},{\"id\":\"ji2Jlm3Q8i\",\"type\":\"card\",\"data\":{\"card_name\":\"Stock\",\"col\":4}},{\"id\":\"N61oiXpuwK\",\"type\":\"card\",\"data\":{\"card_name\":\"CRM\",\"col\":4}},{\"id\":\"6J0CVl1mPo\",\"type\":\"card\",\"data\":{\"card_name\":\"Data Import and Settings\",\"col\":4}},{\"id\":\"R-BHJYrpVO\",\"type\":\"card\",\"data\":{\"card_name\":\"Masters\",\"col\":4}},{\"id\":\"n9kJYUO4lz\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounting Report\",\"col\":4}},{\"id\":\"Gj5472mXgi\",\"type\":\"card\",\"data\":{\"card_name\":\"Buying & Selling\",\"col\":4}}]",
+ "content": "[{\"id\":\"kYBGIgsqIr\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Accounts Payable\",\"col\":4}},{\"id\":\"04WquogLY7\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Accounts Recievables\",\"col\":4}},{\"id\":\"WSp4A5Y9kt\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Expense\",\"col\":4}},{\"id\":\"IzehUHn-Vt\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Sales person\",\"col\":4}},{\"id\":\"wakLsmyuov\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Profit and Loss\",\"col\":12}},{\"id\":\"XWC2SQa4up\",\"type\":\"card\",\"data\":{\"card_name\":\"Hydrotech Company\",\"col\":3}},{\"id\":\"kb3XPLg8lb\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"nWd2KJPW8l\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Item\",\"col\":3}},{\"id\":\"snrzfbFr5Y\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"id\":\"SHJKakmLLf\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Supplier\",\"col\":3}},{\"id\":\"CPxEyhaf3G\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Invoice\",\"col\":3}},{\"id\":\"WU4F-HUcIQ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Leaderboard\",\"col\":3}},{\"id\":\"d_KVM1gsf9\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"JVu8-FJZCu\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"JiuSi0ubOg\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounting\",\"col\":4}},{\"id\":\"ji2Jlm3Q8i\",\"type\":\"card\",\"data\":{\"card_name\":\"Stock\",\"col\":4}},{\"id\":\"N61oiXpuwK\",\"type\":\"card\",\"data\":{\"card_name\":\"CRM\",\"col\":4}},{\"id\":\"6J0CVl1mPo\",\"type\":\"card\",\"data\":{\"card_name\":\"Data Import and Settings\",\"col\":4}},{\"id\":\"R-BHJYrpVO\",\"type\":\"card\",\"data\":{\"card_name\":\"Masters\",\"col\":4}},{\"id\":\"n9kJYUO4lz\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounting Report\",\"col\":4}},{\"id\":\"Gj5472mXgi\",\"type\":\"card\",\"data\":{\"card_name\":\"Buying & Selling\",\"col\":4}}]",
  "creation": "2020-01-23 13:46:38.833076",
  "custom_blocks": [],
  "custom_default_dashboard": "",
  "custom_menu_title": "",
+ "custom_open_dashboard": 0,
  "docstatus": 0,
  "doctype": "Workspace",
  "for_user": "",
@@ -451,6 +452,7 @@
    "link_to": "Accounts Payable",
    "link_type": "Report",
    "onboard": 0,
+   "report_ref_doctype": "Purchase Invoice",
    "type": "Link"
   },
   {
@@ -461,6 +463,7 @@
    "link_to": "Accounts Receivable",
    "link_type": "Report",
    "onboard": 0,
+   "report_ref_doctype": "Sales Invoice",
    "type": "Link"
   },
   {
@@ -545,11 +548,28 @@
    "type": "Link"
   }
  ],
- "modified": "2024-11-13 12:58:44.726129",
+ "modified": "2025-02-06 08:34:30.188276",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Home",
- "number_cards": [],
+ "number_cards": [
+  {
+   "label": "Accounts Payable",
+   "number_card_name": "Accounts Payable"
+  },
+  {
+   "label": "Accounts Recievables",
+   "number_card_name": "Accounts Recievables"
+  },
+  {
+   "label": "Total Expense",
+   "number_card_name": "Total Expense"
+  },
+  {
+   "label": "Sales person",
+   "number_card_name": "Sales person"
+  }
+ ],
  "owner": "Administrator",
  "parent_page": "",
  "public": 1,

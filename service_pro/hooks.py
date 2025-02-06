@@ -212,7 +212,7 @@ fixtures = [
         ]
     },
     {
-        "doctype": "Clieint Script",
+        "doctype": "Client Script",
         "filters": [
             [
                 "module",

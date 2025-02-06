@@ -210,7 +210,17 @@ fixtures = [
                 "Service Pro"
             ]
         ]
-    }
+    },
+    {
+        "doctype": "Clieint Script",
+        "filters": [
+            [
+                "module",
+                "in",
+                "Service Pro"
+            ]
+        ]
+    },
 ]
 
 report_override_html = {

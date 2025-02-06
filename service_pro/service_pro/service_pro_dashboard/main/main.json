@@ -1,0 +1,35 @@
+{
+ "cards": [
+  {
+   "card": "Accounts Recievables"
+  },
+  {
+   "card": "Sales person"
+  },
+  {
+   "card": "Total Expense"
+  },
+  {
+   "card": "Accounts Payable"
+  }
+ ],
+ "charts": [
+  {
+   "chart": "Profit and Loss",
+   "width": "Full"
+  }
+ ],
+ "creation": "2023-09-16 21:19:00.445075",
+ "custom_maps": [],
+ "dashboard_name": "Main",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 1,
+ "is_standard": 1,
+ "modified": "2025-02-06 08:25:31.633906",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Main",
+ "owner": "Administrator"
+}

@@ -1,0 +1,13 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Salary Structure Assignment",
+  "enabled": 1,
+  "modified": "2025-02-06 11:54:45.429479",
+  "module": "Service Pro",
+  "name": "Salary Structure Assignment",
+  "script": "frappe.ui.form.on('Salary Structure Assignment', {\n    refresh(frm) {\n        let fields_to_hide = [\n            'custom_basic_salary',\n            'custom_food_allowance',\n            'custom_gosi_salary',\n            'variable',\n            'custom_housing_allowance',\n            'custom_other_allowance'\n        ];\n\n        fields_to_hide.forEach(field => {\n            frm.set_df_property(field, 'hidden', 1);\n        });\n    }\n});\n",
+  "view": "Form"
+ }
+]

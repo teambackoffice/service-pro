@@ -7,7 +7,6 @@
  "engine": "InnoDB",
  "field_order": [
   "item_code",
-  "item_nmae",
   "qty",
   "lot_no",
   "column_break_g9a5",
@@ -16,7 +15,10 @@
   "add",
   "po_ref",
   "uom",
-  "purchase_order_item"
+  "purchase_order_item",
+  "batch_no",
+  "warehouse",
+  "cost_center"
  ],
  "fields": [
   {
@@ -85,17 +87,28 @@
    "read_only": 1
   },
   {
-   "fetch_from": "item_code.item_name",
-   "fieldname": "item_nmae",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Item Nmae"
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "batch_no",
+   "fieldtype": "Link",
+   "label": "Batch No",
+   "options": "Batch"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-03 15:48:34.111101",
+ "modified": "2025-02-12 08:53:40.328356",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Supplier Packing Slip Item",

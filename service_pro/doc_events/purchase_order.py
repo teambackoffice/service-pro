@@ -34,9 +34,12 @@ def make_supplier_packing_slip(purchase_order):
             sp_item.item_code = item.item_code
             sp_item.po_ref = item.parent
             sp_item.purchase_order_item = item.name
+            sp_item.cost_center = item.cost_center
             sp_item.uom = item.uom
+            sp_item.warehouse = item.warehouse
             sp_item.po_actual_qty = available_qty
             sp_item.po_remaining_qty = available_qty
+           
 
     if sp.supplier_packing_slip_item:
         sp.insert(ignore_permissions=True)

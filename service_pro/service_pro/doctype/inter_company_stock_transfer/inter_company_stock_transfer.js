@@ -143,6 +143,21 @@ frappe.ui.form.on("Inter Company Stock Transfer", {
             });
         }
     },
+    onload: function(frm) {
+        // Setup batch_no filter for item_details child table
+        frm.fields_dict["item_details"].grid.get_field("batch_no").get_query = function(doc, cdt, cdn) {
+            let row = locals[cdt][cdn];
+            if (row && row.item_code) {
+                return {
+                    query: "erpnext.controllers.queries.get_batch_no",
+                    filters: {
+                        "item_code": row.item_code
+                    }
+                };
+            }
+            return {};
+        };
+    },
 
     auto_fill_credit_value: function (frm) {
         frm.doc.item_details.forEach(item => {

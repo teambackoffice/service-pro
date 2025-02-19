@@ -883,6 +883,7 @@ cur_frm.refresh_field("item_selling_price_list")
                     ["status", "!=", "Completed"],
                     ["docstatus", "=", 1],
                     ["series", "=", "CS-0"],
+                    ["series", "=", "CS-"]
                 ]
 				}
 			}

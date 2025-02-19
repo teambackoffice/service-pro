@@ -180,9 +180,9 @@ cur_frm.cscript.cylinder_service = function (frm, cdt, cdn) {
                         filters.push(["customer", "=", cur_frm.doc.customer])
                     }
                     if(cur_frm.doc.type === 'Re-Service'){
-                        filters.push(["series", "in", ["CS-", "SK-", "HK-", "PB-"]])
+                        filters.push(["series", "in", ["CS-0", "SK-", "HK-", "PB-"]])
                     } else {
-                        filters.push(["series", "=", "CS-"])
+                        filters.push(["series", "=", "CS-0"])
                     }
                     return {
                          filters: filters
@@ -278,8 +278,8 @@ frappe.ui.form.on('Production', {
         
         if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
             filter_link_field(cur_frm)
-            frm.set_df_property('series', 'options', ['CS-'])
-            cur_frm.doc.series = "CS-"
+            frm.set_df_property('series', 'options', ['CS-0'])
+            cur_frm.doc.series = "CS-0"
             cur_frm.refresh_field("series")
             cur_frm.set_df_property("scoop_of_work", "hidden", 0)
             cur_frm.set_df_property("scoop_of_work_total", "hidden", 0 )
@@ -311,8 +311,8 @@ frappe.ui.form.on('Production', {
         if(cur_frm.is_new()){
             if(cur_frm.doc.estimation || cur_frm.doc.site_job_report){
                 cur_frm.doc.type = "Service"
-                 frm.set_df_property('series', 'options', ['CS-'])
-                cur_frm.doc.series = "CS-"
+                 frm.set_df_property('series', 'options', ['CS-0'])
+                cur_frm.doc.series = "CS-0"
                 cur_frm.refresh_field("series")
                 cur_frm.refresh_field("type")
                                     cur_frm.trigger("type")
@@ -857,8 +857,8 @@ cur_frm.refresh_field("item_selling_price_list")
 	    if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
             filter_link_field(cur_frm)
 
-            frm.set_df_property('series', 'options', ['CS-'])
-            cur_frm.doc.series = "CS-"
+            frm.set_df_property('series', 'options', ['CS-0'])
+            cur_frm.doc.series = "CS-0"
             cur_frm.refresh_field("series")
             cur_frm.set_df_property("scoop_of_work", "hidden", 0)
                         cur_frm.set_df_property("scoop_of_work_total", "hidden", 0 )
@@ -882,7 +882,7 @@ cur_frm.refresh_field("item_selling_price_list")
 					 filters: [
                     ["status", "!=", "Completed"],
                     ["docstatus", "=", 1],
-                    ["series", "=", "CS-"],
+                    ["series", "=", "CS-0"],
                 ]
 				}
 			}
@@ -909,7 +909,7 @@ cur_frm.refresh_field("item_selling_price_list")
 					 filters: [
                     ["status", "!=", "Completed"],
                     ["docstatus", "=", 1],
-                    ["series", "=", "CS-"],
+                    ["series", "=", "CS-0"],
                 ]
 				}
 			}
@@ -933,7 +933,7 @@ cur_frm.refresh_field("item_selling_price_list")
 					 filters: [
                     ["status", "in", ["Completed", "To Bill"]],
                     ["docstatus", "=", 1],
-                    ["series", "in", ["CS-"]],
+                    ["series", "in", ["CS-0"]],
                 ]
 				}
 			}

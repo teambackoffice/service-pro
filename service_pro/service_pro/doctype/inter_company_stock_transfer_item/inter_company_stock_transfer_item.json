@@ -64,7 +64,7 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Debit Value",
-   "read_only": 1,
+   "read_only": 0,
    "reqd": 1
   },
   {

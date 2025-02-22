@@ -180,7 +180,7 @@ cur_frm.cscript.cylinder_service = function (frm, cdt, cdn) {
                         filters.push(["customer", "=", cur_frm.doc.customer])
                     }
                     if(cur_frm.doc.type === 'Re-Service'){
-                        filters.push(["series", "in", ["CS-0", "SK-", "HK-", "PB-"]])
+                        filters.push(["series", "in", ["CS-0", "SK-0", "HK-0", "PB-0"]])
                     } else {
                         filters.push(["series", "=", "CS-0"])
                     }
@@ -286,7 +286,7 @@ frappe.ui.form.on('Production', {
         } else if(cur_frm.doc.type && cur_frm.doc.type === "Assemble") {
 	        cur_frm.doc.estimation = ""
             cur_frm.refresh_field("estimation")
-	        frm.set_df_property('series', 'options', ['','SK-','HA-','PB-'])
+	        frm.set_df_property('series', 'options', ['','SK-0','HA-0','PB-0'])
 
             cur_frm.set_df_property("scoop_of_work", "hidden", 1)
             cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
@@ -302,8 +302,8 @@ frappe.ui.form.on('Production', {
         } else if(cur_frm.doc.type && cur_frm.doc.type === "Re-Service") {
 	        cur_frm.doc.estimation = ""
             cur_frm.refresh_field("estimation")
-	        frm.set_df_property('series', 'options', ['RCS-', 'RSK-', 'RHA-', 'RPB-'])
-            cur_frm.doc.series = "RCS-"
+	        frm.set_df_property('series', 'options', ['RCS-0', 'RSK-0', 'RHA-0', 'RPB-0'])
+            cur_frm.doc.series = "RCS-0"
             cur_frm.refresh_field("series")
             cur_frm.set_df_property("scoop_of_work", "hidden", 1)
             cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
@@ -867,7 +867,7 @@ cur_frm.refresh_field("item_selling_price_list")
 	        cur_frm.doc.estimation = ""
             cur_frm.refresh_field("estimation")
             frm.trigger('estimation');
-	        frm.set_df_property('series', 'options', ['','SK-','HA-', 'PB-'])
+	        frm.set_df_property('series', 'options', ['','SK-0','HA-0', 'PB-0'])
 
             cur_frm.set_df_property("scoop_of_work", "hidden", 1)
             cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)

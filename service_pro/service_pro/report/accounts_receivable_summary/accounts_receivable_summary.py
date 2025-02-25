@@ -111,7 +111,7 @@ class AccountsReceivableSummary(ReceivablePayableReport):
 			"outstanding": 0.0,
 			"total_due": 0.0,
 			"future_amount": 0.0,
-			"sales_person": [],
+			"sales_person": "",
 			"custom_sales_person": "",
 			"party_type": row.party_type,
 		}
@@ -127,14 +127,19 @@ class AccountsReceivableSummary(ReceivablePayableReport):
 	def set_party_details(self, row):
 		self.party_total[row.party].currency = row.currency
 
-		if row.get("custom_sales_person"):
-			self.party_total[row.party]["custom_sales_person"] = row.get("custom_sales_person")
+		# Get sales person from Customer's sales_team table
+		if row.party_type == "Customer":
+			sales_person = frappe.db.sql("""
+				SELECT sales_person 
+				FROM `tabSales Team` 
+				WHERE parent = %s 
+				LIMIT 1""", row.party)
+			if sales_person:
+				self.party_total[row.party].custom_sales_person = sales_person[0][0]
 
 		for key in ("territory", "customer_group", "supplier_group"):
 			if row.get(key):
 				self.party_total[row.party][key] = row.get(key, "")
-		if row.sales_person:
-			self.party_total[row.party].sales_person.append(row.get("sales_person", ""))
 
 		if self.filters.sales_partner:
 			self.party_total[row.party]["default_sales_partner"] = row.get("default_sales_partner", "")

@@ -4158,5 +4158,21 @@
   "property_type": "Check",
   "row_name": null,
   "value": "1"
+ },
+ {
+  "default_value": null,
+  "doc_type": "Quotation",
+  "docstatus": 0,
+  "doctype": "Property Setter",
+  "doctype_or_field": "DocField",
+  "field_name": "custom_sales_executive",
+  "is_system_generated": 0,
+  "modified": "2025-03-01 14:52:05.531666",
+  "module": "Service Pro",
+  "name": "Quotation-custom_sales_executive-hidden",
+  "property": "hidden",
+  "property_type": "Check",
+  "row_name": null,
+  "value": "0"
  }
 ]

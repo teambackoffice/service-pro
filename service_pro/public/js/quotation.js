@@ -1,19 +1,22 @@
 frappe.ui.form.on("Quotation", {
-    onload : function(frm) {
-        frm.set_query("warehouse", "items", function (doc, cdt, cdn) {
-			let row = locals[cdt][cdn];
-			let query = {
-				filters: [["Warehouse", "company", "in", ["", cstr(frm.doc.company)]]],
-			};
-			if (row.item_code) {
-				query.query = "erpnext.controllers.queries.warehouse_query";
-				query.filters.push(["Bin", "item_code", "=", row.item_code]);
-			}
-			return query;
-		});
+    onload: function(frm) {
+        // Warehouse filtering based on company
+        frm.set_query("warehouse", "items", function(doc, cdt, cdn) {
+            let row = locals[cdt][cdn];
+            let query = {
+                filters: [["Warehouse", "company", "in", ["", cstr(frm.doc.company)]]],
+            };
+            if (row.item_code) {
+                query.query = "erpnext.controllers.queries.warehouse_query";
+                query.filters.push(["Bin", "item_code", "=", row.item_code]);
+            }
+            return query;
+        });
+
+        // Role-based permission control
         frappe.call({
             method: "service_pro.doc_events.quotation.get_role",
-            callback: function (r) {
+            callback: function(r) {
                 if (r.message) {
                     const authorized_role = r.message; 
                     console.log("Authorized Role:", authorized_role);
@@ -27,65 +30,82 @@ frappe.ui.form.on("Quotation", {
             }
         });
     },
-    party_name: function(frm) {
-        if (frm.doc.party_name) {
-            frappe.call({
-                method: 'frappe.client.get',
-                args: {
-                    doctype: 'Customer',
-                    name: frm.doc.party_name,
-                },
-                callback: function(r) {
-                    console.log(r)
-                    if (r.message) {
-                        let sales_team = r.message.sales_team || [];
-                        console.log("Sales",sales_team);
-                        if (sales_team.length > 0) {
-                            frm.set_value('sales_person', sales_team[0].sales_person);
-                        } else {
-                            frm.set_value('sales_person', null);
-                            frappe.msgprint(__('No Sales Person found for the selected Customer'));
-                        }
-                    }
-                }
-            });
-        } else {
-            frm.set_value('sales_person', null);
-        }
-    },
-    refresh: function (frm) {
-        
-    
 
+    party_name: function(frm) {
+      
+        console.log("party_name field changed:", frm.doc.party_name);
+        
+        if (frm.doc.party_name) {
+            console.log("Fetching Sales Person for:", frm.doc.party_name);
+            fetch_sales_person(frm, frm.doc.party_name);
+        } else {
+            console.log("No Customer selected, clearing Sales Person field.");
+            frm.set_value('custom_sales_person', null);
+        }
+    }
+    ,
+
+    refresh: function(frm) {
+        // Remove default Sales Order button
         setTimeout(() => {
             frm.remove_custom_button('Sales Order', "Create");
-    }, 100);
-    if (frm.doc.docstatus == 1 && !["Lost", "Ordered"].includes(frm.doc.status)) {
-    if (
-        frappe.boot.sysdefaults.allow_sales_order_creation_for_expired_quotation ||
-        !frm.doc.valid_till ||
-        frappe.datetime.get_diff(frm.doc.valid_till, frappe.datetime.get_today()) >= 0
-    ) 
+        }, 100);
 
-    {
-        
-        frm.add_custom_button(__("Sales order"), () => make_sales_order(frm), __("Create"));
+        // Add Custom Sales Order Button
+        if (frm.doc.docstatus == 1 && !["Lost", "Ordered"].includes(frm.doc.status)) {
+            if (
+                frappe.boot.sysdefaults.allow_sales_order_creation_for_expired_quotation ||
+                !frm.doc.valid_till ||
+                frappe.datetime.get_diff(frm.doc.valid_till, frappe.datetime.get_today()) >= 0
+            ) {
+                frm.add_custom_button(__("Sales order"), () => make_sales_order(frm), __("Create"));
+            }
+
+            if (frm.doc.status !== "Ordered") {
+                frm.add_custom_button(__("Set as Lost"), () => {
+                    frm.trigger("set_as_lost_dialog");
+                });
+            }
+
+            cur_frm.page.set_inner_btn_group_as_primary(__("Create"));
+        }
     }
-
-    if (frm.doc.status !== "Ordered") {
-        frm.add_custom_button(__("Set as Lost"), () => {
-            frm.trigger("set_as_lost_dialog");
-        });
-    }
-
-    cur_frm.page.set_inner_btn_group_as_primary(__("Create"));
-}
-    }
-
 });
 
-function make_sales_order(frm) {
+// Fetch Sales Person for selected Customer
+function fetch_sales_person(frm, customer) {
+    console.log("fetch_sales_person() called for Customer:", customer);
 
+    frappe.call({
+        method: 'frappe.client.get',
+        args: {
+            doctype: 'Customer',
+            name: customer,
+        },
+        callback: function(r) {
+            console.log("Response received from Frappe:", r);
+
+            if (r.message) {
+                let sales_team = r.message.sales_team || [];
+                console.log("Sales Team Data:", sales_team);
+
+                if (Array.isArray(sales_team) && sales_team.length > 0 && sales_team[0].sales_person) {
+                    let sales_person = sales_team[0].sales_person;
+                    console.log("✅ Sales Person found:", sales_person);
+                    frm.set_value('custom_sales_person', sales_person);
+                } else {
+                    console.log("❌ No Sales Person found for this Customer.");
+                    frm.set_value('custom_sales_person', null);
+                    frappe.msgprint(__('No Sales Person found for the selected Customer'));
+                }
+            } else {
+                console.log("❌ No response data for the given Customer.");
+            }
+        }
+    });
+}
+// Custom Sales Order Creation
+function make_sales_order(frm) {
     let has_alternative_item = frm.doc.items.some((item) => item.is_alternative);
     if (has_alternative_item) {
         show_alternative_items_dialog(frm);
@@ -97,10 +117,8 @@ function make_sales_order(frm) {
     }
 }
 
-
+// Alternative Items Selection Dialog
 function show_alternative_items_dialog(frm) {
-    
-
     const table_fields = [
         {
             fieldtype: "Data",
@@ -143,7 +161,7 @@ function show_alternative_items_dialog(frm) {
         },
     ];
 
-    data = frm.doc.items
+    let data = frm.doc.items
         .filter((item) => item.is_alternative || item.has_alternative_item)
         .map((item) => {
             return {
@@ -178,10 +196,10 @@ function show_alternative_items_dialog(frm) {
                 fields: table_fields,
             },
         ],
-        primary_action: function () {
+        primary_action: function() {
             frappe.model.open_mapped_doc({
                 method: "service_pro.doc_events.quotation.make_sales_order_so",
-                frm: me.frm,
+                frm: frm,
                 args: {
                     selected_items: dialog.fields_dict.alternative_items.grid.get_selected_children(),
                 },

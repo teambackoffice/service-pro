@@ -32,6 +32,12 @@ frappe.query_reports["VAT Report"] = {
             }
 		},
 		{
+			"fieldname": "company",
+            "label": __("company"),
+            "fieldtype": "Link",
+			"options": "Company",
+		},
+		{
 			fieldname: "summery",
             label: __("Summery"),
             fieldtype: "Check"

@@ -14,6 +14,8 @@ def get_columns():
 			{"label": "Discount", "fieldname": "discount_amount", "fieldtype": "Currency","width": "100"},
 			{"label": "VAT", "fieldname": "total_taxes_and_charges", "fieldtype": "Currency","width": "100"},
 			{"label": "Total Amount", "fieldname": "total_amount", "fieldtype": "Currency","width": "100"},
+			{"label": "Company", "fieldname": "company", "fieldtype": "	Link", "options": "Company","width": "100"},
+
 		]
 
 def execute(filters=None):

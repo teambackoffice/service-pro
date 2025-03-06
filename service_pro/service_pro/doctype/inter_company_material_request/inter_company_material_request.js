@@ -49,8 +49,10 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                 },
                 callback: function(r) {
                     if (r.message && r.message.length > 0) {
+                        // Filter for non-HYDROTECH companies with qty > 0
                         let filtered_stock = r.message.filter(stock =>
-                            stock.company !== "HYDROTECH GROUP OF COMPANY" && stock.actual_qty > 0
+                            (stock.company !== "HYDROTECH COMPANY CENTRAL WAREHOUSE" && stock.actual_qty > 0) ||
+                            (stock.company === "HYDROTECH COMPANY CENTRAL WAREHOUSE") // Include HYDROTECH regardless of qty
                         );
     
                         if (filtered_stock.length > 0) {
@@ -109,13 +111,13 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                                         </tbody>
                                     </table>
                                 `);
-                            } else {
-                                frm.fields_dict.stock_details.$wrapper.empty();
-                                frappe.msgprint({
-                                    title: __('No Stock Data'),
+                        } else {
+                            frm.fields_dict.stock_details.$wrapper.empty();
+                            frappe.msgprint({
+                                title: __('No Stock Data'),
                                     message: __('No available stock for this item from valid companies or stock is zero.'),
-                                    indicator: 'red'
-                                });
+                                indicator: 'red'
+                            });
                             }
                         }
                     } else {

@@ -18,387 +18,190 @@ from erpnext.stock.report.stock_ledger.stock_ledger import get_item_group_condit
 from erpnext.stock.utils import get_incoming_rate
 
 
+import frappe
+from frappe import _
+
 def execute(filters=None):
-	if not filters:
-		filters = frappe._dict()
-	filters.currency = frappe.get_cached_value("Company", filters.company, "default_currency")
+    if not filters:
+        filters = frappe._dict()
+    
+    filters.currency = frappe.get_cached_value("Company", filters.company, "default_currency")
 
-	gross_profit_data = GrossProfitGenerator(filters)
+    gross_profit_data = GrossProfitGenerator(filters)
 
-	data = []
+    data = []
 
-	group_wise_columns = frappe._dict(
-		{
-			"invoice": [
-				
-				"customer",
-				"customer_group",
-				"posting_date",
-				"item_code",
-				"item_name",
-				"item_group",
-				"brand",
-				"description",
-				"warehouse",
-				"qty",
-				"base_rate",
-				"buying_rate",
+    group_wise_columns = frappe._dict(
+        {
+            "invoice": [
+                "sales_invoice",
+                "customer",
+                "customer_name",
+                "customer_group",
+                "posting_date",
+                "item_name",
+                "item_group",
+                # "brand",
+                # "description",
+                # "warehouse",
+                # "qty",
+                
+                "buying_amount",
 				"base_amount",
-				"buying_amount",
-				"gross_profit",
-				"gross_profit_percent",
-				"project",
-			],
-			"item_code": [
-				"item_code",
-				"item_name",
-				"brand",
-				"description",
-				"qty",
-				"base_rate",
-				"buying_rate",
-				"base_amount",
-				"buying_amount",
-				"gross_profit",
-				"gross_profit_percent",
-			],
-			"warehouse": [
-				"warehouse",
-				"qty",
-				"base_rate",
-				"buying_rate",
-				"base_amount",
-				"buying_amount",
-				"gross_profit",
-				"gross_profit_percent",
-			],
-			"brand": [
-				"brand",
-				"qty",
-				"base_rate",
-				"buying_rate",
-				"base_amount",
-				"buying_amount",
-				"gross_profit",
-				"gross_profit_percent",
-			],
-			"item_group": [
-				"item_group",
-				"qty",
-				"base_rate",
-				"buying_rate",
-				"base_amount",
-				"buying_amount",
-				"gross_profit",
-				"gross_profit_percent",
-			],
-			"customer": [
-				"customer",
-				"customer_group",
-				"qty",
-				"base_rate",
-				"buying_rate",
-				"base_amount",
-				"buying_amount",
-				"gross_profit",
-				"gross_profit_percent",
-			],
-			"customer_group": [
-				"customer_group",
-				"qty",
-				"base_rate",
-				"buying_rate",
-				"base_amount",
-				"buying_amount",
-				"gross_profit",
-				"gross_profit_percent",
-			],
-			"sales_person": [
-				"sales_person",
-				"allocated_amount",
-				"qty",
-				"base_rate",
-				"buying_rate",
-				"base_amount",
-				"buying_amount",
-				"gross_profit",
-				"gross_profit_percent",
-			],
-			"project": ["project", "base_amount", "buying_amount", "gross_profit", "gross_profit_percent"],
-			"cost_center": [
-				"cost_center",
-				"base_amount",
-				"buying_amount",
-				"gross_profit",
-				"gross_profit_percent",
-			],
-			"territory": [
-				"territory",
-				"base_amount",
-				"buying_amount",
-				"gross_profit",
-				"gross_profit_percent",
-			],
-			"monthly": [
-				"monthly",
-				"qty",
-				"base_rate",
-				"buying_rate",
-				"base_amount",
-				"buying_amount",
-				"gross_profit",
-				"gross_profit_percent",
-			],
-			"payment_term": [
-				"payment_term",
-				"base_amount",
-				"buying_amount",
-				"gross_profit",
-				"gross_profit_percent",
-			],
-		}
-	)
+				 "buying_rate",
+               "base_rate",
+			   "gross_profit",
+                "gross_profit_percent",
+                "project",
+                # "sales_person",
+				"custom_sales_person"
+            ],
+            "warehouse": ["warehouse", "qty", "base_rate", "buying_rate", "base_amount", "buying_amount", "gross_profit", "gross_profit_percent"],
+            # "brand": ["brand", "qty", "base_rate", "buying_rate", "base_amount", "buying_amount", "gross_profit", "gross_profit_percent"],
+            "item_group": ["item_group", "qty", "base_rate", "buying_rate", "base_amount", "buying_amount", "gross_profit", "gross_profit_percent"],
+            "customer": [
+                "customer",
+                "customer_name",
+                "customer_group",
+                "qty",
+                "base_rate",
+                "buying_rate",
+                "base_amount",
+                "buying_amount",
+                "gross_profit",
+                "gross_profit_percent",
+                "sales_invoice",
+                "sales_person",
+            ],
+            "sales_person": [
+                # "sales_person",
+                "allocated_amount",
+                "qty",
+                "base_rate",
+                "buying_rate",
+                "base_amount",
+                "buying_amount",
+                "gross_profit",
+                "gross_profit_percent",
+                "sales_invoice",
+            ],
+        }
+    )
 
-	columns = get_columns(group_wise_columns, filters)
+    columns = get_columns(group_wise_columns, filters)
 
-	if filters.group_by == "Invoice":
-		get_data_when_grouped_by_invoice(columns, gross_profit_data, filters, group_wise_columns, data)
+    if filters.group_by == "Invoice":
+        get_data_when_grouped_by_invoice(columns, gross_profit_data, filters, group_wise_columns, data)
+    else:
+        get_data_when_not_grouped_by_invoice(gross_profit_data, filters, group_wise_columns, data)
 
-	else:
-		get_data_when_not_grouped_by_invoice(gross_profit_data, filters, group_wise_columns, data)
-
-	return columns, data
+    return columns, data
 
 
 def get_data_when_grouped_by_invoice(columns, gross_profit_data, filters, group_wise_columns, data):
-	column_names = get_column_names()
+    column_names = get_column_names()
 
-	# to display item as Item Code: Item Name
-	
-	# removing Item Code and Item Name columns
-	del columns[4:6]
+    del columns[4:6]  # Remove Item Code and Item Name columns for display formatting
 
-	for src in gross_profit_data.si_list:
-		row = frappe._dict()
-		row.indent = src.indent
-		row.parent_invoice = src.parent_invoice
-		row.currency = filters.currency
+    for src in gross_profit_data.si_list:
+        row = frappe._dict()
+        row.indent = src.get("indent", 0)
+        row.parent_invoice = src.get("parent_invoice", "")
+        row.currency = filters.currency
 
-		for col in group_wise_columns.get(scrub(filters.group_by)):
-			row[column_names[col]] = src.get(col)
+        for col in group_wise_columns.get(scrub(filters.group_by), []):
+            if col in src:
+                row[column_names[col]] = src.get(col)
+        
+        # Ensure critical keys exist in row
+        row["customer_name"] = src.get("customer_name", "")
+        # row["sales_person"] = src.get("sales_person", "")
 
-		data.append(row)
+        # Debugging missing keys
+        if "sales_invoice" not in src:
+            frappe.logger().warning(f"Missing sales_invoice in src: {src}")
+
+        data.append(row)
 
 
 def get_data_when_not_grouped_by_invoice(gross_profit_data, filters, group_wise_columns, data):
-	for src in gross_profit_data.grouped_data:
-		row = []
-		for col in group_wise_columns.get(scrub(filters.group_by)):
-			row.append(src.get(col))
+    for src in gross_profit_data.grouped_data:
+        row = []
+        for col in group_wise_columns.get(scrub(filters.group_by), []):
+            row.append(src.get(col, ""))  # Default empty value if missing
 
-		row.append(filters.currency)
-
-		data.append(row)
+        row.append(filters.currency)
+        data.append(row)
 
 
 def get_columns(group_wise_columns, filters):
-	columns = []
-	column_map = frappe._dict(
-		{
-			
-			"posting_date": {
-				"label": _("Posting Date"),
-				"fieldname": "posting_date",
-				"fieldtype": "Date",
-				"width": 100,
-			},
-			"posting_time": {
-				"label": _("Posting Time"),
-				"fieldname": "posting_time",
-				"fieldtype": "Data",
-				"width": 100,
-			},
-			"item_code": {
-				"label": _("Item Code"),
-				"fieldname": "item_code",
-				"fieldtype": "Link",
-				"options": "Item",
-				"width": 100,
-			},
-			"item_name": {
-				"label": _("Item Name"),
-				"fieldname": "item_name",
-				"fieldtype": "Data",
-				"width": 100,
-			},
-			"item_group": {
-				"label": _("Item Group"),
-				"fieldname": "item_group",
-				"fieldtype": "Link",
-				"options": "Item Group",
-				"width": 100,
-			},
-			"brand": {"label": _("Brand"), "fieldtype": "Link", "options": "Brand", "width": 100},
-			"description": {
-				"label": _("Description"),
-				"fieldname": "description",
-				"fieldtype": "Data",
-				"width": 100,
-			},
-			"warehouse": {
-				"label": _("Warehouse"),
-				"fieldname": "warehouse",
-				"fieldtype": "Link",
-				"options": "Warehouse",
-				"width": 100,
-			},
-			"qty": {"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 80},
-			"base_rate": {
-				"label": _("Avg. Selling Rate"),
-				"fieldname": "avg._selling_rate",
-				"fieldtype": "Currency",
-				"options": "currency",
-				"width": 100,
-			},
-			"buying_rate": {
-				"label": _("Valuation Rate"),
-				"fieldname": "valuation_rate",
-				"fieldtype": "Currency",
-				"options": "currency",
-				"width": 100,
-			},
-			"base_amount": {
-				"label": _("Selling Amount"),
-				"fieldname": "selling_amount",
-				"fieldtype": "Currency",
-				"options": "currency",
-				"width": 100,
-			},
-			"buying_amount": {
-				"label": _("Buying Amount"),
-				"fieldname": "buying_amount",
-				"fieldtype": "Currency",
-				"options": "currency",
-				"width": 100,
-			},
-			"gross_profit": {
-				"label": _("Gross Profit"),
-				"fieldname": "gross_profit",
-				"fieldtype": "Currency",
-				"options": "currency",
-				"width": 100,
-			},
-			"gross_profit_percent": {
-				"label": _("Gross Profit Percent"),
-				"fieldname": "gross_profit_%",
-				"fieldtype": "Percent",
-				"width": 100,
-			},
-			"project": {
-				"label": _("Project"),
-				"fieldname": "project",
-				"fieldtype": "Link",
-				"options": "Project",
-				"width": 140,
-			},
-			"cost_center": {
-				"label": _("Cost Center"),
-				"fieldname": "cost_center",
-				"fieldtype": "Link",
-				"options": "Cost Center",
-				"width": 140,
-			},
-			"sales_person": {
-				"label": _("Sales Person"),
-				"fieldname": "sales_person",
-				"fieldtype": "Link",
-				"options": "Sales Person",
-				"width": 100,
-			},
-			"allocated_amount": {
-				"label": _("Allocated Amount"),
-				"fieldname": "allocated_amount",
-				"fieldtype": "Currency",
-				"options": "currency",
-				"width": 100,
-			},
-			"customer": {
-				"label": _("Customer"),
-				"fieldname": "customer",
-				"fieldtype": "Link",
-				"options": "Customer",
-				"width": 100,
-			},
-			"customer_group": {
-				"label": _("Customer Group"),
-				"fieldname": "customer_group",
-				"fieldtype": "Link",
-				"options": "Customer Group",
-				"width": 100,
-			},
-			"territory": {
-				"label": _("Territory"),
-				"fieldname": "territory",
-				"fieldtype": "Link",
-				"options": "Territory",
-				"width": 100,
-			},
-			"monthly": {
-				"label": _("Monthly"),
-				"fieldname": "monthly",
-				"fieldtype": "Data",
-				"width": 100,
-			},
-			"payment_term": {
-				"label": _("Payment Term"),
-				"fieldname": "payment_term",
-				"fieldtype": "Link",
-				"options": "Payment Term",
-				"width": 170,
-			},
-		}
-	)
-	
+    columns = []
+    column_map = frappe._dict(
+        {
+            "posting_date": {"label": _("Posting Date"), "fieldname": "posting_date", "fieldtype": "Date", "width": 100},
+            "item_name": {"label": _("Item Name"), "fieldname": "item_name", "fieldtype": "Data", "width": 100},
+            "item_group": {"label": _("Item Group"), "fieldname": "item_group", "fieldtype": "Link", "options": "Item Group", "width": 100},
+            # "brand": {"label": _("Brand"), "fieldtype": "Link", "options": "Brand", "width": 100},
+            # "warehouse": {"label": _("Warehouse"), "fieldname": "warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 100},
+            # "qty": {"label": _("Qty"), "fieldname": "qty", "fieldtype": "Float", "width": 80},
+            "buying_amount": {"label": _("Buying Amount"), "fieldname": "buying_amount", "fieldtype": "Currency", "options": "currency", "width": 100},
+			"base_amount": {"label": _("Selling Amount"), "fieldname": "selling_amount", "fieldtype": "Currency", "options": "currency", "width": 100},
+             "buying_rate": {"label": _("Valuation Rate"), "fieldname": "valuation_rate", "fieldtype": "Currency", "options": "currency", "width": 100},
+              "base_rate": {"label": _("Avg. Selling Rate"), "fieldname": "avg_selling_rate", "fieldtype": "Currency", "options": "currency", "width": 100},
 
-	for col in group_wise_columns.get(scrub(filters.group_by)):
-		columns.append(column_map.get(col))
+            "gross_profit": {"label": _("Gross Profit"), "fieldname": "gross_profit", "fieldtype": "Currency", "options": "currency", "width": 100},
+            "gross_profit_percent": {"label": _("Gross Profit Percent"), "fieldname": "gross_profit_percent", "fieldtype": "Percent", "width": 100},
+            # "sales_person": {"label": _("Sales Person"), "fieldname": "sales_person", "fieldtype": "Link", "options": "Sales Person", "width": 100},
+			"custom_sales_person": {
+            "label": _(" Sales Person"),
+            "fieldname": "custom_sales_person",
+            "fieldtype": "Link",
+            "options": "Sales Person",
+            "width": 120,
+        },
+            "customer": {"label": _("Customer"), "fieldname": "customer", "fieldtype": "Link", "options": "Customer", "width": 100},
+            "customer_name": {"label": _("Customer Name"), "fieldname": "customer_name", "fieldtype": "Data", "width": 100},
+            "sales_invoice": {"label": _("Sales Invoice"), "fieldname": "sales_invoice", "fieldtype": "Link", "options": "Sales Invoice", "width": 120},
+        }
+    )
 
-	columns.append(
-		{
-			"fieldname": "currency",
-			"label": _("Currency"),
-			"fieldtype": "Link",
-			"options": "Currency",
-			"hidden": 1,
-		}
-	)
+    for col in group_wise_columns.get(scrub(filters.group_by), []):
+        columns.append(column_map.get(col, {"label": col, "fieldname": col, "fieldtype": "Data", "width": 100}))
 
-	return columns
+    columns.append({"fieldname": "currency", "label": _("Currency"), "fieldtype": "Link", "options": "Currency", "hidden": 1})
+
+    return columns
 
 
 def get_column_names():
-	return frappe._dict(
-		{
-			"invoice_or_item": "sales_invoice",
-			"customer": "customer",
-			"customer_group": "customer_group",
-			"posting_date": "posting_date",
-			"item_code": "item_code",
-			"item_name": "item_name",
-			"item_group": "item_group",
-			"brand": "brand",
-			"description": "description",
-			"warehouse": "warehouse",
-			"qty": "qty",
-			"base_rate": "avg._selling_rate",
-			"buying_rate": "valuation_rate",
+    return frappe._dict(
+        {
+            "sales_invoice": "sales_invoice",
+            "customer": "customer",
+            "customer_group": "customer_group",
+            "posting_date": "posting_date",
+            "item_name": "item_name",
+            "item_group": "item_group",
+            # "brand": "brand",
+            # "description": "description",
+            # "warehouse": "warehouse",
+            # "qty": "qty",
+           
+            
+            
+            "buying_amount": "buying_amount",
 			"base_amount": "selling_amount",
-			"buying_amount": "buying_amount",
-			"gross_profit": "gross_profit",
-			"gross_profit_percent": "gross_profit_%",
-			"project": "project",
-		}
-	)
+			"buying_rate": "valuation_rate",
+			 "base_rate": "avg_selling_rate",
+            "gross_profit": "gross_profit",
+            "gross_profit_percent": "gross_profit_percent",
+            "project": "project",
+            "customer_name": "customer_name",
+            # "sales_person": "sales_person",
+			"custom_sales_person": "custom_sales_person"
+        }
+    )
+
 
 
 class GrossProfitGenerator:
@@ -586,12 +389,12 @@ class GrossProfitGenerator:
 			if new_row.base_amount
 			else 0
 		)
-
+# si_item.item_code
 	def get_returned_invoice_items(self):
 		returned_invoices = frappe.db.sql(
 			"""
 			select
-				si.name, si_item.item_code, si_item.stock_qty as qty, si_item.base_net_amount as base_amount, si.return_against
+				si.name, si_item.stock_qty as qty, si_item.base_net_amount as base_amount, si.return_against
 			from
 				`tabSales Invoice` si, `tabSales Invoice Item` si_item
 			where
@@ -827,45 +630,59 @@ class GrossProfitGenerator:
 			)
 			if warehouse_details:
 				conditions += f" and `tabSales Invoice Item`.warehouse in (select name from `tabWarehouse` wh where wh.lft >= {warehouse_details.lft} and wh.rgt <= {warehouse_details.rgt} and warehouse = wh.name)"
-
+ # `tabSales Invoice Item`.brand,
 		self.si_list = frappe.db.sql(
-			"""
-			select
-				`tabSales Invoice Item`.parenttype, `tabSales Invoice Item`.parent,
-				`tabSales Invoice`.posting_date, `tabSales Invoice`.posting_time,
-				`tabSales Invoice`.project, `tabSales Invoice`.update_stock,
-				`tabSales Invoice`.customer, `tabSales Invoice`.customer_group,
-				`tabSales Invoice`.territory, `tabSales Invoice Item`.item_code,
-				`tabSales Invoice Item`.item_name, `tabSales Invoice Item`.description,
-				`tabSales Invoice Item`.warehouse, `tabSales Invoice Item`.item_group,
-				`tabSales Invoice Item`.brand, `tabSales Invoice Item`.so_detail,
-				`tabSales Invoice Item`.sales_order, `tabSales Invoice Item`.dn_detail,
-				`tabSales Invoice Item`.delivery_note, `tabSales Invoice Item`.stock_qty as qty,
-				`tabSales Invoice Item`.base_net_rate, `tabSales Invoice Item`.base_net_amount,
-				`tabSales Invoice Item`.name as "item_row", `tabSales Invoice`.is_return,
-				`tabSales Invoice Item`.cost_center, `tabSales Invoice Item`.serial_and_batch_bundle
-				{sales_person_cols}
-				{payment_term_cols}
-			from
-				`tabSales Invoice` inner join `tabSales Invoice Item`
-					on `tabSales Invoice Item`.parent = `tabSales Invoice`.name
-				join `tabItem` item on item.name = `tabSales Invoice Item`.item_code
-				{sales_team_table}
-				{payment_term_table}
-			where
-				`tabSales Invoice`.docstatus=1 and `tabSales Invoice`.is_opening!='Yes' {conditions} {match_cond}
-			order by
-				`tabSales Invoice`.posting_date desc, `tabSales Invoice`.posting_time desc""".format(
-				conditions=conditions,
-				sales_person_cols=sales_person_cols,
-				sales_team_table=sales_team_table,
-				payment_term_cols=payment_term_cols,
-				payment_term_table=payment_term_table,
-				match_cond=get_match_cond("Sales Invoice"),
-			),
-			self.filters,
-			as_dict=1,
-		)
+    """
+   SELECT
+    `tabSales Invoice`.name AS sales_invoice,  
+    `tabSales Invoice`.posting_date, 
+    `tabSales Invoice`.posting_time,
+    `tabSales Invoice`.project, 
+    `tabSales Invoice`.update_stock,
+    `tabSales Invoice`.customer, 
+    `tabSales Invoice`.customer_group,
+    `tabSales Invoice`.customer_name,  
+    `tabSales Invoice`.territory, 
+    `tabSales Invoice Item`.item_name, 
+    `tabSales Invoice Item`.description,
+    `tabSales Invoice Item`.warehouse, 
+    `tabSales Invoice Item`.item_group,
+    
+    `tabSales Invoice Item`.so_detail,
+    `tabSales Invoice Item`.sales_order, 
+    `tabSales Invoice Item`.dn_detail,
+    `tabSales Invoice Item`.delivery_note, 
+    `tabSales Invoice Item`.stock_qty AS qty,
+    `tabSales Invoice Item`.base_net_rate, 
+    `tabSales Invoice Item`.base_net_amount,
+    `tabSales Invoice Item`.name AS "item_row", 
+    `tabSales Invoice`.is_return,
+    `tabSales Invoice Item`.cost_center, 
+    `tabSales Invoice Item`.serial_and_batch_bundle,
+    `tabSales Invoice Item`.item_code,
+    `tabSales Invoice`.custom_sales_person  -- Directly Fetch Sales Person
+FROM
+    `tabSales Invoice` 
+INNER JOIN `tabSales Invoice Item`
+    ON `tabSales Invoice Item`.parent = `tabSales Invoice`.name
+WHERE
+    `tabSales Invoice`.docstatus = 1 
+    AND `tabSales Invoice`.is_opening != 'Yes' 
+ORDER BY
+    `tabSales Invoice`.posting_date DESC, 
+    `tabSales Invoice`.posting_time DESC;
+
+    """.format(
+        conditions=conditions,
+        sales_person_cols=sales_person_cols,
+        sales_team_table=sales_team_table,
+        payment_term_cols=payment_term_cols,
+        payment_term_table=payment_term_table,
+        match_cond=get_match_cond("Sales Invoice"),
+    ),
+    self.filters,
+    as_dict=1,
+)
 
 	def get_delivery_notes(self):
 		self.delivery_notes = frappe._dict({})
@@ -886,7 +703,7 @@ class GrossProfitGenerator:
 				.orderby(dni.creation, order=Order.desc)
 				.run(as_dict=True)
 			)
-
+			
 			for entry in delivery_notes:
 				self.delivery_notes[(entry.sales_invoice, entry.item_code)] = entry
 
@@ -894,18 +711,15 @@ class GrossProfitGenerator:
 		"""
 		Turns list of Sales Invoice Items to a tree of Sales Invoices with their Items as children.
 		"""
-
 		grouped = OrderedDict()
 
 		for row in self.si_list:
-			# initialize list with a header row for each new parent
 			grouped.setdefault(row.parent, [self.get_invoice_row(row)]).append(
 				row.update(
 					{"indent": 1.0, "parent_invoice": row.parent, "invoice_or_item": row.item_code}
-				)  # descendant rows will have indent: 1.0 or greater
+				)
 			)
-
-			# if item is a bundle, add it's components as seperate rows
+			
 			if frappe.db.exists("Product Bundle", row.item_code):
 				bundled_items = self.get_bundle_items(row)
 				for x in bundled_items:
@@ -913,15 +727,15 @@ class GrossProfitGenerator:
 					grouped.get(row.parent).append(bundle_item)
 
 		self.si_list.clear()
-
+		
 		for items in grouped.values():
 			self.si_list.extend(items)
 
 	def get_invoice_row(self, row):
-		# header row format
 		return frappe._dict(
 			{
 				"parent_invoice": "",
+				"sales_person": row.custom_sales_person,
 				"indent": 0.0,
 				"invoice_or_item": row.parent,
 				"parent": None,
@@ -936,7 +750,7 @@ class GrossProfitGenerator:
 				"description": None,
 				"warehouse": None,
 				"item_group": None,
-				"brand": None,
+				# "brand": None,
 				"dn_detail": None,
 				"delivery_note": None,
 				"qty": None,
@@ -954,7 +768,7 @@ class GrossProfitGenerator:
 
 	def get_bundle_item_row(self, product_bundle, item):
 		item_name, description, item_group, brand = self.get_bundle_item_details(item.item_code)
-
+		
 		return frappe._dict(
 			{
 				"parent_invoice": product_bundle.item_code,
@@ -971,7 +785,7 @@ class GrossProfitGenerator:
 				"description": description,
 				"warehouse": product_bundle.warehouse,
 				"item_group": item_group,
-				"brand": brand,
+				# "brand": brand,
 				"dn_detail": product_bundle.dn_detail,
 				"delivery_note": product_bundle.delivery_note,
 				"qty": (flt(product_bundle.qty) * flt(item.qty)),
@@ -983,7 +797,7 @@ class GrossProfitGenerator:
 
 	def get_bundle_item_details(self, item_code):
 		return frappe.db.get_value("Item", item_code, ["item_name", "description", "item_group", "brand"])
-
+    
 	def get_stock_ledger_entries(self, item_code, warehouse):
 		if item_code and warehouse:
 			if (item_code, warehouse) not in self.sle:
@@ -1040,9 +854,7 @@ class GrossProfitGenerator:
 			self.product_bundles.setdefault(d.parenttype, frappe._dict()).setdefault(
 				d.parent, frappe._dict()
 			).setdefault(d.parent_item, []).append(d)
-
 	def load_non_stock_items(self):
 		self.non_stock_items = frappe.db.sql_list(
-			"""select name from tabItem
-			where is_stock_item=0"""
+			"""SELECT name FROM tabItem WHERE is_stock_item=0"""
 		)

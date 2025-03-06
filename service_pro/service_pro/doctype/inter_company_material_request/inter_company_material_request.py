@@ -7,9 +7,12 @@ class InterCompanyMaterialRequest(Document):
         for item in self.items:
             item_qty = float(item.qty) if isinstance(item.qty, (int, float, str)) and item.qty else 0
             item_available_qty = float(item.available_qty) if isinstance(item.available_qty, (int, float, str)) and item.available_qty else 0
-            if item_qty > item_available_qty:
-                frappe.throw(
-                    _("The requested quantity for Item {0} exceeds the available quantity.").format(item.item_code)
+            company = frappe.db.get_value("Inter Company Stock Transfer Template", {"name": item.stock_transfer_template}, "from_company")
+            if company != "HYDROTECH COMPANY CENTRAL WAREHOUSE":
+                if item_qty > item_available_qty:
+                    frappe.throw(
+                        _("The requested quantity for Item {0} exceeds the available quantity or is not available in the required warehouse.")
+                        .format(item.item_code)
                     )
 
 
@@ -117,7 +120,7 @@ def get_available(item_code, stock_transfer_template):
 
     available_qty = frappe.db.get_value(
         "Bin",
-        {"item_code": item_code, "warehouse": templete.from_warehouse},
+        {"item_code": item_code, "warehouse": templete.from_warehouse,"actual_qty":['!=',0]},
         "actual_qty"
     )
 

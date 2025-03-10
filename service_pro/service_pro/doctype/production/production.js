@@ -547,9 +547,9 @@ cur_frm.refresh_field("item_selling_price_list")
 			function() {
 				return {
 					 filters: [
-                    ["status", "!=", "Completed"],
-                    ["docstatus", "=", 1],
-                    ["series", "=", "CS-"],
+                    // ["status", "!=", "Completed"],
+                    // ["docstatus", "=", 1],
+                    ["series", "in", ["CS-0", "CS-"]] 
                 ]
 				}
 			}
@@ -880,10 +880,9 @@ cur_frm.refresh_field("item_selling_price_list")
 			function() {
 				return {
 					 filters: [
-                    ["status", "!=", "Completed"],
-                    ["docstatus", "=", 1],
-                    ["series", "=", "CS-0"],
-                    ["series", "=", "CS-"]
+                    // ["status", "!=", "Completed"],
+                    // ["docstatus", "=", 1],
+                    ["series", "in", ["CS-O", "CS-"]] 
                 ]
 				}
 			}
@@ -908,9 +907,9 @@ cur_frm.refresh_field("item_selling_price_list")
 			function() {
 				return {
 					 filters: [
-                    ["status", "!=", "Completed"],
-                    ["docstatus", "=", 1],
-                    ["series", "=", "CS-0"],
+                    // ["status", "!=", "Completed"],
+                    // ["docstatus", "=", 1],
+                    ["series", "in", ["CS-O", "CS-"]] 
                 ]
 				}
 			}

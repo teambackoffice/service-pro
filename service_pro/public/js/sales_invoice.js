@@ -128,20 +128,16 @@ frappe.ui.form.on('Sales Invoice', {
             frm.doc.update_stock = 0
         }
     },
-
-    customer: function(frm){
-
-        filter_link_field(cur_frm)
-        if(cur_frm.doc.customer){
-            frappe.db.get_doc("Customer", cur_frm.doc.customer)
-                .then(customer => {
-                    if(customer.sales_team.length > 0){
-                         cur_frm.doc.sales_man = customer.sales_team[0].sales_person
-                         cur_frm.doc.sales_partner = customer.sales_team[0].sales_person
-                        cur_frm.refresh_fields(["sales_man","sales_partner"])
-                    }
-
-            })
+    customer: function(frm) {
+        if (frm.doc.customer) {
+            frappe.db.get_doc('Customer', frm.doc.customer).then(customer => {
+                if (customer.sales_team && customer.sales_team.length > 0) {
+                    let sales_person = customer.sales_team[0].sales_person;
+                    frm.set_value('custom_sales_person', sales_person);
+                } else {
+                    frm.set_value('custom_sales_person', '');
+                }
+            });
         }
     },
     onload_post_render: function () {

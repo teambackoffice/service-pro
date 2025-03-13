@@ -15,6 +15,22 @@ class InterCompanyMaterialRequest(Document):
                         .format(item.item_code)
                     )
 
+        # Check material request type for central warehouse templates
+        for item in self.items:
+            if item.stock_transfer_template:
+                from_company = frappe.db.get_value("Inter Company Stock Transfer Template", 
+                    item.stock_transfer_template, "from_company")
+                
+                if from_company == "HYDROTECH COMPANY CENTRAL WAREHOUSE" and \
+                    self.material_request_type != "Purchase":
+                    frappe.throw(
+                        _("When selecting a template from Central Warehouse, Material Request Type must be 'Purchase'")
+                    )
+                elif from_company != "HYDROTECH COMPANY CENTRAL WAREHOUSE" and \
+                    self.material_request_type != "Material Transfer":
+                    frappe.throw(
+                        _("When selecting a template from other warehouses, Material Request Type must be 'Material Transfer'")
+                    )
 
     def on_submit(self):
         stock_transfer = frappe.new_doc("Inter Company Stock Transfer")

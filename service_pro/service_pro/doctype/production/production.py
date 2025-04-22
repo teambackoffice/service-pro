@@ -712,7 +712,10 @@ def create_delivery_note(source_name, target_doc=None):
                     "customer": "customer", 
                     "company": "company",  
                     "posting_date": "posting_date",  
-                }
+                },
+				"field_no_map": [
+                    "cost_center"  
+                ]
             }
         },
         target_doc,
@@ -732,24 +735,30 @@ def create_sales_invoice(source_name, target_doc=None):
             "Production": {
                 "doctype": "Sales Invoice",
                 "field_map": {
-                   
                     "customer": "customer",
                     "company": "company",
-					"custom_production_id": "name",
-                    "posting_date": "posting_date",
-                }
+                    "custom_production_id": "name",
+                    "posting_date": "posting_date"
+                },
+                "field_no_map": [
+                    "cost_center"  
+                ]
             },
             "Raw Material": {
-                "doctype": "Sales Invoice Item",
-                "field_map": {
-                    
-                }
+                "doctype": "Sales Invoice Item"
             }
         },
-        target_doc,
+        target_doc
     )
 
     return doclist
+
+
+
+
+
+
+
 
 @frappe.whitelist()
 def get_role():

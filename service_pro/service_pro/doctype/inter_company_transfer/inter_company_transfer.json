@@ -1,0 +1,72 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-04-22 12:10:43.909293",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "company_name",
+  "estimated_time",
+  "column_break_xsjk",
+  "inter_company_stock_transfer_id",
+  "delivery_note",
+  "section_break_tyzt",
+  "address"
+ ],
+ "fields": [
+  {
+   "fieldname": "company_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company Name",
+   "options": "Company"
+  },
+  {
+   "fieldname": "estimated_time",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "Estimated Time"
+  },
+  {
+   "fieldname": "column_break_xsjk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "inter_company_stock_transfer_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Inter Company Stock Transfer Id",
+   "options": "Inter Company Stock Transfer"
+  },
+  {
+   "fieldname": "delivery_note",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Delivery Note",
+   "options": "Delivery Note"
+  },
+  {
+   "fieldname": "section_break_tyzt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Text",
+   "in_list_view": 1,
+   "label": "Address"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-04-22 12:15:46.982561",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Inter Company Transfer",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

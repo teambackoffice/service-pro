@@ -10,7 +10,6 @@
   "estimated_time",
   "column_break_xsjk",
   "inter_company_stock_transfer_id",
-  "delivery_note",
   "section_break_tyzt",
   "address"
  ],
@@ -24,7 +23,7 @@
   },
   {
    "fieldname": "estimated_time",
-   "fieldtype": "Time",
+   "fieldtype": "Datetime",
    "in_list_view": 1,
    "label": "Estimated Time"
   },
@@ -40,13 +39,6 @@
    "options": "Inter Company Stock Transfer"
   },
   {
-   "fieldname": "delivery_note",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Delivery Note",
-   "options": "Delivery Note"
-  },
-  {
    "fieldname": "section_break_tyzt",
    "fieldtype": "Section Break"
   },
@@ -60,7 +52,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-04-22 12:15:46.982561",
+ "modified": "2025-04-23 10:44:17.620270",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Transfer",

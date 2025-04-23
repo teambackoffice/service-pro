@@ -28,12 +28,14 @@ frappe.ui.form.on("Inter Company Stock Transfer Template", {
                 return {
                     filters: {
                         company: frm.doc.from_company,
-                        
+                        root_type: 'Asset',
                         is_group: 0
+                    
                     }
                 };
             }
         });
+        
         frm.set_query('from_cost_center', function() {
             if (frm.doc.from_company) {
                 return {
@@ -58,8 +60,9 @@ frappe.ui.form.on("Inter Company Stock Transfer Template", {
                 return {
                     filters: {
                         company: frm.doc.to_company,
-                      
+                        root_type: 'Liability',
                         is_group: 0
+                    
                     }
                 };
             }

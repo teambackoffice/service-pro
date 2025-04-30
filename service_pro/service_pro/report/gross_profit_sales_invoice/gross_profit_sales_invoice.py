@@ -660,18 +660,20 @@ class GrossProfitGenerator:
     `tabSales Invoice Item`.cost_center, 
     `tabSales Invoice Item`.serial_and_batch_bundle,
     `tabSales Invoice Item`.item_code,
-    `tabSales Invoice`.custom_sales_person  -- Directly Fetch Sales Person
+    `tabSales Invoice`.custom_sales_person
 FROM
     `tabSales Invoice` 
 INNER JOIN `tabSales Invoice Item`
     ON `tabSales Invoice Item`.parent = `tabSales Invoice`.name
+{sales_team_table}
+{payment_term_table}
 WHERE
     `tabSales Invoice`.docstatus = 1 
-    AND `tabSales Invoice`.is_opening != 'Yes' 
+    AND `tabSales Invoice`.is_opening != 'Yes'
+    {conditions}
 ORDER BY
     `tabSales Invoice`.posting_date DESC, 
-    `tabSales Invoice`.posting_time DESC;
-
+    `tabSales Invoice`.posting_time DESC
     """.format(
         conditions=conditions,
         sales_person_cols=sales_person_cols,
@@ -683,6 +685,7 @@ ORDER BY
     self.filters,
     as_dict=1,
 )
+
 
 	def get_delivery_notes(self):
 		self.delivery_notes = frappe._dict({})

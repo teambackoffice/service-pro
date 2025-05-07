@@ -36,6 +36,9 @@ frappe.ui.form.on('Sales Invoice', {
     },
    
     onload: function (frm) {
+        if (frm.doc.status === 'Draft') {
+            $(".btn[data-original-title='Print']").hide();
+        }
         frm.fields_dict.items.grid.get_field('income_account').get_query = function(doc, cdt, cdn) {
             let row = locals[cdt][cdn];
             if (frm.doc.company) {

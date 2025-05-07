@@ -1,5 +1,8 @@
 frappe.ui.form.on('Delivery Note', {
     refresh: function(frm) {
+        if (frm.doc.status === 'Draft') {
+            $(".btn[data-original-title='Print']").hide();
+        }
     frm.set_query('cost_center', function() {
         if (frm.doc.company) {
             return {

@@ -3,14 +3,7 @@
 
 frappe.query_reports["Group Stock Balance"] = {
 		filters: [
-			{
-				fieldname: "company",
-				label: __("Company"),
-				fieldtype: "Link",
-				width: "80",
-				options: "Company",
-				default: frappe.defaults.get_default("company"),
-			},
+			
 			{
 				fieldname: "from_date",
 				label: __("From Date"),
@@ -51,31 +44,6 @@ frappe.query_reports["Group Stock Balance"] = {
 						},
 					};
 				},
-			},
-			{
-				fieldname: "warehouse",
-				label: __("Warehouse"),
-				fieldtype: "Link",
-				width: "80",
-				options: "Warehouse",
-				get_query: () => {
-					let warehouse_type = frappe.query_report.get_filter_value("warehouse_type");
-					let company = frappe.query_report.get_filter_value("company");
-	
-					return {
-						filters: {
-							...(warehouse_type && { warehouse_type }),
-							...(company && { company }),
-						},
-					};
-				},
-			},
-			{
-				fieldname: "warehouse_type",
-				label: __("Warehouse Type"),
-				fieldtype: "Link",
-				width: "80",
-				options: "Warehouse Type",
 			},
 			{
 				fieldname: "valuation_field_type",

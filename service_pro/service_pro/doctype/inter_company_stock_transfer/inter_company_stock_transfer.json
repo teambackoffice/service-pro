@@ -29,7 +29,6 @@
   "inter_company_material_request",
   "item_details_tab",
   "section_break_rkyp",
-  "auto_fill_credit_value",
   "item_details",
   "section_break_mwhs",
   "total_qty",
@@ -119,11 +118,6 @@
    "fieldtype": "Link",
    "label": "To Company Credit Account",
    "options": "Account"
-  },
-  {
-   "fieldname": "auto_fill_credit_value",
-   "fieldtype": "Button",
-   "label": "Auto Fill Credit Value"
   },
   {
    "allow_on_submit": 1,
@@ -260,10 +254,11 @@
    "options": "Inter Company Stock Transfer Item"
   }
  ],
+ "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-04-23 10:50:08.082893",
+ "modified": "2025-05-21 13:10:02.543894",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Stock Transfer",
@@ -284,6 +279,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

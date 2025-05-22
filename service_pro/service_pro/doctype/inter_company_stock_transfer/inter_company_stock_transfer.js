@@ -41,6 +41,7 @@ frappe.ui.form.on("Inter Company Stock Transfer Item", {
                 callback: function (r) {
                     d.available_qty = r.message.actual_qty;
                     d.value = r.message.valuation_rate;
+                    d.credit_value = r.message.valuation_rate;
                     cur_frm.refresh_field(d.parentfield);
                     compute_totals(cur_frm);
                 }
@@ -159,17 +160,8 @@ frappe.ui.form.on("Inter Company Stock Transfer", {
         };
     },
 
-    auto_fill_credit_value: function (frm) {
-        frm.doc.item_details.forEach(item => {
-            item.credit_value = item.value;
-        });
-        frm.refresh_field("item_details");
-        compute_totals(frm);
-        
-        if (frm.dirty()) {
-            frm.save();
-        }
-    },
+    // Removed auto_fill_credit_value function as it's no longer needed
+    
     before_submit: function(frm) {
         frm.doc.item_details.forEach(item => {
             if (!item.credit_value) {
@@ -182,9 +174,6 @@ frappe.ui.form.on("Inter Company Stock Transfer", {
         
     },
 });
-
-
-
 
 erpnext.utils.update_child_items = function (opts) {
     const frm = opts.frm;

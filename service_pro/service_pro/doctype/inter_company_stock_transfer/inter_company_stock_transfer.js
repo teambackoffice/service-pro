@@ -60,6 +60,13 @@ frappe.ui.form.on("Inter Company Stock Transfer Item", {
 });
 
 frappe.ui.form.on("Inter Company Stock Transfer", {
+    validate: function (frm) {
+        frm.doc.item_details.forEach(item => {
+            if (flt(item.credit_value) === 0.0) {
+                frappe.throw(__('Credit Value cannot be 0.00 for item {0}', [item.item_code || item.idx]));
+            }
+        });
+    },
     refresh: function (frm) {
         if (!frm.is_new() && frm.doc.docstatus === 1) {
             frm.clear_custom_buttons();

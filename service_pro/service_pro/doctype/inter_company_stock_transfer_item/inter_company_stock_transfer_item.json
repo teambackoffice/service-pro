@@ -64,7 +64,6 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Debit Value",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -74,7 +73,6 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Credit Value",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -94,7 +92,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-05-22 12:17:30.959980",
+ "modified": "2025-05-22 12:37:07.473065",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Stock Transfer Item",

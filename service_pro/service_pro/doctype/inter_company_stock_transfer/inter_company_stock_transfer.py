@@ -14,9 +14,10 @@ from erpnext.controllers.accounts_controller import set_order_defaults, validate
 
 class InterCompanyStockTransfer(Document):
     def on_update(self):
-        for item in self.item_details:
-            if flt(item.credit_value) == 0.0:
-                frappe.throw(_("Credit Value cannot be 0.00 for item {0}").format(item.item_code or item.idx))
+        if self.docstatus != 0:
+            for item in self.item_details:
+                if flt(item.credit_value) == 0.0:
+                    frappe.throw(_("Credit Value cannot be 0.00 for item {0}").format(item.item_code or item.idx))
 
 
     @frappe.whitelist()

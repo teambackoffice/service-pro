@@ -33,6 +33,7 @@ after_migrate = ["service_pro.doc_events.after_migrate.execute"]
 # include js in doctype views
 doctype_js = {
     "Quotation" : "public/js/quotation.js",
+    "Customer" : "public/js/customer.js",
     "Sales Invoice" : "public/js/sales_invoice.js",
     "Sales Order" : ["public/js/sales_order.js","public/js/default_value.js"],
     "Purchase Receipt" : "public/js/purchase_receipt.js",

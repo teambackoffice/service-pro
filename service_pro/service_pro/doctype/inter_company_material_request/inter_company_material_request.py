@@ -34,26 +34,49 @@ class InterCompanyMaterialRequest(Document):
 
     def on_submit(self):
         stock_transfer = frappe.new_doc("Inter Company Stock Transfer")
-        for item in self.get("items"):
+
+        total_qty = 0
+        debit_value = 0
+        credit_value = 0
+
+        # Ensure at least one valid template is present
+        for item in self.items:
             if not item.stock_transfer_template:
-                frappe.throw("No stock transfer template found in items.")
-        
-            stock_transfer.template = item.stock_transfer_template
+                frappe.throw(_("No stock transfer template found for item {0}.").format(item.item_code))
+
+            # Set template only once; assume all items use same template
+            if not stock_transfer.template:
+                stock_transfer.template = item.stock_transfer_template
 
         stock_transfer.inter_company_material_request = self.name
 
-        
-        for item in self.get("items"):
+        # Append items and compute totals
+        for item in self.items:
+            if float(item.qty) > float(item.available_qty):
+                frappe.throw(_("Qty of {0} cannot be more than available qty.").format(item.item_code))
+
+            total_qty += float(item.qty)
+            debit_value += float(item.rate)
+            credit_value += float(item.rate)
+
             stock_transfer.append("item_details", {
                 "item_code": item.item_code,
                 "item_name": item.item_name,
                 "value": item.rate,
+                "credit_value": item.rate,
                 "available_qty": item.available_qty,
                 "qty": item.qty,
                 "received_qty": item.qty
             })
-        
+
+        # Set computed totals
+        stock_transfer.total_qty = total_qty
+        stock_transfer.debit_value = debit_value
+        stock_transfer.credit_value = credit_value
+        stock_transfer.deference_value = debit_value - credit_value
+
         stock_transfer.insert()
+        frappe.msgprint(_("Inter Company Stock Transfer {0} has been created.").format(stock_transfer.name))
        
 
         

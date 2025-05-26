@@ -60,6 +60,21 @@ frappe.ui.form.on("Inter Company Stock Transfer Item", {
 });
 
 frappe.ui.form.on("Inter Company Stock Transfer", {
+    refresh: function(frm) {
+        compute_totals(frm);
+    },
+    item_details_add: function(frm) {
+        compute_totals(frm);
+    },
+    item_details_remove: function(frm) {
+        compute_totals(frm);
+    },
+    validate: function(frm) {
+        compute_totals(frm);
+    },
+    "item_details.qty": function(frm) {
+        compute_totals(frm);
+    },
    
     refresh: function (frm) {
         if (!frm.is_new() && frm.doc.docstatus === 1) {

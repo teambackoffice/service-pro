@@ -18,6 +18,9 @@ class InterCompanyStockTransfer(Document):
             for item in self.item_details:
                 if flt(item.credit_value) == 0.0:
                     frappe.throw(_("Credit Value cannot be 0.00 for item {0}").format(item.item_code or item.idx))
+                if flt(item.value) == 0.0:
+                    frappe.throw(_("Debit Value cannot be 0.00 for item {0}").format(item.item_code or item.idx))
+
 
 
     @frappe.whitelist()

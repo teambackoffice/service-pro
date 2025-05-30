@@ -10,7 +10,7 @@
  "is_standard": "Yes",
  "letter_head": "Hydrotech",
  "letterhead": null,
- "modified": "2025-05-13 07:48:51.397262",
+ "modified": "2025-05-29 12:46:50.580543",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Group Stock Balance",
@@ -20,12 +20,5 @@
  "ref_doctype": "Stock Ledger Entry",
  "report_name": "Group Stock Balance",
  "report_type": "Script Report",
- "roles": [
-  {
-   "role": "Stock User"
-  },
-  {
-   "role": "Accounts Manager"
-  }
- ]
+ "roles": []
 }

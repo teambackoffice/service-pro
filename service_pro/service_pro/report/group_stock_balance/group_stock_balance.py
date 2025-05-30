@@ -44,7 +44,8 @@ class CustomStockBalanceReport:
         self.columns = []
         self.sle_entries: list[SLEntry] = []
         self.set_company_currency()
-        self.warehouses = set(self.get_all_warehouses())
+        # Get user-specific warehouses based on company access and role
+        self.warehouses = set(self.get_user_accessible_warehouses())
 
     def set_company_currency(self) -> None:
         self.company_currency = (
@@ -53,8 +54,92 @@ class CustomStockBalanceReport:
             else frappe.db.get_single_value("Global Defaults", "default_currency")
         )
 
-    def get_all_warehouses(self):
-        return ["Stores - HCCW", "Stores - HTCD", "Stores - HTCJ", "Stores - HTCR"]
+    def get_user_accessible_warehouses(self):
+        """Get warehouses accessible to current user based on their company assignments and role"""
+        current_user = frappe.session.user
+        
+        # Check if user has Branch Manager or Accounts Manager role
+        user_roles = frappe.get_roles(current_user)
+        is_branch_manager = "Branch Manager" in user_roles
+        is_accounts_manager = "Accounts Manager" in user_roles
+        
+        # Company to warehouse mapping
+        company_warehouse_map = {
+            "HYDROTECH TRADING COMPANY-(R)": "Stores - HTCR",
+            "HYDROTECH TRADING COMPANY-(J)": "Stores - HTCJ", 
+            "HYDROTECH TRADING COMPANY-(D)": "Stores - HTCD",
+            "HYDROTECH COMPANY CENTRAL WAREHOUSE": "Stores - HCCW"
+        }
+        
+        # If user is Branch Manager or Accounts Manager, give access to all warehouses
+        if is_branch_manager or is_accounts_manager:
+            return list(company_warehouse_map.values())
+        
+        # Get user's allowed companies for non-branch managers
+        user_companies = self.get_user_companies(current_user)
+        
+        # Map companies to their corresponding warehouses
+        accessible_warehouses = []
+        for company in user_companies:
+            if company in company_warehouse_map:
+                accessible_warehouses.append(company_warehouse_map[company])
+        
+        # If no specific company access found, return all warehouses (for admin users)
+        if not accessible_warehouses:
+            return list(company_warehouse_map.values())
+        
+        return accessible_warehouses
+
+    def get_user_companies(self, user):
+        """Get companies accessible to the user based on User Permission or Role Profile"""
+        companies = []
+        
+        # Method 1: Check User Permission for Company
+        user_permissions = frappe.get_all(
+            "User Permission",
+            filters={
+                "user": user,
+                "allow": "Company"
+            },
+            fields=["for_value"]
+        )
+        
+        for perm in user_permissions:
+            companies.append(perm.for_value)
+        
+        if not companies:
+            user_doc = frappe.get_doc("User", user)
+            
+            # Check if there's a custom field for company in User doctype
+            if hasattr(user_doc, 'company'):
+                companies.append(user_doc.company)
+            elif hasattr(user_doc, 'default_company'):
+                companies.append(user_doc.default_company)
+        
+        if not companies:
+            companies = self.get_companies_by_user_role(user)
+        
+        return companies
+
+    def get_companies_by_user_role(self, user):
+        """Get companies based on user's role assignment (customize as per your setup)"""
+        companies = []
+        
+        # Get user roles
+        user_roles = frappe.get_roles(user)
+        
+        role_company_map = {
+            "HTCR Manager": "HYDROTECH TRADING COMPANY-(R)",
+            "HTCJ Manager": "HYDROTECH TRADING COMPANY-(J)",
+            "HTCD Manager": "HYDROTECH TRADING COMPANY-(D)", 
+            "HCCW Manager": "HYDROTECH COMPANY CENTRAL WAREHOUSE"
+        }
+        
+        for role in user_roles:
+            if role in role_company_map:
+                companies.append(role_company_map[role])
+        
+        return companies
 
     def run(self):
         self.float_precision = cint(frappe.db.get_default("float_precision")) or 3
@@ -77,11 +162,47 @@ class CustomStockBalanceReport:
         for entry in res.data:
             entry = frappe._dict(entry)
             group_by_key = (entry.item_code, entry.warehouse)
-            if group_by_key not in self.opening_data:
-                self.opening_data.setdefault(group_by_key, entry)
+            # Only include warehouses accessible to current user
+            if entry.warehouse in self.warehouses:
+                if group_by_key not in self.opening_data:
+                    self.opening_data.setdefault(group_by_key, entry)
+
+    def get_bin_data(self):
+        bin_data = {}
+        item_codes = set(data.item_code for data in self.get_item_warehouse_map().values())
+
+        if not item_codes:
+            return bin_data
+
+        bin_table = frappe.qb.DocType("Bin")
+        bin_records = (
+            frappe.qb.from_(bin_table)
+            .select(
+                bin_table.item_code,
+                bin_table.warehouse,
+                bin_table.actual_qty,
+                bin_table.stock_value,
+                bin_table.valuation_rate
+            )
+            .where(
+                (bin_table.item_code.isin(list(item_codes))) &
+                (bin_table.warehouse.isin(list(self.warehouses)))  # Filter by user accessible warehouses
+            )
+        ).run(as_dict=True)
+
+        for row in bin_records:
+            key = (row.item_code, row.warehouse)
+            bin_data[key] = {
+                'actual_qty': flt(row.actual_qty, self.float_precision),
+                'stock_value': flt(row.stock_value, self.float_precision),
+                'valuation_rate': flt(row.valuation_rate, self.float_precision)
+            }
+
+        return bin_data
 
     def prepare_consolidated_data(self):
         item_warehouse_map = self.get_item_warehouse_map()
+        bin_data = self.get_bin_data()
         consolidated_items = {}
 
         for key, data in item_warehouse_map.items():
@@ -99,14 +220,20 @@ class CustomStockBalanceReport:
                     "bal_val": 0,
                     "currency": self.company_currency,
                 }
+                # Only create columns for user accessible warehouses
                 for wh in self.warehouses:
                     consolidated_items[item_code][f"{wh}_bal_qty"] = 0
                     consolidated_items[item_code][f"{wh}_bal_val"] = 0
+                    consolidated_items[item_code][f"{wh}_avg_rate"] = 0
 
-            consolidated_items[item_code][f"{warehouse}_bal_qty"] = flt(data.bal_qty)
-            consolidated_items[item_code][f"{warehouse}_bal_val"] = flt(data.bal_val)
-            consolidated_items[item_code]["bal_qty"] += flt(data.bal_qty)
-            consolidated_items[item_code]["bal_val"] += flt(data.bal_val)
+            bin_key = (item_code, warehouse)
+            if bin_key in bin_data:
+                bin_record = bin_data[bin_key]
+                consolidated_items[item_code][f"{warehouse}_bal_qty"] = bin_record['actual_qty']
+                consolidated_items[item_code][f"{warehouse}_bal_val"] = bin_record['stock_value']
+                consolidated_items[item_code][f"{warehouse}_avg_rate"] = bin_record['valuation_rate']
+                consolidated_items[item_code]["bal_qty"] += bin_record['actual_qty']
+                consolidated_items[item_code]["bal_val"] += bin_record['stock_value']
 
         self.data = list(consolidated_items.values())
 
@@ -116,6 +243,10 @@ class CustomStockBalanceReport:
         self.sle_entries = self.sle_query.run(as_dict=True, as_iterator=not self.filters.get("show_stock_ageing_data"))
 
         for entry in self.sle_entries:
+            # Skip entries for warehouses not accessible to current user
+            if entry.warehouse not in self.warehouses:
+                continue
+                
             group_by_key = (entry.item_code, entry.warehouse)
             if group_by_key not in item_warehouse_map:
                 self.initialize_data(item_warehouse_map, group_by_key, entry)
@@ -201,6 +332,8 @@ class CustomStockBalanceReport:
                 item_table.stock_uom, item_table.item_name
             )
             .where((sle.docstatus < 2) & (sle.is_cancelled == 0))
+            # Filter by user accessible warehouses
+            .where(sle.warehouse.isin(list(self.warehouses)))
             .orderby(sle.posting_datetime).orderby(sle.creation)
         )
 
@@ -224,14 +357,19 @@ class CustomStockBalanceReport:
     def apply_warehouse_filters(self, query, sle):
         warehouse_table = frappe.qb.DocType("Warehouse")
         if self.filters.get("warehouse"):
-            query = apply_warehouse_filter(query, sle, self.filters)
+            # Ensure the filtered warehouse is accessible to the user
+            if self.filters.get("warehouse") in self.warehouses:
+                query = apply_warehouse_filter(query, sle, self.filters)
+            else:
+                # If requested warehouse is not accessible, return empty results
+                query = query.where(sle.warehouse == "")
         elif (warehouse_type := self.filters.get("warehouse_type")):
             query = query.join(warehouse_table).on(warehouse_table.name == sle.warehouse).where(warehouse_table.warehouse_type == warehouse_type)
         return query
 
     def apply_items_filters(self, query, item_table):
         if item_group := self.filters.get("item_group"):
-            children = get_descendants_of("Item Group", item_group, ignore_permissions=True)
+            children = get_descendants_of("Item Group", item_group)
             query = query.where(item_table.item_group.isin([*children, item_group]))
 
         for field in ["item_code", "brand"]:
@@ -256,10 +394,13 @@ class CustomStockBalanceReport:
             {"label": _("Item Group"), "fieldname": "item_group", "fieldtype": "Link", "options": "Item Group", "width": 150},
             {"label": _("Stock UOM"), "fieldname": "stock_uom", "fieldtype": "Link", "options": "UOM", "width": 150},
         ]
+        
+        # Only add columns for warehouses accessible to the current user
         for warehouse in self.warehouses:
             columns.extend([
                 {"label": _(f"{warehouse} Bal Qty"), "fieldname": f"{warehouse}_bal_qty", "fieldtype": "Float", "width": 170, "convertible": "qty"},
-                {"label": _(f"{warehouse} Bal Value"), "fieldname": f"{warehouse}_bal_val", "fieldtype": "Currency", "width": 170, "options": "currency"}
+                {"label": _(f"{warehouse} Bal Value"), "fieldname": f"{warehouse}_bal_val", "fieldtype": "Currency", "width": 170, "options": "currency"},
+                {"label": _(f"{warehouse} Average Rate"), "fieldname": f"{warehouse}_avg_rate", "fieldtype": "Currency", "width": 170, "options": "currency"}
             ])
         return columns
 

@@ -11,6 +11,13 @@ app_color = "grey"
 app_email = "janlloydangeles@gmail.com"
 app_license = "MIT"
 
+
+
+process_soa_html = {
+    "General Ledger": ["service_pro/templates/process_statement_of_accounts.html"],
+    "Accounts Receivable": ["service_pro/templates/process_statement_of_accounts_accounts_receivable.html"],
+}
+
 # Includes in <head>
 # ------------------
 after_migrate = ["service_pro.doc_events.after_migrate.execute"]

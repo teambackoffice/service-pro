@@ -15,6 +15,8 @@
   "item_naming_series",
   "item_group",
   "default_item_tax_template",
+  "repack_item_naming_series",
+  "repack_item_group",
   "column_break_lmvsc",
   "credit_note_user_role",
   "debit_note_user_role",
@@ -245,12 +247,25 @@
    "fieldtype": "Link",
    "label": " Ignore Permission",
    "options": "Role"
+  },
+  {
+   "fieldname": "repack_item_naming_series",
+   "fieldtype": "Select",
+   "label": "Repack Item Naming Series",
+   "options": "RP.YY.#####"
+  },
+  {
+   "fieldname": "repack_item_group",
+   "fieldtype": "Link",
+   "label": "Repack Item Group",
+   "options": "Item Group"
   }
  ],
+ "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-12-28 11:51:18.171454",
+ "modified": "2025-05-30 13:38:05.922854",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",
@@ -268,6 +283,7 @@
   }
  ],
  "quick_entry": 1,
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

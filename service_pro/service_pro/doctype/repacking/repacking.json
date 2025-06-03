@@ -1,0 +1,209 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2025-05-29 13:05:13.259779",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "amended_from",
+  "naming_series",
+  "company",
+  "column_break_3",
+  "type",
+  "posting_date",
+  "posting_time",
+  "accounting_dimensions_section",
+  "cost_center",
+  "section_break_7",
+  "source_warehouse",
+  "repack_item",
+  "section_break_oowm",
+  "column_break_thnz",
+  "column_break_bgfl",
+  "target_warehouse",
+  "section_break_9",
+  "generate_item",
+  "target_item",
+  "section_break_11",
+  "total_outgoing_value",
+  "column_break_13",
+  "total_incoming_value",
+  "total_difference_value"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Series",
+   "options": "RPK-.YYYY.-",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Type",
+   "options": "\nAssembling\nDisassembling",
+   "reqd": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break",
+   "label": "Finished Goods"
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break",
+   "label": "Raw Materials"
+  },
+  {
+   "fieldname": "section_break_11",
+   "fieldtype": "Section Break",
+   "label": "Totals"
+  },
+  {
+   "fieldname": "total_outgoing_value",
+   "fieldtype": "Currency",
+   "label": "Total Outgoing Value (Consumption)",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_13",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_incoming_value",
+   "fieldtype": "Currency",
+   "label": "Total Incoming Value (Receipt)",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Repacking",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "default": "now",
+   "fieldname": "posting_time",
+   "fieldtype": "Time",
+   "label": "Posting Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "source_warehouse",
+   "fieldtype": "Link",
+   "label": "Source Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "repack_item",
+   "fieldtype": "Table",
+   "label": "Repack Item",
+   "options": "Repack Item"
+  },
+  {
+   "fieldname": "section_break_oowm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "target_warehouse",
+   "fieldtype": "Link",
+   "label": "Target Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "column_break_thnz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_bgfl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "target_item",
+   "fieldtype": "Table",
+   "label": "Target Item",
+   "options": "Target Item"
+  },
+  {
+   "fieldname": "generate_item",
+   "fieldtype": "Button",
+   "label": "Generate Item"
+  },
+  {
+   "fieldname": "accounting_dimensions_section",
+   "fieldtype": "Section Break",
+   "label": "Accounting Dimensions"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "reqd": 1
+  },
+  {
+   "fieldname": "total_difference_value",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Total Difference Value"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-06-03 08:02:46.000807",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Repacking",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -17,11 +17,11 @@
   "cost_center",
   "section_break_7",
   "source_warehouse",
-  "repack_item",
+  "column_break_nlth",
+  "target_warehouse",
   "section_break_oowm",
   "column_break_thnz",
-  "column_break_bgfl",
-  "target_warehouse",
+  "repack_item",
   "section_break_9",
   "generate_item",
   "target_item",
@@ -114,8 +114,7 @@
    "default": "now",
    "fieldname": "posting_time",
    "fieldtype": "Time",
-   "label": "Posting Time",
-   "read_only": 1
+   "label": "Posting Time"
   },
   {
    "fieldname": "source_warehouse",
@@ -144,13 +143,10 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "column_break_bgfl",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "target_item",
    "fieldtype": "Table",
    "label": "Target Item",
+   "no_copy": 1,
    "options": "Target Item"
   },
   {
@@ -175,13 +171,17 @@
    "fieldtype": "Currency",
    "hidden": 1,
    "label": "Total Difference Value"
+  },
+  {
+   "fieldname": "column_break_nlth",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-03 08:02:46.000807",
+ "modified": "2025-06-04 09:24:05.263866",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Repacking",

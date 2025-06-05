@@ -43,7 +43,9 @@
   "permission_tab",
   "in_transit_user_role",
   "received_user_role",
-  "ignore_permission"
+  "ignore_permission",
+  "margin_settings_tab",
+  "default_sales_margin_percentage"
  ],
  "fields": [
   {
@@ -259,13 +261,24 @@
    "fieldtype": "Link",
    "label": "Repack Item Group",
    "options": "Item Group"
+  },
+  {
+   "fieldname": "margin_settings_tab",
+   "fieldtype": "Tab Break",
+   "label": "Margin Rate Settings"
+  },
+  {
+   "fieldname": "default_sales_margin_percentage",
+   "fieldtype": "Table",
+   "label": "Default Sales Margin Percentage",
+   "options": "Default Sales Margin Percentage"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-05-30 13:38:05.922854",
+ "modified": "2025-06-05 12:48:10.885331",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

@@ -1,4 +1,3 @@
-
 cur_frm.cscript.incentives = function(frm){
     compute_incentives(cur_frm)
 }
@@ -32,6 +31,16 @@ frappe.ui.form.on('Sales Invoice', {
 
                 }
             })
+        }
+    },
+
+    custom_margin_rate: function(frm) {
+        if (frm.doc.items && frm.doc.items.length > 0) {
+            frm.doc.items.forEach(function(item) {
+                if (item.item_code && item.warehouse) {
+                    calculate_margin_rate_for_item(frm, item);
+                }
+            });
         }
     },
    
@@ -91,6 +100,9 @@ frappe.ui.form.on('Sales Invoice', {
                 }
             }
         });
+
+        // Set user-specific margin rate on load
+        set_user_margin_rate(frm);
     },
     refresh: function(frm) {
         // frm.toggle_display("update_stock", frm.doc.is_pos)
@@ -122,7 +134,10 @@ frappe.ui.form.on('Sales Invoice', {
                     }
                 };
             }
-        });  
+        });
+
+        // Set user-specific margin rate on refresh  
+        set_user_margin_rate(frm);
     },
     is_pos: function(frm) {
         // frm.toggle_display("update_stock", frm.doc.is_pos)
@@ -153,6 +168,54 @@ frappe.ui.form.on('Sales Invoice', {
         }
     }
 })
+
+frappe.ui.form.on('Sales Invoice Item', {
+    item_code: function(frm, cdt, cdn) {
+        let item_row = locals[cdt][cdn];
+        calculate_margin_rate_for_item(frm, item_row);
+    },
+    
+    warehouse: function(frm, cdt, cdn) {
+        let item_row = locals[cdt][cdn];
+        calculate_margin_rate_for_item(frm, item_row);
+    },
+    
+    qty: function(frm, cdt, cdn) {
+        let item_row = locals[cdt][cdn];
+        calculate_margin_rate_for_item(frm, item_row);
+    },
+    
+    // Updated validation when custom_margin_rate changes
+    custom_margin_rate: function(frm, cdt, cdn) {
+        let item_row = locals[cdt][cdn];
+        if (item_row.custom_margin_rate && item_row.rate) {
+            // Check if rate is lower than margin rate
+            if (item_row.rate < item_row.custom_margin_rate) {
+                frappe.msgprint({
+                    title: __('Rate Below Margin Rate'),
+                    indicator: 'red',
+                    message: __(`Row ${item_row.idx}: Item Rate (${item_row.rate}) is lower than Margin Rate (${item_row.custom_margin_rate}). Please increase the Item Rate to at least ${item_row.custom_margin_rate} before submitting.`)
+                });
+            }
+        }
+    },
+    
+    // Updated validation when rate changes
+    rate: function(frm, cdt, cdn) {
+        let item_row = locals[cdt][cdn];
+        if (item_row.custom_margin_rate && item_row.rate) {
+            // Check if rate is lower than margin rate
+            if (item_row.rate < item_row.custom_margin_rate) {
+                frappe.msgprint({
+                    title: __('Rate Below Margin Rate'),
+                    indicator: 'red',
+                    message: __(`Row ${item_row.idx}: Item Rate (${item_row.rate}) is lower than Margin Rate (${item_row.custom_margin_rate}). Please increase the Item Rate to at least ${item_row.custom_margin_rate} before submitting.`)
+                });
+            }
+        }
+    }
+});
+
 cur_frm.cscript.paid = function(frm){
     cur_frm.doc.expense_cost_center = defaults['sales_partner_payments_details'].cost_center
     cur_frm.refresh_field("expense_cost_center")
@@ -170,9 +233,8 @@ cur_frm.cscript.paid = function(frm){
         cur_frm.refresh_field("unpaid")
         cur_frm.refresh_field("cash")
     }
-
-
 }
+
 cur_frm.cscript.unpaid = function(frm){
     // frappe.db.get_single_value('Production Settings', 'expense_cost_center')
     //     .then(expense_cost_center => {
@@ -193,9 +255,8 @@ cur_frm.cscript.unpaid = function(frm){
         cur_frm.refresh_field("paid")
         cur_frm.refresh_field("cash")
    }
-
-
 }
+
 cur_frm.cscript.onload = function(frm){
     if(cur_frm.doc.docstatus === 0 && cur_frm.doc.production.length > 0 && cur_frm.doc.taxes_and_charges){
         cur_frm.trigger("taxes_and_charges")
@@ -231,9 +292,8 @@ cur_frm.cscript.onload = function(frm){
         cur_frm.doc.showroom_cash = defaults['sales_partner_payments_details'].showroom_cash
         cur_frm.refresh_field("showroom_cash")
     }
-
-
 }
+
 function compute_incentives(cur_frm) {
     var incentive_total = 0
     for(var i=0;i<cur_frm.doc.sales_team.length;i+=1){
@@ -242,6 +302,7 @@ function compute_incentives(cur_frm) {
     cur_frm.doc.incentive = incentive_total
     cur_frm.refresh_field("incentive")
 }
+
 function filter_link_field(cur_frm) {
      cur_frm.set_query('reference', 'production', () => {
         return {
@@ -252,7 +313,6 @@ function filter_link_field(cur_frm) {
             ]
         }
     })
-
 }
 
 cur_frm.cscript.reference = function (frm,cdt,cdn) {
@@ -313,13 +373,92 @@ cur_frm.cscript.reference = function (frm,cdt,cdn) {
                     reference: d.reference,
                 });
                 cur_frm.refresh_field('sales_man');
-
             }
-
-
-
         }
-
             })
     }
+}
+
+
+function set_user_margin_rate(frm) {
+    // Get user-specific margin percentage from Production Settings
+    if (!frm.doc.company) {
+        return;
+    }
+    
+    frappe.call({
+        method: "service_pro.doc_events.utils.get_production_settings_defaults",
+        args: {
+            company: frm.doc.company
+        },
+        callback: function(r) {
+            if (r.message && r.message.default_sales_margin_percentage) {
+                // Find current user's percentage
+                for (let i = 0; i < r.message.default_sales_margin_percentage.length; i++) {
+                    let row = r.message.default_sales_margin_percentage[i];
+                    if (row.user === frappe.session.user) {
+                        frm.set_value('custom_margin_rate', row.percentage);
+                        
+                        // Recalculate all items with the new margin rate
+                        if (frm.doc.items && frm.doc.items.length > 0) {
+                            frm.doc.items.forEach(function(item) {
+                                if (item.item_code && item.warehouse) {
+                                    calculate_margin_rate_for_item(frm, item);
+                                }
+                            });
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    });
+}
+
+function calculate_margin_rate_for_item(frm, item_row) {
+    if (!item_row.item_code || !item_row.warehouse || !frm.doc.custom_margin_rate) {
+        return;
+    }
+    
+    // Get valuation rate from Bin doctype
+    frappe.call({
+        method: "frappe.client.get_value",
+        args: {
+            doctype: "Bin",
+            filters: {
+                item_code: item_row.item_code,
+                warehouse: item_row.warehouse
+            },
+            fieldname: ["valuation_rate"]
+        },
+        callback: function(r) {
+            if (r.message && r.message.valuation_rate) {
+                let cost_price = r.message.valuation_rate;
+                let margin_percentage = frm.doc.custom_margin_rate;
+                
+                if (cost_price > 0 && margin_percentage > 0) {
+                    // Calculate selling price using the formula:
+                    // Selling Price = Cost Price / (1 - Margin%)
+                    let margin_decimal = margin_percentage / 100;
+                    let selling_price = cost_price / (1 - margin_decimal);
+                    
+                    // Set custom_margin_rate field in the item row
+                    item_row.custom_margin_rate = selling_price;
+                    
+                    // Optional: Auto-sync with rate field to prevent validation errors
+                    // Uncomment the line below if you want automatic sync
+                    // item_row.rate = selling_price;
+                    
+                    // Refresh the specific field
+                    frm.refresh_field('items');
+                    
+                    // Optional: Show calculation details in console for debugging
+                    console.log(`Item: ${item_row.item_code}`);
+                    console.log(`Cost Price (Valuation Rate): ${cost_price}`);
+                    console.log(`Margin %: ${margin_percentage}%`);
+                    console.log(`Calculated Margin Rate: ${selling_price}`);
+                }
+            }
+        }
+    });
 }

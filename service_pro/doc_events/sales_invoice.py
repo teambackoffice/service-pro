@@ -1,4 +1,5 @@
 import frappe
+from frappe import _
 
 def generate_jv(doc):
 	if doc.paid:
@@ -76,6 +77,7 @@ def generate_jv(doc):
 		# doc.journal_entry = jv.name
 		# frappe.db.sql(""" UPDATE `tabSales Invoice` SET journal_entry=%s WHERE name=%s""", (jv.name, doc.name))
 		# frappe.db.commit()
+
 def jv_accounts_unpaid(doc):
 	data = frappe.db.sql(""" SELECT * FROM `tabSales Partner Payments` WHERE company=%s """, doc.company, as_dict=1)
 	if len(data) == 0:
@@ -125,8 +127,47 @@ def jv_accounts_paid(doc):
 			'credit_in_account_currency': doc.incentive
 		})
 	return accounts
+
+def validate_margin_rate_with_rate(doc, method):
+	"""Validate that rate field is not lower than custom_margin_rate for each item"""
+	if not doc.items:
+		return
+	
+	validation_errors = []
+	
+	for idx, item in enumerate(doc.items):
+		if hasattr(item, 'custom_margin_rate') and item.custom_margin_rate and item.rate:
+			# Convert to float for comparison
+			margin_rate = float(item.custom_margin_rate)
+			item_rate = float(item.rate)
+			
+			# Check if item rate is lower than margin rate
+			# Allow submission when rate >= margin_rate
+			if item_rate < margin_rate:
+				validation_errors.append({
+					'row': idx + 1,
+					'item_code': item.item_code,
+					'item_name': item.item_name or item.item_code,
+					'margin_rate': margin_rate,
+					'item_rate': item_rate
+				})
+	
+	if validation_errors:
+		error_message = "Rate cannot be lower than Margin Rate for the following items:\n\n"
+		
+		for error in validation_errors:
+			error_message += f"Row {error['row']}: ({error['item_code']})\n"
+			error_message += f"  • Margin Rate: {error['margin_rate']:.2f}\n"
+			error_message += f"  • Item Rate: {error['item_rate']:.2f}\n"
+			error_message += f"  • Please increase Item Rate to at least {error['margin_rate']:.2f}\n\n"
+		
+		frappe.throw(_(error_message), title=_("Rate Below Margin Rate"))
+
 @frappe.whitelist()
 def on_submit_si(doc, method):
+	# Validate margin rate matches item rate before submission
+	validate_margin_rate_with_rate(doc, method)
+	
 	if doc.selling_price_list:
 		if frappe.db.exists("Maximum User Discount", {"parent":doc.selling_price_list, "user": frappe.session.user}):
 			max_disc = frappe.db.get_value("Maximum User Discount", {"parent":doc.selling_price_list, "user": frappe.session.user}, ["max_discount"])
@@ -249,6 +290,7 @@ def get_lengths(name):
 	dn = frappe.db.sql(dn_query, (name, "Delivery Note"), as_dict=1)
 
 	return len(dn), len(si)
+
 def get_dn_si_qty(item_code, qty, name):
 	si_query = """ 
  			SELECT SIP.qty as qty, SI.status FROM `tabSales Invoice` AS SI 
@@ -280,7 +322,6 @@ def get_dn_si_qty(item_code, qty, name):
 
 
 def get_dn_qty(name):
-
 	dn_query = """ 
 	 			SELECT SIP.qty as qty, DN.status FROM `tabDelivery Note` AS DN 
 	 			INNER JOIN `tabSales Invoice Production` AS SIP ON DN.name = SIP.parent 
@@ -313,3 +354,131 @@ def validate_permission(doc, method):
 def get_role():
 	doc = frappe.db.get_value("Production Settings",None,"ignore_permission")
 	return doc
+
+
+def set_margin_rate_on_load(doc, method):
+    """Set margin rate based on user configuration when Sales Invoice is loaded"""
+    if not doc.custom_margin_rate:
+        doc.custom_margin_rate = get_user_margin_percentage(frappe.session.user, doc.company) or 0
+
+
+def validate_and_calculate_rates(doc, method):
+    """Validate and calculate rates based on margin and valuation rate"""
+    if doc.custom_margin_rate:
+        for item in doc.items:
+            if item.item_code and item.warehouse:
+                calculate_item_margin_rate(doc, item)
+
+
+def calculate_item_margin_rate(doc, item):
+    """Calculate item margin rate using margin % and valuation rate"""
+    try:
+        cost_price = frappe.db.get_value("Bin", {
+            "item_code": item.item_code,
+            "warehouse": item.warehouse
+        }, "valuation_rate")
+
+        if not cost_price:
+            return  # Skip if no cost price available
+
+        margin_percentage = doc.custom_margin_rate
+        margin_decimal = margin_percentage / 100
+
+        if margin_decimal >= 1:
+            frappe.throw(f"Margin percentage cannot be 100% or more for item {item.item_code}")
+
+        selling_price = cost_price / (1 - margin_decimal)
+
+        # Set calculated margin price to custom_margin_rate field in child table
+        if hasattr(item, 'custom_margin_rate'):
+            item.custom_margin_rate = selling_price
+        else:
+            frappe.logger().warning(f"'custom_margin_rate' field missing in Sales Invoice Item for {item.item_code}")
+
+        frappe.logger().info(f"[Margin Calculation] Item: {item.item_code}, Cost: {cost_price}, "
+                             f"Margin: {margin_percentage}%, Rate: {selling_price}")
+
+    except Exception as e:
+        frappe.logger().error(f"[Error] Margin calc failed for {item.item_code}: {str(e)}")
+
+
+def get_user_margin_percentage(user, company):
+    """Fetch user-specific margin percentage from Production Settings"""
+    try:
+        production_settings = frappe.get_doc("Production Settings", company)
+
+        if hasattr(production_settings, 'default_sales_margin_percentage'):
+            user_margin = next((row.percentage for row in production_settings.default_sales_margin_percentage
+                                if row.user == user), None)
+            return user_margin
+    except Exception as e:
+        frappe.logger().error(f"[Error] Fetching margin for user {user} in {company}: {str(e)}")
+    return None
+
+
+@frappe.whitelist()
+def get_user_margin_rate():
+    """Return current user's configured margin rate"""
+    user = frappe.session.user
+    company = frappe.defaults.get_user_default("Company")
+
+    if not company:
+        companies = frappe.get_all("Company", filters={"disabled": 0}, fields=["name"], limit=1)
+        if companies:
+            company = companies[0].name
+
+    return get_user_margin_percentage(user, company)
+
+
+@frappe.whitelist()
+def calculate_selling_price(cost_price, margin_percentage):
+    """Calculate selling price given a cost and margin"""
+    try:
+        cost_price = float(cost_price)
+        margin_percentage = float(margin_percentage)
+
+        if cost_price <= 0:
+            frappe.throw(_("Cost price must be greater than 0"))
+
+        if not (0 < margin_percentage < 100):
+            frappe.throw(_("Margin percentage must be between 0 and 100"))
+
+        margin_decimal = margin_percentage / 100
+        selling_price = cost_price / (1 - margin_decimal)
+
+        return {
+            "cost_price": cost_price,
+            "margin_percentage": margin_percentage,
+            "selling_price": selling_price,
+            "margin_amount": selling_price - cost_price
+        }
+
+    except Exception as e:
+        frappe.throw(_("Error calculating selling price: {0}").format(str(e)))
+
+
+def calculate_item_rate_with_margin(doc, item):
+    """[REFERENCE] Compute and update rate field instead of custom_margin_rate"""
+    try:
+        cost_price = frappe.db.get_value("Bin", {
+            "item_code": item.item_code,
+            "warehouse": item.warehouse
+        }, "valuation_rate")
+
+        if not cost_price:
+            return
+
+        margin_percentage = doc.custom_margin_rate
+        margin_decimal = margin_percentage / 100
+
+        if margin_decimal >= 1:
+            frappe.throw(f"Margin percentage cannot be 100% or more for item {item.item_code}")
+
+        selling_price = cost_price / (1 - margin_decimal)
+        item.rate = selling_price  # Reference update
+
+        frappe.logger().info(f"[Ref Margin] Item: {item.item_code}, Cost: {cost_price}, "
+                             f"Margin: {margin_percentage}%, Rate: {selling_price}")
+
+    except Exception as e:
+        frappe.logger().error(f"[Ref Error] Margin rate set failed for {item.item_code}: {str(e)}")

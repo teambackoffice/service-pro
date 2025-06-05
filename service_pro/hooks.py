@@ -111,6 +111,12 @@ doctype_js = {
 doc_events = {
 	"Sales Invoice": {
 		"on_submit": "service_pro.doc_events.sales_invoice.on_submit_si",
+        "onload": "service_pro.doc_events.sales_invoice.set_margin_rate_on_load",
+        "validate": [
+            "service_pro.doc_events.sales_invoice.validate_margin_rate_with_rate",
+            "service_pro.doc_events.sales_invoice.set_margin_rate_on_load",
+            "service_pro.doc_events.sales_invoice.validate_and_calculate_rates"
+        ],
         "before_submit":["service_pro.doc_events.sales_invoice.validate_so",
                          "service_pro.doc_events.sales_invoice.validate_permission",],
 		"on_cancel": "service_pro.doc_events.sales_invoice.on_cancel_si",

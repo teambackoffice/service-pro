@@ -8,6 +8,151 @@ from frappe.utils import now, nowdate, nowtime, flt
 
 class Repacking(Document):
 
+    def calculate_weighted_average_valuation(self, item_code, warehouse, incoming_qty, incoming_rate):
+        """
+        Calculate weighted average valuation rate using the formula:
+        new_value = ((stock_qty × valuation_rate) + (incoming_qty × incoming_rate)) / (stock_qty + incoming_qty)
+        
+        Where:
+        - stock_qty → qty_after_transaction from Stock Ledger Entry
+        - valuation_rate → valuation_rate from Stock Ledger Entry
+        - incoming_qty → actual_qty (the quantity being repacked)
+        - incoming_rate → incoming_rate (the rate for incoming quantity)
+        """
+        try:
+            # Get the latest stock ledger entry for this item in the warehouse
+            latest_sle = frappe.db.sql("""
+                SELECT qty_after_transaction, valuation_rate
+                FROM `tabStock Ledger Entry`
+                WHERE item_code = %s 
+                AND warehouse = %s 
+                AND is_cancelled = 0
+                AND docstatus = 1
+                ORDER BY posting_date DESC, posting_time DESC, creation DESC
+                LIMIT 1
+            """, (item_code, warehouse), as_dict=True)
+            
+            if latest_sle:
+                stock_qty = flt(latest_sle[0].qty_after_transaction or 0)
+                current_valuation_rate = flt(latest_sle[0].valuation_rate or 0)
+            else:
+                # If no stock ledger entry found, assume zero stock
+                stock_qty = 0
+                current_valuation_rate = 0
+            
+            incoming_qty = flt(incoming_qty or 0)
+            incoming_rate = flt(incoming_rate or 0)
+            
+            # Calculate weighted average valuation rate
+            if (stock_qty + incoming_qty) > 0:
+                new_valuation_rate = ((stock_qty * current_valuation_rate) + (incoming_qty * incoming_rate)) / (stock_qty + incoming_qty)
+            else:
+                new_valuation_rate = incoming_rate
+            
+            return {
+                "new_valuation_rate": new_valuation_rate,
+                "stock_qty": stock_qty,
+                "current_valuation_rate": current_valuation_rate,
+                "total_qty": stock_qty + incoming_qty
+            }
+            
+        except Exception as e:
+            frappe.log_error(f"Error calculating weighted average valuation for {item_code}: {str(e)}", "Repacking Valuation Calculation")
+            return {
+                "new_valuation_rate": incoming_rate,
+                "stock_qty": 0,
+                "current_valuation_rate": 0,
+                "total_qty": incoming_qty
+            }
+
+    def update_repack_item_valuation_rates(self):
+        """Update valuation rates in repack_item table based on weighted average calculation"""
+        if not self.repack_item:
+            return
+        
+        updated_items = []
+        
+        for repack_item in self.repack_item:
+            if not repack_item.item_code or not repack_item.warehouse:
+                continue
+            
+            # Get incoming rate (you can modify this logic based on your requirements)
+            # For now, using the current valuation_rate as incoming_rate
+            incoming_rate = flt(repack_item.valuation_rate or 0)
+            incoming_qty = flt(repack_item.qty or 1)  # Default to 1 if no qty
+            
+            # Calculate weighted average
+            calculation_result = self.calculate_weighted_average_valuation(
+                repack_item.item_code,
+                repack_item.warehouse,
+                incoming_qty,
+                incoming_rate
+            )
+            
+            # Update the valuation rate in the repack_item
+            old_rate = repack_item.valuation_rate
+            new_rate = calculation_result["new_valuation_rate"]
+            
+            repack_item.valuation_rate = new_rate
+            
+            updated_items.append({
+                "item_code": repack_item.item_code,
+                "warehouse": repack_item.warehouse,
+                "old_rate": old_rate,
+                "new_rate": new_rate,
+                "stock_qty": calculation_result["stock_qty"],
+                "incoming_qty": incoming_qty,
+                "total_qty": calculation_result["total_qty"]
+            })
+        
+        return updated_items
+
+    @frappe.whitelist()
+    def recalculate_valuation_rates(self):
+        """Manually recalculate valuation rates for all repack items"""
+        try:
+            updated_items = self.update_repack_item_valuation_rates()
+            
+            if updated_items:
+                # Recalculate totals after updating valuation rates
+                self.calculate_total_values()
+                
+                # Show summary of updates
+                message_parts = []
+                for item in updated_items:
+                    message_parts.append(
+                        _("Item {0}: {1} → {2} (Stock: {3}, Incoming: {4})").format(
+                            item["item_code"],
+                            flt(item["old_rate"], 2),
+                            flt(item["new_rate"], 2),
+                            flt(item["stock_qty"], 2),
+                            flt(item["incoming_qty"], 2)
+                        )
+                    )
+                
+                frappe.msgprint(
+                    _("Valuation rates updated:<br><br>{0}").format("<br>".join(message_parts)),
+                    title=_("Valuation Rates Updated"),
+                    indicator="green"
+                )
+                
+                return {
+                    "success": True,
+                    "updated_items": updated_items,
+                    "message": f"Updated {len(updated_items)} items"
+                }
+            else:
+                frappe.msgprint(
+                    _("No items found to update valuation rates"),
+                    title=_("No Updates"),
+                    indicator="blue"
+                )
+                return {"success": False, "message": "No items to update"}
+                
+        except Exception as e:
+            frappe.log_error(f"Error recalculating valuation rates: {str(e)}", "Repacking Valuation Update")
+            frappe.throw(_("Error recalculating valuation rates: {0}").format(str(e)))
+
     @frappe.whitelist()
     def generate_items(self):
         """Generate Item documents for all target items that don't have target_item_code"""
@@ -292,7 +437,7 @@ class Repacking(Document):
                 "custom_repacking_no": self.name,
             })
 
-            # Add source items (outgoing)
+            # Add source items (outgoing) with weighted average valuation rates
             for repack_item in self.repack_item:
                 if not repack_item.item_code:
                     frappe.throw(_("Item Code is required in Repack Item table, Row {0}").format(repack_item.idx))
@@ -301,11 +446,14 @@ class Repacking(Document):
                 if not repack_item.qty or repack_item.qty <= 0:
                     frappe.throw(_("Quantity must be greater than 0 in Repack Item table, Row {0}").format(repack_item.idx))
 
+                # Use the calculated weighted average valuation rate
+                calculated_rate = flt(repack_item.valuation_rate or 0)
+
                 stock_entry.append("items", {
                     "item_code": repack_item.item_code,
                     "s_warehouse": repack_item.warehouse,
                     "qty": repack_item.qty,
-                    "basic_rate": repack_item.valuation_rate or 0,
+                    "basic_rate": calculated_rate,  # Use weighted average rate
                     "uom": repack_item.uom,
                     "cost_center": self.cost_center,
                     "conversion_factor": 1,
@@ -358,13 +506,13 @@ class Repacking(Document):
                     "set_basic_rate_manually": 1,
                 }
                 
-                # Set amount, basic_amount, and basic_rate with the same target_amount value
+                # Set amount, basic_amount, and basic_rate with the calculated rate
                 if target_amount > 0:
                     se_item["amount"] = target_amount
                     se_item["basic_amount"] = target_amount  # Set basic_amount same as amount
-                    se_item["basic_rate"] = calculated_rate
+                    se_item["basic_rate"] = calculated_rate  # Use calculated weighted average rate
                 else:
-                    se_item["basic_rate"] = calculated_rate
+                    se_item["basic_rate"] = calculated_rate  # Use calculated weighted average rate
                     # If no amount specified, calculate based on rate
                     if calculated_rate > 0:
                         calculated_amount = calculated_rate * target_qty
@@ -481,6 +629,9 @@ class Repacking(Document):
                 )
 
     def validate(self):
+        # Update valuation rates based on weighted average calculation before validation
+        self.update_repack_item_valuation_rates()
+        
         # Calculate amount for each target item
         if self.target_item:
             for item in self.target_item:
@@ -517,6 +668,9 @@ class Repacking(Document):
             self.posting_date = nowdate()
         if not self.posting_time:
             self.posting_time = nowtime()
+        
+        # Update valuation rates based on weighted average calculation before saving
+        self.update_repack_item_valuation_rates()
         
         # Calculate amount for each target item before saving
         if self.target_item:

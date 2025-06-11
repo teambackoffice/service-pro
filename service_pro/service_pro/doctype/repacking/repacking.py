@@ -201,16 +201,17 @@ class Repacking(Document):
                     "valuation_rate": target_item.valuation_rate or 0,
                 })
 
+                # UPDATED TAX TEMPLATE LOGIC
                 if tax_template:
                     tax_details = frappe.get_all(
-                        "Item Tax Template Detail",
+                        "Item Tax",
                         filters={"parent": tax_template},
-                        fields=["tax_type", "tax_rate"]
+                        fields=["item_tax_template", "tax_category"]
                     )
                     for tax in tax_details:
                         item_doc.append("taxes", {
-                            "tax_type": tax.tax_type,
-                            "tax_rate": tax.tax_rate
+                            "item_tax_template": tax.get("item_tax_template"),
+                            "tax_category": tax.get("tax_category"),
                         })
 
                 item_doc.insert(ignore_permissions=True)
@@ -308,16 +309,17 @@ class Repacking(Document):
                 "valuation_rate": flt(valuation_rate) or 0,
             })
 
+            # UPDATED TAX TEMPLATE LOGIC
             if tax_template:
                 tax_details = frappe.get_all(
-                    "Item Tax Template Detail",
+                    "Item Tax",
                     filters={"parent": tax_template},
-                    fields=["tax_type", "tax_rate"]
+                    fields=["item_tax_template", "tax_category"]
                 )
                 for tax in tax_details:
                     item_doc.append("taxes", {
-                        "tax_type": tax.tax_type,
-                        "tax_rate": tax.tax_rate
+                        "item_tax_template": tax.get("item_tax_template"),
+                        "tax_category": tax.get("tax_category"),
                     })
 
             item_doc.insert(ignore_permissions=True)

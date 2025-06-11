@@ -363,11 +363,10 @@ def set_margin_rate_on_load(doc, method):
 
 
 def validate_and_calculate_rates(doc, method):
-    """Validate and calculate rates based on margin and valuation rate"""
-    if doc.custom_margin_rate:
-        for item in doc.items:
-            if item.item_code and item.warehouse:
-                calculate_item_margin_rate(doc, item)
+	for item in doc.items:
+		if item.custom_margin_rate:
+			if item.item_code and item.warehouse:
+				calculate_item_margin_rate(doc, item)
 
 
 def calculate_item_margin_rate(doc, item):

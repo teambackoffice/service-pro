@@ -357,9 +357,9 @@ def get_role():
 
 
 def set_margin_rate_on_load(doc, method):
-    """Set margin rate based on user configuration when Sales Invoice is loaded"""
-    if not doc.custom_margin_rate:
-        doc.custom_margin_rate = get_user_margin_percentage(frappe.session.user, doc.company) or 0
+	for item in doc.items:
+		if not item.custom_margin_rate:
+			item.custom_margin_rate = get_user_margin_percentage(frappe.session.user, doc.company) or 0
 
 
 def validate_and_calculate_rates(doc, method):

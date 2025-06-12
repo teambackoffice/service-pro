@@ -21,10 +21,10 @@ frappe.query_reports["Quotation Register"] = {
 			"options": "Customer",
 		},
 		{
-			"fieldname": "sales_executive",
-			"label":__("Sales Man"),
+			"fieldname": "custom_sales_person",
+			"label":__("Sales Person"),
 			"fieldtype": "Link",
-			"options" : "Employee",
+			"options" : "Sales Person",
 		},
 		{
 			"fieldname": "status",

@@ -54,7 +54,7 @@ cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
 
 
             compute_raw_material_total(cur_frm)
-            compute_for_selling_price(cur_frm)
+            compute_for_selling_price_with_scoop(cur_frm)
             set_item_selling_price(cur_frm)
 
         })
@@ -67,7 +67,7 @@ cur_frm.cscript.rate_raw_material = function (frm,cdt,cdn) {
         cur_frm.refresh_field("raw_material")
     }
     compute_raw_material_total(cur_frm)
-    compute_for_selling_price(cur_frm)
+    compute_for_selling_price_with_scoop(cur_frm)
 }
 cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
     var d = locals[cdt][cdn]
@@ -93,7 +93,7 @@ cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
 cur_frm.cscript.raw_material_remove = function (frm,cdt,cdn) {
     var d = frappe.get_doc(cdt, cdn);
         compute_raw_material_total(cur_frm)
-        compute_for_selling_price(cur_frm)
+        compute_for_selling_price_with_scoop(cur_frm)
     set_item_selling_price(cur_frm)
     if(cdn){
          cur_frm.call({
@@ -111,16 +111,16 @@ cur_frm.cscript.raw_material_remove = function (frm,cdt,cdn) {
 
 }
 cur_frm.cscript.cost = function (frm,cdt,cdn) {
-    compute_scoop_of_work_total(cur_frm)
+    compute_scoop_of_work_total_updated(cur_frm)
 
 }
 cur_frm.cscript.value_of_good_solid = function (frm,cdt,cdn) {
 
-    compute_scoop_of_work_total(cur_frm)
+    compute_scoop_of_work_total_updated(cur_frm)
 
 }
 cur_frm.cscript.scoop_of_work_remove = function (frm,cdt,cdn) {
-    compute_scoop_of_work_total(cur_frm)
+    compute_scoop_of_work_total_updated(cur_frm)
 }
 function compute_additional_cost(cur_frm) {
     var total = 0
@@ -131,7 +131,7 @@ function compute_additional_cost(cur_frm) {
     cur_frm.refresh_field("additional_cost_total")
      set_rate_and_amount(cur_frm)
 }
-function compute_scoop_of_work_total(cur_frm) {
+function compute_scoop_of_work_total_updated(cur_frm) {
     var total = 0
     var total_cost = 0
     for(var x=0;x<cur_frm.doc.scoop_of_work.length;x += 1){
@@ -146,7 +146,12 @@ function compute_scoop_of_work_total(cur_frm) {
     cur_frm.doc.editable_total = total
     cur_frm.refresh_field("scoop_of_work_total")
     cur_frm.refresh_field("editable_total")
-     set_rate_and_amount(cur_frm)
+    
+    // Update total_selling_price when scoop_of_work_total changes
+    compute_for_selling_price_with_scoop(cur_frm)
+    
+    set_rate_and_amount(cur_frm);
+    update_average_price(cur_frm);
 }
 function compute_raw_material_total(cur_frm) {
     var amount = 0
@@ -157,7 +162,8 @@ function compute_raw_material_total(cur_frm) {
     cur_frm.doc.raw_material_total =  amount / cur_frm.doc.qty
     cur_frm.refresh_field("raw_material_total")
     cur_frm.refresh_field("raw_material_amount")
-     set_rate_and_amount(cur_frm)
+     set_rate_and_amount(cur_frm);
+     update_average_price(cur_frm);
 }
 cur_frm.cscript.cylinder_service = function (frm, cdt, cdn) {
     var d = locals[cdt][cdn]
@@ -190,6 +196,19 @@ cur_frm.cscript.cylinder_service = function (frm, cdt, cdn) {
                 }
         })
     }
+}
+
+// Add trigger for when scoop_of_work_total changes manually
+cur_frm.cscript.scoop_of_work_total = function (frm, cdt, cdn) {
+    // Update total_selling_price when scoop_of_work_total is manually changed
+    compute_for_selling_price_with_scoop(cur_frm)
+}
+
+// Add trigger for when total_selling_price changes manually
+cur_frm.cscript.total_selling_price = function (frm, cdt, cdn) {
+    // Update total_selling_amount when total_selling_price is manually changed
+    cur_frm.doc.total_selling_amount = cur_frm.doc.total_selling_price;
+    cur_frm.refresh_field("total_selling_amount");
 }
 
 frappe.ui.form.on('Production', {
@@ -369,7 +388,7 @@ frappe.ui.form.on('Production', {
 
     },
     validate: function (frm) {
-       
+
 
     },
 	refresh: function(frm) {
@@ -400,8 +419,8 @@ frappe.ui.form.on('Production', {
             }
         })
         cur_frm.get_field("item_selling_price_list").grid.cannot_add_rows = true;
-cur_frm.get_field("item_selling_price_list").grid.only_sortable();
-cur_frm.refresh_field("item_selling_price_list")
+        cur_frm.get_field("item_selling_price_list").grid.only_sortable();
+        cur_frm.refresh_field("item_selling_price_list")
          if(cur_frm.doc.docstatus && cur_frm.doc.status === "In Progress"){
              frm.add_custom_button(__("Close"), () => {
                     cur_frm.call({
@@ -732,6 +751,7 @@ cur_frm.refresh_field("item_selling_price_list")
                 }
             })
             set_batch_no_filter(frm)
+            update_average_price(frm);
 
             
 	},
@@ -974,7 +994,7 @@ cur_frm.refresh_field("item_selling_price_list")
     
 
 
-
+    
     // estimation: function(frm) {
 
 	//     if(cur_frm.doc.type && cur_frm.doc.type === "Service" && cur_frm.doc.estimation){
@@ -1000,9 +1020,11 @@ cur_frm.refresh_field("item_selling_price_list")
 frappe.ui.form.on('Raw Material', {
     item_code: function (frm, cdt, cdn) {
         set_batch_no_filter(frm, cdt, cdn)
+        update_average_rate_for_row(frm, cdt, cdn);
     },
     warehouse: function (frm, cdt, cdn) {
         set_batch_no_filter(frm, cdt, cdn)
+        update_average_rate_for_row(frm, cdt, cdn);
     },
 });
 
@@ -1060,7 +1082,7 @@ function set_scoop_of_work(doc, frm) {
         });
 
     frm.refresh_field('scoop_of_work');
-      compute_scoop_of_work_total(cur_frm)
+      compute_scoop_of_work_total_updated(cur_frm)
 
   }
 }
@@ -1102,7 +1124,7 @@ cur_frm.cscript.warehouse = function (frm,cdt, cdn) {
                 d.amount_raw_material = r.message[0] * d.qty_raw_material
                 d.available_qty = r.message[1]
                 cur_frm.refresh_field("raw_material")
-                                compute_raw_material_total(cur_frm)
+                compute_raw_material_total(cur_frm)
 
             }
         })
@@ -1136,7 +1158,7 @@ cur_frm.cscript.item_code = function (frm,cdt, cdn) {
                 d.available_qty = r.message[1]
                 cur_frm.refresh_field("raw_material")
                 compute_raw_material_total(cur_frm)
-                compute_for_selling_price(cur_frm)
+                compute_for_selling_price_with_scoop(cur_frm)
             }
         })
     }
@@ -1162,7 +1184,7 @@ cur_frm.cscript.item_code_prod = function (frm,cdt, cdn) {
 cur_frm.cscript.qty = function (frm,cdt, cdn) {
     cur_frm.doc.amount = cur_frm.doc.qty * cur_frm.doc.invoice_rate
     cur_frm.refresh_field("amount")
-    compute_for_selling_price(cur_frm)
+    compute_for_selling_price_with_scoop(cur_frm)
     compute_raw_material_total(cur_frm)
 
 }
@@ -1210,26 +1232,199 @@ function set_rate_and_amount(cur_frm) {
     cur_frm.refresh_field("rate")
 }
 
-function compute_for_selling_price(cur_frm) {
-if(cur_frm.doc.raw_material !== undefined){
+// Modified function to include scoop_of_work_total in selling price calculation
+function compute_for_selling_price_with_scoop(cur_frm) {
+    if(cur_frm.doc.raw_material !== undefined){
+        frappe.call({
+            method: "service_pro.service_pro.doctype.production.production.compute_selling_price",
+            args: {
+                raw_materials: cur_frm.doc.raw_material,
+            },
+            async: false,
+            callback: function (r) {
+                // Set the selling price from raw materials
+                var raw_material_selling_price = r.message || 0;
+                
+                // Add scoop_of_work_total to the selling price
+                var scoop_total = cur_frm.doc.scoop_of_work_total || 0;
+                
+                cur_frm.doc.total_selling_price = raw_material_selling_price + scoop_total;
+                cur_frm.doc.total_selling_price__qty = cur_frm.doc.total_selling_price / cur_frm.doc.qty;
+                
+                // Update total_selling_amount with the same value as total_selling_price
+                cur_frm.doc.total_selling_amount = cur_frm.doc.total_selling_price;
+                
+                cur_frm.refresh_field("total_selling_price");
+                cur_frm.refresh_field("total_selling_price__qty");
+                cur_frm.refresh_field("total_selling_amount");
+            }
+        });
+    } else {
+        // If no raw materials, just use scoop_of_work_total
+        var scoop_total = cur_frm.doc.scoop_of_work_total || 0;
+        cur_frm.doc.total_selling_price = scoop_total;
+        cur_frm.doc.total_selling_price__qty = cur_frm.doc.total_selling_price / cur_frm.doc.qty;
+        
+        // Update total_selling_amount with the same value as total_selling_price
+        cur_frm.doc.total_selling_amount = cur_frm.doc.total_selling_price;
+        
+        cur_frm.refresh_field("total_selling_price");
+        cur_frm.refresh_field("total_selling_price__qty");
+        cur_frm.refresh_field("total_selling_amount");
+    }
+}
+
+// Function to get valuation rate from Stock Ledger Entry
+function get_valuation_rate_from_sle(item_code, warehouse, callback) {
     frappe.call({
-                method: "service_pro.service_pro.doctype.production.production.compute_selling_price",
-                args: {
-                    raw_materials: cur_frm.doc.raw_material,
-                },
-                async: false,
-                callback: function (r) {
-                   cur_frm.doc.total_selling_price = r.message
-                    cur_frm.doc.total_selling_price__qty = r.message / cur_frm.doc.qty
-                    cur_frm.refresh_field("total_selling_price")
-                    cur_frm.refresh_field("total_selling_price__qty")
-                }
-            })
+        method: "service_pro.service_pro.doctype.production.production.get_valuation_rate_from_sle",
+        args: {
+            item_code: item_code,
+            warehouse: warehouse
+        },
+        callback: function(r) {
+            if (r.message) {
+                callback(r.message);
+            } else {
+                callback(0);
+            }
+        }
+    });
 }
 
-
-
+// Function to update average_rate for a specific row
+function update_average_rate_for_row(frm, cdt, cdn) {
+    var d = locals[cdt][cdn];
+    if (d.item_code && d.warehouse) {
+        get_valuation_rate_from_sle(d.item_code, d.warehouse, function(valuation_rate) {
+            d.average_rate = valuation_rate;
+            cur_frm.refresh_field("raw_material");
+        });
+    }
 }
+
+// Function to update average_rate for all rows in raw_material table
+function update_all_average_rates(frm) {
+    if (frm.doc.raw_material && frm.doc.raw_material.length > 0) {
+        for (var i = 0; i < frm.doc.raw_material.length; i++) {
+            var row = frm.doc.raw_material[i];
+            if (row.item_code && row.warehouse) {
+                (function(current_row) {
+                    get_valuation_rate_from_sle(current_row.item_code, current_row.warehouse, function(valuation_rate) {
+                        current_row.average_rate = valuation_rate;
+                        cur_frm.refresh_field("raw_material");
+                    });
+                })(row);
+            }
+        }
+    }
+}
+
+// Modified item_code trigger to include average_rate update
+cur_frm.cscript.item_code = function (frm, cdt, cdn) {
+    var d = locals[cdt][cdn]
+    if(d.item_code){
+        frappe.call({
+            method: "service_pro.service_pro.doctype.production.production.get_rate",
+            args: {
+                item_code: d.item_code,
+                warehouse: d.warehouse ? d.warehouse : "",
+                based_on: cur_frm.doc.rate_of_materials_based_on ? cur_frm.doc.rate_of_materials_based_on : "",
+                price_list: cur_frm.doc.price_list ? cur_frm.doc.price_list : ""
+            },
+            callback: function (r) {
+                frappe.db.get_doc("Item", d.item_code)
+                    .then(doc => {
+                        d.item_name = doc.item_name
+                        d.umo = doc.stock_uom
+                        cur_frm.refresh_field("raw_material")
+                        set_item_selling_price(cur_frm)
+                    })
+                d.rate_raw_material = r.message[0]
+                d.amount_raw_material = r.message[0] * d.qty_raw_material
+                d.available_qty = r.message[1]
+                cur_frm.refresh_field("raw_material")
+                compute_raw_material_total(cur_frm)
+                compute_for_selling_price_with_scoop(cur_frm)
+                
+                // Update average_rate when item_code changes
+                update_average_rate_for_row(frm, cdt, cdn);
+            }
+        })
+    }
+}
+
+// Modified warehouse trigger to include average_rate update
+cur_frm.cscript.warehouse = function (frm, cdt, cdn) {
+    var d = locals[cdt][cdn]
+    if(d.item_code && d.warehouse){
+        frappe.call({
+            method: "service_pro.service_pro.doctype.production.production.get_rate",
+            args: {
+                item_code: d.item_code,
+                warehouse: d.warehouse ? d.warehouse : "",
+                based_on: cur_frm.doc.rate_of_materials_based_on ? cur_frm.doc.rate_of_materials_based_on : "",
+                price_list: cur_frm.doc.price_list ? cur_frm.doc.price_list : ""
+            },
+            callback: function (r) {
+                d.rate_raw_material = r.message[0]
+                d.amount_raw_material = r.message[0] * d.qty_raw_material
+                d.available_qty = r.message[1]
+                cur_frm.refresh_field("raw_material")
+                compute_raw_material_total(cur_frm)
+                
+                // Update average_rate when warehouse changes
+                update_average_rate_for_row(frm, cdt, cdn);
+            }
+        })
+    }
+}
+
+// Add trigger for when raw material is added
+cur_frm.cscript.raw_material_add = function (frm, cdt, cdn) {
+    var d = locals[cdt][cdn]
+    d.warehouse = defaults['raw_material_defaults'].warehouse
+    cur_frm.refresh_field("raw_material")
+    
+    if(defaults['raw_material_defaults'].cost_center){
+        d.cost_center = defaults['raw_material_defaults'].cost_center
+        cur_frm.refresh_field("raw_material")
+    } else {
+        d.cost_center = cur_frm.doc.cost_center
+        cur_frm.refresh_field("raw_material")
+    }
+    
+    // Update average_rate for new row
+    if (d.item_code && d.warehouse) {
+        update_average_rate_for_row(frm, cdt, cdn);
+    }
+}
+
+function update_average_price(cur_frm) {
+    let total_average_rate = 0;
+
+    if (cur_frm.doc.raw_material && cur_frm.doc.raw_material.length > 0) {
+        cur_frm.doc.raw_material.forEach(row => {
+            total_average_rate += flt(row.average_rate || 0);
+        });
+    }
+
+    let scoop_total = flt(cur_frm.doc.scoop_of_work_total || 0);
+    cur_frm.doc.average_price = total_average_rate + scoop_total;
+
+    if (flt(cur_frm.doc.qty) > 0) {
+        cur_frm.doc.average_price_qty = cur_frm.doc.average_price / cur_frm.doc.qty;
+    } else {
+        cur_frm.doc.average_price_qty = 0;
+    }
+
+    cur_frm.doc.total_average_amount = cur_frm.doc.average_price;
+
+    cur_frm.refresh_field("average_price");
+    cur_frm.refresh_field("average_price_qty");
+    cur_frm.refresh_field("total_average_amount");
+}
+
 
 cur_frm.cscript.production = function (frm,cdt, cdn) {
     var d = locals[cdt][cdn]
@@ -1253,7 +1448,7 @@ cur_frm.cscript.production = function (frm,cdt, cdn) {
                         }
                         cur_frm.refresh_field("raw_material")
                         compute_raw_material_total(cur_frm)
-                        compute_for_selling_price(cur_frm)
+                        compute_for_selling_price_with_scoop(cur_frm)
                     }
                 })
 

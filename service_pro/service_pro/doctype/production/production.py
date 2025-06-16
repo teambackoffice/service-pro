@@ -10,6 +10,7 @@ from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
 from erpnext.stock.stock_ledger import get_previous_sle
 from frappe.utils import cint, flt
+from erpnext.stock.utils import get_stock_balance
 from datetime import datetime
 class Production(Document):
 	def before_submit(self):
@@ -194,12 +195,13 @@ class Production(Document):
 	@frappe.whitelist()
 	def validate(self):
 		if self.type == "Assemble":
-			self.series = "SK-"
+			self.series = "SK-0"
 		elif self.type == "Disassemble":
 			self.series = "SK-D-"
 		elif self.type == "Service":
-			self.series = "CS-"
+			self.series = "CS-0"
 		self.validate_raw_material_batch()
+		self.update_total_average_amount()
 		
 	
 		
@@ -208,6 +210,13 @@ class Production(Document):
 			item = frappe.get_doc('Item', row.item_code)
 			if item.has_batch_no and not row.batch:
 				frappe.throw(_('Item "{}" is a batch item. Please select a batch.').format(item.item_code))
+	def update_total_average_amount(self):
+		total_average_rate = 0
+		for row in self.raw_material:
+			total_average_rate += flt(row.average_rate or 0)
+			scoop_total = flt(self.scoop_of_work_total or 0)
+			self.average_price = total_average_rate + scoop_total
+			self.total_average_amount = self.average_price
 
 	@frappe.whitelist()
 	def check_raw_materials(self):
@@ -803,3 +812,93 @@ def get_customer_name(customer):
         return customer_name
     return None
 
+# Add this method to your Production class in the Python file
+
+@frappe.whitelist()
+def get_valuation_rate_from_sle(item_code, warehouse):
+    """
+    Get valuation rate from Stock Ledger Entry for given item and warehouse
+    """
+    try:
+        # Get the latest stock ledger entry for the item and warehouse
+        sle = frappe.db.sql("""
+            SELECT valuation_rate, stock_value, qty_after_transaction
+            FROM `tabStock Ledger Entry`
+            WHERE item_code = %s 
+            AND warehouse = %s 
+            AND is_cancelled = 0
+            AND valuation_rate > 0
+            ORDER BY posting_date DESC, posting_time DESC, creation DESC
+            LIMIT 1
+        """, (item_code, warehouse), as_dict=1)
+        
+        if sle and len(sle) > 0:
+            return sle[0].valuation_rate
+        else:
+            # If no stock ledger entry found, try to get from Item master
+            item = frappe.db.get_value("Item", item_code, "valuation_rate")
+            return item if item else 0
+            
+    except Exception as e:
+        frappe.log_error(f"Error getting valuation rate: {str(e)}")
+        return 0
+
+# Alternative method using stock balance
+@frappe.whitelist()
+def get_average_rate_from_stock_balance(item_code, warehouse):
+    """
+    Get average rate from current stock balance
+    """
+    try:
+    
+        
+        # Get current stock balance and value
+        stock_balance = get_stock_balance(item_code, warehouse, with_valuation_rate=True)
+        
+        if stock_balance and len(stock_balance) >= 2:
+            qty = stock_balance[0]
+            rate = stock_balance[1]
+            return rate if rate > 0 else 0
+        else:
+            return 0
+            
+    except Exception as e:
+        frappe.log_error(f"Error getting average rate from stock balance: {str(e)}")
+        return 0
+
+# Add this as a standalone function (outside the class)
+@frappe.whitelist()
+def get_valuation_rate_from_sle(item_code, warehouse):
+    """
+    Standalone function to get valuation rate from Stock Ledger Entry
+    """
+    try:
+        # Get the latest stock ledger entry with valuation rate
+        sle = frappe.db.sql("""
+            SELECT 
+                valuation_rate,
+                stock_value,
+                qty_after_transaction,
+                posting_date,
+                posting_time
+            FROM `tabStock Ledger Entry`
+            WHERE item_code = %s 
+            AND warehouse = %s 
+            AND is_cancelled = 0
+            AND docstatus < 2
+            AND valuation_rate IS NOT NULL
+            AND valuation_rate > 0
+            ORDER BY posting_date DESC, posting_time DESC, creation DESC
+            LIMIT 1
+        """, (item_code, warehouse), as_dict=1)
+        
+        if sle and len(sle) > 0:
+            return float(sle[0].valuation_rate)
+        else:
+            # Fallback to item valuation rate
+            item_valuation_rate = frappe.db.get_value("Item", item_code, "valuation_rate")
+            return float(item_valuation_rate) if item_valuation_rate else 0.0
+            
+    except Exception as e:
+        frappe.log_error(f"Error in get_valuation_rate_from_sle: {str(e)}")
+        return 0.0

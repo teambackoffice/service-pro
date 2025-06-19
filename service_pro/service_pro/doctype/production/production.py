@@ -86,7 +86,7 @@ class Production(Document):
 			"doctype": "Item",
 			"item_name": self.item_name,
 			"stock_uom": self.umo,
-			"item_group": item_group,
+			"item_group": self.item_group,
 			"naming_series": item_naming_series,
 			"custom_tax_template": tax_template,
 		}

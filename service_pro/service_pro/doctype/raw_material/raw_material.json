@@ -17,7 +17,8 @@
   "rate_raw_material",
   "amount_raw_material",
   "cost_center",
-  "average_rate"
+  "average_rate",
+  "total"
  ],
  "fields": [
   {
@@ -115,12 +116,18 @@
    "fieldtype": "Currency",
    "label": "Average Rate ",
    "read_only": 1
+  },
+  {
+   "fieldname": "total",
+   "fieldtype": "Currency",
+   "label": "Total",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "istable": 1,
  "links": [],
- "modified": "2025-06-16 11:55:41.249593",
+ "modified": "2025-06-19 06:09:19.021056",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Raw Material",

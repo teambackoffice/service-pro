@@ -52,6 +52,9 @@ cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
                 }
             }
 
+            // Calculate total field after qty change
+            calculate_total_field(d)
+            cur_frm.refresh_field("raw_material")
 
             compute_raw_material_total(cur_frm)
             compute_for_selling_price_with_scoop(cur_frm)
@@ -60,6 +63,16 @@ cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
         })
 
 }
+
+// Add function to calculate total field
+function calculate_total_field(d) {
+    if(d.qty_raw_material && d.average_rate) {
+        d.total = d.qty_raw_material * d.average_rate
+    } else {
+        d.total = 0
+    }
+}
+
 cur_frm.cscript.rate_raw_material = function (frm,cdt,cdn) {
    var d = locals[cdt][cdn]
     if(d.rate_raw_material){
@@ -69,6 +82,14 @@ cur_frm.cscript.rate_raw_material = function (frm,cdt,cdn) {
     compute_raw_material_total(cur_frm)
     compute_for_selling_price_with_scoop(cur_frm)
 }
+
+// Add trigger for average_rate change
+cur_frm.cscript.average_rate = function (frm,cdt,cdn) {
+    var d = locals[cdt][cdn]
+    calculate_total_field(d)
+    cur_frm.refresh_field("raw_material")
+}
+
 cur_frm.cscript.raw_material_add = function (frm,cdt,cdn) {
     var d = locals[cdt][cdn]
    // frappe.db.get_single_value('Production Settings', 'raw_material_warehouse')
@@ -307,25 +328,22 @@ frappe.ui.form.on('Production', {
             cur_frm.refresh_field("estimation")
 	        frm.set_df_property('series', 'options', ['','SK-0','HA-0','PB-0'])
 
-            cur_frm.set_df_property("scoop_of_work", "hidden", 1)
-            cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
+           
 
         } else if(cur_frm.doc.type && cur_frm.doc.type === "Disassemble") {
 	        cur_frm.doc.estimation = ""
             cur_frm.refresh_field("estimation")
-	        frm.set_df_property('series', 'options', ['SK-D-'])
-            cur_frm.doc.series = "SK-D-"
+	        frm.set_df_property('series', 'options', ['SK-D-','CS-D-', 'HA-D-'])
+            cur_frm.doc.series = "CS-D-"
             cur_frm.refresh_field("series")
-            cur_frm.set_df_property("scoop_of_work", "hidden", 1)
-            cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
+           
         } else if(cur_frm.doc.type && cur_frm.doc.type === "Re-Service") {
 	        cur_frm.doc.estimation = ""
             cur_frm.refresh_field("estimation")
 	        frm.set_df_property('series', 'options', ['RCS-0', 'RSK-0', 'RHA-0', 'RPB-0'])
             cur_frm.doc.series = "RCS-0"
             cur_frm.refresh_field("series")
-            cur_frm.set_df_property("scoop_of_work", "hidden", 1)
-            cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
+           
         }
         if(cur_frm.is_new()){
             if(cur_frm.doc.estimation || cur_frm.doc.site_job_report){
@@ -482,8 +500,6 @@ frappe.ui.form.on('Production', {
             }
         })}
 
-     cur_frm.set_df_property("scoop_of_work", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
-        cur_frm.set_df_property("scoop_of_work_total", "hidden", cur_frm.doc.type === "Assemble" || cur_frm.doc.type === "Disassemble" )
 
         frappe.call({
             method: "service_pro.service_pro.doctype.production.production.get_se",
@@ -572,15 +588,17 @@ frappe.ui.form.on('Production', {
                 ]
 				}
 			}
-
-        var generate_button = true
-        if(cur_frm.doc.scoop_of_work !== undefined){
-             for(var x=0;x<cur_frm.doc.scoop_of_work.length;x += 1){
-            if(cur_frm.doc.scoop_of_work[x].status === "In Progress"){
-                generate_button = false
+            
+            var generate_button = true
+            if(cur_frm.doc.scoop_of_work === undefined){
+                if(cur_frm.doc.scoop_of_work[x].status === "In Progress"){
+                    generate_button = false
+                }
             }
-        }
-        }
+
+            if(cur_frm.doc.production_status !== "Completed"){
+                generate_button = false;
+            }
 
         frappe.call({
                 method: "service_pro.service_pro.doctype.production.production.get_se",
@@ -624,7 +642,7 @@ frappe.ui.form.on('Production', {
 
                     } else if(r.message && generate_button && ["In Progress", "Partially Completed", "Partially Delivered", "To Deliver", "To Bill", "To Deliver and Bill","Partially Sales Order"].includes(cur_frm.doc.status) && cur_frm.doc.docstatus && cur_frm.doc.type !== "Re-Service"){
                         cur_frm.set_df_property('raw_material', 'read_only', 1);
-                        cur_frm.set_df_property('scoop_of_work', 'read_only', 1);
+                       
 
                         frappe.call({
                             method: "service_pro.service_pro.doctype.production.production.get_dn_or_si",
@@ -848,31 +866,81 @@ frappe.ui.form.on('Production', {
         }
 	},
     
-    series: function(){
-        if(cur_frm.doc.series && cur_frm.doc.type === "Re-Service"){
+    series: function(frm) {
+        // Auto-set item_group based on series selection
+        if (frm.doc.series) {
+            let item_group = "";
+            
+            switch(frm.doc.series) {
+                case "CS-0":
+                    item_group = "CYLINDER ACCESSORIES";
+                    break;
+                case "SK-0":
+                    item_group = "PNEUMATIC SEAL KIT";
+                    break;
+                case "PB-0":
+                    item_group = "PARKER PRODUCTS";
+                    break;
+                case "HA-0":
+                    item_group = "HYDRAULIC CYLINDER";
+                    break;
+                case "SK-D-":
+                    item_group = "PNEUMATIC SEAL KIT";
+                    break;
+                case "CS-D-":
+                    item_group = "CYLINDER ACCESSORIES";
+                    break;
+                case "HA-D-":
+                    item_group = "HYDRAULIC CYLINDER";
+                    break;
+                case "RCS-0":
+                    item_group = "CYLINDER ACCESSORIES";
+                    break;
+                case "RSK-0":
+                    item_group = "PNEUMATIC SEAL KIT";
+                    break;
+                case "RHA-0":
+                    item_group = "HYDRAULIC ACCESSORIES";
+                    break;
+                case "RPB-0":
+                    item_group = "PARKER PRODUCTS";
+                    break;
+                default:
+                    item_group = ""; // Clear if no matching series
+                    break;
+            }
+            
+            // Set the item_group value
+            if (item_group) {
+                frm.set_value('item_group', item_group);
+            }
+        }
+        
+        // Keep existing series logic for Re-Service type
+        if(frm.doc.series && frm.doc.type === "Re-Service"){
             cur_frm.clear_table("linked_productions")
             cur_frm.refresh_field("linked_productions")
             cur_frm.fields_dict.linked_productions.grid.get_field("cylinder_service").get_query =
-			function() {
-				return {
-					 filters: [
+            function() {
+                return {
+                     filters: [
                     ["status", "!=", "Completed"],
                     ["docstatus", "=", 1],
-                    ["series", "=", cur_frm.doc.series.replace("R", "")],
+                    ["series", "=", frm.doc.series.replace("R", "")],
                 ]
-				}
-			}
+                }
+            }
         }
     },
     type: function(frm) {
 
-        // frappe.db.get_single_value('Production Settings', 'mandatory_additional_cost_in_production')
-        //     .then(acqs => {
-            if(cur_frm.doc.type === "Service"){
-               cur_frm.toggle_reqd('additional_cost', defaults.mandatory_additional_cost_in_production)
-            } else {
-               cur_frm.toggle_reqd('additional_cost', 0)
-            }
+        // // frappe.db.get_single_value('Production Settings', 'mandatory_additional_cost_in_production')
+        // //     .then(acqs => {
+        //     if(cur_frm.doc.type === "Service"){
+        //        cur_frm.toggle_reqd('additional_cost', defaults.mandatory_additional_cost_in_production)
+        //     } else {
+        //        cur_frm.toggle_reqd('additional_cost', 0)
+        //     }
             // })
 	    if(cur_frm.doc.type && cur_frm.doc.type === "Service"){
             filter_link_field(cur_frm)
@@ -880,6 +948,8 @@ frappe.ui.form.on('Production', {
             frm.set_df_property('series', 'options', ['CS-0'])
             cur_frm.doc.series = "CS-0"
             cur_frm.refresh_field("series")
+            // Trigger series to set item_group
+            frm.trigger('series')
             cur_frm.set_df_property("scoop_of_work", "hidden", 0)
                         cur_frm.set_df_property("scoop_of_work_total", "hidden", 0 )
 
@@ -888,12 +958,6 @@ frappe.ui.form.on('Production', {
             cur_frm.refresh_field("estimation")
             frm.trigger('estimation');
 	        frm.set_df_property('series', 'options', ['','SK-0','HA-0', 'PB-0'])
-
-            cur_frm.set_df_property("scoop_of_work", "hidden", 1)
-            cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
-            cur_frm.set_df_property("editable_total", "hidden", 1)
-            cur_frm.set_df_property("section_break_21", "hidden", 1)
-            cur_frm.set_df_property("section_break111", "hidden", 1)
             cur_frm.clear_table("linked_productions")
             cur_frm.refresh_field("linked_productions")
             cur_frm.fields_dict.linked_productions.grid.get_field("cylinder_service").get_query =
@@ -913,14 +977,11 @@ frappe.ui.form.on('Production', {
             cur_frm.refresh_field("estimation")
             frm.trigger('estimation');
 
-	        frm.set_df_property('series', 'options', ['SK-D-'])
-            cur_frm.doc.series = "SK-D-"
+	        frm.set_df_property('series', 'options', ['SK-D-','CS-D-', 'HA-D-'])
+            cur_frm.doc.series = "CS-D-"
             cur_frm.refresh_field("series")
-            cur_frm.set_df_property("scoop_of_work", "hidden", 1)
-            cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
-            cur_frm.set_df_property("editable_total", "hidden", 1)
-            cur_frm.set_df_property("section_break_21", "hidden", 1)
-            cur_frm.set_df_property("section_break111", "hidden", 1)
+            // Trigger series to set item_group
+            frm.trigger('series')
             cur_frm.clear_table("linked_productions")
             cur_frm.refresh_field("linked_productions")
             cur_frm.fields_dict.linked_productions.grid.get_field("cylinder_service").get_query =
@@ -943,8 +1004,9 @@ frappe.ui.form.on('Production', {
 	        frm.set_df_property('series', 'options', ['RCS-', 'RSK-', 'RHA-', 'RPB-'])
             cur_frm.doc.series = "RCS-"
             cur_frm.refresh_field("series")
-            cur_frm.set_df_property("scoop_of_work", "hidden", 1)
-            cur_frm.set_df_property("scoop_of_work_total", "hidden", 1)
+            // Trigger series to set item_group
+            frm.trigger('series')
+          
             cur_frm.clear_table("linked_productions")
             cur_frm.refresh_field("linked_productions")
             cur_frm.fields_dict.linked_productions.grid.get_field("cylinder_service").get_query =
@@ -961,8 +1023,16 @@ frappe.ui.form.on('Production', {
         }
 	},
     estimation: function(frm) {
-        if (!frm.doc.estimation) return;
-    
+        if (!frm.doc.estimation) {
+            // Clear child tables if estimation is cleared
+            frm.clear_table('raw_material');
+            frm.clear_table('scoop_of_work');
+            frm.refresh_field('raw_material');
+            frm.refresh_field('scoop_of_work');
+            return;
+        }
+
+        // Fetch Raw Material Data
         frappe.call({
             method: 'service_pro.service_pro.doctype.production.production.get_estimation_raw_material',
             args: { estimation_id: frm.doc.estimation },
@@ -983,12 +1053,42 @@ frappe.ui.form.on('Production', {
                             amount_raw_material: row.amount_raw_material,
                             cost_center: row.cost_center,
                         });
+                        // Optional: Calculate per-row total if needed
+                        calculate_total_field(child);
                     });
                     frm.refresh_field('raw_material');
                 } else {
                     frappe.msgprint(__('No raw material found for the selected estimation.'));
                 }
+            }
+        });
+
+        // Fetch Scoop of Work Data
+        frappe.call({
+            method: 'service_pro.service_pro.doctype.production.production.get_estimation_scoop_of_work',
+            args: { estimation_id: frm.doc.estimation },
+            callback: function(r) {
+                if (r.message && r.message.length > 0) {
+                    frm.clear_table('scoop_of_work');
+                    r.message.forEach(row => {
+                        frm.add_child('scoop_of_work', {
+                            work_name: row.work_name,
+                            estimated_date: row.estimated_date,
+                            cost: row.cost,
+                            status: row.status || 'Pending'
+                        });
+                    });
+                    frm.refresh_field('scoop_of_work');
+
+                    // Optional: Recalculate total
+                    compute_scoop_of_work_total_updated(frm);
+
+                  
+                } 
             },
+            error: function(err) {
+                frappe.msgprint(__('Error fetching scoop of work data: ') + err.message);
+            }
         });
     },
     
@@ -1026,9 +1126,17 @@ frappe.ui.form.on('Raw Material', {
         set_batch_no_filter(frm, cdt, cdn)
         update_average_rate_for_row(frm, cdt, cdn);
     },
+    qty_raw_material: function(frm, cdt, cdn) {
+        var d = locals[cdt][cdn];
+        calculate_total_field(d);
+        cur_frm.refresh_field("raw_material");
+    },
+    average_rate: function(frm, cdt, cdn) {
+        var d = locals[cdt][cdn];
+        calculate_total_field(d);
+        cur_frm.refresh_field("raw_material");
+    },
 });
-
-
 
 function filter_link_field(cur_frm) {
     cur_frm.set_query('estimation', function() {
@@ -1090,7 +1198,7 @@ function set_raw_material(doc, frm) {
     cur_frm.clear_table("raw_material")
   for(var i =0;i<doc.raw_material.length;i+=1){
       var row = doc.raw_material[i]
-      frm.add_child('raw_material', {
+      var child = frm.add_child('raw_material', {
             item_code: row.item_code,
             umo: row.umo,
             item_name: row.item_name,
@@ -1101,6 +1209,8 @@ function set_raw_material(doc, frm) {
             amount_raw_material: row.amount_raw_material,
             cost_center: row.cost_center
         });
+        // Calculate total for the added row
+        calculate_total_field(child);
 
     frm.refresh_field('raw_material');
     compute_raw_material_total(cur_frm)
@@ -1298,6 +1408,8 @@ function update_average_rate_for_row(frm, cdt, cdn) {
     if (d.item_code && d.warehouse) {
         get_valuation_rate_from_sle(d.item_code, d.warehouse, function(valuation_rate) {
             d.average_rate = valuation_rate;
+            // Calculate total after updating average_rate
+            calculate_total_field(d);
             cur_frm.refresh_field("raw_material");
         });
     }
@@ -1312,71 +1424,12 @@ function update_all_average_rates(frm) {
                 (function(current_row) {
                     get_valuation_rate_from_sle(current_row.item_code, current_row.warehouse, function(valuation_rate) {
                         current_row.average_rate = valuation_rate;
+                        calculate_total_field(current_row);
                         cur_frm.refresh_field("raw_material");
                     });
                 })(row);
             }
         }
-    }
-}
-
-// Modified item_code trigger to include average_rate update
-cur_frm.cscript.item_code = function (frm, cdt, cdn) {
-    var d = locals[cdt][cdn]
-    if(d.item_code){
-        frappe.call({
-            method: "service_pro.service_pro.doctype.production.production.get_rate",
-            args: {
-                item_code: d.item_code,
-                warehouse: d.warehouse ? d.warehouse : "",
-                based_on: cur_frm.doc.rate_of_materials_based_on ? cur_frm.doc.rate_of_materials_based_on : "",
-                price_list: cur_frm.doc.price_list ? cur_frm.doc.price_list : ""
-            },
-            callback: function (r) {
-                frappe.db.get_doc("Item", d.item_code)
-                    .then(doc => {
-                        d.item_name = doc.item_name
-                        d.umo = doc.stock_uom
-                        cur_frm.refresh_field("raw_material")
-                        set_item_selling_price(cur_frm)
-                    })
-                d.rate_raw_material = r.message[0]
-                d.amount_raw_material = r.message[0] * d.qty_raw_material
-                d.available_qty = r.message[1]
-                cur_frm.refresh_field("raw_material")
-                compute_raw_material_total(cur_frm)
-                compute_for_selling_price_with_scoop(cur_frm)
-                
-                // Update average_rate when item_code changes
-                update_average_rate_for_row(frm, cdt, cdn);
-            }
-        })
-    }
-}
-
-// Modified warehouse trigger to include average_rate update
-cur_frm.cscript.warehouse = function (frm, cdt, cdn) {
-    var d = locals[cdt][cdn]
-    if(d.item_code && d.warehouse){
-        frappe.call({
-            method: "service_pro.service_pro.doctype.production.production.get_rate",
-            args: {
-                item_code: d.item_code,
-                warehouse: d.warehouse ? d.warehouse : "",
-                based_on: cur_frm.doc.rate_of_materials_based_on ? cur_frm.doc.rate_of_materials_based_on : "",
-                price_list: cur_frm.doc.price_list ? cur_frm.doc.price_list : ""
-            },
-            callback: function (r) {
-                d.rate_raw_material = r.message[0]
-                d.amount_raw_material = r.message[0] * d.qty_raw_material
-                d.available_qty = r.message[1]
-                cur_frm.refresh_field("raw_material")
-                compute_raw_material_total(cur_frm)
-                
-                // Update average_rate when warehouse changes
-                update_average_rate_for_row(frm, cdt, cdn);
-            }
-        })
     }
 }
 
@@ -1401,16 +1454,16 @@ cur_frm.cscript.raw_material_add = function (frm, cdt, cdn) {
 }
 
 function update_average_price(cur_frm) {
-    let total_average_rate = 0;
+    let total_from_raw_materials = 0;
 
     if (cur_frm.doc.raw_material && cur_frm.doc.raw_material.length > 0) {
         cur_frm.doc.raw_material.forEach(row => {
-            total_average_rate += flt(row.average_rate || 0);
+            total_from_raw_materials += flt(row.total || 0);  // Changed from average_rate to total
         });
     }
 
     let scoop_total = flt(cur_frm.doc.scoop_of_work_total || 0);
-    cur_frm.doc.average_price = total_average_rate + scoop_total;
+    cur_frm.doc.average_price = total_from_raw_materials + scoop_total;
 
     if (flt(cur_frm.doc.qty) > 0) {
         cur_frm.doc.average_price_qty = cur_frm.doc.average_price / cur_frm.doc.qty;
@@ -1446,6 +1499,8 @@ cur_frm.cscript.production = function (frm,cdt, cdn) {
                             d.rate_raw_material = prod.rate / d.qty_raw_material
                             d.amount_raw_material = prod.rate / d.qty_raw_material
                         }
+                        // Calculate total for this row
+                        calculate_total_field(d);
                         cur_frm.refresh_field("raw_material")
                         compute_raw_material_total(cur_frm)
                         compute_for_selling_price_with_scoop(cur_frm)
@@ -1484,6 +1539,7 @@ function set_item_selling_price(cur_frm) {
 
 
                 }
+                compute_total_selling_rate(cur_frm);
             }
         })
 
@@ -1491,9 +1547,42 @@ function set_item_selling_price(cur_frm) {
 
         cur_frm.clear_table("item_selling_price_list")
         cur_frm.refresh_field("item_selling_price_list")
+        cur_frm.doc.total_selling_rate = 0;
+        cur_frm.refresh_field("total_selling_rate");
     }
 
 }
+
+function compute_total_selling_rate(cur_frm) {
+    var total = 0;
+    
+    // Loop through all rows in item_selling_price_list table
+    if (cur_frm.doc.item_selling_price_list && cur_frm.doc.item_selling_price_list.length > 0) {
+        for (var i = 0; i < cur_frm.doc.item_selling_price_list.length; i++) {
+            if (cur_frm.doc.item_selling_price_list[i].selling_rate) {
+                total += cur_frm.doc.item_selling_price_list[i].selling_rate;
+            }
+        }
+    }
+    
+    // Set the total in total_selling_rate field
+    cur_frm.doc.total_selling_rate = total;
+    cur_frm.refresh_field("total_selling_rate");
+}
+
+// Add trigger when selling_rate field in item_selling_price_list table changes
+frappe.ui.form.on('Item Selling Price List', {
+    selling_rate: function(frm, cdt, cdn) {
+        compute_total_selling_rate(cur_frm);
+    },
+    // Also trigger when rows are added or removed
+    item_selling_price_list_add: function(frm, cdt, cdn) {
+        compute_total_selling_rate(cur_frm);
+    },
+    item_selling_price_list_remove: function(frm, cdt, cdn) {
+        compute_total_selling_rate(cur_frm);
+    }
+});
 
 function batch_filter(frm, cdt, cdn) {
     let row = frappe.get_doc(cdt, cdn);
@@ -1508,6 +1597,7 @@ function batch_filter(frm, cdt, cdn) {
         };
     }
 }
+
 function set_batch_no_filter(frm) {
     frm.fields_dict['raw_material'].grid.get_field('batch').get_query = function(doc, cdt, cdn) {
         var child = locals[cdt][cdn];

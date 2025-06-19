@@ -202,6 +202,7 @@ def create_production_from_sales_order(source_name):
                 "doctype": "Production",
                 "field_map": {
                     "name": "sales_order_reference",
+					"custom_estimation": "estimation",
                     # Map additional fields as necessary
                 }
             },

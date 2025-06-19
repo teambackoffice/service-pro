@@ -120,6 +120,9 @@ def _make_sales_order(source_name, target_doc=None, customer_group=None, ignore_
 				"Sales Partner", source.referral_sales_partner, "commission_rate"
 			)
 
+		if hasattr(source, 'custom_estimation') and source.custom_estimation:
+			target.custom_estimation = source.custom_estimation
+
 		# sales team
 		if not target.get("sales_team"):
 			for d in customer.get("sales_team") or []:
@@ -168,7 +171,10 @@ def _make_sales_order(source_name, target_doc=None, customer_group=None, ignore_
 		"Quotation",
 		source_name,
 		{
-			"Quotation": {"doctype": "Sales Order", "validation": {"docstatus": ["=", 1]}},
+			"Quotation": {"doctype": "Sales Order", "validation": {"docstatus": ["=", 1]},
+			"field_map": {
+					"custom_estimation": "custom_estimation"  
+				}},
 			"Quotation Item": {
 				"doctype": "Sales Order Item",
 				"field_map": {"parent": "prevdoc_docname", "name": "quotation_item"},

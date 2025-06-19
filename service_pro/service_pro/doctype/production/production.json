@@ -72,6 +72,7 @@
   "total_average_amount",
   "column_break_50",
   "material_request",
+  "total_selling_rate",
   "total_selling_price",
   "total_selling_price__qty",
   "total_selling_amount",
@@ -191,7 +192,6 @@
    "options": "Raw Material"
   },
   {
-   "depends_on": "eval: doc.type == \"Service\"",
    "fieldname": "estimation",
    "fieldtype": "Link",
    "label": "Estimation",
@@ -331,7 +331,6 @@
   {
    "allow_on_submit": 1,
    "default": "In Progress",
-   "depends_on": "eval: doc.type != \"Service\" && doc.type != \"\"",
    "fieldname": "production_status",
    "fieldtype": "Select",
    "label": "Production Status",
@@ -578,7 +577,6 @@
    "reqd": 1
   },
   {
-   "fetch_from": "item_code_prod.item_group",
    "fieldname": "item_group",
    "fieldtype": "Link",
    "label": "Item Group",
@@ -588,21 +586,21 @@
    "allow_on_submit": 1,
    "fieldname": "average_price",
    "fieldtype": "Currency",
-   "label": "Average Price",
+   "label": "Cost Price",
    "read_only": 1
   },
   {
    "allow_on_submit": 1,
    "fieldname": "average_price_qty",
    "fieldtype": "Currency",
-   "label": "Average Price / Qty",
+   "label": "Cost Price / Qty",
    "read_only": 1
   },
   {
    "allow_on_submit": 1,
    "fieldname": "total_average_amount",
    "fieldtype": "Currency",
-   "label": "Total Average Amount",
+   "label": "Total Cost Amount",
    "read_only": 1
   },
   {
@@ -612,13 +610,20 @@
    "label": "Total Selling Amount",
    "no_copy": 1,
    "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "total_selling_rate",
+   "fieldtype": "Currency",
+   "label": "Total Selling Rate",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-16 11:55:58.682734",
+ "modified": "2025-06-17 21:41:11.713024",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

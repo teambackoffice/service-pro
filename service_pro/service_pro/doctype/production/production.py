@@ -12,11 +12,22 @@ from erpnext.stock.stock_ledger import get_previous_sle
 from frappe.utils import cint, flt
 from erpnext.stock.utils import get_stock_balance
 from datetime import datetime
+
 class Production(Document):
 	def before_submit(self):
 		if not self.ignore_permission and not self.sales_order:
 			frappe.throw("Sales Order is Required")
 
+	@frappe.whitelist()
+	def calculate_total_selling_rate(self):
+		"""Calculate total selling rate from item_selling_price_list table"""
+		total = 0
+		for row in self.item_selling_price_list:
+			if row.selling_rate:
+				total += flt(row.selling_rate)
+		
+		self.total_selling_rate = total
+		return total
 
 	@frappe.whitelist()
 	def get_defaults(self):
@@ -194,16 +205,13 @@ class Production(Document):
 
 	@frappe.whitelist()
 	def validate(self):
-		if self.type == "Assemble":
-			self.series = "SK-0"
-		elif self.type == "Disassemble":
-			self.series = "SK-D-"
-		elif self.type == "Service":
+		if self.type == "Service":
 			self.series = "CS-0"
 		self.validate_raw_material_batch()
 		self.update_total_average_amount()
 		
-	
+		# Calculate total selling rate during validation
+		self.calculate_total_selling_rate()
 		
 	def validate_raw_material_batch(self):
 		for row in self.raw_material:
@@ -211,12 +219,13 @@ class Production(Document):
 			if item.has_batch_no and not row.batch:
 				frappe.throw(_('Item "{}" is a batch item. Please select a batch.').format(item.item_code))
 	def update_total_average_amount(self):
-		total_average_rate = 0
+		total_from_raw_materials = 0
 		for row in self.raw_material:
-			total_average_rate += flt(row.average_rate or 0)
-			scoop_total = flt(self.scoop_of_work_total or 0)
-			self.average_price = total_average_rate + scoop_total
-			self.total_average_amount = self.average_price
+			total_from_raw_materials += flt(row.total or 0)  # Changed from average_rate to total
+			
+		scoop_total = flt(self.scoop_of_work_total or 0)
+		self.average_price = total_from_raw_materials + scoop_total
+		self.total_average_amount = self.average_price
 
 	@frappe.whitelist()
 	def check_raw_materials(self):
@@ -238,7 +247,7 @@ class Production(Document):
 				"items": self.get_manufacture_se_items() if self.type == "Assemble" or self.type == "Service"  else self.get_material_issue_se_items() if self.type == "Re-Service" else self.get_repack_se_items(),
 				"production": self.name,
 				"company": self.company,
-				"additional_costs": self.get_additional_costs()
+				# "additional_costs": self.get_additional_costs()
 			}
 			frappe.get_doc(doc_se).insert(ignore_permissions=1).submit()
 
@@ -257,18 +266,23 @@ class Production(Document):
 
 	@frappe.whitelist()
 	def generate_finish_good_se(self):
+		# Calculate basic_amount
+		basic_amount = flt(self.average_price_qty) * flt(self.qty)
+		
 		doc_se1 = {
 			"doctype": "Stock Entry",
 			"stock_entry_type": "Manufacture",
 			"production": self.name,
-			"additional_costs": self.get_additional_costs(),
+			# "additional_costs": self.get_additional_costs(),
 			"items": [{
 				'item_code': self.item_code_prod,
 				't_warehouse': self.warehouse,
 				'qty': self.qty,
 				'uom': self.umo,
-				'basic_rate': self.rate,
-				'cost_center': self.cost_center
+				'basic_rate': self.average_price_qty,
+				'basic_amount': basic_amount, 
+				'cost_center': self.cost_center,
+				"set_basic_rate_manually": 1,
 			}],
 		}
 		frappe.get_doc(doc_se1).insert(ignore_permissions=1).submit()
@@ -388,17 +402,22 @@ class Production(Document):
 				'basic_rate': item.rate_raw_material,
 				'cost_center': item.cost_center,
 				"batch_no": item.batch,
-				"serial_and_batch_bundle":self.update_serial_and_batch_bundle(item)
+				"serial_and_batch_bundle": self.update_serial_and_batch_bundle(item)
 			})
 
+		# Calculate basic_amount for the finished item
+		basic_amount = flt(self.average_price_qty) * flt(self.qty)
+		
 		items.append({
 			'item_code': self.item_code_prod,
 			't_warehouse': self.warehouse,
 			'qty': self.qty,
 			'uom': self.umo,
-			'basic_rate': self.rate,
+			'basic_rate': self.average_price_qty,
+			'basic_amount': basic_amount,  
 			'cost_center': self.cost_center,
 			'is_finished_item': 1,
+			"set_basic_rate_manually": 1,
 		})
 		return items
 	
@@ -421,11 +440,13 @@ class Production(Document):
 			})
 			serial_and_batch_bundle.save(ignore_permissions=True)
 			return serial_and_batch_bundle.name
+			
 	@frappe.whitelist()
 	def get_material_issue_se_items(self):
 		items = []
 
 		for item in self.raw_material:
+			batch_no = None
 			if item.batch:
 				batch_no = self.update_serial_and_batch_bundle(item)
 
@@ -447,15 +468,20 @@ class Production(Document):
 
 		for item in self.raw_material:
 			if item.available_qty > 0 or self.type == "Disassemble":
+				# Calculate basic_amount for raw material items going to target warehouse
+				basic_amount = flt(self.average_price_qty) * flt(self.qty)
+				
 				items.append({
 					'item_code': item.item_code,
 					't_warehouse': item.warehouse,
 					'qty': item.qty_raw_material,
-					'uom': "Nos",
-					'basic_rate': item.rate_raw_material,
+					'uom': self.umo,
+					'basic_rate': self.average_price_qty,
+					'basic_amount': basic_amount,  
 					'cost_center': item.cost_center,
 					"batch_no": item.batch,
-					"serial_and_batch_bundle":self.update_serial_and_batch_bundle(item)
+					"set_basic_rate_manually": 1,
+					"serial_and_batch_bundle": self.update_serial_and_batch_bundle(item)
 				})
 
 		items.append({
@@ -515,6 +541,7 @@ def get_available_qty(production):
 		production, as_dict=1)
 	print(get_qty_total)
 	return get_qty[0].qty - get_qty_total[0].qty_raw_material if get_qty_total[0].qty_raw_material else get_qty[0].qty
+
 @frappe.whitelist()
 def get_rate(item_code, warehouse, based_on,price_list):
 	time = frappe.utils.now_datetime().time()
@@ -812,61 +839,6 @@ def get_customer_name(customer):
         return customer_name
     return None
 
-# Add this method to your Production class in the Python file
-
-@frappe.whitelist()
-def get_valuation_rate_from_sle(item_code, warehouse):
-    """
-    Get valuation rate from Stock Ledger Entry for given item and warehouse
-    """
-    try:
-        # Get the latest stock ledger entry for the item and warehouse
-        sle = frappe.db.sql("""
-            SELECT valuation_rate, stock_value, qty_after_transaction
-            FROM `tabStock Ledger Entry`
-            WHERE item_code = %s 
-            AND warehouse = %s 
-            AND is_cancelled = 0
-            AND valuation_rate > 0
-            ORDER BY posting_date DESC, posting_time DESC, creation DESC
-            LIMIT 1
-        """, (item_code, warehouse), as_dict=1)
-        
-        if sle and len(sle) > 0:
-            return sle[0].valuation_rate
-        else:
-            # If no stock ledger entry found, try to get from Item master
-            item = frappe.db.get_value("Item", item_code, "valuation_rate")
-            return item if item else 0
-            
-    except Exception as e:
-        frappe.log_error(f"Error getting valuation rate: {str(e)}")
-        return 0
-
-# Alternative method using stock balance
-@frappe.whitelist()
-def get_average_rate_from_stock_balance(item_code, warehouse):
-    """
-    Get average rate from current stock balance
-    """
-    try:
-    
-        
-        # Get current stock balance and value
-        stock_balance = get_stock_balance(item_code, warehouse, with_valuation_rate=True)
-        
-        if stock_balance and len(stock_balance) >= 2:
-            qty = stock_balance[0]
-            rate = stock_balance[1]
-            return rate if rate > 0 else 0
-        else:
-            return 0
-            
-    except Exception as e:
-        frappe.log_error(f"Error getting average rate from stock balance: {str(e)}")
-        return 0
-
-# Add this as a standalone function (outside the class)
 @frappe.whitelist()
 def get_valuation_rate_from_sle(item_code, warehouse):
     """
@@ -902,3 +874,40 @@ def get_valuation_rate_from_sle(item_code, warehouse):
     except Exception as e:
         frappe.log_error(f"Error in get_valuation_rate_from_sle: {str(e)}")
         return 0.0
+
+@frappe.whitelist()
+def get_total_selling_rate(production_name):
+    """Standalone function to calculate total selling rate"""
+    doc = frappe.get_doc("Production", production_name)
+    total = 0
+    for row in doc.item_selling_price_list:
+        if row.selling_rate:
+            total += flt(row.selling_rate)
+    return total
+
+
+# Add this method to your Production class in production.py
+
+@frappe.whitelist()
+def get_estimation_scoop_of_work(estimation_id):
+    """
+    Fetch only scoop_of_work table data from the selected Estimation document
+    """
+    try:
+        estimation = frappe.get_doc('Estimation', estimation_id)
+        scoop_of_work_data = []
+        
+        for row in estimation.scoop_of_work:
+            scoop_of_work_data.append({
+                'work_name': row.work_name,
+                'estimated_date': row.estimated_date,
+                'cost': row.cost,
+                'status': getattr(row, 'status', 'Pending')  # Default to 'Pending' if status field doesn't exist
+            })
+        
+        return scoop_of_work_data
+        
+    except frappe.DoesNotExistError:
+        frappe.throw(f"Estimation {estimation_id} does not exist.")
+    except Exception as e:
+        frappe.throw(f"An error occurred while fetching scoop of work data: {str(e)}")

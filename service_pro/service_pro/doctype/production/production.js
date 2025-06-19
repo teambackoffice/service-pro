@@ -71,6 +71,7 @@ function calculate_total_field(d) {
     } else {
         d.total = 0
     }
+    compute_total_cost_rate(cur_frm);
 }
 
 cur_frm.cscript.rate_raw_material = function (frm,cdt,cdn) {
@@ -770,6 +771,7 @@ frappe.ui.form.on('Production', {
             })
             set_batch_no_filter(frm)
             update_average_price(frm);
+            compute_total_cost_rate(frm);
 
             
 	},
@@ -1136,6 +1138,14 @@ frappe.ui.form.on('Raw Material', {
         calculate_total_field(d);
         cur_frm.refresh_field("raw_material");
     },
+    raw_material_add: function(frm, cdt, cdn) {
+        compute_total_cost_rate(frm);
+    },
+    raw_material_remove: function(frm, cdt, cdn) {
+        setTimeout(function() {
+            compute_total_cost_rate(frm);
+        }, 100);
+    }
 });
 
 function filter_link_field(cur_frm) {
@@ -1617,4 +1627,21 @@ function set_batch_no_filter(frm) {
             };
         }
     };
+}
+
+function compute_total_cost_rate(cur_frm) {
+    var total_cost = 0;
+    
+    // Loop through all raw_material rows and sum up the 'total' field values
+    if (cur_frm.doc.raw_material && cur_frm.doc.raw_material.length > 0) {
+        for (var i = 0; i < cur_frm.doc.raw_material.length; i++) {
+            if (cur_frm.doc.raw_material[i].total) {
+                total_cost += cur_frm.doc.raw_material[i].total;
+            }
+        }
+    }
+    
+    // Set the calculated total to total_cost_rate field
+    cur_frm.doc.total_cost_rate = total_cost;
+    cur_frm.refresh_field("total_cost_rate");
 }

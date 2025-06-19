@@ -247,7 +247,7 @@ class Production(Document):
 				"items": self.get_manufacture_se_items() if self.type == "Assemble" or self.type == "Service"  else self.get_material_issue_se_items() if self.type == "Re-Service" else self.get_repack_se_items(),
 				"production": self.name,
 				"company": self.company,
-				# "additional_costs": self.get_additional_costs()
+				"additional_costs": self.get_additional_costs()
 			}
 			frappe.get_doc(doc_se).insert(ignore_permissions=1).submit()
 
@@ -267,19 +267,19 @@ class Production(Document):
 	@frappe.whitelist()
 	def generate_finish_good_se(self):
 		# Calculate basic_amount
-		basic_amount = flt(self.average_price_qty) * flt(self.qty)
+		basic_amount = flt(self.total_cost_rate) * flt(self.qty)
 		
 		doc_se1 = {
 			"doctype": "Stock Entry",
 			"stock_entry_type": "Manufacture",
 			"production": self.name,
-			# "additional_costs": self.get_additional_costs(),
+			"additional_costs": self.get_additional_costs(),
 			"items": [{
 				'item_code': self.item_code_prod,
 				't_warehouse': self.warehouse,
 				'qty': self.qty,
 				'uom': self.umo,
-				'basic_rate': self.average_price_qty,
+				'basic_rate': self.total_cost_rate,
 				'basic_amount': basic_amount, 
 				'cost_center': self.cost_center,
 				"set_basic_rate_manually": 1,
@@ -290,13 +290,18 @@ class Production(Document):
 	@frappe.whitelist()
 	def get_additional_costs(self):
 		costs = []
-		for i in self.additional_cost:
-			costs.append({
-				"expense_account": i.expense_ledger,
-				"description": i.description,
-				"amount": i.additional_cost_amount
-			})
+		settings = frappe.get_doc("Production Settings")
+
+		for row in settings.company_expense_ledger:
+			if row.company == self.company:
+				costs.append({
+					"expense_account": row.expense_ledger_account,
+					"description": "Company Expense Ledger",
+					"amount": self.scoop_of_work_total
+				})
+
 		return costs
+
 
 	@frappe.whitelist()
 	def generate_dn(self):
@@ -406,14 +411,14 @@ class Production(Document):
 			})
 
 		# Calculate basic_amount for the finished item
-		basic_amount = flt(self.average_price_qty) * flt(self.qty)
+		basic_amount = flt(self.total_cost_rate) * flt(self.qty)
 		
 		items.append({
 			'item_code': self.item_code_prod,
 			't_warehouse': self.warehouse,
 			'qty': self.qty,
 			'uom': self.umo,
-			'basic_rate': self.average_price_qty,
+			'basic_rate': self.total_cost_rate,
 			'basic_amount': basic_amount,  
 			'cost_center': self.cost_center,
 			'is_finished_item': 1,
@@ -469,14 +474,14 @@ class Production(Document):
 		for item in self.raw_material:
 			if item.available_qty > 0 or self.type == "Disassemble":
 				# Calculate basic_amount for raw material items going to target warehouse
-				basic_amount = flt(self.average_price_qty) * flt(self.qty)
+				basic_amount = flt(self.total_cost_rate) * flt(self.qty)
 				
 				items.append({
 					'item_code': item.item_code,
 					't_warehouse': item.warehouse,
 					'qty': item.qty_raw_material,
 					'uom': self.umo,
-					'basic_rate': self.average_price_qty,
+					'basic_rate': self.total_cost_rate,
 					'basic_amount': basic_amount,  
 					'cost_center': item.cost_center,
 					"batch_no": item.batch,
@@ -911,3 +916,14 @@ def get_estimation_scoop_of_work(estimation_id):
         frappe.throw(f"Estimation {estimation_id} does not exist.")
     except Exception as e:
         frappe.throw(f"An error occurred while fetching scoop of work data: {str(e)}")
+
+@frappe.whitelist()
+def calculate_total_cost_rate(self):
+    """Calculate total cost rate from raw material total field"""
+    total_cost = 0
+    for row in self.raw_material:
+        if row.total:
+            total_cost += flt(row.total)
+    
+    self.total_cost_rate = total_cost
+    return total_cost

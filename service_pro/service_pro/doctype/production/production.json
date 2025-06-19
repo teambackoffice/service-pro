@@ -67,6 +67,7 @@
   "update_available_stock",
   "raw_material_total",
   "raw_material_amount",
+  "total_cost_rate",
   "average_price",
   "average_price_qty",
   "total_average_amount",
@@ -252,6 +253,7 @@
    "default": "0",
    "fieldname": "raw_material_total",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Total",
    "read_only": 1
   },
@@ -291,6 +293,7 @@
    "allow_on_submit": 1,
    "fieldname": "additional_cost",
    "fieldtype": "Table",
+   "hidden": 1,
    "label": "Additional Cost",
    "options": "Additional Cost"
   },
@@ -299,6 +302,7 @@
    "default": "0",
    "fieldname": "additional_cost_total",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Total",
    "read_only": 1
   },
@@ -417,6 +421,7 @@
    "default": "0",
    "fieldname": "raw_material_amount",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Amount",
    "read_only": 1
   },
@@ -586,7 +591,7 @@
    "allow_on_submit": 1,
    "fieldname": "average_price",
    "fieldtype": "Currency",
-   "label": "Cost Price",
+   "label": "Total Cost Price",
    "read_only": 1
   },
   {
@@ -617,13 +622,19 @@
    "fieldtype": "Currency",
    "label": "Total Selling Rate",
    "read_only": 1
+  },
+  {
+   "fieldname": "total_cost_rate",
+   "fieldtype": "Currency",
+   "label": "Total Cost Rate",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-17 21:41:11.713024",
+ "modified": "2025-06-19 14:32:37.795538",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

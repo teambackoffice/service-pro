@@ -45,7 +45,9 @@
   "received_user_role",
   "ignore_permission",
   "margin_settings_tab",
-  "default_sales_margin_percentage"
+  "default_sales_margin_percentage",
+  "production_expense_ledger_tab",
+  "company_expense_ledger"
  ],
  "fields": [
   {
@@ -272,13 +274,24 @@
    "fieldtype": "Table",
    "label": "Default Sales Margin Percentage",
    "options": "Default Sales Margin Percentage"
+  },
+  {
+   "fieldname": "production_expense_ledger_tab",
+   "fieldtype": "Tab Break",
+   "label": "Production Expense Ledger"
+  },
+  {
+   "fieldname": "company_expense_ledger",
+   "fieldtype": "Table",
+   "label": "Company Expense Ledger",
+   "options": "Company Expense Ledger"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-06-05 12:48:10.885331",
+ "modified": "2025-06-19 12:06:27.616767",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production Settings",

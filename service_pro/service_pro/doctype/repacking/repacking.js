@@ -29,7 +29,39 @@ frappe.ui.form.on('Repacking', {
                 };
             };
         }
+
+        // Setup batch_no filter for target_item child table if it has batch_no field
+        if (frm.fields_dict["target_item"] && frm.fields_dict["target_item"].grid.get_field("batch_no")) {
+            frm.fields_dict["target_item"].grid.get_field("batch_no").get_query = function(doc, cdt, cdn) {
+                let row = locals[cdt][cdn];
+                let item_code = row.target_item_code || row.item_code;
+                if (row && item_code) {
+                    let filters = {
+                        "item_code": item_code
+                    };
+                    
+                    // Add warehouse filter if warehouse is selected
+                    if (row.warehouse) {
+                        filters["warehouse"] = row.warehouse;
+                    }
+                    
+                    return {
+                        query: "erpnext.controllers.queries.get_batch_no",
+                        filters: filters
+                    };
+                }
+                return {
+                    filters: {
+                        "name": ["=", ""]  // Return empty if no item selected
+                    }
+                };
+            };
+        }
+
+     
     },
+
+ 
 
     setup: function(frm) {
         // Set up warehouse queries
@@ -134,15 +166,26 @@ frappe.ui.form.on('Repacking', {
                 }
             };
         });
-    },
 
-    refresh: function(frm) {
-        // Add custom buttons for various actions
-        if (!frm.doc.__islocal && frm.doc.docstatus === 0) {
-            frm.add_custom_button(__('Generate Items'), function() {
-                frm.events.generate_item(frm);
-            }, __('Actions'));
-        }
+        // Set up item query for target_item table if item_code field exists
+        frm.set_query('item_code', 'target_item', function() {
+            return {
+                filters: {
+                    'is_stock_item': 1,
+                    'disabled': 0
+                }
+            };
+        });
+
+        // Set up target_item_code query for target_item table
+        frm.set_query('target_item_code', 'target_item', function() {
+            return {
+                filters: {
+                    'is_stock_item': 1,
+                    'disabled': 0
+                }
+            };
+        });
     },
 
     on_update: function(frm) {
@@ -278,10 +321,7 @@ frappe.ui.form.on('Repacking', {
             });
             frm.refresh_field('target_item');
 
-            frappe.show_alert({
-                message: __('Warehouse updated in all target items'),
-                indicator: 'green'
-            });
+           
         }
     },
 
@@ -373,7 +413,8 @@ frappe.ui.form.on('Repacking', {
                 console.error('Item generation error:', r);
             }
         });
-    }
+    },
+
 });
 
 // Enhanced Target Item table events with amount calculation
@@ -416,10 +457,48 @@ frappe.ui.form.on('Target Item', {
         }
     },
 
+    target_item_code: function(frm, cdt, cdn) {
+        let row = locals[cdt][cdn];
+        if (row.target_item_code && row.warehouse) {
+            get_bin_data(frm, cdt, cdn, row.target_item_code, row.warehouse);
+        }
+        
+        // Refresh batch_no filter if target_item_code changes
+        if (frm.fields_dict["target_item"].grid.get_field("batch_no")) {
+            frm.fields_dict["target_item"].grid.grid_rows_by_docname[cdn].refresh_field("batch_no");
+        }
+    },
+
     warehouse: function(frm, cdt, cdn) {
         let row = locals[cdt][cdn];
-        if (row.item_code && row.warehouse) {
-            get_bin_data(frm, cdt, cdn, row.item_code, row.warehouse);
+        let item_code = row.target_item_code || row.item_code;
+        
+        // Clear batch when warehouse changes
+        if (row.batch_no) {
+            frappe.model.set_value(cdt, cdn, 'batch_no', '');
+            frappe.show_alert({
+                message: __('Batch cleared due to Warehouse change'),
+                indicator: 'orange'
+            });
+        }
+        
+        if (item_code && row.warehouse) {
+            get_bin_data(frm, cdt, cdn, item_code, row.warehouse);
+        }
+        
+        // Refresh the batch field filter
+        if (frm.fields_dict["target_item"].grid.get_field("batch_no")) {
+            frm.fields_dict["target_item"].grid.grid_rows_by_docname[cdn].refresh_field("batch_no");
+        }
+    },
+
+    batch_no: function(frm, cdt, cdn) {
+        let row = locals[cdt][cdn];
+        let item_code = row.target_item_code || row.item_code;
+        
+        if (row.batch_no && item_code && row.warehouse) {
+            // Get batch quantity
+            get_batch_qty_only(frm, cdt, cdn, item_code, row.warehouse, row.batch_no);
         }
     },
 
@@ -449,7 +528,7 @@ frappe.ui.form.on('Target Item', {
     }
 });
 
-// Enhanced Repack Item table events with batch functionality and valuation rate calculation
+// Enhanced Repack Item table events with improved rate calculation from Stock Entry logic
 frappe.ui.form.on('Repack Item', {
     repack_item_add: function(frm, cdt, cdn) {
         let row = locals[cdt][cdn];
@@ -465,13 +544,9 @@ frappe.ui.form.on('Repack Item', {
             // Clear batch when item changes
             if (row.batch_no) {
                 frappe.model.set_value(cdt, cdn, 'batch_no', '');
-                frappe.show_alert({
-                    message: __('Batch cleared due to Item change'),
-                    indicator: 'orange'
-                });
             }
 
-            // Get item details including UOM
+            // Get item details including UOM and batch tracking
             frappe.call({
                 method: 'frappe.client.get',
                 args: {
@@ -487,13 +562,16 @@ frappe.ui.form.on('Repack Item', {
                             frappe.model.set_value(cdt, cdn, 'uom', item.stock_uom);
                         }
                         
-                        // Get bin data if warehouse is selected
-                        if (row.warehouse) {
-                            get_bin_data_with_weighted_average(frm, cdt, cdn, row.item_code, row.warehouse);
+                        // Show batch field only if item has batch tracking
+                        if (item.has_batch_no) {
+                            // Refresh the batch field filter
+                            frm.fields_dict["repack_item"].grid.grid_rows_by_docname[cdn].refresh_field("batch_no");
                         }
                         
-                        // Refresh the batch field filter
-                        frm.fields_dict["repack_item"].grid.grid_rows_by_docname[cdn].refresh_field("batch_no");
+                        // Get available qty
+                        if (row.warehouse) {
+                            get_available_qty_only(frm, cdt, cdn, row.item_code, row.warehouse);
+                        }
                     }
                 },
                 error: function(r) {
@@ -504,12 +582,18 @@ frappe.ui.form.on('Repack Item', {
                     console.error('Error fetching item details:', r);
                 }
             });
+
+            // Get incoming rate using Stock Entry logic if warehouse is available
+            if (row.warehouse) {
+                get_stock_entry_incoming_rate(frm, cdt, cdn, row.item_code, row.warehouse);
+            }
+            
         } else {
             // Clear dependent fields when item is cleared
             frappe.model.set_value(cdt, cdn, 'uom', '');
-            frappe.model.set_value(cdt, cdn, 'valuation_rate', 0);
             frappe.model.set_value(cdt, cdn, 'avail_qty', 0);
             frappe.model.set_value(cdt, cdn, 'batch_no', '');
+            frappe.model.set_value(cdt, cdn, 'valuation_rate', 0);
         }
     },
 
@@ -525,8 +609,11 @@ frappe.ui.form.on('Repack Item', {
             });
         }
         
+        // Get available qty
         if (row.item_code && row.warehouse) {
-            get_bin_data_with_weighted_average(frm, cdt, cdn, row.item_code, row.warehouse);
+            get_available_qty_only(frm, cdt, cdn, row.item_code, row.warehouse);
+            // Also get incoming rate using Stock Entry logic when warehouse changes
+            get_stock_entry_incoming_rate(frm, cdt, cdn, row.item_code, row.warehouse);
         }
         
         // Refresh the batch field filter
@@ -536,26 +623,38 @@ frappe.ui.form.on('Repack Item', {
     },
 
     qty: function(frm, cdt, cdn) {
-        let row = locals[cdt][cdn];
-        
-        // Recalculate weighted average valuation rate when quantity changes
-        if (row.item_code && row.warehouse && row.qty) {
-            calculate_weighted_average_for_row(frm, cdt, cdn, row.item_code, row.warehouse, row.qty);
-        }
-        
+        // Recalculate total
         frm.events.calculate_outgoing_total(frm);
+        
+        // Validate qty against available batch qty if batch is selected
+        let row = locals[cdt][cdn];
+        if (row.batch_no && row.qty && row.avail_qty) {
+            if (flt(row.qty) > flt(row.avail_qty)) {
+                frappe.show_alert({
+                    message: __('Quantity ({0}) cannot be greater than available batch quantity ({1})', [row.qty, row.avail_qty]),
+                    indicator: 'red'
+                });
+            }
+        }
     },
 
     batch_no: function(frm, cdt, cdn) {
         let row = locals[cdt][cdn];
         
         if (row.batch_no && row.item_code && row.warehouse) {
-            // Get batch-specific data
-            get_batch_data(frm, cdt, cdn, row.item_code, row.warehouse, row.batch_no);
+            // Get batch quantity and validate
+            get_batch_qty_only(frm, cdt, cdn, row.item_code, row.warehouse, row.batch_no);
+            
+            // Get incoming rate for the specific batch using Stock Entry logic
+            get_stock_entry_incoming_rate_with_batch(frm, cdt, cdn, row.item_code, row.warehouse, row.batch_no);
+            
+        } else if (!row.batch_no) {
+            // Clear batch-specific data when batch is cleared
+            frappe.model.set_value(cdt, cdn, 'avail_qty', 0);
         }
     },
 
-    // Recalculate outgoing total when valuation_rate changes
+    // Recalculate outgoing total when valuation_rate changes manually
     valuation_rate: function(frm, cdt, cdn) {
         frm.events.calculate_outgoing_total(frm);
     },
@@ -579,76 +678,102 @@ function calculate_amount(frm, cdt, cdn) {
     frappe.model.set_value(cdt, cdn, 'amount', amount);
 }
 
-// Enhanced function to calculate weighted average valuation rate for a specific row
-function calculate_weighted_average_for_row(frm, cdt, cdn, item_code, warehouse, incoming_qty) {
-    if (!item_code || !warehouse || !incoming_qty) {
+// NEW FUNCTION: Get incoming rate using Stock Entry logic (without batch)
+function get_stock_entry_incoming_rate(frm, cdt, cdn, item_code, warehouse) {
+    if (!item_code || !warehouse) {
         return;
     }
 
-    let row = locals[cdt][cdn];
-    let current_rate = flt(row.valuation_rate) || 0;
+    // Prepare arguments exactly like Stock Entry's get_args_for_incoming_rate
+    let args = {
+        "item_code": item_code,
+        "warehouse": warehouse,
+        "posting_date": frm.doc.posting_date || frappe.datetime.get_today(),
+        "posting_time": frm.doc.posting_time || frappe.datetime.now_time(),
+        "qty": -1, // Negative for outgoing (like Stock Entry)
+        "voucher_type": frm.doc.doctype,
+        "voucher_no": frm.doc.name || "Draft",
+        "company": frm.doc.company,
+        "allow_zero_valuation": 0,
+        "serial_no": "",
+        "batch_no": ""
+    };
 
-    // Call the server method to calculate weighted average
     frappe.call({
-        method: 'frappe.client.get_list',
+        method: "erpnext.stock.utils.get_incoming_rate",
         args: {
-            doctype: 'Stock Ledger Entry',
-            filters: {
-                'item_code': item_code,
-                'warehouse': warehouse,
-                'is_cancelled': 0,
-                'docstatus': 1
-            },
-            fields: ['qty_after_transaction', 'valuation_rate'],
-            order_by: 'posting_date desc, posting_time desc, creation desc',
-            limit: 1
+            args: args,
         },
-        callback: function(r) {
-            if (r.message && r.message.length > 0) {
-                let latest_sle = r.message[0];
-                let stock_qty = flt(latest_sle.qty_after_transaction) || 0;
-                let stock_valuation_rate = flt(latest_sle.valuation_rate) || 0;
+        callback: function (r) {
+            if (r.message !== undefined && r.message !== null) {
+                // Set the incoming rate as valuation_rate (same as Stock Entry logic)
+                frappe.model.set_value(cdt, cdn, "valuation_rate", r.message || 0.0);
                 
-                // Calculate weighted average
-                let total_qty = stock_qty + flt(incoming_qty);
-                let new_valuation_rate = 0;
-                
-                if (total_qty > 0) {
-                    new_valuation_rate = ((stock_qty * stock_valuation_rate) + (flt(incoming_qty) * current_rate)) / total_qty;
-                } else {
-                    new_valuation_rate = current_rate;
-                }
-                
-                // Update the valuation rate
-                frappe.model.set_value(cdt, cdn, 'valuation_rate', new_valuation_rate);
-                
-                frappe.show_alert({
-                    message: __('Weighted average rate calculated: {0}', [format_currency(new_valuation_rate)]),
-                    indicator: 'green'
-                });
-                
-                // Recalculate totals
+                // Recalculate outgoing total after setting valuation rate
                 frm.events.calculate_outgoing_total(frm);
-            } else {
-                // No existing stock, use current rate
-                frappe.show_alert({
-                    message: __('No existing stock found, using current rate'),
-                    indicator: 'blue'
-                });
+                
+              
             }
         },
         error: function(r) {
-            console.error('Error calculating weighted average:', r);
+            console.error('Error fetching Stock Entry incoming rate:', r);
             frappe.show_alert({
-                message: __('Error calculating weighted average rate'),
-                indicator: 'red'
+                message: __('Error fetching Stock Entry rate'),
+                indicator: 'orange'
             });
         }
     });
 }
 
-// Enhanced Bin data fetching function with weighted average calculation
-function get_bin_data_with_weighted_average(frm, cdt, cdn, item_code, warehouse) {
+// NEW FUNCTION: Enhanced function to get incoming rate with batch support using Stock Entry logic
+function get_stock_entry_incoming_rate_with_batch(frm, cdt, cdn, item_code, warehouse, batch_no) {
+    if (!item_code || !warehouse) {
+        return;
+    }
+
+    // Prepare arguments exactly like Stock Entry's get_args_for_incoming_rate
+    let args = {
+        "item_code": item_code,
+        "warehouse": warehouse,
+        "posting_date": frm.doc.posting_date || frappe.datetime.get_today(),
+        "posting_time": frm.doc.posting_time || frappe.datetime.now_time(),
+        "qty": -1, // Negative for outgoing (like Stock Entry)
+        "voucher_type": frm.doc.doctype,
+        "voucher_no": frm.doc.name || "Draft",
+        "company": frm.doc.company,
+        "allow_zero_valuation": 0,
+        "serial_no": "",
+        "batch_no": batch_no || ""
+    };
+
+    frappe.call({
+        method: "erpnext.stock.utils.get_incoming_rate",
+        args: {
+            args: args,
+        },
+        callback: function (r) {
+            if (r.message !== undefined && r.message !== null) {
+                // Set the incoming rate as valuation_rate (same as Stock Entry logic)
+                frappe.model.set_value(cdt, cdn, "valuation_rate", r.message || 0.0);
+                
+                // Recalculate outgoing total after setting valuation rate
+                frm.events.calculate_outgoing_total(frm);
+                
+              
+            }
+        },
+        error: function(r) {
+            console.error('Error fetching Stock Entry incoming rate with batch:', r);
+            frappe.show_alert({
+                message: __('Error fetching Stock Entry rate for batch {0}', [batch_no || '']),
+                indicator: 'orange'
+            });
+        }
+    });
+}
+
+// Function to get only available qty without valuation rate for repack items
+function get_available_qty_only(frm, cdt, cdn, item_code, warehouse) {
     if (!item_code || !warehouse) {
         return;
     }
@@ -661,14 +786,13 @@ function get_bin_data_with_weighted_average(frm, cdt, cdn, item_code, warehouse)
                 'item_code': item_code,
                 'warehouse': warehouse
             },
-            fields: ['valuation_rate', 'actual_qty', 'reserved_qty', 'projected_qty']
+            fields: ['actual_qty', 'reserved_qty', 'projected_qty']
         },
         callback: function(r) {
             if (r.message && r.message.length > 0) {
                 let bin_data = r.message[0];
-                let row = locals[cdt][cdn];
                 
-                // Set basic bin data
+                // Set only quantity fields - NO VALUATION RATE
                 frappe.model.set_value(cdt, cdn, 'avail_qty', bin_data.actual_qty || 0);
                 
                 // Set additional fields if they exist
@@ -678,41 +802,8 @@ function get_bin_data_with_weighted_average(frm, cdt, cdn, item_code, warehouse)
                 if (frappe.meta.has_field(cdt, 'projected_qty')) {
                     frappe.model.set_value(cdt, cdn, 'projected_qty', bin_data.projected_qty || 0);
                 }
-                
-                // Calculate weighted average valuation rate if this is for repack_item and qty is available
-                if (cdt === 'Repack Item' && row.qty) {
-                    calculate_weighted_average_for_row(frm, cdt, cdn, item_code, warehouse, row.qty);
-                } else {
-                    // Just set the current valuation rate
-                    frappe.model.set_value(cdt, cdn, 'valuation_rate', bin_data.valuation_rate || 0);
-                }
-                
-                // Calculate amount if this is Target Item table
-                if (cdt === 'Target Item') {
-                    calculate_amount(frm, cdt, cdn);
-                }
-                
-                // Recalculate totals after updating valuation rate
-                if (cdt === 'Repack Item') {
-                    frm.events.calculate_outgoing_total(frm);
-                } else if (cdt === 'Target Item') {
-                    frm.events.calculate_incoming_total(frm);
-                }
             } else {
-                frappe.model.set_value(cdt, cdn, 'valuation_rate', 0);
                 frappe.model.set_value(cdt, cdn, 'avail_qty', 0);
-                
-                // Calculate amount if this is Target Item table (will be 0)
-                if (cdt === 'Target Item') {
-                    calculate_amount(frm, cdt, cdn);
-                }
-                
-                // Recalculate totals after clearing valuation rate
-                if (cdt === 'Repack Item') {
-                    frm.events.calculate_outgoing_total(frm);
-                } else if (cdt === 'Target Item') {
-                    frm.events.calculate_incoming_total(frm);
-                }
             }
         },
         error: function(r) {
@@ -725,7 +816,39 @@ function get_bin_data_with_weighted_average(frm, cdt, cdn, item_code, warehouse)
     });
 }
 
-// Original bin data fetching function (for backward compatibility)
+// Enhanced function to get batch quantity with better validation
+function get_batch_qty_only(frm, cdt, cdn, item_code, warehouse, batch_no) {
+    if (!item_code || !warehouse || !batch_no) {
+        return;
+    }
+
+    // Get actual qty for this batch in this warehouse
+    frappe.call({
+        method: 'erpnext.stock.utils.get_stock_balance',
+        args: {
+            'item_code': item_code,
+            'warehouse': warehouse,
+            'batch_no': batch_no
+        },
+        callback: function(qty_r) {
+            if (qty_r.message !== undefined) {
+                let batch_qty = qty_r.message;
+                frappe.model.set_value(cdt, cdn, 'avail_qty', batch_qty);
+                
+             
+            }
+        },
+        error: function(r) {
+            console.error('Error fetching Batch quantity:', r);
+            frappe.show_alert({
+                message: __('Error fetching quantity for batch {0}', [batch_no]),
+                indicator: 'red'
+            });
+        }
+    });
+}
+
+// Keep original bin data fetching function for Target Item table (backward compatibility)
 function get_bin_data(frm, cdt, cdn, item_code, warehouse) {
     if (!item_code || !warehouse) {
         return;
@@ -761,9 +884,7 @@ function get_bin_data(frm, cdt, cdn, item_code, warehouse) {
                 }
                 
                 // Recalculate totals after updating valuation rate
-                if (cdt === 'Repack Item') {
-                    frm.events.calculate_outgoing_total(frm);
-                } else if (cdt === 'Target Item') {
+                if (cdt === 'Target Item') {
                     frm.events.calculate_incoming_total(frm);
                 }
             } else {
@@ -776,9 +897,7 @@ function get_bin_data(frm, cdt, cdn, item_code, warehouse) {
                 }
                 
                 // Recalculate totals after clearing valuation rate
-                if (cdt === 'Repack Item') {
-                    frm.events.calculate_outgoing_total(frm);
-                } else if (cdt === 'Target Item') {
+                if (cdt === 'Target Item') {
                     frm.events.calculate_incoming_total(frm);
                 }
             }
@@ -787,95 +906,6 @@ function get_bin_data(frm, cdt, cdn, item_code, warehouse) {
             console.error('Error fetching Bin data:', r);
             frappe.show_alert({
                 message: __('Error fetching stock information'),
-                indicator: 'red'
-            });
-        }
-    });
-}
-
-// Enhanced function to get batch-specific data with weighted average calculation
-function get_batch_data(frm, cdt, cdn, item_code, warehouse, batch_no) {
-    if (!item_code || !warehouse || !batch_no) {
-        return;
-    }
-
-    frappe.call({
-        method: 'frappe.client.get_list',
-        args: {
-            doctype: 'Stock Ledger Entry',
-            filters: {
-                'item_code': item_code,
-                'warehouse': warehouse,
-                'batch_no': batch_no,
-                'is_cancelled': 0
-            },
-            fields: ['valuation_rate', 'qty_after_transaction'],
-            order_by: 'posting_date desc, posting_time desc',
-            limit: 1
-        },
-        callback: function(r) {
-            if (r.message && r.message.length > 0) {
-                let latest_entry = r.message[0];
-                let row = locals[cdt][cdn];
-                
-                // Update valuation rate from the latest stock ledger entry
-                if (latest_entry.valuation_rate) {
-                    // If this is a repack item and we have qty, calculate weighted average
-                    if (cdt === 'Repack Item' && row.qty) {
-                        calculate_weighted_average_for_row(frm, cdt, cdn, item_code, warehouse, row.qty);
-                    } else {
-                        frappe.model.set_value(cdt, cdn, 'valuation_rate', latest_entry.valuation_rate);
-                    }
-                }
-                
-                // Get batch quantity
-                frappe.call({
-                    method: 'frappe.client.get_list',
-                    args: {
-                        doctype: 'Batch',
-                        filters: {
-                            'name': batch_no
-                        },
-                        fields: ['*']
-                    },
-                    callback: function(batch_r) {
-                        if (batch_r.message && batch_r.message.length > 0) {
-                            let batch_data = batch_r.message[0];
-                            
-                            // Get actual qty for this batch in this warehouse
-                            frappe.call({
-                                method: 'erpnext.stock.utils.get_stock_balance',
-                                args: {
-                                    'item_code': item_code,
-                                    'warehouse': warehouse,
-                                    'batch_no': batch_no
-                                },
-                                callback: function(qty_r) {
-                                    if (qty_r.message !== undefined) {
-                                        frappe.model.set_value(cdt, cdn, 'avail_qty', qty_r.message);
-                                    }
-                                    
-                                    // Recalculate totals
-                                    if (cdt === 'Repack Item') {
-                                        frm.events.calculate_outgoing_total(frm);
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
-                
-            } else {
-                frappe.show_alert({
-                    message: __('No stock ledger entry found for this batch'),
-                    indicator: 'orange'
-                });
-            }
-        },
-        error: function(r) {
-            console.error('Error fetching Batch data:', r);
-            frappe.show_alert({
-                message: __('Error fetching batch information'),
                 indicator: 'red'
             });
         }

@@ -41,9 +41,7 @@ class Repacking(Document):
         # Store outgoing cost for target item calculations
         self.total_outgoing_value = outgoing_items_cost
         
-        # Calculate rates for target items if they exist
-        if self.target_item and outgoing_items_cost > 0:
-            self.calculate_target_item_rates(outgoing_items_cost)
+      
     
     def get_args_for_incoming_rate(self, item):
         """
@@ -657,6 +655,7 @@ class Repacking(Document):
                 )
 
     def validate(self):
+        self.posting_time = nowtime()
         # Calculate amount for each target item
         if self.target_item:
             for item in self.target_item:
@@ -665,6 +664,7 @@ class Repacking(Document):
 
         # Calculate totals before validation
         self.calculate_total_values()
+        self.calculate_valuation_rates_like_stock_entry()
         
         # Validate target items structure
         if self.target_item:

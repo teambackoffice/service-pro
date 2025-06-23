@@ -13,6 +13,7 @@ def get_stock_entry_data(data):
 			"Inter Company Stock Transfer": ["items", "custom_inter_company_stock_transfer"],
 			"Subcontracting Order": ["items", "subcontracting_order"],
 			"Subcontracting Receipt": ["items", "subcontracting_receipt"],
+			"Production": ["items", "custom_production_id"],
 		},
 		"transactions": [
 			{
@@ -22,6 +23,7 @@ def get_stock_entry_data(data):
 					"Subcontracting Order",
 					"Subcontracting Receipt",
 					"Inter Company Stock Transfer",
+					"Production",
 				],
 			},
 		],

@@ -283,6 +283,7 @@ class Production(Document):
 				'basic_amount': basic_amount, 
 				'cost_center': self.cost_center,
 				"set_basic_rate_manually": 1,
+				'custom_production_id': self.name,
 			}],
 		}
 		frappe.get_doc(doc_se1).insert(ignore_permissions=1).submit()
@@ -407,7 +408,8 @@ class Production(Document):
 				'basic_rate': item.rate_raw_material,
 				'cost_center': item.cost_center,
 				"batch_no": item.batch,
-				"serial_and_batch_bundle": self.update_serial_and_batch_bundle(item)
+				"serial_and_batch_bundle": self.update_serial_and_batch_bundle(item),
+				'custom_production_id': self.name, 
 			})
 
 		# Calculate basic_amount for the finished item
@@ -423,6 +425,7 @@ class Production(Document):
 			'cost_center': self.cost_center,
 			'is_finished_item': 1,
 			"set_basic_rate_manually": 1,
+			'custom_production_id': self.name, 
 		})
 		return items
 	
@@ -463,7 +466,8 @@ class Production(Document):
 				'basic_rate': item.rate_raw_material,
 				'cost_center': item.cost_center,
 				"batch_no": item.batch,
-				"serial_and_batch_bundle": batch_no
+				"serial_and_batch_bundle": batch_no,
+				'custom_production_id': self.name,
 			})
 		return items
 
@@ -486,7 +490,8 @@ class Production(Document):
 					'cost_center': item.cost_center,
 					"batch_no": item.batch,
 					"set_basic_rate_manually": 1,
-					"serial_and_batch_bundle": self.update_serial_and_batch_bundle(item)
+					"serial_and_batch_bundle": self.update_serial_and_batch_bundle(item),
+					'custom_production_id': self.name,
 				})
 
 		items.append({
@@ -495,7 +500,8 @@ class Production(Document):
 			'qty': self.qty,
 			'uom': self.umo,
 			'basic_rate': self.rate,
-			'cost_center': self.cost_center
+			'cost_center': self.cost_center,
+			'custom_production_id': self.name,
 		})
 		return items
 
@@ -753,6 +759,7 @@ def create_delivery_note(source_name, target_doc=None):
                     "customer": "customer", 
                     "company": "company",  
                     "posting_date": "posting_date",  
+					"name":"custom_production_id"
                 },
 				"field_no_map": [
                     "cost_center"  

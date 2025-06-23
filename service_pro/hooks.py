@@ -127,6 +127,7 @@ doc_events = {
     "Delivery Note": {
 		"on_submit": "service_pro.doc_events.delivery_note.change_status",
 		"on_cancel": "service_pro.doc_events.delivery_note.change_status_cancel",
+        "before_insert": "service_pro.doc_events.delivery_note.set_production_reference",
 	},
     "Journal Entry": {
 		"on_submit": "service_pro.doc_events.journal_entry.submit_jv",

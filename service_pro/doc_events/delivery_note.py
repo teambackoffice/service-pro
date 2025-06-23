@@ -161,3 +161,18 @@ def get_dn_si_qty(item_code, qty, name):
             total_qty += d.qty
     return float(qty) - float(total_qty)
 
+
+def set_production_reference(doc, method):
+    for item in doc.items:
+        if item.against_sales_order:
+            production = frappe.get_all(
+                "Production",
+                filters={"sales_order": item.against_sales_order},
+                fields=["name"],
+                limit=1
+            )
+            if production:
+                doc.custom_production_id = production[0].name
+                break
+
+

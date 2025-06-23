@@ -5,8 +5,8 @@ def get_data():
 	return {
 		'fieldname': 'production',
 		'non_standard_fieldnames': {
-			'Sales Invoice': 'custom_reference',
-			'Delivery Note': 'custom_reference',
+			'Sales Invoice': 'custom_production_id',
+			'Delivery Note': 'custom_production_id',
 			'Stock Entry': 'production',
 		},
 		'transactions': [

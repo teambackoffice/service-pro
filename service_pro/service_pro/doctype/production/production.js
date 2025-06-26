@@ -64,6 +64,15 @@ cur_frm.cscript.qty_raw_material = function (frm,cdt,cdn) {
 
 }
 
+function compute_cost_rate_qty(cur_frm) {
+    if (cur_frm.doc.total_cost_rate && cur_frm.doc.qty && cur_frm.doc.qty > 0) {
+        cur_frm.doc.cost_rate_qty = cur_frm.doc.total_cost_rate / cur_frm.doc.qty;
+    } else {
+        cur_frm.doc.cost_rate_qty = 0;
+    }
+    cur_frm.refresh_field("cost_rate_qty");
+}
+
 // Add function to calculate total field
 function calculate_total_field(d) {
     if(d.qty_raw_material && d.average_rate) {
@@ -769,6 +778,7 @@ frappe.ui.form.on('Production', {
 
                 }
             })
+            compute_cost_rate_qty(cur_frm);
             set_batch_no_filter(frm)
             update_average_price(frm);
             compute_total_cost_rate(frm);
@@ -1132,11 +1142,13 @@ frappe.ui.form.on('Raw Material', {
         var d = locals[cdt][cdn];
         calculate_total_field(d);
         cur_frm.refresh_field("raw_material");
+        compute_total_cost_rate(cur_frm);
     },
     average_rate: function(frm, cdt, cdn) {
         var d = locals[cdt][cdn];
         calculate_total_field(d);
         cur_frm.refresh_field("raw_material");
+        compute_total_cost_rate(cur_frm);
     },
     raw_material_add: function(frm, cdt, cdn) {
         compute_total_cost_rate(frm);
@@ -1644,4 +1656,20 @@ function compute_total_cost_rate(cur_frm) {
     // Set the calculated total to total_cost_rate field
     cur_frm.doc.total_cost_rate = total_cost;
     cur_frm.refresh_field("total_cost_rate");
+    compute_cost_rate_qty(cur_frm);
+}
+
+
+cur_frm.cscript.qty = function (frm,cdt, cdn) {
+    cur_frm.doc.amount = cur_frm.doc.qty * cur_frm.doc.invoice_rate
+    cur_frm.refresh_field("amount")
+    compute_for_selling_price_with_scoop(cur_frm)
+    compute_raw_material_total(cur_frm)
+    
+   
+    compute_cost_rate_qty(cur_frm)
+}
+
+cur_frm.cscript.total_cost_rate = function (frm, cdt, cdn) {
+    compute_cost_rate_qty(cur_frm);
 }

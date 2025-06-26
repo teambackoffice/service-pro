@@ -30,6 +30,30 @@ class Production(Document):
 		return total
 
 	@frappe.whitelist()
+	def calculate_cost_rate_qty(self):
+		"""Calculate cost rate per quantity"""
+		if self.total_cost_rate and self.qty and flt(self.qty) > 0:
+			self.cost_rate_qty = flt(self.total_cost_rate) / flt(self.qty)
+		else:
+			self.cost_rate_qty = 0
+		return self.cost_rate_qty
+
+	@frappe.whitelist()
+	def calculate_total_cost_rate(self):
+		"""Calculate total cost rate from raw material total field"""
+		total_cost = 0
+		for row in self.raw_material:
+			if row.total:
+				total_cost += flt(row.total)
+		
+		self.total_cost_rate = total_cost
+		
+		# Calculate cost_rate_qty after updating total_cost_rate
+		self.calculate_cost_rate_qty()
+		
+		return total_cost
+
+	@frappe.whitelist()
 	def get_defaults(self):
 		if self.company:
 			defaults = {
@@ -213,11 +237,15 @@ class Production(Document):
 		# Calculate total selling rate during validation
 		self.calculate_total_selling_rate()
 		
+		# Calculate total cost rate and cost_rate_qty
+		self.calculate_total_cost_rate()
+		
 	def validate_raw_material_batch(self):
 		for row in self.raw_material:
 			item = frappe.get_doc('Item', row.item_code)
 			if item.has_batch_no and not row.batch:
 				frappe.throw(_('Item "{}" is a batch item. Please select a batch.').format(item.item_code))
+
 	def update_total_average_amount(self):
 		total_from_raw_materials = 0
 		for row in self.raw_material:
@@ -226,6 +254,9 @@ class Production(Document):
 		scoop_total = flt(self.scoop_of_work_total or 0)
 		self.average_price = total_from_raw_materials + scoop_total
 		self.total_average_amount = self.average_price
+		
+		# Calculate cost_rate_qty when total amounts change
+		self.calculate_cost_rate_qty()
 
 	@frappe.whitelist()
 	def check_raw_materials(self):
@@ -267,7 +298,7 @@ class Production(Document):
 	@frappe.whitelist()
 	def generate_finish_good_se(self):
 		# Calculate basic_amount
-		basic_amount = flt(self.average_price_qty) * flt(self.qty)
+		basic_amount = flt(self.cost_rate_qty) * flt(self.qty)
 		
 		doc_se1 = {
 			"doctype": "Stock Entry",
@@ -279,7 +310,7 @@ class Production(Document):
 				't_warehouse': self.warehouse,
 				'qty': self.qty,
 				'uom': self.umo,
-				'basic_rate': self.average_price_qty,
+				'basic_rate': self.cost_rate_qty,
 				'basic_amount': basic_amount, 
 				'cost_center': self.cost_center,
 				"set_basic_rate_manually": 1,
@@ -413,14 +444,14 @@ class Production(Document):
 			})
 
 		# Calculate basic_amount for the finished item
-		basic_amount = flt(self.average_price_qty) * flt(self.qty)
+		basic_amount = flt(self.cost_rate_qty) * flt(self.qty)
 		
 		items.append({
 			'item_code': self.item_code_prod,
 			't_warehouse': self.warehouse,
 			'qty': self.qty,
 			'uom': self.umo,
-			'basic_rate': self.average_price_qty,
+			'basic_rate': self.cost_rate_qty,
 			'basic_amount': basic_amount,  
 			'cost_center': self.cost_center,
 			'is_finished_item': 1,
@@ -478,14 +509,14 @@ class Production(Document):
 		for item in self.raw_material:
 			if item.available_qty > 0 or self.type == "Disassemble":
 				# Calculate basic_amount for raw material items going to target warehouse
-				basic_amount = flt(self.average_price_qty) * flt(self.qty)
+				basic_amount = flt(self.cost_rate_qty) * flt(self.qty)
 				
 				items.append({
 					'item_code': item.item_code,
 					't_warehouse': item.warehouse,
 					'qty': item.qty_raw_material,
 					'uom': self.umo,
-					'basic_rate': self.average_price_qty,
+					'basic_rate': self.cost_rate_qty,
 					'basic_amount': basic_amount,  
 					'cost_center': item.cost_center,
 					"batch_no": item.batch,
@@ -924,13 +955,14 @@ def get_estimation_scoop_of_work(estimation_id):
     except Exception as e:
         frappe.throw(f"An error occurred while fetching scoop of work data: {str(e)}")
 
-@frappe.whitelist()
-def calculate_total_cost_rate(self):
-    """Calculate total cost rate from raw material total field"""
-    total_cost = 0
-    for row in self.raw_material:
-        if row.total:
-            total_cost += flt(row.total)
+# # Legacy function for compatibility - keeping the old function name
+# @frappe.whitelist()
+# def calculate_total_cost_rate(self):
+#     """Calculate total cost rate from raw material total field - Legacy function"""
+#     total_cost = 0
+#     for row in self.raw_material:
+#         if row.total:
+#             total_cost += flt(row.total)
     
-    self.total_cost_rate = total_cost
-    return total_cost
+#     self.total_cost_rate = total_cost
+#     return total_cost

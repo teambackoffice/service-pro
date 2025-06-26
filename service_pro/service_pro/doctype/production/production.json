@@ -68,6 +68,7 @@
   "raw_material_total",
   "raw_material_amount",
   "total_cost_rate",
+  "cost_rate_qty",
   "average_price",
   "average_price_qty",
   "total_average_amount",
@@ -629,13 +630,20 @@
    "fieldtype": "Currency",
    "label": "Total Cost Rate",
    "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "cost_rate_qty",
+   "fieldtype": "Currency",
+   "label": "Cost Rate / Qty",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-20 09:45:05.757190",
+ "modified": "2025-06-26 13:24:04.138955",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Production",

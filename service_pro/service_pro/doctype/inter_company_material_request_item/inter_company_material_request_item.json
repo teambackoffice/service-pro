@@ -476,14 +476,14 @@
    "fieldname": "available_qty",
    "fieldtype": "Data",
    "label": "Available Qty",
-   "read_only": 1
+   "no_copy": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-05-28 10:45:06.373083",
+ "modified": "2025-06-26 10:15:42.296728",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Material Request Item",

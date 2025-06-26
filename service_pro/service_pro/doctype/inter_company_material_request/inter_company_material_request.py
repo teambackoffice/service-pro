@@ -52,8 +52,14 @@ class InterCompanyMaterialRequest(Document):
 
         # Append items and compute totals
         for item in self.items:
-            if float(item.qty) > float(item.available_qty):
-                frappe.throw(_("Qty of {0} cannot be more than available qty.").format(item.item_code))
+            # Get the from_company from the stock transfer template
+            from_company = frappe.db.get_value("Inter Company Stock Transfer Template", 
+                item.stock_transfer_template, "from_company")
+            
+            # Only validate quantity if NOT from HYDROTECH COMPANY CENTRAL WAREHOUSE
+            if from_company != "HYDROTECH COMPANY CENTRAL WAREHOUSE":
+                if float(item.qty) > float(item.available_qty):
+                    frappe.throw(_("Qty of {0} cannot be more than available qty.").format(item.item_code))
 
             total_qty += float(item.qty)
             debit_value += float(item.rate)

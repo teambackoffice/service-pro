@@ -201,9 +201,35 @@ frappe.ui.form.on("Inter Company Material Request Item", {
 
     qty: function(frm, cdt, cdn) {
         let row = locals[cdt][cdn];
-        if (row.qty > row.available_qty) {
-            frappe.msgprint(__('The Item requested quantity exceeds the available quantity.'));
-            frappe.model.set_value(cdt, cdn, 'qty', row.available_qty);
+        
+        // Check if stock_transfer_template is selected and get from_company
+        if (row.stock_transfer_template) {
+            frappe.call({
+                method: "frappe.client.get_value",
+                args: {
+                    doctype: "Inter Company Stock Transfer Template",
+                    filters: {"name": row.stock_transfer_template},
+                    fieldname: ["from_company"]
+                },
+                callback: function(r) {
+                    if (r.message && r.message.from_company) {
+                        // Only show validation error if NOT from HYDROTECH COMPANY CENTRAL WAREHOUSE
+                        if (r.message.from_company !== "HYDROTECH COMPANY CENTRAL WAREHOUSE") {
+                            if (row.qty > row.available_qty) {
+                                frappe.msgprint(__('The Item requested quantity exceeds the available quantity.'));
+                                frappe.model.set_value(cdt, cdn, 'qty', row.available_qty);
+                            }
+                        }
+                        // If from HYDROTECH COMPANY CENTRAL WAREHOUSE, allow any quantity without validation
+                    }
+                }
+            });
+        } else {
+            // If no template selected, apply default validation
+            if (row.qty > row.available_qty) {
+                frappe.msgprint(__('The Item requested quantity exceeds the available quantity.'));
+                frappe.model.set_value(cdt, cdn, 'qty', row.available_qty);
+            }
         }
     }
 });

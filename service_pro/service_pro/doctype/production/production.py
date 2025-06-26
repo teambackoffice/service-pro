@@ -267,7 +267,7 @@ class Production(Document):
 	@frappe.whitelist()
 	def generate_finish_good_se(self):
 		# Calculate basic_amount
-		basic_amount = flt(self.total_cost_rate) * flt(self.qty)
+		basic_amount = flt(self.average_price_qty) * flt(self.qty)
 		
 		doc_se1 = {
 			"doctype": "Stock Entry",
@@ -279,7 +279,7 @@ class Production(Document):
 				't_warehouse': self.warehouse,
 				'qty': self.qty,
 				'uom': self.umo,
-				'basic_rate': self.total_cost_rate,
+				'basic_rate': self.average_price_qty,
 				'basic_amount': basic_amount, 
 				'cost_center': self.cost_center,
 				"set_basic_rate_manually": 1,
@@ -413,14 +413,14 @@ class Production(Document):
 			})
 
 		# Calculate basic_amount for the finished item
-		basic_amount = flt(self.total_cost_rate) * flt(self.qty)
+		basic_amount = flt(self.average_price_qty) * flt(self.qty)
 		
 		items.append({
 			'item_code': self.item_code_prod,
 			't_warehouse': self.warehouse,
 			'qty': self.qty,
 			'uom': self.umo,
-			'basic_rate': self.total_cost_rate,
+			'basic_rate': self.average_price_qty,
 			'basic_amount': basic_amount,  
 			'cost_center': self.cost_center,
 			'is_finished_item': 1,
@@ -478,14 +478,14 @@ class Production(Document):
 		for item in self.raw_material:
 			if item.available_qty > 0 or self.type == "Disassemble":
 				# Calculate basic_amount for raw material items going to target warehouse
-				basic_amount = flt(self.total_cost_rate) * flt(self.qty)
+				basic_amount = flt(self.average_price_qty) * flt(self.qty)
 				
 				items.append({
 					'item_code': item.item_code,
 					't_warehouse': item.warehouse,
 					'qty': item.qty_raw_material,
 					'uom': self.umo,
-					'basic_rate': self.total_cost_rate,
+					'basic_rate': self.average_price_qty,
 					'basic_amount': basic_amount,  
 					'cost_center': item.cost_center,
 					"batch_no": item.batch,

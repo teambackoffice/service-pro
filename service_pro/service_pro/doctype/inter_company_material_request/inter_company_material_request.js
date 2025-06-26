@@ -175,7 +175,7 @@ frappe.ui.form.on("Inter Company Material Request Item", {
 
     stock_transfer_template: function(frm, cdt, cdn) {
         let item = frappe.get_doc(cdt, cdn);
-
+    
         if (item.stock_transfer_template) {
             frappe.call({
                 method: "service_pro.service_pro.doctype.inter_company_material_request.inter_company_material_request.get_available",
@@ -184,12 +184,19 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                     stock_transfer_template: item.stock_transfer_template || "" 
                 },
                 callback: function(r) {
-                    if (r.message) {
+                    if (r.message || r.message === 0) {
+                    
                         frappe.model.set_value(cdt, cdn, "available_qty", r.message);
-                    } 
+                    } else {
+                       
+                        frappe.model.set_value(cdt, cdn, "available_qty", 0);
+                    }
                 }
             });
-        } 
+        } else {
+        
+            frappe.model.set_value(cdt, cdn, "available_qty", 0);
+        }
     },
 
     qty: function(frm, cdt, cdn) {

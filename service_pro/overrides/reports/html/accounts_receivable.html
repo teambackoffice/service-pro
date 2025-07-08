@@ -51,7 +51,7 @@
 				{% if(report.report_name === "Accounts Receivable" || report.report_name === "Accounts Payable") { %}
 					<td style="width: 20%;text-align: center; border-bottom:1px solid black; border-right:1px solid black;"><b>{%= __("Inv Ref") %}</b></th>
 					<td style="width: 10%;text-align: center;border-bottom:1px solid black; border-right:1px solid black;"><b>{%= __("Date") %}</b></th>
-					<td style="width: 10%;text-align: center;border-bottom:1px solid black; border-right:1px solid black;"><b>{%= __("Due On") %}</b></th>
+					<!-- <td style="width: 10%;text-align: center;border-bottom:1px solid black; border-right:1px solid black;"><b>{%= __("Due On") %}</b></th> -->
 					<th style="width: 4%;text-align: center; border-bottom:1px solid black; border-right:1px solid black; color:black;"><b>{%= __("Age") %}</b></th>
 					<td style="width: 14%;text-align: center; border-right:1px solid black;border-bottom:1px solid black;"><b>{%= __("Customer's PO") %}</b></td>
 					<td style="width: 10%;text-align: center;border-bottom:1px solid black; border-right:1px solid black;"><b>{%= __("Debit") %}</b></th>
@@ -70,18 +70,19 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for(var i=0, l=data.length; i<l; i++) { %}
+			{% for (var i = 0, l = data.length; i < l; i++) { %}
+			  {% if (data[i]["voucher_no"]) { %}
 				<tr>
-				{% if(report.report_name === "Accounts Receivable" || report.report_name === "Accounts Payable") { %}
-					{% if(data[i]["party"]) { %}
-						<td style="border-bottom:1px solid black; border-right:1px solid black;">{%= data[i]["voucher_no"] %}</td>
-						<td style="text-align: center; border-bottom:1px solid black; border-right:1px solid black;">{%= frappe.datetime.str_to_user(data[i]["posting_date"]) %}</td>
-						<td style="text-align: center; border-bottom:1px solid black; border-right:1px solid black;">{%= frappe.datetime.str_to_user(data[i]["due_date"]) %}</td>
-						<td style="text-align: right; border-bottom:1px solid black; border-right:1px solid black;">{%= data[i]["age"] %}</td>
-						<td style=" border-right:1px solid black; border-bottom:1px solid black;">{%= data[i]["po_no"] %}</td>
-						<td style="text-align: right; border-bottom:1px solid black; border-right:1px solid black;">{%= format_number(data[i]["invoiced"], null, 2) %}</td>
-						<td style="text-align: right; border-bottom:1px solid black; border-right:1px solid black;">{%= format_number(data[i]["paid"], null, 2) %}</td>
-						<td style="text-align: right;border-right: none !important; border-bottom:1px solid black;">{%= format_number(data[i]["outstanding"], null, 2) %}</td>
+				  {% if (report.report_name === "Accounts Receivable" || report.report_name === "Accounts Payable") { %}
+					{% if (data[i]["party"]) { %}
+					  <td style="border-bottom:1px solid black; border-right:1px solid black;">{%= data[i]["voucher_no"] %}</td>
+					  <td style="text-align: center; border-bottom:1px solid black; border-right:1px solid black;">{%= frappe.datetime.str_to_user(data[i]["posting_date"]) %}</td>
+					  <td style="text-align: right; border-bottom:1px solid black; border-right:1px solid black;">{%= data[i]["age"] %}</td>
+					  <td style="border-right:1px solid black; border-bottom:1px solid black;">{%= data[i]["po_no"] %}</td>
+					  <td style="text-align: right; border-bottom:1px solid black; border-right:1px solid black;">{%= format_number(data[i]["invoiced"], null, 2) %}</td>
+					  <td style="text-align: right; border-bottom:1px solid black; border-right:1px solid black;">{%= format_number(data[i]["paid"], null, 2) %}</td>
+					  <td style="text-align: right;border-right: none !important; border-bottom:1px solid black;">{%= format_number(data[i]["outstanding"], null, 2) %}</td>
+					{% } %}
 
 					{% } else { %}
 						<td style="border-bottom: none !important; border-right:1px solid black;"></td>
@@ -116,10 +117,12 @@
 							{%= data[i]["remarks"] %}
 						</td>
 					{% } else { %}
+					        <td style="border-bottom:1px solid black; border-right:1px solid black;"><b>{%= __("") %}</b></td>
+							<td style="border-bottom:1px solid black; border-right:1px solid black;"><b>{%= __("") %}</b></td>
 							<td style="border-bottom:1px solid black; border-right:1px solid black;"><b>{%= __("Total") %}</b></td>
 						{% } %}
+						<td style="border-bottom:1px solid black; border-right:1px solid black;"><b>{%= __("") %}</b></td>
 						<td style="text-align: right; border-bottom:1px solid black; border-right:1px solid black;">{%= format_number(data[i]["invoiced"], null, 2) %}</td>
-						<td style="text-align: right; border-bottom:1px solid black; border-right:1px solid black;">{%= format_number(data[i]["paid"], null, 2) %}</td>
 						<td style="text-align: right; border-bottom:1px solid black; border-right:1px solid black;">{%= format_number(data[i]["credit_note"], null, 2) %}</td>
 						<td style="text-align: right; border-bottom:1px solid black; border-right:1px solid black;">{%= format_number(data[i]["outstanding"], null, 2) %}</td>
 					{% } %}

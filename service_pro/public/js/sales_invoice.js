@@ -43,10 +43,16 @@ frappe.ui.form.on('Sales Invoice', {
             });
         }
     },
-   
+
     onload: function (frm) {
         if (frm.doc.status === 'Draft') {
             $(".btn[data-original-title='Print']").hide();
+        }
+        if (frm.doc.is_return) {
+            frm.set_value('update_outstanding_for_self', 0);
+            frm.set_df_property('update_outstanding_for_self', 'hidden', 1);
+        } else {
+            frm.set_df_property('update_outstanding_for_self', 'hidden', 0);
         }
         frm.fields_dict.items.grid.get_field('income_account').get_query = function(doc, cdt, cdn) {
             let row = locals[cdt][cdn];
@@ -59,7 +65,7 @@ frappe.ui.form.on('Sales Invoice', {
                 };
             }
         };
-        
+
         frm.set_query('cost_center', function() {
             if (frm.doc.company) {
                 return {
@@ -89,12 +95,12 @@ frappe.ui.form.on('Sales Invoice', {
             method: "service_pro.doc_events.sales_invoice.get_role",
             callback: function (r) {
                 if (r.message) {
-                    const authorized_role = r.message; 
+                    const authorized_role = r.message;
                     console.log("Authorized Role:", authorized_role);
-        
+
                     frappe.user_roles.includes(authorized_role)
-                        ? frm.set_df_property('custom_ignore_permission_', 'read_only', 0) 
-                        : frm.set_df_property('custom_ignore_permission_', 'read_only', 1); 
+                        ? frm.set_df_property('custom_ignore_permission_', 'read_only', 0)
+                        : frm.set_df_property('custom_ignore_permission_', 'read_only', 1);
                 } else {
                     console.error("No authorized role found.");
                 }
@@ -114,7 +120,7 @@ frappe.ui.form.on('Sales Invoice', {
                             frm.remove_custom_button('Return / Credit Note', "Create");
                     }, 500);
                 }
-            }                           
+            }
         });
         frm.set_query('cost_center', function() {
             if (frm.doc.company) {
@@ -136,7 +142,7 @@ frappe.ui.form.on('Sales Invoice', {
             }
         });
 
-        // Set user-specific margin rate on refresh  
+        // Set user-specific margin rate on refresh
         set_user_margin_rate(frm);
     },
     is_pos: function(frm) {
@@ -166,6 +172,14 @@ frappe.ui.form.on('Sales Invoice', {
             cur_frm.doc.unpaid = 0
             cur_frm.refresh_fields(["sales_partner","incentive","paid","unpaid"])
         }
+    },
+    is_return: function(frm) {
+        if (frm.doc.is_return) {
+            frm.set_value('update_outstanding_for_self', 0);
+            frm.set_df_property('update_outstanding_for_self', 'hidden', 1);
+        } else {
+            frm.set_df_property('update_outstanding_for_self', 'hidden', 0);
+        }
     }
 })
 
@@ -174,17 +188,17 @@ frappe.ui.form.on('Sales Invoice Item', {
         let item_row = locals[cdt][cdn];
         calculate_margin_rate_for_item(frm, item_row);
     },
-    
+
     warehouse: function(frm, cdt, cdn) {
         let item_row = locals[cdt][cdn];
         calculate_margin_rate_for_item(frm, item_row);
     },
-    
+
     qty: function(frm, cdt, cdn) {
         let item_row = locals[cdt][cdn];
         calculate_margin_rate_for_item(frm, item_row);
     },
-    
+
     // Updated validation when custom_margin_rate changes
     custom_margin_rate: function(frm, cdt, cdn) {
         let item_row = locals[cdt][cdn];
@@ -199,7 +213,7 @@ frappe.ui.form.on('Sales Invoice Item', {
             }
         }
     },
-    
+
     // Updated validation when rate changes
     rate: function(frm, cdt, cdn) {
         let item_row = locals[cdt][cdn];
@@ -385,7 +399,7 @@ function set_user_margin_rate(frm) {
     if (!frm.doc.company) {
         return;
     }
-    
+
     frappe.call({
         method: "service_pro.doc_events.utils.get_production_settings_defaults",
         args: {
@@ -398,7 +412,7 @@ function set_user_margin_rate(frm) {
                     let row = r.message.default_sales_margin_percentage[i];
                     if (row.user === frappe.session.user) {
                         frm.set_value('custom_margin_rate', row.percentage);
-                        
+
                         // Recalculate all items with the new margin rate
                         if (frm.doc.items && frm.doc.items.length > 0) {
                             frm.doc.items.forEach(function(item) {
@@ -419,7 +433,7 @@ function calculate_margin_rate_for_item(frm, item_row) {
     if (!item_row.item_code || !item_row.warehouse || !frm.doc.custom_margin_rate) {
         return;
     }
-    
+
     // Get valuation rate from Bin doctype
     frappe.call({
         method: "frappe.client.get_value",
@@ -435,23 +449,23 @@ function calculate_margin_rate_for_item(frm, item_row) {
             if (r.message && r.message.valuation_rate) {
                 let cost_price = r.message.valuation_rate;
                 let margin_percentage = frm.doc.custom_margin_rate;
-                
+
                 if (cost_price > 0 && margin_percentage > 0) {
                     // Calculate selling price using the formula:
                     // Selling Price = Cost Price / (1 - Margin%)
                     let margin_decimal = margin_percentage / 100;
                     let selling_price = cost_price / (1 - margin_decimal);
-                    
+
                     // Set custom_margin_rate field in the item row
                     item_row.custom_margin_rate = selling_price;
-                    
+
                     // Optional: Auto-sync with rate field to prevent validation errors
                     // Uncomment the line below if you want automatic sync
                     // item_row.rate = selling_price;
-                    
+
                     // Refresh the specific field
                     frm.refresh_field('items');
-                    
+
                     // Optional: Show calculation details in console for debugging
                     console.log(`Item: ${item_row.item_code}`);
                     console.log(`Cost Price (Valuation Rate): ${cost_price}`);

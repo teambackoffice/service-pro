@@ -1,0 +1,15 @@
+{
+  "report_name": "Group Balance Sheet",
+  "ref_doctype": "GL Entry",
+  "report_type": "Script Report",
+  "is_standard": "No",
+  "module": "Accounts",
+  "add_total_row": 0,
+  "disabled": 0,
+  "prepared_report": 0,
+  "roles": [
+    { "role": "Accounts User" },
+    { "role": "Accounts Manager" },
+    { "role": "Auditor" }
+  ]
+}

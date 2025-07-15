@@ -1,5 +1,6 @@
 {
  "add_total_row": 1,
+ "add_translate_data": 0,
  "columns": [],
  "creation": "2025-04-09 14:24:40.109066",
  "disabled": 0,
@@ -11,7 +12,7 @@
  "json": "{}",
  "letter_head": "Hydrotech",
  "letterhead": null,
- "modified": "2025-04-10 13:57:16.835672",
+ "modified": "2025-07-15 12:22:12.526515",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Stock Transfer Report",
@@ -30,5 +31,6 @@
   {
    "role": "Stock Manager"
   }
- ]
+ ],
+ "timeout": 0
 }

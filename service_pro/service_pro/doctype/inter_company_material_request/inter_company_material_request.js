@@ -26,6 +26,18 @@ frappe.ui.form.on("Inter Company Material Request", {
                 };
             }
         });
+
+        frm.set_query("set_source_warehouse", function() {
+            if (frm.doc.company) {
+                return {
+                    filters: {
+                        company: frm.doc.company,
+                        is_group: 0
+                    }
+                };
+            }
+        });
+
         frm.set_query("company", function() {
             return {
                 filters: {
@@ -33,7 +45,48 @@ frappe.ui.form.on("Inter Company Material Request", {
                 }
             };
         });
+
+        // Set up warehouse filters for items table
+        frm.set_query("warehouse", "items", function(doc, cdt, cdn) {
+            if (doc.company) {
+                return {
+                    filters: {
+                        company: doc.company,
+                        is_group: 0
+                    }
+                };
+            }
+        });
+
+        frm.set_query("from_warehouse", "items", function(doc, cdt, cdn) {
+            if (doc.company) {
+                return {
+                    filters: {
+                        company: doc.company,
+                        is_group: 0
+                    }
+                };
+            }
+        });
         
+    },
+
+    // Auto-populate table warehouses when set_warehouse is changed
+    set_warehouse: function(frm) {
+        if (frm.doc.set_warehouse) {
+            frm.doc.items.forEach(row => {
+                frappe.model.set_value(row.doctype, row.name, "warehouse", frm.doc.set_warehouse);
+            });
+        }
+    },
+
+    // Auto-populate table from_warehouses when set_source_warehouse is changed
+    set_source_warehouse: function(frm) {
+        if (frm.doc.set_source_warehouse) {
+            frm.doc.items.forEach(row => {
+                frappe.model.set_value(row.doctype, row.name, "from_warehouse", frm.doc.set_source_warehouse);
+            });
+        }
     }
 });
 

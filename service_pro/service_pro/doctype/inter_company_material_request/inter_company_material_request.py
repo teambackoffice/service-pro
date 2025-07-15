@@ -132,6 +132,7 @@ class InterCompanyMaterialRequest(Document):
 
 @frappe.whitelist()
 def get_available_qty(item_code):
+    """Get available quantity for an item across all warehouses"""
     warehouses = frappe.db.sql(
         """
         SELECT 
@@ -161,11 +162,12 @@ def get_available_qty(item_code):
 
 @frappe.whitelist()
 def get_available(item_code, stock_transfer_template):
-    templete = frappe.get_doc("Inter Company Stock Transfer Template", stock_transfer_template)
+    """Get available quantity for specific template warehouse"""
+    template = frappe.get_doc("Inter Company Stock Transfer Template", stock_transfer_template)
 
     available_qty = frappe.db.get_value(
         "Bin",
-        {"item_code": item_code, "warehouse": templete.from_warehouse,"actual_qty":['!=',0]},
+        {"item_code": item_code, "warehouse": template.from_warehouse, "actual_qty": ['!=', 0]},
         "actual_qty"
     )
 
@@ -174,11 +176,39 @@ def get_available(item_code, stock_transfer_template):
 
 @frappe.whitelist()
 def get_valution_rate(item_code):
-
-    available_qty = frappe.db.get_value(
+    """Get valuation rate for an item (legacy method)"""
+    valuation_rate = frappe.db.get_value(
         "Bin",
         {"item_code": item_code},
         "valuation_rate"
     )
 
-    return available_qty
+    return valuation_rate or 0
+
+
+@frappe.whitelist()
+def get_warehouse_valuation_rate(item_code, warehouse):
+    """Get warehouse-specific valuation rate for an item"""
+    if not item_code or not warehouse:
+        return 0
+        
+    # Get valuation rate from Bin for specific item-warehouse combination
+    valuation_rate = frappe.db.get_value(
+        "Bin",
+        {
+            "item_code": item_code,
+            "warehouse": warehouse
+        },
+        "valuation_rate"
+    )
+    
+    if valuation_rate:
+        return float(valuation_rate)
+    else:
+        # If no Bin record exists for this warehouse, try to get standard rate from Item
+        standard_rate = frappe.db.get_value(
+            "Item",
+            item_code,
+            "standard_rate"
+        )
+        return float(standard_rate) if standard_rate else 0

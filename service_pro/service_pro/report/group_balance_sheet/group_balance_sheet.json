@@ -1,4 +1,6 @@
 {
+  "doctype": "Report",
+   "name": "Group Balance Sheet",
   "report_name": "Group Balance Sheet",
   "ref_doctype": "GL Entry",
   "report_type": "Script Report",

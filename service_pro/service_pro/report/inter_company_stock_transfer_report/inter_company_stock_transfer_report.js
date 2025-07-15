@@ -1,5 +1,6 @@
 
-frappe.query_reports["Inter Company Transfer Report"] = {
+
+frappe.query_reports["Inter Company Stock Transfer Report"] = {
     tree: true,
     name_field: "name",
     parent_field: "parent_transfer",
@@ -18,6 +19,11 @@ frappe.query_reports["Inter Company Transfer Report"] = {
             default: frappe.datetime.get_today(),
         },
         {
+            fieldname: "posting_date",
+            label: __("Posting Date"),
+            fieldtype: "Date"
+        },
+        {
             fieldname: "from_company",
             label: __("From Company"),
             fieldtype: "Link",
@@ -33,7 +39,12 @@ frappe.query_reports["Inter Company Transfer Report"] = {
             fieldname: "status",
             label: __("Status"),
             fieldtype: "Select",
-            options: ["", "Draft", "Submitted", "Cancelled"],
+            options: ["", "Draft", "Received", "Cancelled"],
+        },
+        {
+            fieldname: "name",
+            label: __("ID"),
+            fieldtype: "Data"
         }
     ]
 };

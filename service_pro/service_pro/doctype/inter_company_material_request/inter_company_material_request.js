@@ -161,15 +161,81 @@ frappe.ui.form.on("Inter Company Material Request Item", {
         } else {
             frm.fields_dict.stock_details.$wrapper.empty();
         }
-        frm.call({
-            method: "get_valution_rate",
-            args: {item_code: item.item_code},
-            callback: function(r) {console.log(r)
-                if (r.message) {
-                    frappe.model.set_value(cdt, cdn, "rate", r.message);
-                }
+        
+        // Clear rate when item changes and recalculate based on material request type
+        frappe.model.set_value(cdt, cdn, "rate", 0);
+        
+        // Auto-calculate rate if warehouse/from_warehouse is already selected
+        setTimeout(() => {
+            let updated_item = frappe.get_doc(cdt, cdn);
+            if (frm.doc.material_request_type === "Purchase" && updated_item.warehouse) {
+                // Trigger warehouse calculation for Purchase type
+                frm.script_manager.trigger("warehouse", cdt, cdn);
+            } else if (frm.doc.material_request_type === "Material Transfer" && updated_item.from_warehouse) {
+                // Trigger from_warehouse calculation for Material Transfer type
+                frm.script_manager.trigger("from_warehouse", cdt, cdn);
             }
-        });
+        }, 100);
+    },
+
+    // Warehouse field trigger for Purchase type
+    warehouse: function(frm, cdt, cdn) {
+        let item = frappe.get_doc(cdt, cdn);
+        
+        // Only trigger if material_request_type is "Purchase"
+        if (frm.doc.material_request_type === "Purchase" && item.item_code && item.warehouse) {
+            frappe.call({
+                method: "service_pro.service_pro.doctype.inter_company_material_request.inter_company_material_request.get_warehouse_valuation_rate",
+                args: {
+                    item_code: item.item_code,
+                    warehouse: item.warehouse
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        frappe.model.set_value(cdt, cdn, "rate", r.message);
+                    } else {
+                        frappe.model.set_value(cdt, cdn, "rate", 0);
+                        frappe.msgprint({
+                            title: __('No Valuation Rate'),
+                            message: __('No valuation rate found for item {0} in warehouse {1}', [item.item_code, item.warehouse]),
+                            indicator: 'orange'
+                        });
+                    }
+                }
+            });
+        } else if (frm.doc.material_request_type !== "Purchase") {
+            frappe.model.set_value(cdt, cdn, "rate", 0);
+        }
+    },
+
+    // From Warehouse field trigger for Material Transfer type
+    from_warehouse: function(frm, cdt, cdn) {
+        let item = frappe.get_doc(cdt, cdn);
+        
+        // Only trigger if material_request_type is "Material Transfer"
+        if (frm.doc.material_request_type === "Material Transfer" && item.item_code && item.from_warehouse) {
+            frappe.call({
+                method: "service_pro.service_pro.doctype.inter_company_material_request.inter_company_material_request.get_warehouse_valuation_rate",
+                args: {
+                    item_code: item.item_code,
+                    warehouse: item.from_warehouse
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        frappe.model.set_value(cdt, cdn, "rate", r.message);
+                    } else {
+                        frappe.model.set_value(cdt, cdn, "rate", 0);
+                        frappe.msgprint({
+                            title: __('No Valuation Rate'),
+                            message: __('No valuation rate found for item {0} in from warehouse {1}', [item.item_code, item.from_warehouse]),
+                            indicator: 'orange'
+                        });
+                    }
+                }
+            });
+        } else if (frm.doc.material_request_type !== "Material Transfer") {
+            frappe.model.set_value(cdt, cdn, "rate", 0);
+        }
     },
     
 

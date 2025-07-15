@@ -461,6 +461,7 @@
    "print_hide": 1
   },
   {
+   "depends_on": "eval:parent.material_request_type == \"Purchase\"",
    "fieldname": "warehouse",
    "fieldtype": "Link",
    "label": "Target Warehouse",
@@ -483,7 +484,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-06-26 10:15:42.296728",
+ "modified": "2025-07-15 14:39:11.281309",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Material Request Item",

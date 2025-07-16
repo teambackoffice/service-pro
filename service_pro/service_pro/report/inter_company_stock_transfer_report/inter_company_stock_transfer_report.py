@@ -24,7 +24,10 @@ def execute(filters=None):
     ]
 
     data = []
+
+    # Initialize total fields
     total_issued_qty = total_received_qty = total_debit = total_credit = 0
+    total_debit_rate = total_credit_rate = total_value_diff = 0
 
     # Filter setup
     transfer_filters = {
@@ -44,7 +47,7 @@ def execute(filters=None):
     for transfer in transfers:
         transfer_id = transfer.name
 
-        # ---- Fetch all stock entries linked via Stock Entry Detail ----
+        # Fetch all stock entries linked via Stock Entry Detail
         linked_se_details = frappe.get_all(
             "Stock Entry Detail",
             filters={"custom_inter_company_stock_transfer": transfer_id},
@@ -70,7 +73,7 @@ def execute(filters=None):
                 material_issue_id = stock_entry
                 material_issue_rate_map[detail.item_code] = detail.valuation_rate or 0
 
-        # ---- Parent row (for report grouping) ----
+        # Parent row
         data.append({
             "name": transfer_id,
             "from_company": transfer.from_company,
@@ -80,7 +83,7 @@ def execute(filters=None):
             "indent": 0
         })
 
-        # ---- Line items ----
+        # Line items
         items = frappe.get_all(
             "Inter Company Stock Transfer Item",
             filters={"parent": transfer_id},
@@ -100,9 +103,9 @@ def execute(filters=None):
             to_total = received_qty * to_value
             qty_diff = qty - received_qty
 
-            # ✅ Use Material Issue Rate in Value Diff
-            value_diff = material_issue_rate
+            value_diff = material_issue_rate  # Material Issue Rate used here
 
+            # Add row
             data.append({
                 "name": f"{transfer_id}-{item_code}",
                 "parent_transfer": transfer_id,
@@ -119,22 +122,29 @@ def execute(filters=None):
                 "credit_stock_entry": credit_entry_id,
 
                 "qty_diff": qty_diff,
-                "value_diff": value_diff,  # ← Material Issue rate
+                "value_diff": value_diff,
                 "indent": 1
             })
 
+            # Totals
             total_issued_qty += qty
             total_received_qty += received_qty
             total_debit += from_total
             total_credit += to_total
+            total_debit_rate += from_value
+            total_credit_rate += to_value
+            total_value_diff += value_diff
 
-    # ---- Totals Row ----
+    # Totals Row
     data.append({
         "name": "TOTAL",
         "from_qty": total_issued_qty,
         "to_qty": total_received_qty,
+        "from_value": total_debit_rate,
+        "to_value": total_credit_rate,
         "from_total": total_debit,
         "to_total": total_credit,
+        "value_diff": total_value_diff,
         "indent": 0
     })
 

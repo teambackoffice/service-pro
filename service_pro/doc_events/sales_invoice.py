@@ -132,6 +132,9 @@ def validate_margin_rate_with_rate(doc, method):
 	"""Validate that rate field is not lower than custom_margin_rate for each item"""
 	if not doc.items:
 		return
+    
+	if frappe.session.user == "Administrator":
+		return
 	
 	validation_errors = []
 	

@@ -25,10 +25,6 @@ def execute(filters=None):
 
     data = []
 
-    # Initialize total fields
-    total_issued_qty = total_received_qty = total_debit = total_credit = 0
-    total_debit_rate = total_credit_rate = total_value_diff = 0
-
     # Filter setup
     transfer_filters = {
         key: val for key, val in (filters or {}).items()
@@ -44,54 +40,17 @@ def execute(filters=None):
         fields=["name", "from_company", "to_company", "status", "posting_date"]
     )
 
-    # for transfer in transfers:
-    #     transfer_id = transfer.name
-
-    #     # Fetch all stock entries linked via Stock Entry Detail
-    #     linked_se_details = frappe.get_all(
-    #         "Stock Entry Detail",
-    #         filters={"custom_inter_company_stock_transfer": transfer_id},
-    #         fields=["parent", "item_code", "valuation_rate"],
-    #         distinct=False
-    #     )
-
-    #     # Group entries by type
-    #     debit_entry_id = credit_entry_id = material_issue_id = None
-    #     debit_rate_map, credit_rate_map, material_issue_rate_map = {}, {}, {}
-
-    #     for detail in linked_se_details:
-    #         stock_entry = detail.parent
-    #         entry_type = frappe.db.get_value("Stock Entry", stock_entry, "stock_entry_type")
-
-    #         if entry_type == "Material Transfer":
-    #             debit_entry_id = stock_entry
-    #             debit_rate_map[detail.item_code] = detail.valuation_rate or 0
-    #         elif entry_type == "Material Receipt":
-    #             credit_entry_id = stock_entry
-    #             credit_rate_map[detail.item_code] = detail.valuation_rate or 0
-    #         elif entry_type == "Material Issue":
-    #             material_issue_id = stock_entry
-    #             material_issue_rate_map[detail.item_code] = detail.valuation_rate or 0
-
-    #     # Parent row
-    #     data.append({
-    #         "name": transfer_id,
-    #         "from_company": transfer.from_company,
-    #         "to_company": transfer.to_company,
-    #         "status": transfer.status,
-    #         "posting_date": transfer.posting_date,
-    #         "indent": 0
-    #     })
     for transfer in transfers:
         transfer_id = transfer.name
 
-        # Initialize stock entry mappings
-        debit_entry_id = credit_entry_id = material_issue_id = None
-        debit_rate_map = {}
-        credit_rate_map = {}
-        material_issue_rate_map = {}
+        # Initialize totals
+        issued_qty = received_qty = debit_total = credit_total = 0
+        debit_rate_total = credit_rate_total = value_diff_total = 0
 
-        # Fetch linked stock entry rates
+        # Fetch rate maps
+        debit_rate_map, credit_rate_map, material_issue_rate_map = {}, {}, {}
+        debit_entry_id = credit_entry_id = material_issue_id = None
+
         linked_se_details = frappe.get_all(
             "Stock Entry Detail",
             filters={"custom_inter_company_stock_transfer": transfer_id},
@@ -110,25 +69,15 @@ def execute(filters=None):
                 material_issue_id = detail.parent
                 material_issue_rate_map[detail.item_code] = detail.valuation_rate or 0
 
-        # Add parent transfer row
-        data.append({
-            "name": transfer_id,
-            "from_company": transfer.from_company,
-            "to_company": transfer.to_company,
-            "status": transfer.status,
-            "posting_date": transfer.posting_date,
-            "indent": 0
-        })
-
-        # Initialize transfer totals
-        issued_qty = received_qty = debit_total = credit_total = 0
-        debit_rate_total = credit_rate_total = value_diff_total = 0
-
+        # Get all items under this transfer
         items = frappe.get_all(
             "Inter Company Stock Transfer Item",
             filters={"parent": transfer_id},
             fields=["item_code", "qty", "received_qty"]
         )
+
+        # Prepare child rows
+        child_rows = []
 
         for item in items:
             item_code = item.item_code
@@ -144,9 +93,8 @@ def execute(filters=None):
             qty_diff = qty - rec_qty
             value_diff = material_issue_rate
 
-            data.append({
+            child_rows.append({
                 "name": f"{transfer_id}-{item_code}",
-                "parent_transfer": transfer_id,
                 "from_item": item_code,
                 "from_qty": qty,
                 "from_value": from_value,
@@ -162,7 +110,7 @@ def execute(filters=None):
                 "indent": 1
             })
 
-            # Update transfer totals
+            # Totals for parent
             issued_qty += qty
             received_qty += rec_qty
             debit_total += from_total
@@ -171,18 +119,11 @@ def execute(filters=None):
             credit_rate_total += to_value
             value_diff_total += value_diff
 
-            # Update global totals
-            total_issued_qty += qty
-            total_received_qty += rec_qty
-            total_debit += from_total
-            total_credit += to_total
-            total_debit_rate += from_value
-            total_credit_rate += to_value
-            total_value_diff += value_diff
-
-        # Add subtotal row for current transfer
+        # Parent row with totals
         data.append({
-            "name": f"{transfer_id}-TOTAL",
+            "name": transfer_id,
+            "from_company": transfer.from_company,
+            "to_company": transfer.to_company,
             "from_qty": issued_qty,
             "to_qty": received_qty,
             "from_value": debit_rate_total,
@@ -190,8 +131,12 @@ def execute(filters=None):
             "from_total": debit_total,
             "to_total": credit_total,
             "value_diff": value_diff_total,
-            "indent": 1
+            "status": transfer.status,
+            "posting_date": transfer.posting_date,
+            "indent": 0
         })
 
+        # Add all item rows after parent
+        data.extend(child_rows)
 
     return columns, data

@@ -19,6 +19,7 @@ def execute(filters=None):
 
         {"label": "Qty Diff", "fieldname": "qty_diff", "fieldtype": "Float", "width": 80},
         {"label": "Value Diff (Material Issue)", "fieldname": "value_diff", "fieldtype": "Currency", "width": 100},
+        {"label": "Total Diff Value", "fieldname": "total_diff_value", "fieldtype": "Currency", "width": 120},
         {"label": "Status", "fieldname": "status", "fieldtype": "Data", "width": 100},
         {"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Date", "width": 100}
     ]
@@ -45,7 +46,7 @@ def execute(filters=None):
 
         # Initialize totals
         issued_qty = received_qty = debit_total = credit_total = 0
-        debit_rate_total = credit_rate_total = value_diff_total = 0
+        debit_rate_total = credit_rate_total = value_diff_total = total_diff_value_total = 0
 
         # Fetch rate maps
         debit_rate_map, credit_rate_map, material_issue_rate_map = {}, {}, {}
@@ -91,7 +92,8 @@ def execute(filters=None):
             from_total = qty * from_value
             to_total = rec_qty * to_value
             qty_diff = qty - rec_qty
-            value_diff = material_issue_rate
+            value_diff = to_value - from_value
+            total_diff_value = to_total - from_total
 
             child_rows.append({
                 "name": f"{transfer_id}-{item_code}",
@@ -107,6 +109,7 @@ def execute(filters=None):
                 "credit_stock_entry": credit_entry_id,
                 "qty_diff": qty_diff,
                 "value_diff": value_diff,
+                "total_diff_value": total_diff_value,
                 "indent": 1
             })
 
@@ -118,6 +121,7 @@ def execute(filters=None):
             debit_rate_total += from_value
             credit_rate_total += to_value
             value_diff_total += value_diff
+            total_diff_value_total += total_diff_value
 
         # Parent row with totals
         data.append({
@@ -131,6 +135,7 @@ def execute(filters=None):
             "from_total": debit_total,
             "to_total": credit_total,
             "value_diff": value_diff_total,
+            "total_diff_value": total_diff_value_total,
             "status": transfer.status,
             "posting_date": transfer.posting_date,
             "indent": 0

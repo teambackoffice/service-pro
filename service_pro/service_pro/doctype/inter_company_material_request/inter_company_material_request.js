@@ -14,29 +14,6 @@ frappe.ui.form.on("Inter Company Material Request", {
                 }
             };
         });
-
-        // Set up warehouse filters for items table
-        frm.set_query("warehouse", "items", function(doc, cdt, cdn) {
-            if (doc.company) {
-                return {
-                    filters: {
-                        company: doc.company,
-                        is_group: 0
-                    }
-                };
-            }
-        });
-
-        frm.set_query("from_warehouse", "items", function(doc, cdt, cdn) {
-            if (doc.company) {
-                return {
-                    filters: {
-                        company: doc.company,
-                        is_group: 0
-                    }
-                };
-            }
-        });
         
     },
 

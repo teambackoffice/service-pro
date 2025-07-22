@@ -7,37 +7,6 @@ frappe.ui.form.on("Inter Company Material Request", {
         }
     },
     refresh: function(frm) {
-        // frm.fields_dict.stock_details.$wrapper.empty();
-        // frm.fields_dict["items"].grid.get_field("supplier").get_query = function(doc, cdt, cdn) {
-        //     return {
-        //         filters: {
-        //             is_internal_supplier: 1
-        //         }
-        //     };
-        // };
-
-        frm.set_query("set_warehouse", function() {
-            if (frm.doc.company) {
-                return {
-                    filters: {
-                        company: frm.doc.company,
-                        is_group: 0
-                    }
-                };
-            }
-        });
-
-        frm.set_query("set_source_warehouse", function() {
-            if (frm.doc.company) {
-                return {
-                    filters: {
-                        company: frm.doc.company,
-                        is_group: 0
-                    }
-                };
-            }
-        });
-
         frm.set_query("company", function() {
             return {
                 filters: {
@@ -87,6 +56,14 @@ frappe.ui.form.on("Inter Company Material Request", {
                 frappe.model.set_value(row.doctype, row.name, "from_warehouse", frm.doc.set_source_warehouse);
             });
         }
+    },
+
+    material_request_type: function(frm) {
+        frm.doc.items.forEach(row => {
+            if (row.stock_transfer_template) {
+                frm.script_manager.trigger("stock_transfer_template", row.doctype, row.name);
+            }
+        });
     }
 });
 
@@ -290,7 +267,7 @@ frappe.ui.form.on("Inter Company Material Request Item", {
             frappe.model.set_value(cdt, cdn, "rate", 0);
         }
     },
-    
+
 
     stock_transfer_template: function(frm, cdt, cdn) {
         let item = frappe.get_doc(cdt, cdn);
@@ -312,9 +289,34 @@ frappe.ui.form.on("Inter Company Material Request Item", {
                     }
                 }
             });
+
+            frappe.call({
+                method: "frappe.client.get_value",
+                args: {
+                    doctype: "Inter Company Stock Transfer Template",
+                    filters: {"name": item.stock_transfer_template},
+                    fieldname: ["from_warehouse"]
+                },
+                callback: function(r) {
+                    if (r.message && r.message.from_warehouse) {
+                        if (frm.doc.material_request_type === "Material Transfer") {
+                            frappe.model.set_value(cdt, cdn, "from_warehouse", r.message.from_warehouse);
+                            
+                            frappe.model.set_value(cdt, cdn, "warehouse", "");
+                            
+                        } else if (frm.doc.material_request_type === "Purchase") {
+                            frappe.model.set_value(cdt, cdn, "warehouse", r.message.from_warehouse);
+                            
+                            frappe.model.set_value(cdt, cdn, "from_warehouse", "");
+                        }
+                    }
+                }
+            });
         } else {
         
             frappe.model.set_value(cdt, cdn, "available_qty", 0);
+            frappe.model.set_value(cdt, cdn, "from_warehouse", "");
+            frappe.model.set_value(cdt, cdn, "warehouse", "");
         }
     },
 

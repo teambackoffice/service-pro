@@ -202,13 +202,4 @@ def get_warehouse_valuation_rate(item_code, warehouse):
         "valuation_rate"
     )
     
-    if valuation_rate:
-        return float(valuation_rate)
-    else:
-        # If no Bin record exists for this warehouse, try to get standard rate from Item
-        standard_rate = frappe.db.get_value(
-            "Item",
-            item_code,
-            "standard_rate"
-        )
-        return float(standard_rate) if standard_rate else 0
+    return float(valuation_rate) if valuation_rate else 0

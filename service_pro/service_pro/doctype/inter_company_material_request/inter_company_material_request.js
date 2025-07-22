@@ -45,6 +45,59 @@ frappe.ui.form.on("Inter Company Material Request", {
 });
 
 frappe.ui.form.on("Inter Company Material Request Item", {
+    // Set up warehouse and from_warehouse filters when form loads or stock_transfer_template changes
+    onload: function(frm, cdt, cdn) {
+        setup_warehouse_filters(frm, cdt, cdn);
+    },
+
+    stock_transfer_template: function(frm, cdt, cdn) {
+        let item = frappe.get_doc(cdt, cdn);
+    
+        // Setup filters first
+        setup_warehouse_filters(frm, cdt, cdn);
+
+        if (item.stock_transfer_template) {
+            frappe.call({
+                method: "service_pro.service_pro.doctype.inter_company_material_request.inter_company_material_request.get_available",
+                args: {
+                    item_code: item.item_code || "",  
+                    stock_transfer_template: item.stock_transfer_template || "" 
+                },
+                callback: function(r) {
+                    if (r.message || r.message === 0) {
+                        frappe.model.set_value(cdt, cdn, "available_qty", r.message);
+                    } else {
+                        frappe.model.set_value(cdt, cdn, "available_qty", 0);
+                    }
+                }
+            });
+
+            frappe.call({
+                method: "frappe.client.get_value",
+                args: {
+                    doctype: "Inter Company Stock Transfer Template",
+                    filters: {"name": item.stock_transfer_template},
+                    fieldname: ["from_warehouse"]
+                },
+                callback: function(r) {
+                    if (r.message && r.message.from_warehouse) {
+                        if (frm.doc.material_request_type === "Material Transfer") {
+                            frappe.model.set_value(cdt, cdn, "from_warehouse", r.message.from_warehouse);
+                            frappe.model.set_value(cdt, cdn, "warehouse", "");
+                        } else if (frm.doc.material_request_type === "Purchase") {
+                            frappe.model.set_value(cdt, cdn, "warehouse", r.message.from_warehouse);
+                            frappe.model.set_value(cdt, cdn, "from_warehouse", "");
+                        }
+                    }
+                }
+            });
+        } else {
+            frappe.model.set_value(cdt, cdn, "available_qty", 0);
+            frappe.model.set_value(cdt, cdn, "from_warehouse", "");
+            frappe.model.set_value(cdt, cdn, "warehouse", "");
+        }
+    },
+
     item_code: function(frm, cdt, cdn) {
         let item = frappe.get_doc(cdt, cdn);
     
@@ -245,58 +298,6 @@ frappe.ui.form.on("Inter Company Material Request Item", {
         }
     },
 
-
-    stock_transfer_template: function(frm, cdt, cdn) {
-        let item = frappe.get_doc(cdt, cdn);
-    
-        if (item.stock_transfer_template) {
-            frappe.call({
-                method: "service_pro.service_pro.doctype.inter_company_material_request.inter_company_material_request.get_available",
-                args: {
-                    item_code: item.item_code || "",  
-                    stock_transfer_template: item.stock_transfer_template || "" 
-                },
-                callback: function(r) {
-                    if (r.message || r.message === 0) {
-                    
-                        frappe.model.set_value(cdt, cdn, "available_qty", r.message);
-                    } else {
-                       
-                        frappe.model.set_value(cdt, cdn, "available_qty", 0);
-                    }
-                }
-            });
-
-            frappe.call({
-                method: "frappe.client.get_value",
-                args: {
-                    doctype: "Inter Company Stock Transfer Template",
-                    filters: {"name": item.stock_transfer_template},
-                    fieldname: ["from_warehouse"]
-                },
-                callback: function(r) {
-                    if (r.message && r.message.from_warehouse) {
-                        if (frm.doc.material_request_type === "Material Transfer") {
-                            frappe.model.set_value(cdt, cdn, "from_warehouse", r.message.from_warehouse);
-                            
-                            frappe.model.set_value(cdt, cdn, "warehouse", "");
-                            
-                        } else if (frm.doc.material_request_type === "Purchase") {
-                            frappe.model.set_value(cdt, cdn, "warehouse", r.message.from_warehouse);
-                            
-                            frappe.model.set_value(cdt, cdn, "from_warehouse", "");
-                        }
-                    }
-                }
-            });
-        } else {
-        
-            frappe.model.set_value(cdt, cdn, "available_qty", 0);
-            frappe.model.set_value(cdt, cdn, "from_warehouse", "");
-            frappe.model.set_value(cdt, cdn, "warehouse", "");
-        }
-    },
-
     qty: function(frm, cdt, cdn) {
         let row = locals[cdt][cdn];
         
@@ -331,3 +332,51 @@ frappe.ui.form.on("Inter Company Material Request Item", {
         }
     }
 });
+
+// Function to setup warehouse filters based on stock_transfer_template's from_company
+function setup_warehouse_filters(frm, cdt, cdn) {
+    let item = frappe.get_doc(cdt, cdn);
+    
+    if (item.stock_transfer_template) {
+        // Get the from_company from the selected stock_transfer_template
+        frappe.call({
+            method: "frappe.client.get_value",
+            args: {
+                doctype: "Inter Company Stock Transfer Template",
+                filters: {"name": item.stock_transfer_template},
+                fieldname: ["from_company"]
+            },
+            callback: function(r) {
+                if (r.message && r.message.from_company) {
+                    let from_company = r.message.from_company;
+                    
+                    // Set filter for warehouse field
+                    frm.fields_dict.items.grid.get_field('warehouse').get_query = function(doc, cdt, cdn) {
+                        return {
+                            filters: {
+                                company: from_company
+                            }
+                        };
+                    };
+                    
+                    // Set filter for from_warehouse field
+                    frm.fields_dict.items.grid.get_field('from_warehouse').get_query = function(doc, cdt, cdn) {
+                        return {
+                            filters: {
+                                company: from_company
+                            }
+                        };
+                    };
+                    
+                    // Refresh the grid to apply filters
+                    frm.refresh_field("items");
+                }
+            }
+        });
+    } else {
+        // Clear filters if no stock_transfer_template is selected
+        frm.fields_dict.items.grid.get_field('warehouse').get_query = null;
+        frm.fields_dict.items.grid.get_field('from_warehouse').get_query = null;
+        frm.refresh_field("items");
+    }
+}

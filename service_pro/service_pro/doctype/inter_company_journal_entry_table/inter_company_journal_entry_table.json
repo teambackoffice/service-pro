@@ -8,6 +8,8 @@
  "field_order": [
   "company",
   "account",
+  "party_type",
+  "party",
   "column_break_fify",
   "debit",
   "credit"
@@ -42,13 +44,27 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Credit"
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Party Type",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Party",
+   "options": "party_type"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-17 15:00:46.507353",
+ "modified": "2025-07-22 13:59:28.193424",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Inter Company Journal Entry Table",

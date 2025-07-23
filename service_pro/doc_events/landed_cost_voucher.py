@@ -5,12 +5,30 @@ import json
 def get_item_avail_qty(items):
     avail_qty = []
     items = json.loads(items)
+    
     for item in items:
-        warehouse = frappe.db.sql(""" SELECT * FROM `tab{0}` WHERE name=%s""".format(item.get("receipt_document_type")),item.get("receipt_document"),as_dict=1)
-
+        receipt_doc = frappe.get_doc(item.get("receipt_document_type"), item.get("receipt_document"))
+        
         if item.get("item_code"):
-            if frappe.db.exists("Bin", {"item_code":item.get("item_code")}):
-                bin = frappe.get_last_doc("Bin", {"item_code":item.get("item_code"),"warehouse":warehouse[0].set_warehouse})
-                avail_qty.append({"item_code": item.get("item_code"), "avail_qty":bin.actual_qty})
+            item_warehouse = None
+            for doc_item in receipt_doc.items: 
+                if doc_item.item_code == item.get("item_code"):
+                    item_warehouse = doc_item.warehouse
+                    break
+            
+            if item_warehouse and frappe.db.exists("Bin", {"item_code": item.get("item_code"), "warehouse": item_warehouse}):
+                bin_doc = frappe.get_doc("Bin", {"item_code": item.get("item_code"), "warehouse": item_warehouse})
+                avail_qty.append({
+                    "item_code": item.get("item_code"), 
+                    "warehouse": item_warehouse,
+                    "avail_qty": bin_doc.actual_qty
+                })
+            else:
+                avail_qty.append({
+                    "item_code": item.get("item_code"), 
+                    "warehouse": item_warehouse,
+                    "avail_qty": 0
+                })
+    
     return avail_qty
 

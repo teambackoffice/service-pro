@@ -17,4 +17,16 @@ frappe.ui.form.on("Inter Company Journal Entry", {
         };
 
 	},
+    setup(frm) {
+        frm.set_query("party_type", "details", function (doc, cdt, cdn) {
+			const row = locals[cdt][cdn];
+
+			return {
+				query: "erpnext.setup.doctype.party_type.party_type.get_party_type",
+				filters: {
+					account: row.account,
+				},
+			};
+		});
+    }
 });

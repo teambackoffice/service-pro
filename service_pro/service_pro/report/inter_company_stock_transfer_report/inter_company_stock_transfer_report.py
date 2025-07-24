@@ -25,6 +25,17 @@ def execute(filters=None):
     ]
 
     data = []
+    
+    # Initialize grand total variables
+    grand_total_issued_qty = 0
+    grand_total_received_qty = 0
+    grand_total_debit_rate = 0
+    grand_total_credit_rate = 0
+    grand_total_debit_amount = 0
+    grand_total_credit_amount = 0
+    grand_total_qty_diff = 0
+    grand_total_value_diff = 0
+    grand_total_diff_value = 0
 
     # Filter setup
     transfer_filters = {
@@ -92,8 +103,10 @@ def execute(filters=None):
             from_total = qty * from_value
             to_total = rec_qty * to_value
             qty_diff = qty - rec_qty
-            value_diff = to_value - from_value
-            total_diff_value = to_total - from_total
+            
+            value_diff = abs(from_value - to_value)
+            
+            total_diff_value = abs(to_total - from_total)
 
             child_rows.append({
                 "name": f"{transfer_id}-{item_code}",
@@ -124,7 +137,7 @@ def execute(filters=None):
             total_diff_value_total += total_diff_value
 
         # Parent row with totals
-        data.append({
+        parent_row = {
             "name": transfer_id,
             "from_company": transfer.from_company,
             "to_company": transfer.to_company,
@@ -136,12 +149,51 @@ def execute(filters=None):
             "to_total": credit_total,
             "value_diff": value_diff_total,
             "total_diff_value": total_diff_value_total,
+            "qty_diff": issued_qty - received_qty,
             "status": transfer.status,
             "posting_date": transfer.posting_date,
             "indent": 0
-        })
+        }
+        
+        data.append(parent_row)
+
+        # Add to grand totals (only parent rows to avoid double counting)
+        grand_total_issued_qty += issued_qty
+        grand_total_received_qty += received_qty
+        grand_total_debit_rate += debit_rate_total
+        grand_total_credit_rate += credit_rate_total
+        grand_total_debit_amount += debit_total
+        grand_total_credit_amount += credit_total
+        grand_total_qty_diff += (issued_qty - received_qty)
+        grand_total_value_diff += value_diff_total
+        grand_total_diff_value += total_diff_value_total
 
         # Add all item rows after parent
         data.extend(child_rows)
+
+    # Add Grand Total row at the end
+    if data:  # Only add if there's data
+        grand_total_row = {
+            "name": "<b>Grand Total</b>",
+            "from_company": "",
+            "to_company": "",
+            "from_item": "",
+            "to_item": "",
+            "from_qty": grand_total_issued_qty,
+            "to_qty": grand_total_received_qty,
+            "from_value": grand_total_debit_rate,
+            "to_value": grand_total_credit_rate,
+            "from_total": grand_total_debit_amount,
+            "to_total": grand_total_credit_amount,
+            "debit_stock_entry": "",
+            "credit_stock_entry": "",
+            "qty_diff": grand_total_qty_diff,
+            "value_diff": grand_total_value_diff,
+            "total_diff_value": grand_total_diff_value,
+            "status": "",
+            "posting_date": "",
+            "indent": 0
+        }
+        data.append(grand_total_row)
 
     return columns, data

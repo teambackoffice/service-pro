@@ -188,33 +188,100 @@ def calculate_cost(doc, method):
 
 @frappe.whitelist()
 def create_production(source_name):
-    source_doc = frappe.get_doc("Estimation", source_name)
+  
+        if not source_name:
+            frappe.throw("Source document name is required")
+            
+        source_doc = frappe.get_doc("Estimation", source_name)
+        
+        if not source_doc.customer:
+            frappe.throw("Customer is required in the Estimation document")
+            
+        quotation = frappe.new_doc("Quotation")
+        
+        quotation.update({
+            "quotation_to": "Customer",
+            "party_name": source_doc.customer,
+            "company": source_doc.company,
+            "custom_estimation": source_doc.name,
+            "transaction_date": frappe.utils.nowdate()
+        })
+        
+        if not source_doc.raw_material:
+            frappe.throw("No raw materials found in the Estimation document")
+            
+        items_to_add = []
+        
+        for idx, raw_material in enumerate(source_doc.raw_material, 1):
+            if not raw_material.item_code:
+                frappe.throw(f"Item Code is missing in Raw Material row {idx}")
+                
+            item_data = {
+                "item_code": raw_material.item_code,
+                "item_name": raw_material.item_name or "Unnamed Item",
+                "qty": getattr(raw_material, 'qty_raw_material', 1), 
+                "uom": getattr(raw_material, "uom", "Nos"),
+                "rate": getattr(raw_material, 'rate_raw_material', 0),
+                "amount": getattr(raw_material, 'amount_raw_material', 0)
+            }
+            
+            if item_data["qty"] <= 0:
+                frappe.throw(f"Quantity must be greater than 0 in Raw Material row {idx}")
+                
+            items_to_add.append(item_data)
+        
+        for item_data in items_to_add:
+            quotation.append("items", item_data)
+        
+        quotation.run_method("calculate_taxes_and_totals")
+        
+        quotation.insert(ignore_permissions=True)
+        
+        frappe.db.commit()
+        
+        return quotation.name
 
-    quotation = frappe.new_doc("Quotation")
-    quotation.quotation_to = "Customer"
-    quotation.party_name = source_doc.customer
-    quotation.company = source_doc.company
-    quotation.custom_estimation = source_doc.name
-    quotation.transaction_date = frappe.utils.nowdate()
-
-    for raw_material in source_doc.raw_material:
-        if not raw_material.item_code:
-            frappe.throw(f"Item Code is missing in Raw Material row {raw_material.idx}")
-
-        item = quotation.append("items", {})
-        item.item_code = raw_material.item_code
-        item.item_name = raw_material.item_name or "Unnamed Item"
-        item.qty = raw_material.qty_raw_material or 0
-        item.uom = getattr(raw_material, "uom", "Nos")  
-        item.rate = raw_material.rate_raw_material or 0
-        item.amount = raw_material.amount_raw_material or 0
-
-    quotation.insert(ignore_permissions=True)
-    frappe.db.commit()
-
-    return quotation.name
-
-
-
-
+@frappe.whitelist()
+def create_production_bulk(source_name):
+        source_doc = frappe.get_doc("Estimation", source_name)
+        
+        if not source_doc.customer:
+            frappe.throw("Customer is required")
+            
+        if not source_doc.raw_material:
+            frappe.throw("No raw materials found")
+        
+        for idx, raw_material in enumerate(source_doc.raw_material, 1):
+            if not raw_material.item_code:
+                frappe.throw(f"Item Code missing in row {idx}")
+            if getattr(raw_material, 'qty_raw_material', 0) <= 0:
+                frappe.throw(f"Invalid quantity in row {idx}")
+        
+        quotation_data = {
+            "doctype": "Quotation",
+            "quotation_to": "Customer",
+            "party_name": source_doc.customer,
+            "company": source_doc.company,
+            "custom_estimation": source_doc.name,
+            "transaction_date": frappe.utils.nowdate(),
+            "items": []
+        }
+        
+        for raw_material in source_doc.raw_material:
+            item_data = {
+                "item_code": raw_material.item_code,
+                "item_name": raw_material.item_name or "Unnamed Item",
+                "qty": getattr(raw_material, 'qty_raw_material', 1),
+                "uom": getattr(raw_material, "uom", "Nos"),
+                "rate": getattr(raw_material, 'rate_raw_material', 0),
+                "amount": getattr(raw_material, 'amount_raw_material', 0)
+            }
+            quotation_data["items"].append(item_data)
+        
+        quotation = frappe.get_doc(quotation_data)
+        quotation.run_method("calculate_taxes_and_totals")
+        quotation.insert(ignore_permissions=True)
+        
+        frappe.db.commit()
+        return quotation.name
 

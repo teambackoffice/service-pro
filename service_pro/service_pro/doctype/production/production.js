@@ -878,56 +878,7 @@ frappe.ui.form.on('Production', {
         }
 	},
     
-    series: function(frm) {
-        // Auto-set item_group based on series selection
-        if (frm.doc.series) {
-            let item_group = "";
-            
-            switch(frm.doc.series) {
-                case "CS-0":
-                    item_group = "CYLINDER ACCESSORIES";
-                    break;
-                case "SK-0":
-                    item_group = "PNEUMATIC SEAL KIT";
-                    break;
-                case "PB-0":
-                    item_group = "PARKER PRODUCTS";
-                    break;
-                case "HA-0":
-                    item_group = "HYDRAULIC CYLINDER";
-                    break;
-                case "SK-D-":
-                    item_group = "PNEUMATIC SEAL KIT";
-                    break;
-                case "CS-D-":
-                    item_group = "CYLINDER ACCESSORIES";
-                    break;
-                case "HA-D-":
-                    item_group = "HYDRAULIC CYLINDER";
-                    break;
-                case "RCS-0":
-                    item_group = "CYLINDER ACCESSORIES";
-                    break;
-                case "RSK-0":
-                    item_group = "PNEUMATIC SEAL KIT";
-                    break;
-                case "RHA-0":
-                    item_group = "HYDRAULIC ACCESSORIES";
-                    break;
-                case "RPB-0":
-                    item_group = "PARKER PRODUCTS";
-                    break;
-                default:
-                    item_group = ""; // Clear if no matching series
-                    break;
-            }
-            
-            // Set the item_group value
-            if (item_group) {
-                frm.set_value('item_group', item_group);
-            }
-        }
-        
+    series: function(frm) {    
         // Keep existing series logic for Re-Service type
         if(frm.doc.series && frm.doc.type === "Re-Service"){
             cur_frm.clear_table("linked_productions")

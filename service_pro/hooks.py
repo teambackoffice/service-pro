@@ -241,12 +241,15 @@ fixtures = [
 
 report_override_html = {
 	"Accounts Receivable": "overrides/reports/html/accounts_receivable.html",
+    "Accounts Payable": "overrides/reports/html/accounts_payable.html",
 }
 report_override = {
-	"Accounts Receivable": "service_pro.overrides.reports.account_receivable.execute"
+	"Accounts Receivable": "service_pro.overrides.reports.account_receivable.execute",
+    "Accounts Payable": "service_pro.overrides.reports.account_payable.execute",
 }
 report_override_js = {
 	"Accounts Receivable": "overrides/reports/js/accounts_receivable.js",
+    "Accounts Payable": "overrides/reports/js/accounts_payable.js",
 }
 
 override_whitelisted_methods = {

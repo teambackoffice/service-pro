@@ -1,4 +1,7 @@
 import frappe
+from frappe.utils import unique
+from frappe.utils import today, nowdate, getdate, add_to_date
+from frappe.utils import getdate, nowdate, get_year_start, get_year_ending
 
 @frappe.whitelist()
 def get_production_settings_defaults(company):
@@ -31,3 +34,95 @@ def get_production_settings_defaults(company):
                 defaults[data[0].parentfield] = data[0]
 
         return defaults
+    
+@frappe.whitelist()
+def filter_purchase_order_status_count():
+    po_count = frappe.db.count('Purchase Order', {
+        'status': ['in', ['To Receive and Bill', 'To Receive']]
+    })
+    return po_count
+
+@frappe.whitelist()
+def filter_purchase_order_to_bill_status_count():
+    po_count = frappe.db.count('Purchase Order', {
+        'status': ['in', ['To Bill', 'To Receive and Bill']]
+    })
+    return po_count
+
+@frappe.whitelist()
+def get_annual_purchase_total():
+    
+    today = nowdate()
+    start_date = get_year_start(today)
+    end_date = get_year_ending(today)
+    
+    annual_purchase_total = frappe.db.sql("""
+        SELECT COALESCE(SUM(grand_total), 0) as total_amount
+        FROM `tabPurchase Invoice`
+        WHERE creation BETWEEN %s AND %s
+        AND status IN ('Paid', 'Overdue')
+    """, (start_date, end_date), as_dict=True)
+    
+    return annual_purchase_total[0].total_amount if annual_purchase_total else 0
+
+@frappe.whitelist()
+def get_annual_sales_total():
+    
+    today = nowdate()
+    start_date = get_year_start(today)
+    end_date = get_year_ending(today)
+    
+    annual_sales_total = frappe.db.sql("""
+        SELECT COALESCE(SUM(grand_total), 0) as total_amount
+        FROM `tabSales Invoice`
+        WHERE creation BETWEEN %s AND %s
+        AND status IN ('Paid', 'Overdue')
+    """, (start_date, end_date), as_dict=True)
+    
+    return annual_sales_total[0].total_amount if annual_sales_total else 0
+
+@frappe.whitelist()
+def filter_sales_order_status_count():
+    so_count = frappe.db.count('Sales Order', {
+        'status': ['in', ['To Deliver and Bill', 'To Deliver']]
+    })
+    return so_count
+
+@frappe.whitelist()
+def filter_sales_order_to_bill_status_count():
+    so_count = frappe.db.count('Sales Order', {
+        'status': ['in', ['To Deliver and Bill', 'To Bill']]
+    })
+    return so_count
+
+@frappe.whitelist()
+def filter_employee_active_status_count():
+ 
+    employee_count = frappe.db.count('Employee', {
+        'status': 'Active'
+    })
+    return employee_count
+
+@frappe.whitelist()
+def filter_employee_joined_this_year_count():
+
+    from datetime import datetime
+    
+    current_year = datetime.now().year
+    
+    employee_count = frappe.db.count('Employee', {
+        'date_of_joining': ['between', [f'{current_year}-01-01', f'{current_year}-12-31']]
+    })
+    return employee_count
+
+@frappe.whitelist()
+def filter_employee_exits_this_year_count():
+ 
+    from datetime import datetime
+    
+    current_year = datetime.now().year
+    
+    employee_count = frappe.db.count('Employee', {
+        'relieving_date': ['between', [f'{current_year}-01-01', f'{current_year}-12-31']]
+    })
+    return employee_count

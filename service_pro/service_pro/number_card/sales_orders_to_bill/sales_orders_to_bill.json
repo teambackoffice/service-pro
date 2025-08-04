@@ -1,0 +1,23 @@
+{
+ "creation": "2020-07-20 20:17:16.625001",
+ "custom_open_link_type": "Default",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "Sales Order",
+ "dynamic_filters_json": "[[\"Sales Order\",\"company\",\"=\",\"frappe.defaults.get_user_default(\\\"Company\\\")\"]]",
+ "filters_json": "[[\"Sales Order\",\"status\",\"in\",[\"To Deliver and Bill\",\"To Bill\",null],false],[\"Sales Order\",\"docstatus\",\"=\",\"1\",false]]",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "Sales Orders to Bill",
+ "method": "service_pro.doc_events.utils.filter_sales_order_to_bill_status_count",
+ "modified": "2025-08-04 14:42:07.582350",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Sales Orders to Bill",
+ "owner": "Administrator",
+ "show_percentage_stats": 1,
+ "stats_time_interval": "Weekly",
+ "type": "Custom"
+}

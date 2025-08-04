@@ -58,7 +58,7 @@ frappe.query_reports["Accounts Payable"] = {
 			options: get_party_type_options(),
 			on_change: function() {
 				frappe.query_report.set_filter_value('party', "");
-				frappe.query_report.toggle_filter_display('customer_group', frappe.query_report.get_filter_value('party_type') !== "Customer");
+				frappe.query_report.toggle_filter_display('supplier_group', frappe.query_report.get_filter_value('party_type') !== "Supplier");
 			}
 		},
 		{
@@ -74,17 +74,17 @@ frappe.query_reports["Accounts Payable"] = {
 				return frappe.db.get_link_options(party_type, txt);
 			},
 			on_change: () => {
-				var customer = frappe.query_report.get_filter_value('party')[0];
+				var supplier = frappe.query_report.get_filter_value('party')[0];
 				var party_type = frappe.query_report.get_filter_value('party_type');
-				console.log("PARRTY TYPE")
+				console.log("PARTY TYPE")
 				console.log(party_type)
 				var company = frappe.query_report.get_filter_value('company');
-				if (customer && party_type === 'Customer') {
+				if (supplier && party_type === 'Supplier') {
 					a = []
 					frappe.call({
 						method: "service_pro.crud_events.party.get_party_details",
 						args: {
-							"party": customer,
+							"party": supplier,
 							"party_type": party_type
 						},
 						callback: function (r) {
@@ -92,42 +92,34 @@ frappe.query_reports["Accounts Payable"] = {
 							if(v != null)
 								a.push(v)
 								console.log(a)
-							frappe.query_report.set_filter_value('customer_address', a);
+							frappe.query_report.set_filter_value('supplier_address', a);
 							});
 						}
 					});
-					if(party_type === 'Customer'){
-						frappe.db.get_value('Customer', customer, ["tax_id", "customer_name", "payment_terms"], function(value) {
+					if(party_type === 'Supplier'){
+						frappe.db.get_value('Supplier', supplier, ["tax_id", "supplier_name", "payment_terms"], function(value) {
 						frappe.query_report.set_filter_value('tax_id', value["tax_id"]);
-						frappe.query_report.set_filter_value('customer_name', value["customer_name"]);
+						frappe.query_report.set_filter_value('supplier_name', value["supplier_name"]);
 						frappe.query_report.set_filter_value('payment_terms', value["payment_terms"]);
 						});
-
-						frappe.db.get_value('Customer Credit Limit', {'parent': customer, 'company': company},
-							["credit_limit"], function(value) {
-							if (value) {
-								frappe.query_report.set_filter_value('credit_limit', value["credit_limit"]);
-							}
-						}, "Customer");
 					}
 
 				} else {
 					frappe.query_report.set_filter_value('tax_id', "");
-					frappe.query_report.set_filter_value('customer_name', "");
-					frappe.query_report.set_filter_value('credit_limit', "");
+					frappe.query_report.set_filter_value('supplier_name', "");
 					frappe.query_report.set_filter_value('payment_terms', "");
 				}
 			}
 		},
 		{
-			"fieldname":"customer_address",
-			"label": __("Customer Address"),
+			"fieldname":"supplier_address",
+			"label": __("Supplier Address"),
 			"fieldtype": "Data",
 			"hidden": 1
 		},
 		{
 			"fieldname": "party_account",
-			"label": __("Receivable Account"),
+			"label": __("Payable Account"),
 			"fieldtype": "Link",
 			"options": "Account",
 			get_query: () => {
@@ -135,7 +127,7 @@ frappe.query_reports["Accounts Payable"] = {
 				return {
 					filters: {
 						'company': company,
-						'account_type': 'Receivable',
+						'account_type': 'Payable',
 						'is_group': 0
 					}
 				};
@@ -177,28 +169,16 @@ frappe.query_reports["Accounts Payable"] = {
 			"reqd": 1
 		},
 		{
-			"fieldname": "customer_group",
-			"label": __("Customer Group"),
+			"fieldname": "supplier_group",
+			"label": __("Supplier Group"),
 			"fieldtype": "Link",
-			"options": "Customer Group"
+			"options": "Supplier Group"
 		},
 		{
 			"fieldname": "payment_terms_template",
 			"label": __("Payment Terms Template"),
 			"fieldtype": "Link",
 			"options": "Payment Terms Template"
-		},
-		{
-			"fieldname": "sales_partner",
-			"label": __("Sales Partner"),
-			"fieldtype": "Link",
-			"options": "Sales Partner"
-		},
-		{
-			"fieldname": "sales_person",
-			"label": __("Sales Person"),
-			"fieldtype": "Link",
-			"options": "Sales Person"
 		},
 		{
 			"fieldname": "territory",
@@ -208,7 +188,7 @@ frappe.query_reports["Accounts Payable"] = {
 		},
 		{
 			"fieldname": "group_by_party",
-			"label": __("Group By Customer"),
+			"label": __("Group By Supplier"),
 			"fieldtype": "Check"
 		},
 		{
@@ -223,13 +203,8 @@ frappe.query_reports["Accounts Payable"] = {
 			"default" : 1,
 		},
 		{
-			"fieldname": "show_delivery_notes",
-			"label": __("Show Linked Delivery Notes"),
-			"fieldtype": "Check",
-		},
-		{
-			"fieldname": "show_sales_person",
-			"label": __("Show Sales Person"),
+			"fieldname": "show_purchase_receipts",
+			"label": __("Show Linked Purchase Receipts"),
 			"fieldtype": "Check",
 		},
 		{
@@ -244,21 +219,15 @@ frappe.query_reports["Accounts Payable"] = {
 			"fieldtype": "Check",
 		},
 		{
-			"fieldname": "customer_name",
-			"label": __("Customer Name"),
+			"fieldname": "supplier_name",
+			"label": __("Supplier Name"),
 			"fieldtype": "Data",
 			"hidden": 1
 		},
 		{
 			"fieldname": "payment_terms",
-			"label": __("Payment Tems"),
+			"label": __("Payment Terms"),
 			"fieldtype": "Data",
-			"hidden": 1
-		},
-		{
-			"fieldname": "credit_limit",
-			"label": __("Credit Limit"),
-			"fieldtype": "Currency",
 			"hidden": 1
 		}
 	],
@@ -273,19 +242,19 @@ frappe.query_reports["Accounts Payable"] = {
 	},
 
 	onload: function(report) {
-		report.page.add_inner_button(__("Accounts Receivable Summary"), function() {
+		report.page.add_inner_button(__("Accounts Payable Summary"), function() {
 			var filters = report.get_values();
-			frappe.set_route('query-report', 'Accounts Receivable Summary', {company: filters.company});
+			frappe.set_route('query-report', 'Accounts Payable Summary', {company: filters.company});
 		});
 	}
 }
 
-erpnext.utils.add_dimensions('Accounts Receivable', 9);
+erpnext.utils.add_dimensions('Accounts Payable', 9);
 
 function get_party_type_options() {
 	let options = [];
 	frappe.db.get_list(
-		"Party Type", {filters:{"account_type": "Receivable"}, fields:['name']}
+		"Party Type", {filters:{"account_type": "Payable"}, fields:['name']}
 	).then((res) => {
 		res.forEach((party_type) => {
 			options.push(party_type.name);

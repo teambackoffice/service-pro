@@ -50,6 +50,13 @@ def filter_purchase_order_to_bill_status_count():
     return po_count
 
 @frappe.whitelist()
+def get_salary_structure_count_sql():
+        ss_count = frappe.db.count('Salary Structure', {
+            'docstatus': 1
+        })
+        return ss_count
+
+@frappe.whitelist()
 def filter_sales_order_status_count():
     so_count = frappe.db.count('Sales Order', {
         'status': ['in', ['To Deliver and Bill', 'To Deliver']]

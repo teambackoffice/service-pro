@@ -4,13 +4,14 @@
  "docstatus": 0,
  "doctype": "Number Card",
  "dynamic_filters_json": "{}",
- "filters_json": "{\"company\":\"HYDROTECH GROUP OF COMPANY\",\"report_date\":\"2025-02-05\",\"ageing_based_on\":\"Due Date\",\"range1\":\"30\",\"range2\":\"60\",\"range3\":\"90\",\"range4\":\"120\",\"show_future_payments\":1}",
+ "filters_json": "{\"company\":\"HYDROTECH GROUP OF COMPANY\",\"report_date\":\"2025-08-06\",\"ageing_based_on\":\"Due Date\",\"range1\":\"30\",\"range2\":\"60\",\"range3\":\"90\",\"range4\":\"120\",\"show_future_payments\":1}",
  "function": "Count",
- "idx": 1,
- "is_public": 0,
+ "idx": 3,
+ "is_public": 1,
  "is_standard": 1,
  "label": "Accounts Recievables",
- "modified": "2025-02-05 14:54:06.727889",
+ "method": "service_pro.doc_events.utils.get_all_time_sales_total",
+ "modified": "2025-08-06 19:42:38.512781",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Accounts Recievables",
@@ -20,5 +21,5 @@
  "report_name": "Accounts Receivable",
  "show_percentage_stats": 1,
  "stats_time_interval": "Daily",
- "type": "Report"
+ "type": "Custom"
 }

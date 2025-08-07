@@ -50,38 +50,6 @@ def filter_purchase_order_to_bill_status_count():
     return po_count
 
 @frappe.whitelist()
-def get_annual_purchase_total():
-    
-    today = nowdate()
-    start_date = get_year_start(today)
-    end_date = get_year_ending(today)
-    
-    annual_purchase_total = frappe.db.sql("""
-        SELECT COALESCE(SUM(grand_total), 0) as total_amount
-        FROM `tabPurchase Invoice`
-        WHERE creation BETWEEN %s AND %s
-        AND status IN ('Paid', 'Overdue')
-    """, (start_date, end_date), as_dict=True)
-    
-    return annual_purchase_total[0].total_amount if annual_purchase_total else 0
-
-@frappe.whitelist()
-def get_annual_sales_total():
-    
-    today = nowdate()
-    start_date = get_year_start(today)
-    end_date = get_year_ending(today)
-    
-    annual_sales_total = frappe.db.sql("""
-        SELECT COALESCE(SUM(grand_total), 0) as total_amount
-        FROM `tabSales Invoice`
-        WHERE creation BETWEEN %s AND %s
-        AND status IN ('Paid', 'Overdue')
-    """, (start_date, end_date), as_dict=True)
-    
-    return annual_sales_total[0].total_amount if annual_sales_total else 0
-
-@frappe.whitelist()
 def filter_sales_order_status_count():
     so_count = frappe.db.count('Sales Order', {
         'status': ['in', ['To Deliver and Bill', 'To Deliver']]
@@ -126,3 +94,134 @@ def filter_employee_exits_this_year_count():
         'relieving_date': ['between', [f'{current_year}-01-01', f'{current_year}-12-31']]
     })
     return employee_count
+
+@frappe.whitelist()
+def get_annual_purchase_total():
+    today = nowdate()
+    start_date = get_year_start(today)
+    end_date = get_year_ending(today)
+    
+    annual_purchase_total = frappe.db.sql("""
+        SELECT COALESCE(SUM(grand_total), 0) as total_amount
+        FROM `tabPurchase Invoice`
+        WHERE creation BETWEEN %s AND %s
+        AND status IN ('Paid', 'Overdue')
+    """, (start_date, end_date), as_dict=True)
+    
+    total_amount = annual_purchase_total[0].total_amount if annual_purchase_total else 0
+    
+    # Get default currency
+    default_currency = frappe.get_cached_value('Company', frappe.defaults.get_user_default('Company'), 'default_currency')
+    if not default_currency:
+        default_currency = 'SAR'
+    
+    # Format the amount
+    if total_amount >= 1000000:
+        formatted_amount = total_amount / 1000000
+        amount_str = f"{formatted_amount:.2f} M".rstrip('0').rstrip('.')
+        if amount_str.endswith(' M'):
+            amount_str = amount_str.replace(' M', ' M')
+    elif total_amount >= 1000:
+        formatted_amount = total_amount / 1000
+        amount_str = f"{formatted_amount:.2f} K".rstrip('0').rstrip('.')
+        if amount_str.endswith(' K'):
+            amount_str = amount_str.replace(' K', ' K')
+    else:
+        amount_str = f"{total_amount:.2f}"
+    
+    return f"{default_currency} {amount_str}"
+
+@frappe.whitelist()
+def get_annual_sales_total():
+    today = nowdate()
+    start_date = get_year_start(today)
+    end_date = get_year_ending(today)
+    
+    annual_sales_total = frappe.db.sql("""
+        SELECT COALESCE(SUM(grand_total), 0) as total_amount
+        FROM `tabSales Invoice`
+        WHERE creation BETWEEN %s AND %s
+        AND status IN ('Paid', 'Overdue')
+    """, (start_date, end_date), as_dict=True)
+    
+    total_amount = annual_sales_total[0].total_amount if annual_sales_total else 0
+    
+    # Get default currency
+    default_currency = frappe.get_cached_value('Company', frappe.defaults.get_user_default('Company'), 'default_currency')
+    if not default_currency:
+        default_currency = 'SAR'
+    
+    # Format the amount
+    if total_amount >= 1000000:
+        formatted_amount = total_amount / 1000000
+        amount_str = f"{formatted_amount:.2f} M".rstrip('0').rstrip('.')
+        if amount_str.endswith(' M'):
+            amount_str = amount_str.replace(' M', ' M')
+    elif total_amount >= 1000:
+        formatted_amount = total_amount / 1000
+        amount_str = f"{formatted_amount:.2f} K".rstrip('0').rstrip('.')
+        if amount_str.endswith(' K'):
+            amount_str = amount_str.replace(' K', ' K')
+    else:
+        amount_str = f"{total_amount:.2f}"
+    
+    return f"{default_currency} {amount_str}"
+
+
+@frappe.whitelist()
+def get_all_time_sales_total():
+    all_time_sales_total = frappe.db.sql("""
+        SELECT COALESCE(SUM(grand_total), 0) as total_amount
+        FROM `tabSales Invoice`
+        WHERE status IN ('Paid', 'Overdue')
+    """, as_dict=True)
+    
+    total_amount = all_time_sales_total[0].total_amount if all_time_sales_total else 0
+    
+    default_currency = frappe.get_cached_value('Company', frappe.defaults.get_user_default('Company'), 'default_currency')
+    if not default_currency:
+        default_currency = 'SAR'
+    
+    if total_amount >= 1000000:
+        formatted_amount = total_amount / 1000000
+        amount_str = f"{formatted_amount:.2f} M".rstrip('0').rstrip('.')
+        if amount_str.endswith(' M'):
+            amount_str = amount_str.replace(' M', ' M')
+    elif total_amount >= 1000:
+        formatted_amount = total_amount / 1000
+        amount_str = f"{formatted_amount:.2f} K".rstrip('0').rstrip('.')
+        if amount_str.endswith(' K'):
+            amount_str = amount_str.replace(' K', ' K')
+    else:
+        amount_str = f"{total_amount:.2f}"
+    
+    return f"{default_currency} {amount_str}"
+
+@frappe.whitelist()
+def get_all_time_purchase_total():
+    all_time_purchase_total = frappe.db.sql("""
+        SELECT COALESCE(SUM(grand_total), 0) as total_amount
+        FROM `tabPurchase Invoice`
+        WHERE status IN ('Paid', 'Overdue')
+    """, as_dict=True)
+    
+    total_amount = all_time_purchase_total[0].total_amount if all_time_purchase_total else 0
+    
+    default_currency = frappe.get_cached_value('Company', frappe.defaults.get_user_default('Company'), 'default_currency')
+    if not default_currency:
+        default_currency = 'SAR'
+    
+    if total_amount >= 1000000:
+        formatted_amount = total_amount / 1000000
+        amount_str = f"{formatted_amount:.2f} M".rstrip('0').rstrip('.')
+        if amount_str.endswith(' M'):
+            amount_str = amount_str.replace(' M', ' M')
+    elif total_amount >= 1000:
+        formatted_amount = total_amount / 1000
+        amount_str = f"{formatted_amount:.2f} K".rstrip('0').rstrip('.')
+        if amount_str.endswith(' K'):
+            amount_str = amount_str.replace(' K', ' K')
+    else:
+        amount_str = f"{total_amount:.2f}"
+    
+    return f"{default_currency} {amount_str}"

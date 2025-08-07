@@ -13,7 +13,8 @@
  "is_public": 1,
  "is_standard": 1,
  "label": "Total Expense",
- "modified": "2025-02-06 09:06:18.967582",
+ "method": "service_pro.doc_events.utils.get_all_time_purchase_total",
+ "modified": "2025-08-06 19:34:37.869024",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Total Expense",
@@ -24,5 +25,5 @@
  "report_name": "",
  "show_percentage_stats": 1,
  "stats_time_interval": "Daily",
- "type": "Document Type"
+ "type": "Custom"
 }

@@ -6,41 +6,48 @@ frappe.query_reports["VAT Report"] = {
 	"filters": [
 		{
 			fieldname: "from_date",
-            label: __("From Date"),
-            fieldtype: "Date",
-            reqd: 1
+			label: __("From Date"),
+			fieldtype: "Date",
+			reqd: 1
 		},
 		{
 			fieldname: "to_date",
-            label: __("To Date"),
-            fieldtype: "Date",
+			label: __("To Date"),
+			fieldtype: "Date",
 			reqd: 1
-
 		},
 		{
-			fieldname:"sales_or_purchase",
+			fieldname: "sales_or_purchase",
 			label: __("Sales or Purchase"),
 			fieldtype: "MultiSelectList",
 			get_data: function(txt) {
-                if (!frappe.query_report.filters) return;
+				if (!frappe.query_report.filters) return;
 
-                return [{value: "Sales", description: ""}, {value: "Purchase", description: ""}]
-            },
+				return [
+					{value: "Sales", description: ""}, 
+					{value: "Purchase", description: ""},
+					{value: "Expense Claim", description: ""} 
+				]
+			},
 			on_change: function (txt) {
-				console.log("teeeest")
-				frappe.query_report.refresh()
-            }
+				console.log("Sales/Purchase/Expense Claim filter changed");
+				frappe.query_report.refresh();
+			}
 		},
 		{
 			"fieldname": "company",
-            "label": __("company"),
-            "fieldtype": "Link",
+			"label": __("Company"),
+			"fieldtype": "Link",
 			"options": "Company",
+			"reqd": 0,
+			on_change: function() {
+				frappe.query_report.refresh();
+			}
 		},
 		{
 			fieldname: "summery",
-            label: __("Summery"),
-            fieldtype: "Check"
+			label: __("Summary"),
+			fieldtype: "Check"
 		}
 	]
 };

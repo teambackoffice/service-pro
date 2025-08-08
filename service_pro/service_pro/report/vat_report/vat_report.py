@@ -14,7 +14,7 @@ def get_columns():
 			{"label": "Discount", "fieldname": "discount_amount", "fieldtype": "Currency","width": "100"},
 			{"label": "VAT", "fieldname": "total_taxes_and_charges", "fieldtype": "Currency","width": "100"},
 			{"label": "Total Amount", "fieldname": "total_amount", "fieldtype": "Currency","width": "100"},
-			{"label": "Company", "fieldname": "company", "fieldtype": "	Link", "options": "Company","width": "100"},
+			{"label": "Company", "fieldname": "company", "fieldtype": "	Link", "options": "Company","width": "250"},
 
 		]
 
@@ -23,6 +23,9 @@ def execute(filters=None):
 	condition = ""
 	if filters.get("from_date") and filters.get("to_date"):
 		condition += " and SI.posting_date BETWEEN '{0}' and '{1}' ".format(filters.get("from_date"),filters.get("to_date"))
+
+	if filters.get("company"):
+		condition += " and SI.company = '{0}' ".format(filters.get("company"))
 
 	if "Sales" in filters.get("sales_or_purchase"):
 		query_si = """ SELECT * FROM `tabSales Invoice` AS SI WHERE SI.docstatus = 1  {0}""".format(condition)
@@ -41,6 +44,17 @@ def execute(filters=None):
 			i['party'] = frappe.db.get_value("Supplier", i.supplier, "supplier_name")
 			i['vat_number'] = frappe.db.get_value("Supplier", i.supplier, "tax_id")
 			i['total_amount'] = i.total - i.discount_amount
+			data.append(i)
+
+	if "Expense Claim" in filters.get("sales_or_purchase"):
+		query_ec = """ SELECT * FROM `tabExpense Claim` AS SI WHERE SI.docstatus = 1  {0}""".format(condition)
+		expense_claims = frappe.db.sql(query_ec, as_dict=1)
+		for i in expense_claims:
+			i['party'] = frappe.db.get_value("Employee", i.employee, "employee_name")
+			i['vat_number'] = "" 
+			i['total'] = i.total_claimed_amount  
+			i['discount_amount'] = 0  
+			i['total_amount'] = i.grand_total  
 			data.append(i)
 
 	if "Sales" in filters.get("sales_or_purchase") and "Purchase" in filters.get("sales_or_purchase"):
@@ -72,13 +86,32 @@ def execute(filters=None):
 			"total_amount": abs((si[0].total - si[0].discount_amount) - (pi[0].total - pi[0].discount_amount)),
 		})
 
-	if filters.get("summery"):
-		query_total_si = """ SELECT SUM(SI.total) as total FROM `tabSales Invoice` AS SI WHERE SI.docstatus = 1 """
+	if "Expense Claim" in filters.get("sales_or_purchase") and (
+		"Sales" in filters.get("sales_or_purchase") or "Purchase" in filters.get("sales_or_purchase")
+	):
+		query_ec = """ SELECT SUM(total_claimed_amount) as total,SUM(total_taxes_and_charges) as total_taxes_and_charges,SUM(grand_total) as grand_total  FROM `tabExpense Claim` AS SI WHERE SI.docstatus = 1  {0}""".format(condition)
+		ec = frappe.db.sql(query_ec, as_dict=1)
+		
+		data.append({
+			"name": "Expense Claim Total",
+			"total": ec[0].total,
+			"discount_amount": 0,
+			"total_taxes_and_charges": ec[0].total_taxes_and_charges,
+			"total_amount": ec[0].grand_total,
+		})
 
-		query_total_pi = """ SELECT SUM(SI.total) as total FROM `tabPurchase Invoice` AS SI WHERE SI.docstatus = 1 """
+	if filters.get("summery"):
+		summery_condition = ""
+		if filters.get("company"):
+			summery_condition = " AND SI.company = '{0}' ".format(filters.get("company"))
+			
+		query_total_si = """ SELECT SUM(SI.total) as total FROM `tabSales Invoice` AS SI WHERE SI.docstatus = 1 {0}""".format(summery_condition)
+		query_total_pi = """ SELECT SUM(SI.total) as total FROM `tabPurchase Invoice` AS SI WHERE SI.docstatus = 1 {0}""".format(summery_condition)
+		query_total_ec = """ SELECT SUM(SI.grand_total) as total FROM `tabExpense Claim` AS SI WHERE SI.docstatus = 1 {0}""".format(summery_condition)
 
 		total_si = frappe.db.sql(query_total_si, as_dict=1)
 		total_pi = frappe.db.sql(query_total_pi, as_dict=1)
+		total_ec = frappe.db.sql(query_total_ec, as_dict=1)
 
 		data.append({
 			"name": "Overall Sales Total",
@@ -87,6 +120,10 @@ def execute(filters=None):
 		data.append({
 			"name": "Overall Purchase Total",
 			"total": total_pi[0].total
+		})
+		data.append({
+			"name": "Overall Expense Claim Total",
+			"total": total_ec[0].total
 		})
 		data.append({
 			"name": "Overall Difference",

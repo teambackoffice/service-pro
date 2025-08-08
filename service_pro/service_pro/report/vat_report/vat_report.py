@@ -14,8 +14,7 @@ def get_columns():
 			{"label": "Discount", "fieldname": "discount_amount", "fieldtype": "Currency","width": "100"},
 			{"label": "VAT", "fieldname": "total_taxes_and_charges", "fieldtype": "Currency","width": "100"},
 			{"label": "Total Amount", "fieldname": "total_amount", "fieldtype": "Currency","width": "100"},
-			{"label": "Company", "fieldname": "company", "fieldtype": "	Link", "options": "Company","width": "250"},
-
+			{"label": "Company", "fieldname": "company", "fieldtype": "Link", "options": "Company","width": "250"},
 		]
 
 def execute(filters=None):
@@ -56,6 +55,36 @@ def execute(filters=None):
 			i['discount_amount'] = 0  
 			i['total_amount'] = i.grand_total  
 			data.append(i)
+
+	if "Journal Entry" in filters.get("sales_or_purchase"):
+		je_condition = condition.replace("SI.", "JE.")
+		query_je = """ SELECT * FROM `tabJournal Entry` AS JE WHERE JE.docstatus = 1  {0}""".format(je_condition)
+		journal_entries = frappe.db.sql(query_je, as_dict=1)
+		
+		for je in journal_entries:
+			vat_amount = 0
+			accounts_query = """
+				SELECT debit_in_account_currency 
+				FROM `tabJournal Entry Account` 
+				WHERE parent = '{0}' AND account LIKE '%VAT%'
+			""".format(je.name)
+			vat_accounts = frappe.db.sql(accounts_query, as_dict=1)
+			
+			if vat_accounts:
+				vat_amount = sum([acc.get('debit_in_account_currency', 0) or 0 for acc in vat_accounts])
+			
+			je_data = {
+				'posting_date': je.posting_date,
+				'party': je.voucher_type,  
+				'vat_number': '',  
+				'name': je.name, 
+				'total': je.total_debit,  
+				'discount_amount': 0,  
+				'total_taxes_and_charges': vat_amount,  
+				'total_amount': je.total_debit, 
+				'company': je.company
+			}
+			data.append(je_data)
 
 	if "Sales" in filters.get("sales_or_purchase") and "Purchase" in filters.get("sales_or_purchase"):
 		query_si = """ SELECT SUM(total) as total,SUM(discount_amount) as discount_amount,SUM(total_taxes_and_charges) as total_taxes_and_charges  FROM `tabSales Invoice` AS SI WHERE SI.docstatus = 1  {0}""".format(condition)
@@ -100,6 +129,32 @@ def execute(filters=None):
 			"total_amount": ec[0].grand_total,
 		})
 
+	if "Journal Entry" in filters.get("sales_or_purchase") and (
+		"Sales" in filters.get("sales_or_purchase") or 
+		"Purchase" in filters.get("sales_or_purchase") or 
+		"Expense Claim" in filters.get("sales_or_purchase")
+	):
+		je_condition = condition.replace("SI.", "JE.")
+		query_je_total = """ SELECT SUM(total_debit) as total FROM `tabJournal Entry` AS JE WHERE JE.docstatus = 1  {0}""".format(je_condition)
+		
+		vat_total_query = """
+			SELECT SUM(jea.debit_in_account_currency) as vat_total
+			FROM `tabJournal Entry Account` jea
+			INNER JOIN `tabJournal Entry` je ON jea.parent = je.name
+			WHERE je.docstatus = 1 AND jea.account LIKE '%VAT%' {0}
+		""".format(je_condition.replace("JE.", "je."))
+		
+		je_total = frappe.db.sql(query_je_total, as_dict=1)
+		je_vat_total = frappe.db.sql(vat_total_query, as_dict=1)
+		
+		data.append({
+			"name": "Journal Entry Total",
+			"total": je_total[0].total if je_total[0].total else 0,
+			"discount_amount": 0,
+			"total_taxes_and_charges": je_vat_total[0].vat_total if je_vat_total[0].vat_total else 0,
+			"total_amount": je_total[0].total if je_total[0].total else 0,
+		})
+
 	if filters.get("summery"):
 		summery_condition = ""
 		if filters.get("company"):
@@ -108,10 +163,14 @@ def execute(filters=None):
 		query_total_si = """ SELECT SUM(SI.total) as total FROM `tabSales Invoice` AS SI WHERE SI.docstatus = 1 {0}""".format(summery_condition)
 		query_total_pi = """ SELECT SUM(SI.total) as total FROM `tabPurchase Invoice` AS SI WHERE SI.docstatus = 1 {0}""".format(summery_condition)
 		query_total_ec = """ SELECT SUM(SI.grand_total) as total FROM `tabExpense Claim` AS SI WHERE SI.docstatus = 1 {0}""".format(summery_condition)
+		
+		je_summery_condition = summery_condition.replace("SI.", "JE.")
+		query_total_je = """ SELECT SUM(JE.total_debit) as total FROM `tabJournal Entry` AS JE WHERE JE.docstatus = 1 {0}""".format(je_summery_condition)
 
 		total_si = frappe.db.sql(query_total_si, as_dict=1)
 		total_pi = frappe.db.sql(query_total_pi, as_dict=1)
 		total_ec = frappe.db.sql(query_total_ec, as_dict=1)
+		total_je = frappe.db.sql(query_total_je, as_dict=1)
 
 		data.append({
 			"name": "Overall Sales Total",
@@ -124,6 +183,10 @@ def execute(filters=None):
 		data.append({
 			"name": "Overall Expense Claim Total",
 			"total": total_ec[0].total
+		})
+		data.append({
+			"name": "Overall Journal Entry Total",
+			"total": total_je[0].total if total_je[0].total else 0
 		})
 		data.append({
 			"name": "Overall Difference",

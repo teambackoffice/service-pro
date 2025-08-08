@@ -24,13 +24,14 @@ frappe.query_reports["VAT Report"] = {
 				if (!frappe.query_report.filters) return;
 
 				return [
-					{value: "Sales", description: ""}, 
-					{value: "Purchase", description: ""},
-					{value: "Expense Claim", description: ""} 
+					{value: "Sales", description: "Sales Invoice"},
+					{value: "Purchase", description: "Purchase Invoice"},
+					{value: "Expense Claim", description: "Expense Claim"},
+					{value: "Journal Entry", description: "Journal Entry"}
 				]
 			},
 			on_change: function (txt) {
-				console.log("Sales/Purchase/Expense Claim filter changed");
+				console.log("Sales/Purchase/Expense Claim/Journal Entry filter changed");
 				frappe.query_report.refresh();
 			}
 		},

@@ -51,15 +51,31 @@
    "width": "Half"
   },
   {
-   "chart": "Accounts Receivable Ageing",
+   "chart": "Accounts Payable Ageing(D)",
    "width": "Half"
   },
   {
-   "chart": "Accounts Payable Ageing",
+   "chart": "Accounts Receivable Ageing(D)",
    "width": "Half"
   },
   {
-   "chart": "Budget Variance",
+   "chart": "Accounts Payable Ageing(J)",
+   "width": "Half"
+  },
+  {
+   "chart": "Accounts Receivable Ageing(J)",
+   "width": "Half"
+  },
+  {
+   "chart": "Accounts Payable Ageing(R)",
+   "width": "Half"
+  },
+  {
+   "chart": "Accounts Receivable Ageing(R)",
+   "width": "Half"
+  },
+  {
+   "chart": "Inter Company Stock Transfer",
    "width": "Full"
   }
  ],
@@ -71,7 +87,7 @@
  "idx": 2,
  "is_default": 0,
  "is_standard": 1,
- "modified": "2025-08-17 14:10:37.525958",
+ "modified": "2025-08-17 15:01:13.716507",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Accounts",

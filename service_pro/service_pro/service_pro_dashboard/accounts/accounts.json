@@ -1,0 +1,79 @@
+{
+ "cards": [
+  {
+   "card": "Total Outgoing Bills"
+  },
+  {
+   "card": "Total Incoming Bills"
+  },
+  {
+   "card": "Total Incoming Payment"
+  },
+  {
+   "card": "Total Outgoing Payment"
+  }
+ ],
+ "charts": [
+  {
+   "chart": "Profit and Loss",
+   "width": "Full"
+  },
+  {
+   "chart": "Incoming Bills (Purchase Invoice)",
+   "width": "Half"
+  },
+  {
+   "chart": "Outgoing Bills (Sales Invoice)",
+   "width": "Half"
+  },
+  {
+   "chart": "Total Incoming Bills (D)",
+   "width": "Half"
+  },
+  {
+   "chart": "Total Outgoing Bills (D)",
+   "width": "Half"
+  },
+  {
+   "chart": "Total Incoming Bills (R)",
+   "width": "Half"
+  },
+  {
+   "chart": "Total Outgoing Bills (R)",
+   "width": "Half"
+  },
+  {
+   "chart": "Total Incoming Bills (J)",
+   "width": "Half"
+  },
+  {
+   "chart": "Total Outgoing Bills (J)",
+   "width": "Half"
+  },
+  {
+   "chart": "Accounts Receivable Ageing",
+   "width": "Half"
+  },
+  {
+   "chart": "Accounts Payable Ageing",
+   "width": "Half"
+  },
+  {
+   "chart": "Budget Variance",
+   "width": "Full"
+  }
+ ],
+ "creation": "2020-07-17 11:25:34.796608",
+ "custom_maps": [],
+ "dashboard_name": "Accounts",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 2,
+ "is_default": 0,
+ "is_standard": 1,
+ "modified": "2025-08-17 14:10:37.525958",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Accounts",
+ "owner": "Administrator"
+}

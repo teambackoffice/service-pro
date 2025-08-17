@@ -51,15 +51,11 @@
    "width": "Half"
   },
   {
-   "chart": "Accounts Payable Ageing(D)",
-   "width": "Half"
-  },
-  {
    "chart": "Accounts Receivable Ageing(D)",
    "width": "Half"
   },
   {
-   "chart": "Accounts Payable Ageing(J)",
+   "chart": "Accounts Payable Ageing(D)",
    "width": "Half"
   },
   {
@@ -67,11 +63,15 @@
    "width": "Half"
   },
   {
-   "chart": "Accounts Payable Ageing(R)",
+   "chart": "Accounts Payable Ageing(J)",
    "width": "Half"
   },
   {
    "chart": "Accounts Receivable Ageing(R)",
+   "width": "Half"
+  },
+  {
+   "chart": "Accounts Payable Ageing(R)",
    "width": "Half"
   },
   {
@@ -87,7 +87,7 @@
  "idx": 2,
  "is_default": 0,
  "is_standard": 1,
- "modified": "2025-08-17 15:01:13.716507",
+ "modified": "2025-08-17 15:14:09.636841",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Accounts",

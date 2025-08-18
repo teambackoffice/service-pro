@@ -77,6 +77,10 @@
   {
    "chart": "Inter Company Stock Transfer",
    "width": "Full"
+  },
+  {
+   "chart": "Bank Balance (R)",
+   "width": "Half"
   }
  ],
  "creation": "2020-07-17 11:25:34.796608",
@@ -87,7 +91,7 @@
  "idx": 2,
  "is_default": 0,
  "is_standard": 1,
- "modified": "2025-08-17 15:14:09.636841",
+ "modified": "2025-08-18 13:51:47.066322",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Accounts",

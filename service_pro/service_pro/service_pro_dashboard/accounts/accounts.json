@@ -81,6 +81,14 @@
   {
    "chart": "Bank Balance (R)",
    "width": "Half"
+  },
+  {
+   "chart": "Bank Balance (D)",
+   "width": "Half"
+  },
+  {
+   "chart": "Bank Balance (J)",
+   "width": "Half"
   }
  ],
  "creation": "2020-07-17 11:25:34.796608",
@@ -91,7 +99,7 @@
  "idx": 2,
  "is_default": 0,
  "is_standard": 1,
- "modified": "2025-08-18 13:51:47.066322",
+ "modified": "2025-08-18 14:44:28.489883",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Accounts",

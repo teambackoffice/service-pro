@@ -1,0 +1,35 @@
+{
+ "chart_name": "Bank Balance (R)",
+ "chart_type": "Report",
+ "creation": "2025-08-18 13:51:39.720085",
+ "currency": "SAR",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "document_type": "Sales Invoice",
+ "dynamic_filters_json": "{}",
+ "filters_json": "{\"company\":\"HYDROTECH TRADING COMPANY-(R)\",\"from_date\":\"2025-07-18\",\"to_date\":\"2025-08-18\"}",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "modified": "2025-08-18 14:06:18.593635",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Bank Balance (R)",
+ "number_of_groups": 0,
+ "owner": "Administrator",
+ "report_name": "Bank Balance Report",
+ "roles": [],
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Pie",
+ "use_report_chart": 0,
+ "x_field": "name",
+ "y_axis": [
+  {
+   "color": "#CB2929",
+   "y_field": "balance"
+  }
+ ]
+}

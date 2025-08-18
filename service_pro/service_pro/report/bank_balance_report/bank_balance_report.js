@@ -40,12 +40,6 @@ frappe.query_reports["Bank Balance Report"] = {
 				}
 			}
 		},
-		{
-			"fieldname": "include_opening",
-			"label": __("Include Opening Entries"),
-			"fieldtype": "Check",
-			"default": 0
-		}
 	],
 	
 	"formatter": function (value, row, column, data, default_formatter) {

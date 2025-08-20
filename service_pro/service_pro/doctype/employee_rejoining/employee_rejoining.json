@@ -1,0 +1,345 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2025-08-19 13:18:26.796351",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "employee_details_section",
+  "employee_name",
+  "employee_id",
+  "company",
+  "column_break_3",
+  "designation",
+  "section_break_5",
+  "department",
+  "column_break_7",
+  "id_iqama_no",
+  "section_break_9",
+  "branch_region",
+  "column_break_11",
+  "expiry_date",
+  "section_break_13",
+  "dept_head_name",
+  "departure_arrival_section",
+  "date_of_departure",
+  "departure_time",
+  "column_break_17",
+  "arrival_date",
+  "arrival_time",
+  "section_break_xjgh",
+  "last_rejoining_date",
+  "last_rejoining_time",
+  "column_break_yphz",
+  "reported_to_work_on",
+  "reported_time",
+  "iqama_details_section",
+  "iqama_original_submitted_while_departure",
+  "column_break_25",
+  "iqama_original_collected_after_arrival",
+  "additional_details_section",
+  "number_of_days_late",
+  "reasons_of_being_late",
+  "employee_vacation_salary_section",
+  "travel_allowance",
+  "bonus_allowance",
+  "column_break_ujdl",
+  "employee_vacation_salary",
+  "section_break_29",
+  "gosi_basic_salary",
+  "count_vacation_days",
+  "column_break_fbzp",
+  "leave_application_count",
+  "number_of_working_days",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Series",
+   "options": "EMP-REJ-.YYYY.-",
+   "read_only": 1
+  },
+  {
+   "fieldname": "employee_details_section",
+   "fieldtype": "Section Break",
+   "label": "Employee Details"
+  },
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "label": "Designation",
+   "options": "Designation"
+  },
+  {
+   "fieldname": "section_break_5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Department",
+   "options": "Department"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "id_iqama_no",
+   "fieldtype": "Data",
+   "label": "ID/IQAMA No"
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "branch_region",
+   "fieldtype": "Data",
+   "label": "Branch / Region"
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "expiry_date",
+   "fieldtype": "Date",
+   "label": "Expiry Date"
+  },
+  {
+   "fieldname": "section_break_13",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "dept_head_name",
+   "fieldtype": "Data",
+   "label": "Dept Head Name"
+  },
+  {
+   "fieldname": "departure_arrival_section",
+   "fieldtype": "Section Break",
+   "label": "Departure & Arrival Details"
+  },
+  {
+   "fieldname": "date_of_departure",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date of Departure",
+   "reqd": 1
+  },
+  {
+   "fieldname": "departure_time",
+   "fieldtype": "Time",
+   "label": "Departure Time"
+  },
+  {
+   "fieldname": "column_break_17",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "arrival_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Arrival Date"
+  },
+  {
+   "fieldname": "arrival_time",
+   "fieldtype": "Time",
+   "label": "Arrival Time"
+  },
+  {
+   "fieldname": "reported_to_work_on",
+   "fieldtype": "Date",
+   "label": "Reported to Work On"
+  },
+  {
+   "fieldname": "reported_time",
+   "fieldtype": "Time",
+   "label": "Reported Time"
+  },
+  {
+   "fieldname": "iqama_details_section",
+   "fieldtype": "Section Break",
+   "label": "Iqama Details"
+  },
+  {
+   "fieldname": "iqama_original_submitted_while_departure",
+   "fieldtype": "Select",
+   "label": "Iqama Original Submitted While Departure",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "column_break_25",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "iqama_original_collected_after_arrival",
+   "fieldtype": "Select",
+   "label": "Iqama Original Collected after Arrival",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "additional_details_section",
+   "fieldtype": "Section Break",
+   "label": "Additional Details"
+  },
+  {
+   "fieldname": "number_of_days_late",
+   "fieldtype": "Int",
+   "label": "Number of Days Late (if any)"
+  },
+  {
+   "fieldname": "section_break_29",
+   "fieldtype": "Section Break",
+   "label": "Other Details"
+  },
+  {
+   "fieldname": "reasons_of_being_late",
+   "fieldtype": "Small Text",
+   "label": "Reasons of Being Late"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Employee Rejoining",
+   "print_hide": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "gosi_basic_salary",
+   "fieldtype": "Currency",
+   "label": "GOSI Basic Salary",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "count_vacation_days",
+   "fieldtype": "Float",
+   "label": "Count Total Days",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_xjgh",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "last_rejoining_date",
+   "fieldtype": "Date",
+   "label": "Last Rejoining Date"
+  },
+  {
+   "fieldname": "last_rejoining_time",
+   "fieldtype": "Time",
+   "label": "Last Rejoining Time"
+  },
+  {
+   "fieldname": "column_break_yphz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "employee_vacation_salary",
+   "fieldtype": "Currency",
+   "label": "Employee Vacation Salary",
+   "read_only": 1
+  },
+  {
+   "fieldname": "employee_id",
+   "fieldtype": "Link",
+   "label": "Employee ID",
+   "options": "Employee",
+   "read_only": 1
+  },
+  {
+   "fieldname": "leave_application_count",
+   "fieldtype": "Float",
+   "label": "Leave Application Count",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "number_of_working_days",
+   "fieldtype": "Float",
+   "label": "Number of Working Days",
+   "read_only": 1
+  },
+  {
+   "fieldname": "employee_vacation_salary_section",
+   "fieldtype": "Section Break",
+   "label": "Employee Vacation Salary"
+  },
+  {
+   "fieldname": "travel_allowance",
+   "fieldtype": "Currency",
+   "label": "Travel Allowance"
+  },
+  {
+   "fieldname": "bonus_allowance",
+   "fieldtype": "Currency",
+   "label": "Bonus Allowance"
+  },
+  {
+   "fieldname": "column_break_ujdl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_fbzp",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-08-20 13:56:17.610878",
+ "modified_by": "Administrator",
+ "module": "Service Pro",
+ "name": "Employee Rejoining",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

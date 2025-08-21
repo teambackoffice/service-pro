@@ -12,9 +12,7 @@ class EmployeeRejoining(Document):
             departure_date = getdate(self.date_of_departure)
             last_rejoining_date = getdate(self.last_rejoining_date)
             
-            if last_rejoining_date < departure_date:
-                frappe.throw("Arrival date cannot be before departure date")
-                
+   
             days_diff = (last_rejoining_date - departure_date).days
             self.count_vacation_days = days_diff
         else:

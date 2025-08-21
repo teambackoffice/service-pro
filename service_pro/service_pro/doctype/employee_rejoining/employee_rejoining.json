@@ -27,14 +27,14 @@
   "date_of_departure",
   "departure_time",
   "column_break_17",
-  "arrival_date",
-  "arrival_time",
+  "reported_to_work_on",
+  "reported_time",
   "section_break_xjgh",
   "last_rejoining_date",
   "last_rejoining_time",
   "column_break_yphz",
-  "reported_to_work_on",
-  "reported_time",
+  "arrival_date",
+  "arrival_time",
   "iqama_details_section",
   "iqama_original_submitted_while_departure",
   "column_break_25",
@@ -142,7 +142,7 @@
    "fieldname": "date_of_departure",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Date of Departure",
+   "label": "Last Rejoining Date",
    "reqd": 1
   },
   {
@@ -251,7 +251,8 @@
   {
    "fieldname": "last_rejoining_date",
    "fieldtype": "Date",
-   "label": "Last Rejoining Date"
+   "label": "Date of Departure",
+   "reqd": 1
   },
   {
    "fieldname": "last_rejoining_time",
@@ -316,7 +317,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-08-20 15:20:45.352055",
+ "modified": "2025-08-21 13:33:42.048436",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Employee Rejoining",

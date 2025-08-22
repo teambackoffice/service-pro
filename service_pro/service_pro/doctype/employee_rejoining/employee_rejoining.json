@@ -148,7 +148,7 @@
   {
    "fieldname": "departure_time",
    "fieldtype": "Time",
-   "label": "Departure Time"
+   "label": "Last Rejoining Time"
   },
   {
    "fieldname": "column_break_17",
@@ -257,13 +257,14 @@
   {
    "fieldname": "last_rejoining_time",
    "fieldtype": "Time",
-   "label": "Last Rejoining Time"
+   "label": "Departure Time"
   },
   {
    "fieldname": "column_break_yphz",
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "employee_vacation_salary",
    "fieldtype": "Currency",
    "label": "Employee Vacation Salary",
@@ -317,7 +318,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-08-21 13:33:42.048436",
+ "modified": "2025-08-22 08:10:24.544861",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Employee Rejoining",

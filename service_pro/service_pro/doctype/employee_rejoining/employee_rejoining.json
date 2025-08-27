@@ -24,13 +24,13 @@
   "section_break_13",
   "dept_head_name",
   "departure_arrival_section",
-  "date_of_departure",
+  "last_rejoining_date",
   "departure_time",
   "column_break_17",
   "reported_to_work_on",
   "reported_time",
   "section_break_xjgh",
-  "last_rejoining_date",
+  "date_of_departure",
   "last_rejoining_time",
   "column_break_yphz",
   "arrival_date",
@@ -142,7 +142,7 @@
    "fieldname": "date_of_departure",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Last Rejoining Date",
+   "label": "Date of Departure",
    "reqd": 1
   },
   {
@@ -251,7 +251,7 @@
   {
    "fieldname": "last_rejoining_date",
    "fieldtype": "Date",
-   "label": "Date of Departure",
+   "label": "Last Rejoining Date",
    "reqd": 1
   },
   {
@@ -318,7 +318,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-08-22 08:10:24.544861",
+ "modified": "2025-08-27 08:24:58.854491",
  "modified_by": "Administrator",
  "module": "Service Pro",
  "name": "Employee Rejoining",

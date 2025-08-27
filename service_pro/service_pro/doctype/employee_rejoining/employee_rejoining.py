@@ -17,7 +17,7 @@ class EmployeeRejoining(Document):
             departure_date = getdate(self.date_of_departure)
             last_rejoining_date = getdate(self.last_rejoining_date)
             
-            days_diff = (last_rejoining_date - departure_date).days
+            days_diff = abs((last_rejoining_date - departure_date).days)
             self.count_vacation_days = days_diff
         else:
             self.count_vacation_days = 0
@@ -34,7 +34,16 @@ class EmployeeRejoining(Document):
         }
         
         if self.date_of_departure and self.last_rejoining_date:
-            filters['from_date'] = ['between', [self.date_of_departure, self.last_rejoining_date]]
+            departure_date = getdate(self.date_of_departure)
+            rejoining_date = getdate(self.last_rejoining_date)
+            
+            start_date = min(departure_date, rejoining_date)
+            end_date = max(departure_date, rejoining_date)
+            
+            filters.update({
+                'from_date': ['<=', end_date],
+                'to_date': ['>=', start_date]
+            })
         
         try:
             leave_applications = frappe.get_list(

@@ -599,7 +599,7 @@
    "allow_on_submit": 1,
    "fieldname": "average_price_qty",
    "fieldtype": "Currency",
-   "label": "Cost Price / Qty",
+   "label": "Unit Cost Price/Quantity",
    "read_only": 1
   },
   {
@@ -643,8 +643,8 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-26 13:24:04.138955",
- "modified_by": "Administrator",
+ "modified": "2025-08-31 13:23:57.302536",
+ "modified_by": "galdinus@hydrotechglobal.com",
  "module": "Service Pro",
  "name": "Production",
  "naming_rule": "Expression",

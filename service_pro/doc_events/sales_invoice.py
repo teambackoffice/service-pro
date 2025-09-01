@@ -135,6 +135,11 @@ def validate_margin_rate_with_rate(doc, method):
     
 	if frappe.session.user == "Administrator":
 		return
+
+	user_roles = frappe.get_roles(frappe.session.user)
+	if "Margin Rate Approver" in user_roles:
+		return
+ 
 	
 	validation_errors = []
 	
@@ -166,8 +171,45 @@ def validate_margin_rate_with_rate(doc, method):
 		
 		frappe.throw(_(error_message), title=_("Rate Below Margin Rate"))
 
+def set_margin_rate_for_document_creator(doc):
+	"""Set custom_margin_rate for new documents or update for document creator when their percentage changes"""
+	if not doc.company:
+		return
+		
+	current_user = frappe.session.user
+	
+	if doc.is_new() or doc.owner == current_user:
+		user_margin_percentage = get_user_margin_percentage(current_user, doc.company)
+		
+		if user_margin_percentage is None:
+			frappe.logger().info(f"No margin percentage found for user {current_user} in company {doc.company}")
+			return
+		
+		should_update = False
+		
+		if doc.is_new():
+			should_update = True
+			frappe.logger().info(f"Setting margin rate {user_margin_percentage} for new document by {current_user}")
+		elif doc.owner == current_user and doc.custom_margin_rate != user_margin_percentage:
+			should_update = True
+			frappe.logger().info(f"Updating margin rate from {doc.custom_margin_rate} to {user_margin_percentage} for document creator {current_user}")
+		
+		if should_update:
+			doc.custom_margin_rate = user_margin_percentage
+			
+			for item in doc.items:
+				if item.item_code and item.warehouse:
+					calculate_item_margin_rate(doc, item)
+
+def set_margin_rate_on_load(doc, method):
+	"""Set margin rate based on user configuration only for document creator or new documents"""
+	set_margin_rate_for_document_creator(doc)
+
 @frappe.whitelist()
 def on_submit_si(doc, method):
+	if doc.owner == frappe.session.user:
+		set_margin_rate_for_document_creator(doc)
+	
 	# Validate margin rate matches item rate before submission
 	validate_margin_rate_with_rate(doc, method)
 	
@@ -206,6 +248,10 @@ def on_submit_si(doc, method):
 				frappe.db.sql(""" UPDATE `tabProduction` SET status=%s WHERE name=%s""",
 							  ("Partially Delivered", prod.reference))
 				frappe.db.commit()
+
+def before_save_si(doc, method):
+	"""Set margin rate only for document creator or new documents"""
+	set_margin_rate_for_document_creator(doc)
 
 def get_service_records(reference):
 	estimation_ = ""
@@ -357,13 +403,6 @@ def validate_permission(doc, method):
 def get_role():
 	doc = frappe.db.get_value("Production Settings",None,"ignore_permission")
 	return doc
-
-
-def set_margin_rate_on_load(doc, method):
-    """Set margin rate based on user configuration when Sales Invoice is loaded"""
-    if not doc.custom_margin_rate:
-        doc.custom_margin_rate = get_user_margin_percentage(frappe.session.user, doc.company) or 0
-
 
 def validate_and_calculate_rates(doc, method):
     """Validate and calculate rates based on margin and valuation rate"""

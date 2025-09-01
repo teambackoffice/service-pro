@@ -28,7 +28,7 @@ frappe.ui.form.on('Sales Invoice', {
                 freeze_message: "Getting Company Defaults....",
                 callback: function (r) {
                     defaults = r.message
-
+                    set_margin_rate_for_creator_only(cur_frm);
                 }
             })
         }
@@ -87,7 +87,8 @@ frappe.ui.form.on('Sales Invoice', {
                 freeze_message: "Getting Company Defaults....",
                 callback: function (r) {
                     defaults = r.message
-
+                    // Only set margin rate for new documents or document creator
+                    set_margin_rate_for_creator_only(cur_frm);
                 }
             })
         }
@@ -107,8 +108,8 @@ frappe.ui.form.on('Sales Invoice', {
             }
         });
 
-        // Set user-specific margin rate on load
-        set_user_margin_rate(frm);
+        // Only set margin rate for creator or new documents
+        set_margin_rate_for_creator_only(frm);
     },
     refresh: function(frm) {
         // frm.toggle_display("update_stock", frm.doc.is_pos)
@@ -142,8 +143,8 @@ frappe.ui.form.on('Sales Invoice', {
             }
         });
 
-        // Set user-specific margin rate on refresh
-        set_user_margin_rate(frm);
+        // Only set margin rate for creator or new documents (don't change for other users)
+        set_margin_rate_for_creator_only(frm);
     },
     is_pos: function(frm) {
         // frm.toggle_display("update_stock", frm.doc.is_pos)
@@ -393,10 +394,15 @@ cur_frm.cscript.reference = function (frm,cdt,cdn) {
     }
 }
 
-
-function set_user_margin_rate(frm) {
-    // Get user-specific margin percentage from Production Settings
+// UPDATED FUNCTION: Set margin rate for new documents or update for document creator when percentage changes
+function set_margin_rate_for_creator_only(frm) {
     if (!frm.doc.company) {
+        return;
+    }
+
+    // Only process for new documents or if current user is the document owner/creator
+    if (!frm.is_new() && frm.doc.owner !== frappe.session.user) {
+        console.log(`Skipping margin rate update. Current user (${frappe.session.user}) is not the document creator (${frm.doc.owner})`);
         return;
     }
 
@@ -407,22 +413,49 @@ function set_user_margin_rate(frm) {
         },
         callback: function(r) {
             if (r.message && r.message.default_sales_margin_percentage) {
+                let current_user = frappe.session.user;
+                let user_percentage = null;
+                
                 // Find current user's percentage
                 for (let i = 0; i < r.message.default_sales_margin_percentage.length; i++) {
                     let row = r.message.default_sales_margin_percentage[i];
-                    if (row.user === frappe.session.user) {
-                        frm.set_value('custom_margin_rate', row.percentage);
-
-                        // Recalculate all items with the new margin rate
-                        if (frm.doc.items && frm.doc.items.length > 0) {
-                            frm.doc.items.forEach(function(item) {
-                                if (item.item_code && item.warehouse) {
-                                    calculate_margin_rate_for_item(frm, item);
-                                }
-                            });
-                        }
+                    if (row.user === current_user) {
+                        user_percentage = row.percentage;
                         break;
                     }
+                }
+                
+                // Determine if we should update the margin rate
+                let should_update = false;
+                
+                if (frm.is_new() && user_percentage !== null) {
+                    should_update = true;
+                    console.log(`Setting margin rate to ${user_percentage} for new document by ${current_user}`);
+                } else if (frm.doc.owner === current_user && user_percentage !== null && frm.doc.custom_margin_rate !== user_percentage) {
+                    should_update = true;
+                    console.log(`Updating margin rate from ${frm.doc.custom_margin_rate} to ${user_percentage} for document creator ${current_user}`);
+                }
+                
+                if (should_update) {
+                    frm.set_value('custom_margin_rate', user_percentage);
+                    
+                    // Recalculate all items with the new margin rate
+                    if (frm.doc.items && frm.doc.items.length > 0) {
+                        frm.doc.items.forEach(function(item) {
+                            if (item.item_code && item.warehouse) {
+                                calculate_margin_rate_for_item(frm, item);
+                            }
+                        });
+                    }
+                }
+                
+                // Show message if user has no margin percentage configured
+                if (user_percentage === null && frm.doc.docstatus === 0 && (frm.is_new() || frm.doc.owner === current_user)) {
+                    frappe.msgprint({
+                        title: __('Margin Rate Not Configured'),
+                        indicator: 'yellow',
+                        message: __(`No margin percentage configured for user ${current_user} in Production Settings. Please contact your administrator.`)
+                    });
                 }
             }
         }

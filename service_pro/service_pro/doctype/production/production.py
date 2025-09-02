@@ -19,6 +19,44 @@ class Production(Document):
 			frappe.throw("Sales Order is Required")
 
 	@frappe.whitelist()
+	def auto_populate_additional_cost(self):
+		"""
+		Automatically populate additional_cost table with scoop_of_work_total value
+		when the document is saved
+		"""
+		if self.scoop_of_work_total and flt(self.scoop_of_work_total) > 0:
+			# Check if there's already an entry with the default description
+			existing_entry = None
+			for row in self.additional_cost:
+				if row.description == "Expenses Included In Valuation":
+					existing_entry = row
+					break
+			
+			# Get the default expense ledger from Production Settings
+			settings = frappe.get_doc("Production Settings")
+			default_expense_ledger = None
+			
+			for row in settings.company_expense_ledger:
+				if row.company == self.company:
+					default_expense_ledger = row.expense_ledger_account
+					break
+			
+			if not default_expense_ledger:
+				frappe.throw("Please set default expense ledger account for company {} in Production Settings".format(self.company))
+			
+			if existing_entry:
+				# Update existing entry
+				existing_entry.additional_cost_amount = flt(self.scoop_of_work_total)
+				existing_entry.expense_ledger = default_expense_ledger
+			else:
+				# Add new entry to additional_cost table
+				self.append("additional_cost", {
+					"expense_ledger": default_expense_ledger,
+					"description": "Expenses Included In Valuation",
+					"additional_cost_amount": flt(self.scoop_of_work_total)
+				})
+
+	@frappe.whitelist()
 	def calculate_total_selling_rate(self):
 		"""Calculate total selling rate from item_selling_price_list table"""
 		total = 0
@@ -240,6 +278,9 @@ class Production(Document):
 		# Calculate total cost rate and cost_rate_qty
 		self.calculate_total_cost_rate()
 		
+		# Auto populate additional cost with scoop_of_work_total
+		self.auto_populate_additional_cost()
+		
 	def validate_raw_material_batch(self):
 		for row in self.raw_material:
 			item = frappe.get_doc('Item', row.item_code)
@@ -249,7 +290,7 @@ class Production(Document):
 	def update_total_average_amount(self):
 		total_from_raw_materials = 0
 		for row in self.raw_material:
-			total_from_raw_materials += flt(row.total or 0)  # Changed from average_rate to total
+			total_from_raw_materials += flt(row.total or 0)
 			
 		scoop_total = flt(self.scoop_of_work_total or 0)
 		self.average_price = total_from_raw_materials + scoop_total
@@ -322,14 +363,14 @@ class Production(Document):
 	@frappe.whitelist()
 	def get_additional_costs(self):
 		costs = []
-		settings = frappe.get_doc("Production Settings")
-
-		for row in settings.company_expense_ledger:
-			if row.company == self.company:
+		
+		# Use data from additional_cost table
+		for row in self.additional_cost:
+			if row.expense_ledger and row.additional_cost_amount:
 				costs.append({
-					"expense_account": row.expense_ledger_account,
-					"description": "Company Expense Ledger",
-					"amount": self.scoop_of_work_total
+					"expense_account": row.expense_ledger,
+					"description": row.description or "Additional Cost",
+					"amount": flt(row.additional_cost_amount)
 				})
 
 		return costs
@@ -574,6 +615,21 @@ class Production(Document):
 	def get_item_value(self, field):
 		items = frappe.db.sql(""" SELECT * FROM `tabItem` WHERE name=%s """, self.item_code_prod, as_dict=1)
 		return items[0][field]
+
+
+# Standalone helper functions
+@frappe.whitelist()
+def get_default_expense_ledger(company):
+	"""
+	Get default expense ledger account for the company from Production Settings
+	"""
+	settings = frappe.get_doc("Production Settings")
+	
+	for row in settings.company_expense_ledger:
+		if row.company == company:
+			return row.expense_ledger_account
+	
+	return None
 
 @frappe.whitelist()
 def get_available_qty(production):

@@ -132,14 +132,30 @@ def validate_margin_rate_with_rate(doc, method):
 	"""Validate that rate field is not lower than custom_margin_rate for each item"""
 	if not doc.items:
 		return
-    
+     
 	if frappe.session.user == "Administrator":
 		return
-
-	user_roles = frappe.get_roles(frappe.session.user)
-	if "Margin Rate Approver" in user_roles:
-		return
- 
+	
+	setting = frappe.get_single("Production Settings")
+	if setting.default_sales_margin_percentage:
+		for row in setting.default_sales_margin_percentage:
+			if row.user == frappe.session.user:
+			
+				percentage_value = row.percentage
+				
+				if isinstance(percentage_value, str):
+					percentage_str = percentage_value.replace('%', '').strip()
+					try:
+						percentage_num = float(percentage_str)
+					except ValueError:
+						continue
+				else:
+					percentage_num = float(percentage_value) if percentage_value else 0
+				
+				if percentage_num == 12 or percentage_num == 0.12:
+					user_roles = frappe.get_roles(frappe.session.user)
+					if "Margin Rate Approver" in user_roles:
+						return
 	
 	validation_errors = []
 	

@@ -129,63 +129,68 @@ def jv_accounts_paid(doc):
 	return accounts
 
 def validate_margin_rate_with_rate(doc, method):
-	"""Validate that rate field is not lower than custom_margin_rate for each item"""
-	if not doc.items:
-		return
-     
-	if frappe.session.user == "Administrator":
-		return
-	
-	setting = frappe.get_single("Production Settings")
-	if setting.default_sales_margin_percentage:
-		for row in setting.default_sales_margin_percentage:
-			if row.user == frappe.session.user:
-			
-				percentage_value = row.percentage
-				
-				if isinstance(percentage_value, str):
-					percentage_str = percentage_value.replace('%', '').strip()
-					try:
-						percentage_num = float(percentage_str)
-					except ValueError:
-						continue
-				else:
-					percentage_num = float(percentage_value) if percentage_value else 0
-				
-				if percentage_num == 12 or percentage_num == 0.12:
-					user_roles = frappe.get_roles(frappe.session.user)
-					if "Margin Rate Approver" in user_roles:
-						return
-	
-	validation_errors = []
-	
-	for idx, item in enumerate(doc.items):
-		if hasattr(item, 'custom_margin_rate') and item.custom_margin_rate and item.rate:
-			# Convert to float for comparison
-			margin_rate = float(item.custom_margin_rate)
-			item_rate = float(item.rate)
-			
-			# Check if item rate is lower than margin rate
-			# Allow submission when rate >= margin_rate
-			if item_rate < margin_rate:
-				validation_errors.append({
-					'row': idx + 1,
-					'item_code': item.item_code,
-					'item_name': item.item_name or item.item_code,
-					'margin_rate': margin_rate,
-					'item_rate': item_rate
-				})
-	
-	if validation_errors:
-		error_message = "Rate cannot be lower than Margin Rate for the following items:\n\n"
-		
-		for error in validation_errors:
-			error_message += f"Row {error['row']}: ({error['item_code']})\n"
-			error_message += f"  • Margin Rate: {error['margin_rate']:.2f}\n"
-			error_message += f"  • Item Rate: {error['item_rate']:.2f}\n"
-			error_message += f"  • Please increase Item Rate to at least {error['margin_rate']:.2f}\n\n"
-		
-		frappe.throw(_(error_message), title=_("Rate Below Margin Rate"))
+    """Validate that rate field is not lower than custom_margin_rate for each item"""
+    if not doc.items:
+        return
+
+    if frappe.session.user == "Administrator":
+        return
+
+    setting = frappe.get_single("Production Settings")
+    validation_errors = []
+
+    # Check roles
+    creator_roles = frappe.get_roles(doc.owner)
+    creator_is_margin_approver = "Margin Rate Approver" in creator_roles
+    user_roles = frappe.get_roles(frappe.session.user)
+    current_user_is_margin_approver = "Margin Rate Approver" in user_roles
+
+    # Get user's default margin percentage
+    percentage_num = None
+    if setting.default_sales_margin_percentage:
+        for row in setting.default_sales_margin_percentage:
+            if row.user == frappe.session.user:
+                val = row.percentage
+                if isinstance(val, str):
+                    try:
+                        percentage_num = float(val.replace('%', '').strip())
+                    except ValueError:
+                        percentage_num = 0
+                else:
+                    percentage_num = float(val) if val else 0
+                break
+
+    # ✅ New condition for Margin Rate Approver with 12%
+    if current_user_is_margin_approver and percentage_num == 12:
+        # Skip validation if not the owner
+        if doc.owner != frappe.session.user:
+            return
+        # If the user is owner → continue with validation (don't return)
+
+    # Normal validation loop
+    for idx, item in enumerate(doc.items):
+        if hasattr(item, 'custom_margin_rate') and item.custom_margin_rate and item.rate:
+            margin_rate = float(item.custom_margin_rate)
+            item_rate = float(item.rate)
+
+            if item_rate < margin_rate:
+                validation_errors.append({
+                    'row': idx + 1,
+                    'item_code': item.item_code,
+                    'item_name': item.item_name or item.item_code,
+                    'margin_rate': margin_rate,
+                    'item_rate': item_rate
+                })
+
+    if validation_errors:
+        error_message = "Rate cannot be lower than Margin Rate for the following items:\n\n"
+        for error in validation_errors:
+            error_message += f"Row {error['row']}: ({error['item_code']})\n"
+            error_message += f"  • Margin Rate: {error['margin_rate']:.2f}\n"
+            error_message += f"  • Item Rate: {error['item_rate']:.2f}\n"
+            error_message += f"  • Please increase Item Rate to at least {error['margin_rate']:.2f}\n\n"
+
+        frappe.throw(_(error_message), title=_("Rate Below Margin Rate"))
 
 def set_margin_rate_for_document_creator(doc):
 	"""Set custom_margin_rate for new documents or update for document creator when their percentage changes"""

@@ -1,4 +1,5 @@
 import frappe
+from frappe.utils import nowdate, add_days, getdate
 
 @frappe.whitelist()
 def get_production_settings_defaults(company):
@@ -31,3 +32,25 @@ def get_production_settings_defaults(company):
                 defaults[data[0].parentfield] = data[0]
 
         return defaults
+
+@frappe.whitelist()
+def delete_old_logs():
+    """Fast delete Access Log and Deleted Document entries older than 30 days"""
+    cutoff_date = add_days(nowdate(), -30)
+
+    # Delete Access Logs
+    deleted_access_count = frappe.db.delete(
+        "Access Log",
+        {"creation": ("<", cutoff_date)}
+    )
+
+    # Delete Deleted Documents
+    deleted_doc_count = frappe.db.delete(
+        "Deleted Document",
+        {"creation": ("<", cutoff_date)}
+    )
+
+    frappe.db.commit()
+    frappe.logger().info(
+        f"Deleted {deleted_access_count} Access Log(s) and {deleted_doc_count} Deleted Document(s) older than 30 days."
+    )

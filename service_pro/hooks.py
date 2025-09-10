@@ -55,6 +55,7 @@ doctype_js = {
     "Purchase Order" : "public/js/purchase_order.js",
     "Supplier Quotation" : "public/js/supplier_quotation.js",
     "Delivery Trip" : "public/js/delivery_trip.js"
+
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -159,10 +160,12 @@ doc_events = {
 
 scheduler_events = {
 	# "all": [
-	# 	"service_pro.tasks.all"
+    #
 	# ],
 	"daily": [
-		"service_pro.service_pro.doctype.service_order_form.service_order_form.check_service_order_expiry"
+		"service_pro.service_pro.doctype.service_order_form.service_order_form.check_service_order_expiry",
+        "service_pro.doc_events.utils.delete_old_logs"
+
 	],
 	# "hourly": [
 	# 	"service_pro.tasks.hourly"
@@ -252,5 +255,3 @@ report_override_js = {
 override_whitelisted_methods = {
 	"frappe.desk.query_report.get_script": "service_pro.overrides.report.get_script",
 }
-
-

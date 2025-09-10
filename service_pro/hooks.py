@@ -110,13 +110,13 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
+scheduler_events = {
 # 	"all": [
 # 		"service_pro.tasks.all"
 # 	],
-# 	"daily": [
-# 		"service_pro.tasks.daily"
-# 	],
+	"daily": [
+        "service_pro.doc_events.utils.delete_old_logs",
+	],
 # 	"hourly": [
 # 		"service_pro.tasks.hourly"
 # 	],
@@ -126,7 +126,7 @@ doc_events = {
 # 	"monthly": [
 # 		"service_pro.tasks.monthly"
 # 	]
-# }
+}
 
 # Testing
 # -------
@@ -208,5 +208,3 @@ fixtures = [
         ]
     }
 ]
-
-

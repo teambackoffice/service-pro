@@ -1,0 +1,88 @@
+<style>
+	.print-format {
+		padding: 4mm;
+		font-size: 9pt;
+	}
+	.print-format td {
+		vertical-align:middle;
+	}
+	table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+	table, th, td {
+		border: 1px solid black;
+	}
+	th, td {
+		padding: 4px;
+		text-align: left;
+	}
+	.signature-block {
+		margin-top: 20px;
+	}
+	.note {
+		font-size: 8pt;
+		color: #555;
+		margin-top: 20px;
+	}
+</style>
+
+<h2 style="text-align: center;">Statement of Account</h2>
+<hr>
+
+<table>
+	<tr>
+		<td><b>Customer Name:</b> {%= filters.customer_name %}</td>
+		<td><b>Customer ID:</b> {%= filters.customer %}</td>
+	</tr>
+	<tr>
+		<td><b>From Date:</b> {%= filters.from_date %}</td>
+		<td><b>To Date:</b> {%= filters.to_date %}</td>
+	</tr>
+</table>
+
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>Date</th>
+			<th>Voucher No</th>
+			<th>PO No</th>
+			<th>Debit</th>
+			<th>Credit</th>
+			<th>Balance</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for(var i = 0; i < data.length; i++) { %}
+		<tr>
+			<td>{%= i + 1 %}</td>
+			<td>{%= frappe.datetime.str_to_user(data[i]["date"]) %}</td>
+			<td>{%= data[i]["voucher_no"] %}</td>
+			<td>{%= data[i]["po_no"] %}</td>
+			<td>{%= format_currency(data[i]["debit"], frappe.defaults.get_default("currency")) %}</td>
+			<td>{%= format_currency(data[i]["credit"], frappe.defaults.get_default("currency")) %}</td>
+			<td>{%= format_currency(data[i]["balance"], frappe.defaults.get_default("currency")) %}</td>
+		</tr>
+		{% } %}
+	</tbody>
+</table>
+
+<div class="signature-block">
+	<p>As per our record, the balance of SR ______ was due to <b>HYDROTECH TRADING COMPANY</b> as of <b>{%= frappe.datetime.str_to_user(frappe.datetime.get_datetime_as_string()) %}</b> (Statement print date).</p>
+
+	<table style="width:100%; margin-top: 30px;">
+		<tr>
+			<td>Date: ___________________</td>
+			<td>Name & Signature: ___________________</td>
+		</tr>
+	</table>
+
+	<p>Stamp: ___________________</p>
+</div>
+
+<div class="note">
+	(* Note: Kindly share the statement of account if there is any variance as per the records mentioned above *)
+</div>
+
+<p class="text-right text-muted">Printed on: {%= frappe.datetime.str_to_user(frappe.datetime.get_datetime_as_string()) %}</p>

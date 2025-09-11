@@ -1,6 +1,6 @@
 import frappe
 from frappe.utils import unique
-from frappe.utils import today, nowdate, getdate, add_to_date
+from frappe.utils import today, nowdate, getdate, add_to_date, add_days
 from frappe.utils import getdate, nowdate, get_year_start, get_year_ending
 
 @frappe.whitelist()
@@ -34,7 +34,7 @@ def get_production_settings_defaults(company):
                 defaults[data[0].parentfield] = data[0]
 
         return defaults
-    
+
 @frappe.whitelist()
 def filter_purchase_order_status_count():
     po_count = frappe.db.count('Purchase Order', {
@@ -72,7 +72,7 @@ def filter_sales_order_to_bill_status_count():
 
 @frappe.whitelist()
 def filter_employee_active_status_count():
- 
+
     employee_count = frappe.db.count('Employee', {
         'status': 'Active'
     })
@@ -82,9 +82,9 @@ def filter_employee_active_status_count():
 def filter_employee_joined_this_year_count():
 
     from datetime import datetime
-    
+
     current_year = datetime.now().year
-    
+
     employee_count = frappe.db.count('Employee', {
         'date_of_joining': ['between', [f'{current_year}-01-01', f'{current_year}-12-31']]
     })
@@ -92,11 +92,11 @@ def filter_employee_joined_this_year_count():
 
 @frappe.whitelist()
 def filter_employee_exits_this_year_count():
- 
+
     from datetime import datetime
-    
+
     current_year = datetime.now().year
-    
+
     employee_count = frappe.db.count('Employee', {
         'relieving_date': ['between', [f'{current_year}-01-01', f'{current_year}-12-31']]
     })
@@ -107,21 +107,21 @@ def get_annual_purchase_total():
     today = nowdate()
     start_date = get_year_start(today)
     end_date = get_year_ending(today)
-    
+
     annual_purchase_total = frappe.db.sql("""
         SELECT COALESCE(SUM(grand_total), 0) as total_amount
         FROM `tabPurchase Invoice`
         WHERE creation BETWEEN %s AND %s
         AND status IN ('Paid', 'Overdue')
     """, (start_date, end_date), as_dict=True)
-    
+
     total_amount = annual_purchase_total[0].total_amount if annual_purchase_total else 0
-    
+
     # Get default currency
     default_currency = frappe.get_cached_value('Company', frappe.defaults.get_user_default('Company'), 'default_currency')
     if not default_currency:
         default_currency = 'SAR'
-    
+
     # Format the amount
     if total_amount >= 1000000:
         formatted_amount = total_amount / 1000000
@@ -135,7 +135,7 @@ def get_annual_purchase_total():
             amount_str = amount_str.replace(' K', ' K')
     else:
         amount_str = f"{total_amount:.2f}"
-    
+
     return f"{default_currency} {amount_str}"
 
 @frappe.whitelist()
@@ -143,21 +143,21 @@ def get_annual_sales_total():
     today = nowdate()
     start_date = get_year_start(today)
     end_date = get_year_ending(today)
-    
+
     annual_sales_total = frappe.db.sql("""
         SELECT COALESCE(SUM(grand_total), 0) as total_amount
         FROM `tabSales Invoice`
         WHERE creation BETWEEN %s AND %s
         AND status IN ('Paid', 'Overdue')
     """, (start_date, end_date), as_dict=True)
-    
+
     total_amount = annual_sales_total[0].total_amount if annual_sales_total else 0
-    
+
     # Get default currency
     default_currency = frappe.get_cached_value('Company', frappe.defaults.get_user_default('Company'), 'default_currency')
     if not default_currency:
         default_currency = 'SAR'
-    
+
     # Format the amount
     if total_amount >= 1000000:
         formatted_amount = total_amount / 1000000
@@ -171,7 +171,7 @@ def get_annual_sales_total():
             amount_str = amount_str.replace(' K', ' K')
     else:
         amount_str = f"{total_amount:.2f}"
-    
+
     return f"{default_currency} {amount_str}"
 
 
@@ -182,13 +182,13 @@ def get_all_time_sales_total():
         FROM `tabSales Invoice`
         WHERE status IN ('Paid', 'Overdue')
     """, as_dict=True)
-    
+
     total_amount = all_time_sales_total[0].total_amount if all_time_sales_total else 0
-    
+
     default_currency = frappe.get_cached_value('Company', frappe.defaults.get_user_default('Company'), 'default_currency')
     if not default_currency:
         default_currency = 'SAR'
-    
+
     if total_amount >= 1000000:
         formatted_amount = total_amount / 1000000
         amount_str = f"{formatted_amount:.2f} M".rstrip('0').rstrip('.')
@@ -201,7 +201,7 @@ def get_all_time_sales_total():
             amount_str = amount_str.replace(' K', ' K')
     else:
         amount_str = f"{total_amount:.2f}"
-    
+
     return f"{default_currency} {amount_str}"
 
 @frappe.whitelist()
@@ -211,13 +211,13 @@ def get_all_time_purchase_total():
         FROM `tabPurchase Invoice`
         WHERE status IN ('Paid', 'Overdue')
     """, as_dict=True)
-    
+
     total_amount = all_time_purchase_total[0].total_amount if all_time_purchase_total else 0
-    
+
     default_currency = frappe.get_cached_value('Company', frappe.defaults.get_user_default('Company'), 'default_currency')
     if not default_currency:
         default_currency = 'SAR'
-    
+
     if total_amount >= 1000000:
         formatted_amount = total_amount / 1000000
         amount_str = f"{formatted_amount:.2f} M".rstrip('0').rstrip('.')
@@ -230,5 +230,28 @@ def get_all_time_purchase_total():
             amount_str = amount_str.replace(' K', ' K')
     else:
         amount_str = f"{total_amount:.2f}"
-    
+
     return f"{default_currency} {amount_str}"
+
+
+@frappe.whitelist()
+def delete_old_logs():
+    """Fast delete Access Log and Deleted Document entries older than 30 days"""
+    cutoff_date = add_days(nowdate(), -30)
+
+    # Delete Access Logs
+    deleted_access_count = frappe.db.delete(
+        "Access Log",
+        {"creation": ("<", cutoff_date)}
+    )
+
+    # Delete Deleted Documents
+    deleted_doc_count = frappe.db.delete(
+        "Deleted Document",
+        {"creation": ("<", cutoff_date)}
+    )
+
+    frappe.db.commit()
+    frappe.logger().info(
+        f"Deleted {deleted_access_count} Access Log(s) and {deleted_doc_count} Deleted Document(s) older than 30 days."
+    )

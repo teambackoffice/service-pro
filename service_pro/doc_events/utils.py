@@ -239,13 +239,11 @@ def delete_old_logs():
     """Fast delete Access Log and Deleted Document entries older than 30 days"""
     cutoff_date = add_days(nowdate(), -30)
 
-    # Delete Access Logs
     deleted_access_count = frappe.db.delete(
         "Access Log",
         {"creation": ("<", cutoff_date)}
     )
 
-    # Delete Deleted Documents
     deleted_doc_count = frappe.db.delete(
         "Deleted Document",
         {"creation": ("<", cutoff_date)}

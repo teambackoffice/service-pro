@@ -236,20 +236,43 @@ def get_all_time_purchase_total():
 
 @frappe.whitelist()
 def delete_old_logs():
-    """Fast delete Access Log and Deleted Document entries older than 30 days"""
+    """Delete up to 1000 old Access Log and Deleted Document entries (older than 30 days) per run"""
     cutoff_date = add_days(nowdate(), -30)
+    limit = 5000
 
-    deleted_access_count = frappe.db.delete(
+    # Access Log
+    access_logs = frappe.get_all(
         "Access Log",
-        {"creation": ("<", cutoff_date)}
+        filters={"creation": ("<=", cutoff_date)},
+        fields=["name"],
+        limit=limit
     )
+    deleted_access_count = 0
+    if access_logs:
+        names = [d.name for d in access_logs]
+        frappe.db.delete("Access Log", {"name": ["in", names]})
+        deleted_access_count = len(names)
 
-    deleted_doc_count = frappe.db.delete(
+    # Deleted Document
+    deleted_docs = frappe.get_all(
         "Deleted Document",
-        {"creation": ("<", cutoff_date)}
+        filters={"creation": ("<=", cutoff_date)},
+        fields=["name"],
+        limit=limit
     )
+    deleted_doc_count = 0
+    if deleted_docs:
+        names = [d.name for d in deleted_docs]
+        frappe.db.delete("Deleted Document", {"name": ["in", names]})
+        deleted_doc_count = len(names)
 
     frappe.db.commit()
     frappe.logger().info(
-        f"Deleted {deleted_access_count} Access Log(s) and {deleted_doc_count} Deleted Document(s) older than 30 days."
+        f"Deleted {deleted_access_count} Access Log(s) and "
+        f"{deleted_doc_count} Deleted Document(s) older than 30 days."
     )
+
+    return {
+        "deleted_access_logs": deleted_access_count,
+        "deleted_deleted_docs": deleted_doc_count
+    }
